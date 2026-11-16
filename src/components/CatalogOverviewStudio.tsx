@@ -78,7 +78,7 @@ function ActivityChart({ products, days, asOfMs }: {
     };
   });
   const max = Math.max(1, ...bins.map(bin => bin.count));
-  const xStart = 55, xEnd = 625, yTop = 25, yBase = 148;
+  const xStart = 55, xEnd = 625, yTop = 30, yBase = 184;
   const barSlot = (xEnd - xStart) / bins.length;
   const barWidth = Math.min(45, barSlot * .54);
   const yValue = (value: number) => yBase - (value / max) * (yBase - yTop);
@@ -92,7 +92,7 @@ function ActivityChart({ products, days, asOfMs }: {
         Product updates
         <span className="brutti-activity-chart-granularity">{granularity} groups</span>
       </div>
-      <svg viewBox="0 0 640 192" role="img"
+      <svg viewBox="0 0 640 230" role="img"
         aria-label={"Products by latest update date over the last " + days + " days: " + activity.total + " products"}>
         <defs>
           <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
@@ -126,7 +126,7 @@ function ActivityChart({ products, days, asOfMs }: {
                 <rect className="brutti-activity-bar-zero" x={x - barWidth / 2}
                   y={yBase - 2} width={barWidth} height="2" rx="1" />
               )}
-              <text className="brutti-activity-axis-date" x={x} y="173"
+              <text className="brutti-activity-axis-date" x={x} y="215"
                 textAnchor="middle">{bin.label}</text>
             </g>
           );
