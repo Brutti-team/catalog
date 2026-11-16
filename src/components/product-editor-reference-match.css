@@ -775,3 +775,54 @@
     font-size: 11px;
   }
 }
+
+
+/* Footer preview action — review the actual published catalog listing. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer .catalog-editor-footer-view-live {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 43px;
+  padding: 10px 16px;
+  border: 1px solid rgba(38, 79, 55, .22);
+  border-radius: 9px;
+  background: rgba(255,255,255,.85);
+  color: #28523c;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer .catalog-editor-footer-view-live:not(:disabled):hover,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer .catalog-editor-footer-view-live:not(:disabled):focus-visible {
+  border-color: rgba(38, 79, 55, .40);
+  background: #edf3ee;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer .catalog-editor-footer-view-live:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-footer .catalog-editor-footer-view-live {
+  color: #dcebe0;
+  border-color: rgba(225,235,226,.22);
+  background: rgba(255,255,255,.06);
+}
+@media (max-width: 760px) {
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer .button-row > :is(a,button) {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer .catalog-editor-footer-view-live {
+    min-height: 41px;
+    padding: 9px 10px;
+    font-size: 11px;
+  }
+}

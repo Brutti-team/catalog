@@ -777,6 +777,29 @@ export default function ProductEditor({
             Changes are saved when you select Save.
           </span>
           <div className="button-row">
+            {isEditing && (
+              product.status === "published" ? (
+                <a
+                  className="button secondary catalog-editor-footer-view-live"
+                  href={`#/product/${encodeURIComponent(product.id)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="View the currently published product in the public catalogue"
+                >
+                  <Eye size={16} aria-hidden="true" /> View live
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  className="button secondary catalog-editor-footer-view-live"
+                  disabled
+                  title="Publish this product first to view its public listing"
+                  aria-label="View live (available after publishing)"
+                >
+                  <Eye size={16} aria-hidden="true" /> View live
+                </button>
+              )
+            )}
             <button
               className="button secondary"
               type="button"
