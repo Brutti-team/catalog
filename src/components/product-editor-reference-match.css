@@ -453,3 +453,233 @@
 @media (prefers-reduced-motion: reduce) {
   .admin-app .product-editor-dialog--editing .catalog-reference-publishing > summary svg { transition: none; }
 }
+
+
+/* November 16: spacing and alignment pass based on the actual editor recording.
+   Target the edit form only; no unrelated dashboard or public catalog styling. */
+.admin-app .product-editor-dialog--editing {
+  --studio-editor-edge: rgba(50, 66, 55, .12);
+  --studio-editor-field: rgba(255, 255, 255, .88);
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary {
+  padding-bottom: 32px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary > .product-editor-section {
+  margin-bottom: 27px;
+  padding-bottom: 26px;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-spec-rows {
+  display: grid;
+  gap: 10px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary .catalog-reference-spec-row,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary label.catalog-reference-spec-row {
+  display: grid;
+  grid-template-columns: minmax(155px, 22%) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-spec-rows .catalog-reference-spec-key {
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid rgba(56, 71, 59, .10);
+  border-radius: 8px;
+  background: rgba(255,255,255,.51);
+  color: #48574b !important;
+  font-size: 12px;
+  font-weight: 590;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary .catalog-reference-spec-row > input,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary .catalog-reference-spec-row > select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  height: 46px;
+  margin: 0 !important;
+  padding: 11px 14px;
+  border: 1px solid var(--studio-editor-edge);
+  border-radius: 8px;
+  background: var(--studio-editor-field);
+  color: var(--studio-editor-ink);
+  box-shadow: none;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-dimension-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 10px;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .catalog-reference-dimension-inputs label {
+  min-width: 0;
+  height: 46px;
+  margin: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .catalog-reference-dimension-inputs input {
+  width: 100%;
+  height: 46px;
+  min-height: 46px;
+  margin: 0 !important;
+  padding: 19px 12px 5px !important;
+  border: 1px solid var(--studio-editor-edge);
+  border-radius: 8px !important;
+  background: var(--studio-editor-field);
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-dimension-inputs label > span {
+  top: 5px;
+  left: 12px;
+  font-weight: 590;
+  color: #717d74 !important;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-spec-row > .catalog-reference-price-field {
+  display: flex;
+  align-items: center;
+  height: 46px;
+  min-height: 46px;
+  min-width: 0;
+  padding: 0 13px;
+  margin: 0;
+  border: 1px solid var(--studio-editor-edge);
+  border-radius: 8px;
+  background: var(--studio-editor-field);
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary .catalog-reference-price-field > input {
+  flex: 1;
+  min-width: 0;
+  min-height: 42px;
+  height: 42px;
+  margin: 0 !important;
+  padding: 9px 4px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-spec-note {
+  margin-top: 14px;
+  line-height: 1.5;
+  font-size: 10.5px;
+  color: var(--studio-editor-muted);
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-publishing {
+  margin-top: 21px;
+  padding-top: 3px;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-publishing > summary {
+  min-height: 58px;
+  gap: 12px;
+  padding: 13px 0;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-publishing > summary small {
+  margin-left: auto;
+  font-weight: 450;
+}
+
+/* Keep the real product photo visible while users work through Specifications.
+   The preview and model status move as a single rail, avoiding an empty right pane. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-side {
+  align-self: stretch;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-preview-rail {
+  position: sticky;
+  top: 84px;
+  display: grid;
+  align-content: start;
+  gap: 17px;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-preview-rail .product-editor-live-preview {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-preview-rail .product-editor-preview-label {
+  margin-bottom: 10px;
+  font-size: 10px;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-preview-rail .editor-preview {
+  overflow: hidden;
+  border: 1px solid rgba(62, 72, 60, .1);
+  border-radius: 11px;
+  background: #f0e7d9;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-preview-rail .editor-preview > :is(img, .preview-placeholder) {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.13 / 1;
+  object-fit: contain;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-preview-rail .catalog-reference-model-status {
+  padding: 17px 18px;
+  border: 1px solid rgba(64,76,68,.09);
+  border-radius: 11px;
+  background: rgba(255,255,255,.76);
+  box-shadow: 0 5px 15px rgba(34,48,39,.025);
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-preview-rail .catalog-reference-model-status > p {
+  font-size: 11px;
+  line-height: 1.6;
+  margin-block: 9px;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-preview-rail .catalog-reference-model-header h3 {
+  font-size: 17px;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-preview-rail .catalog-reference-model-generate {
+  min-height: 38px;
+  margin: 10px 0;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-preview-rail .catalog-reference-model-note {
+  margin-top: 11px !important;
+  font-size: 10px !important;
+  line-height: 1.5 !important;
+}
+
+/* Balanced focus states, without turning each form field into a heavy card. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary .catalog-reference-spec-row :is(input, select):focus-visible {
+  border-color: rgba(155,115,58,.65);
+  outline: 2px solid rgba(184,139,74,.15);
+  outline-offset: 1px;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-reference-spec-rows .catalog-reference-spec-key {
+  color: var(--studio-editor-ink) !important;
+  background: rgba(255,255,255,.06);
+  border-color: var(--studio-editor-edge);
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-reference-preview-rail .catalog-reference-model-status {
+  background: var(--studio-editor-glass);
+}
+
+@media (max-width: 1020px) {
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary label.catalog-reference-spec-row,
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary .catalog-reference-spec-row {
+    grid-template-columns: minmax(120px,27%) minmax(0,1fr);
+    gap: 9px;
+  }
+  .admin-app .product-editor-dialog--editing .catalog-reference-dimension-inputs { gap: 6px; }
+}
+@media (max-width: 760px), (max-height: 760px) {
+  .admin-app .product-editor-dialog--editing .catalog-reference-preview-rail { position: static; top: auto; }
+}
+@media (max-width: 540px) {
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary label.catalog-reference-spec-row,
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary .catalog-reference-spec-row {
+    grid-template-columns: minmax(0,1fr);
+    gap: 5px;
+  }
+  .admin-app .product-editor-dialog--editing .catalog-reference-spec-rows .catalog-reference-spec-key {
+    border: 0;
+    min-height: 0;
+    padding: 3px 0 1px;
+    background: transparent;
+    font-size: 12px;
+  }
+  .admin-app .product-editor-dialog--editing .catalog-reference-spec-rows { gap: 14px; }
+  .admin-app .product-editor-dialog--editing .catalog-reference-publishing > summary small { display: none; }
+}
