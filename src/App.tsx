@@ -614,22 +614,26 @@ export default function App() {
             <>
               <CatalogOverviewStudio
                 headerControls={
-                  <div className="catalog-overview-automations" aria-label="Automatic catalog updates">
-                    <div className="catalog-auto-sync">
-                      <span className={`catalog-auto-sync-dot ${error ? "has-error" : ""}`} aria-hidden="true" />
-                      <div>
-                        <strong>{error ? "Sync needs attention" : syncing ? "Checking for updates" : "Auto-sync enabled"}</strong>
-                        <small title="Checks for product changes every 30 seconds while this tab is visible">Every 30s while visible</small>
-                      </div>
-                    </div>
-                    <div className="catalog-auto-sync-tools">
-                      <span className="catalog-auto-sync-time">{lastSyncText}</span>
-                      <button type="button" className="catalog-auto-sync-button" disabled={loading || syncing}
-                        onClick={() => void refresh(true)} aria-label="Refresh catalog now">
-                        <RefreshCw size={15} aria-hidden="true" className={syncing ? "is-spinning" : ""} />
-                        <span>Refresh now</span>
-                      </button>
-                    </div>
+                  <div
+                    className={`catalog-snapshot-sync${error ? " has-error" : ""}`}
+                    role="group"
+                    aria-label="Catalog auto-sync status and manual refresh"
+                    title="Checks for product changes every 30 seconds while this tab is visible"
+                  >
+                    <span className="catalog-snapshot-sync-label" role="status" aria-live="polite">
+                      <span className="catalog-snapshot-sync-dot" aria-hidden="true" />
+                      {error ? "Sync needs attention" : syncing ? "Checking…" : lastSyncedAt ? lastSyncText : "Waiting to sync"}
+                    </span>
+                    <button
+                      type="button"
+                      className="catalog-snapshot-refresh"
+                      disabled={loading || syncing}
+                      onClick={() => void refresh(true)}
+                      aria-label="Refresh catalog now"
+                      title="Refresh now"
+                    >
+                      <RefreshCw size={16} aria-hidden="true" className={syncing ? "is-spinning" : ""} />
+                    </button>
                   </div>
                 }
                 products={data.products}
