@@ -110,7 +110,7 @@
 
 /* Light hierarchy in inventory; the individual products are the focus. */
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-products-panel.catalog-collection-v3 {
-  overflow: hidden;
+  overflow: visible; /* Do not clip the product row's More actions dropdown. */
   border: 1px solid #dce8df;
   border-radius: 15px;
   background: #fff;
@@ -273,6 +273,17 @@
 }
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero h1 {
   color: #eff7ed;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero p,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero-status div span {
+  color: #c5d8c9;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero-side {
+  border-left-color: #496a53;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero-eyebrow,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero-status > span {
+  color: #b9d2bd;
 }
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero-meta > span {
   color: #d4e8d7;
