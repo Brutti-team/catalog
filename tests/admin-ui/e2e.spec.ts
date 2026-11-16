@@ -93,7 +93,10 @@ async function backend(page: Page, options: FixtureOptions = {}) {
 async function openAdmin(page: Page) {
   await page.goto('/#/admin');
   await expect(page.locator('.profile-copy strong')).toHaveText(/.+/);
-  await expect(page.locator('.catalog-recent-title strong')).toHaveText(fixtureProduct.name);
+  // Recent-product teaser was removed from the approved Overview. Verify live
+  // inventory data through the current glass KPI instead.
+  await expect(page.getByRole('button', { name: 'View all products' })).toBeVisible();
+  await expect(page.locator('.overview-stats .overview-stat').first().locator(':scope > strong')).toHaveText('1');
   await page.evaluate(() => document.fonts.ready);
 }
 
@@ -239,6 +242,56 @@ test('latest change appears only on Overview, not in sidebar, and opens Activity
   await expect(snapshot).toHaveCount(0);
 });
 
+for (const theme of ['light', 'dark'] as const) {
+  test('Latest change has readable, curved glass in ' + theme + ' mode', async ({ page }) => {
+    await backend(page, { savedTheme: theme });
+    await openAdmin(page);
+    const card = page.getByRole('region', { name: 'Latest catalog change' });
+    await expect(card).toBeVisible();
+    const appearance = await card.evaluate(element => {
+      const style = getComputedStyle(element);
+      return {
+        display: style.display,
+        radius: parseFloat(style.borderTopLeftRadius),
+        blur: style.backdropFilter,
+        background: style.backgroundColor,
+        border: style.borderTopWidth,
+      };
+    });
+    expect(appearance.display).toBe('grid');
+    expect(appearance.radius).toBeGreaterThanOrEqual(20);
+    expect(appearance.blur).toContain('blur(');
+    expect(appearance.background).toContain('rgba(');
+    expect(appearance.border).toBe('1px');
+    await expect(card.getByRole('heading', { name: 'Latest change' })).toBeVisible();
+    await expect(card.getByRole('button', { name: 'View activity log' })).toBeVisible();
+  });
+}
+
+test('Latest change glass card is compact and usable on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await backend(page, { savedTheme: 'light' });
+  await openAdmin(page);
+  const card = page.getByRole('region', { name: 'Latest catalog change' });
+  const action = card.getByRole('button', { name: 'View activity log' });
+  await expect(card).toBeVisible();
+  await expect(action).toBeVisible();
+  const geometry = await card.evaluate(element => {
+    const button = element.querySelector('.catalog-last-activity-action')!;
+    const heading = element.querySelector('.catalog-last-activity-heading')!;
+    return {
+      radius: parseFloat(getComputedStyle(element).borderTopLeftRadius),
+      buttonY: button.getBoundingClientRect().top,
+      headingBottom: heading.getBoundingClientRect().bottom,
+      cardRight: element.getBoundingClientRect().right,
+      viewportWidth: window.innerWidth,
+    };
+  });
+  expect(geometry.radius).toBeGreaterThanOrEqual(16);
+  expect(geometry.buttonY).toBeGreaterThan(geometry.headingBottom);
+  expect(geometry.cardRight).toBeLessThanOrEqual(geometry.viewportWidth + 1);
+});
+
 test('Overview auto sync and read-only draft checks remain actionable', async ({ page }) => {
   await backend(page, { savedTheme: 'light' });
   await openAdmin(page);
@@ -250,7 +303,10 @@ test('Overview auto sync and read-only draft checks remain actionable', async ({
   await expect(refreshNow).toBeEnabled();
   await refreshNow.click();
   await expect(sync).toContainText('Auto-sync enabled');
-  await expect(page.locator('.catalog-recent-title strong')).toHaveText(fixtureProduct.name);
+  // Recent-product teaser was removed from the approved Overview. Verify live
+  // inventory data through the current glass KPI instead.
+  await expect(page.locator('.overview-stats .overview-stat').first()).toContainText('Total Products');
+  await expect(page.locator('.overview-stats .overview-stat').first().locator(':scope > strong')).toHaveText('1');
   const checks = page.locator('.atelier-checklist');
   await expect(checks).toContainText('Details to verify');
   await expect(checks).toContainText('Dimensions not confirmed');
@@ -284,10 +340,9 @@ test('glass overview shows real catalog health and opens filtered inventory', as
   await expect(page.getByRole('heading', { name: 'Catalog activity' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Categories', exact: true })).toBeVisible();
   await expect(page.locator('.catalog-command')).toBeVisible();
-  const feature = page.locator('.brutti-editorial-feature');
-  await expect(feature).toBeVisible();
-  await expect(feature.locator('img')).toBeVisible();
-  await expect(feature).toContainText(fixtureProduct.name);
+  // The old featured-product panel was intentionally removed. The live product
+  // thumbnail now sits on the first KPI and categories show actual product photos.
+  await expect(page.locator('.overview-stats .overview-stat').first().locator('img')).toBeVisible();
   await expect(page.locator('.atelier-category-row')).toHaveCount(Math.min(5, bruttiCategories.length));
   await expect(page.getByRole('progressbar', { name: 'Products with photos' })).toHaveAttribute('value', '1');
   await expect(page.getByRole('progressbar', { name: 'Published products' })).toHaveAttribute('value', '1');
