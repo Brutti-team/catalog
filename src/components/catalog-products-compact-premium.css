@@ -528,3 +528,101 @@
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero-side {
   border-color: rgba(183,219,190,.17);
 }
+
+
+/* Products hero CTA depth / Brutti raised buttons.
+   Keep the two actions compact, but with premium contrast, rounded edges and
+   tactile hover feedback consistent with the Overview hero. */
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-actions > button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 44px;
+  height: 44px;
+  padding: 10px 14px;
+  border-radius: 13px;
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 680;
+  line-height: 1.25;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background-color .16s ease;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-product-hero-actions > .catalog-products-add-button {
+  color: #ffffff;
+  border: 1px solid rgba(26, 69, 44, .65);
+  background: linear-gradient(180deg, #2c6147 0%, #1f4d36 100%);
+  box-shadow: 0 7px 16px rgba(24, 70, 43, .23), 0 2px 4px rgba(24, 70, 43, .12), inset 0 1px 0 rgba(255,255,255,.22);
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-product-hero-actions > .catalog-products-add-button:hover:not(:disabled) {
+  color: #ffffff;
+  background: linear-gradient(180deg, #357352 0%, #24573d 100%);
+  border-color: #326c4c;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-product-hero-actions > .catalog-products-bulk-import-button {
+  color: #28533f;
+  border: 1px solid rgba(45, 101, 62, .26);
+  background: linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(239,247,240,.83) 100%);
+  box-shadow: 0 5px 13px rgba(24,70,43,.105), 0 1px 3px rgba(24,70,43,.05), inset 0 1px 0 rgba(255,255,255,.96);
+  backdrop-filter: blur(10px) saturate(125%);
+  -webkit-backdrop-filter: blur(10px) saturate(125%);
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-product-hero-actions > .catalog-products-bulk-import-button:hover:not(:disabled) {
+  background: linear-gradient(180deg, #ffffff 0%, #eaf3eb 100%);
+  border-color: rgba(45,101,62,.42);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-actions > button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 21px rgba(22,65,39,.23), 0 3px 7px rgba(22,65,39,.08), inset 0 1px 0 rgba(255,255,255,.24);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-actions > button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(22,65,39,.12), inset 0 1px 2px rgba(0,0,0,.07);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-actions > button:focus-visible {
+  outline: 2px solid #427a55;
+  outline-offset: 3px;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-actions > button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero-actions > .catalog-products-add-button {
+  color: #ffffff;
+  background: linear-gradient(180deg, #377753, #285d40);
+  border: 1px solid rgba(184,223,195,.26);
+  box-shadow: 0 7px 16px rgba(0,0,0,.23), inset 0 1px 0 rgba(255,255,255,.16);
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero-actions > .catalog-products-bulk-import-button {
+  color: #e0eee2;
+  background: rgba(239,249,239,.08);
+  border: 1px solid rgba(199,226,205,.32);
+  box-shadow: 0 5px 13px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.09);
+}
+@media (max-width: 620px) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-actions > button {
+    min-height: 42px;
+    height: auto;
+    padding: 10px 11px;
+    border-radius: 12px;
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-actions > button {
+    transition: none;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-actions > button:hover:not(:disabled) {
+    transform: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-product-hero-actions > .catalog-products-bulk-import-button {
+    background: #f5faf5;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
