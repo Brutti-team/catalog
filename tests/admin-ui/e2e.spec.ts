@@ -368,7 +368,7 @@ test('Overview auto sync and read-only draft checks remain actionable', async ({
   await expect(sync).toContainText('Auto-sync enabled');
   // Recent-product teaser was removed from the approved Overview. Verify live
   // inventory data through the current glass KPI instead.
-  await expect(page.locator('.overview-stats .overview-stat').first()).toContainText('Total Products');
+  await expect(page.getByRole('button', { name: 'View all products' })).toBeVisible();
   await expect(page.locator('.overview-stats .overview-stat').first().locator(':scope > strong')).toHaveText('1');
   const checks = page.locator('.atelier-checklist');
   await expect(checks).toContainText('Details to verify');
@@ -420,11 +420,15 @@ test('five glass KPIs show actual counts, product photos and working date filter
   await expect(metrics).toHaveCount(5);
   expect(await metrics.locator(':scope > strong').allTextContents())
     .toEqual(['1',String(bruttiCategories.length),'0','1','0']);
-  const styles = await metrics.evaluateAll(items => items.map(element => ({
-    radius: parseFloat(getComputedStyle(element).borderTopLeftRadius),
-    blur: getComputedStyle(element).backdropFilter,
-  })));
-  expect(styles.every(item => item.radius >= 14 && item.blur.includes('blur('))).toBe(true);
+  // The four smaller KPIs intentionally share a single frosted metric tray;
+  // only the featured card has its own rounded glass panel.
+  const glassSurfaces = await page.locator('.brutti-glass-kpi-featured, .brutti-metric-tray')
+    .evaluateAll(items => items.map(element => ({
+      radius: parseFloat(getComputedStyle(element).borderTopLeftRadius),
+      blur: getComputedStyle(element).backdropFilter,
+    })));
+  expect(glassSurfaces).toHaveLength(2);
+  expect(glassSurfaces.every(item => item.radius >= 14 && item.blur.includes('blur('))).toBe(true);
   await expect(metrics.first().locator('img')).toBeVisible();
   await expect(page.locator('.brutti-activity-chart svg')).toBeVisible();
   await expect(page.locator('.brutti-category-row img').first()).toBeVisible();
