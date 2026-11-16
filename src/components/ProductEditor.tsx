@@ -354,14 +354,12 @@ export default function ProductEditor({
         {isEditing && (
           <>
             <aside className={`sidebar catalog-editor-sidebar ${editorNavOpen ? "sidebar-open" : ""}`} aria-label="Catalog admin sidebar">
-              <div className="catalog-editor-sidebar-header">
-                <button type="button" className="brand" aria-label="Brutti Catalog overview" onClick={() => void requestClose("overview")}>
-                  <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="brutti-official-logo" />
-                </button>
-                <button type="button" className="catalog-editor-sidebar-close" aria-label="Close sidebar" onClick={() => setEditorNavOpen(false)}>
-                  <X size={20} aria-hidden="true" />
-                </button>
-              </div>
+              <button type="button" className="brand" aria-label="Brutti Catalog overview" onClick={() => void requestClose("overview")}>
+                <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="brutti-official-logo" />
+              </button>
+              <button type="button" className="catalog-editor-sidebar-close" aria-label="Close sidebar" onClick={() => setEditorNavOpen(false)}>
+                <X size={20} aria-hidden="true" />
+              </button>
               <div className="workspace-label" aria-label="Current workspace: Brutti Catalog">
                 <span className="workspace-symbol" aria-hidden="true"><Layers size={19} strokeWidth={1.9} /></span>
                 <span className="workspace-meta"><strong>Benua Brutti</strong><small>Collection studio</small></span>
