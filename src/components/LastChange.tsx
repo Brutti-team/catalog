@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { ImageOff } from "lucide-react";
+import { History, ImageOff, ZoomIn } from "lucide-react";
 import { getLatestEditedOrAddedProduct, type ActivityEntry } from "../lib/account-center";
 import SafeImage from "./SafeImage";
+import { publicAssetUrl } from "../lib/assets";
 import type { CatalogData } from "../lib/types";
 
 type RecordStatus = "not-enabled" | "loading" | "ready" | "empty" | "error";
@@ -96,6 +97,7 @@ export default function LastChange({
   return (
     <section className="catalog-last-activity catalog-latest-updates" aria-label="Latest catalog updates">
       <div className="catalog-last-activity-heading">
+        <span className="catalog-latest-title-icon" aria-hidden="true"><History size={18} strokeWidth={1.9} /></span>
         <h2>Latest updates</h2>
       </div>
       {visibleStatus === "ready" && latest ? (
@@ -117,19 +119,30 @@ export default function LastChange({
                 : "Updates will appear when your administrator account is verified."}
         </p>
       )}
-      <div className={"catalog-last-activity-photo" + (productPhoto ? " has-photo" : " is-empty")}
-        aria-label={productPhoto ? "Latest updated product photo: " + (changedProduct?.name ?? "") : "No product photo available"}>
-        {productPhoto ? (
-          <SafeImage src={productPhoto.url}
+      {productPhoto ? (
+        <a
+          className="catalog-last-activity-photo has-photo catalog-latest-photo-link"
+          href={publicAssetUrl(productPhoto.url)}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={"Open full-size photo of " + (changedProduct?.name ?? "latest product")}
+          title="View full product photo"
+        >
+          <SafeImage
+            src={productPhoto.url}
             alt={"Product: " + (changedProduct?.name ?? "")}
-            loading="lazy" />
-        ) : (
+            loading="lazy"
+          />
+          <span className="catalog-latest-photo-zoom" aria-hidden="true"><ZoomIn size={15} /></span>
+        </a>
+      ) : (
+        <div className="catalog-last-activity-photo is-empty" aria-label="No product photo available">
           <span className="catalog-last-activity-photo-empty">
             <ImageOff size={24} aria-hidden="true" />
             <small>No product photo</small>
           </span>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 }
