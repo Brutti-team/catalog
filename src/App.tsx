@@ -574,10 +574,18 @@ export default function App() {
                   <span>Drafts to review</span>
                   <div><strong>{draftCount}</strong><span>Draft products</span></div>
                 </div>
-                <button className="catalog-products-add-button" type="button" disabled={loading || busy}
-                  onClick={() => setEditor(newProduct(data.categories[0]?.id))}>
-                  <Plus size={17} aria-hidden="true" /> Add product
-                </button>
+                <div className="catalog-product-hero-actions">
+                  <button className="catalog-products-add-button" type="button" disabled={loading || busy}
+                    onClick={() => setEditor(newProduct(data.categories[0]?.id))}>
+                    <Plus size={17} aria-hidden="true" /> Add product
+                  </button>
+                  <button type="button" className="catalog-products-bulk-import-button"
+                    aria-label="Bulk import photos"
+                    disabled={loading || busy}
+                    onClick={() => setPhotoImportOpen(true)}>
+                    <Images size={17} aria-hidden="true" /> Bulk import photos
+                  </button>
+                </div>
               </div>
             </section>
           ) : (
@@ -655,14 +663,7 @@ export default function App() {
                     All your products in one place.
                   </p>
                 </div>
-                {tab === "products" && (
-                  <button type="button" className="button secondary catalog-import-trigger"
-                    aria-label="Bulk import photos"
-                    disabled={loading || busy}
-                    onClick={() => setPhotoImportOpen(true)}>
-                    <Images size={18} aria-hidden="true" /> Bulk import photos
-                  </button>
-                )}
+
               </div>
               {tab === "products" && (
                 <div className="catalog-product-controls">
