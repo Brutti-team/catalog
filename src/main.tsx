@@ -31,6 +31,7 @@ import "./components/catalog-glass-dashboard.css";
 import "./components/product-editor-studio-layout.css";
 import "./components/catalog-latest-reference.css";
 import "./components/product-editor-reference-match.css";
+import "./components/catalog-products-compact-premium.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
