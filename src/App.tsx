@@ -650,21 +650,6 @@ export default function App() {
           )}
           {tab === "products" ? (
             <section className="table-panel catalog-collection-v3 catalog-products-panel">
-              <div className="panel-heading">
-                <div className="catalog-collection-heading-main">
-                  <span className="catalog-collection-eyebrow">
-                    PRODUCT INVENTORY
-                  </span>
-                  <h2>
-                    All products{" "}
-                    <span className="catalog-collection-count">{data.products.length}</span>
-                  </h2>
-                  <p>
-                    All your products in one place.
-                  </p>
-                </div>
-
-              </div>
               {tab === "products" && (
                 <div className="catalog-product-controls">
                   <div className="catalog-status-tabs" role="group" aria-label="Quick product status filters">
