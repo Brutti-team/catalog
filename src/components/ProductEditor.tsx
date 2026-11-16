@@ -777,6 +777,26 @@ export default function ProductEditor({
             Changes are saved when you select Save.
           </span>
           <div className="button-row">
+            <button
+              className="button secondary"
+              type="button"
+              disabled={busy || uploading}
+              onClick={() => void requestClose()}
+            >
+              Cancel
+            </button>
+            <button
+              className="button primary"
+              disabled={busy || uploading || modelPending || modelInvalid}
+              type="submit"
+            >
+              {busy ? (
+                <LoaderCircle className="spin" size={16} />
+              ) : (
+                <Save size={16} />
+              )}{" "}
+              {busy ? "Saving…" : "Save product"}
+            </button>
             {isEditing && (
               product.status === "published" ? (
                 <a
@@ -800,26 +820,6 @@ export default function ProductEditor({
                 </button>
               )
             )}
-            <button
-              className="button secondary"
-              type="button"
-              disabled={busy || uploading}
-              onClick={() => void requestClose()}
-            >
-              Cancel
-            </button>
-            <button
-              className="button primary"
-              disabled={busy || uploading || modelPending || modelInvalid}
-              type="submit"
-            >
-              {busy ? (
-                <LoaderCircle className="spin" size={16} />
-              ) : (
-                <Save size={16} />
-              )}{" "}
-              {busy ? "Saving…" : "Save product"}
-            </button>
           </div>
         </footer>
       </form>
