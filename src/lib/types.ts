@@ -1,5 +1,11 @@
 export type ProductStatus = "draft" | "published" | "archived";
 export type Availability = "available" | "made-to-order" | "unavailable";
+export interface ProductSpecification {
+  id: string;
+  name: string;
+  value: string;
+}
+
 export interface ProductImage {
   id: string;
   url: string;
@@ -17,6 +23,8 @@ export interface Product {
   categoryId: string;
   description: string;
   materials: string;
+  /** Optional custom specification rows shown below standard product fields. */
+  specifications?: ProductSpecification[];
   width: number;
   depth: number;
   height: number;
