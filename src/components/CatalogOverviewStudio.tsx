@@ -1,7 +1,7 @@
 import { useId, useMemo, useState } from "react";
 import {
   Archive, ArrowRight, ArrowUpRight, CheckCircle2, ChevronDown, ChevronRight,
-  ChartNoAxesCombined, ClipboardCheck, FileText, Images, Layers3, Package, Pencil, ShieldCheck
+  ChartNoAxesCombined, Images, Layers3, Package, Pencil, ShieldCheck
 } from "lucide-react";
 import SafeImage from "./SafeImage";
 import type { Product, Category } from "../lib/types";
@@ -150,10 +150,6 @@ export default function CatalogOverviewStudio({
   const archived = products.filter(product => product.status === "archived").length;
   const withPhotos = products.filter(product => product.images.length > 0).length;
   const activeInPeriod = getUpdateActivity(products, days, asOfMs).total;
-  const incompleteDimensions = drafts.filter(product =>
-    ![product.width, product.depth, product.height].every(value => Number.isFinite(value) && value > 0)).length;
-  const missingMaterials = drafts.filter(product => !product.materials.trim()).length;
-  const incompleteDescriptions = drafts.filter(product => !product.description.trim()).length;
   const categoryInsights = categories.map(category => ({
     ...category,
     count: products.filter(product => product.categoryId === category.id).length,
@@ -294,29 +290,6 @@ export default function CatalogOverviewStudio({
             View all {categoryInsights.length} categories <ArrowRight size={14} aria-hidden="true" />
           </button>}
         </section>
-      </div>
-      <div className="brutti-review-strip atelier-checklist" aria-label="Missing draft product information">
-        <button className="brutti-review-summary" type="button" onClick={() => onOpenProducts("draft")}>
-          <span className="brutti-review-icon"><ClipboardCheck size={19} aria-hidden="true" /></span>
-          <span className="brutti-review-copy"><strong>Draft review</strong><small>Details to verify</small></span>
-          <strong className="brutti-review-count" aria-label="Draft product count">{drafts.length}</strong>
-          <ChevronRight className="brutti-review-arrow" size={16} aria-hidden="true" />
-        </button>
-        <button className="brutti-review-item" type="button" onClick={() => onOpenProducts("draft")}>
-          <span className="brutti-review-icon"><Package size={19} aria-hidden="true" /></span>
-          <span className="brutti-review-label">Dimensions not confirmed</span>
-          <strong>{incompleteDimensions}</strong><ChevronRight className="brutti-review-arrow" size={16} aria-hidden="true" />
-        </button>
-        <button className="brutti-review-item" type="button" onClick={() => onOpenProducts("draft")}>
-          <span className="brutti-review-icon"><Layers3 size={19} aria-hidden="true" /></span>
-          <span className="brutti-review-label">Material details missing</span>
-          <strong>{missingMaterials}</strong><ChevronRight className="brutti-review-arrow" size={16} aria-hidden="true" />
-        </button>
-        <button className="brutti-review-item" type="button" onClick={() => onOpenProducts("draft")}>
-          <span className="brutti-review-icon"><FileText size={19} aria-hidden="true" /></span>
-          <span className="brutti-review-label">Descriptions incomplete</span>
-          <strong>{incompleteDescriptions}</strong><ChevronRight className="brutti-review-arrow" size={16} aria-hidden="true" />
-        </button>
       </div>
     </section>
   );
