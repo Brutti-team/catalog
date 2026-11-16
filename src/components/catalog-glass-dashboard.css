@@ -1321,3 +1321,198 @@
     padding: 15px;
   }
 }
+
+
+/* Activity Snapshot / Latest change — warm, compact Brutti glass.
+   Specific to Overview; deliberately keeps audit data and navigation unchanged. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit {
+  margin: 17px 0 28px;
+}
+
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  gap: 8px 28px;
+  align-items: center;
+  min-width: 0;
+  min-height: 148px;
+  padding: 21px clamp(18px, 2.3vw, 30px);
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, .84);
+  border-radius: 21px;
+  background-color: rgba(255, 255, 253, .68);
+  background-image:
+    radial-gradient(ellipse at 93% 2%, rgba(220, 234, 220, .46), transparent 48%),
+    linear-gradient(120deg, rgba(255, 255, 255, .52), rgba(245, 248, 243, .26));
+  color: #2d4935;
+  -webkit-backdrop-filter: blur(24px) saturate(145%);
+  backdrop-filter: blur(24px) saturate(145%);
+  box-shadow: 0 12px 32px rgba(33, 62, 40, .075),
+              inset 0 1px 0 rgba(255,255,255,.92);
+  overflow: hidden;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  min-width: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-icon {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.72);
+  border-radius: 14px;
+  background: rgba(225, 239, 227, .66);
+  color: #28533f;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-kicker {
+  display: block;
+  color: #657f6b;
+  font-size: 10px;
+  font-weight: 740;
+  letter-spacing: .13em;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-heading h2 {
+  margin: 4px 0 0;
+  color: #234b35;
+  font: 400 clamp(22px,2.2vw,28px)/1.14 Georgia, "Times New Roman", serif;
+  letter-spacing: -.03em;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-details,
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-placeholder {
+  grid-column: 1;
+  grid-row: 2;
+  margin: 0 0 0 60px;
+  min-width: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  color: #3d5845;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-details > strong {
+  color: #254a32;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-resource {
+  color: #3b5845;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 10px;
+  color: #647768;
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-meta time {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-action {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  justify-self: end;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  margin: 0;
+  padding: 10px 15px;
+  border: 1px solid rgba(97, 145, 104, .26);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .53);
+  color: #28533f;
+  font-size: 12px;
+  font-weight: 680;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 13px rgba(35, 68, 43, .045);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-action:hover {
+  border-color: rgba(64, 116, 77, .48);
+  background: rgba(238, 246, 238, .84);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-action:focus-visible {
+  outline: 2px solid #487956;
+  outline-offset: 3px;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity {
+  background-color: rgba(31, 53, 40, .83);
+  background-image: linear-gradient(125deg, rgba(69, 100, 73, .18), rgba(18, 38, 28, .12));
+  color: #eaf3e8;
+  border-color: rgba(192, 221, 199, .22);
+  box-shadow: 0 13px 32px rgba(4, 17, 9, .19), inset 0 1px 0 rgba(226,246,231,.13);
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-overview-audit :is(
+  .catalog-last-activity-heading h2, .catalog-last-activity-details > strong,
+  .catalog-last-activity-resource
+) { color: #ecf5ec; }
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-overview-audit :is(
+  .catalog-last-activity-kicker, .catalog-last-activity-meta,
+  .catalog-last-activity-placeholder
+) { color: #c2d7c6; }
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-icon {
+  background: rgba(93, 135, 103, .31);
+  border-color: rgba(209, 237, 211, .19);
+  color: #d6ebd9;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-action {
+  color: #e3f4e5;
+  background: rgba(89, 129, 96, .2);
+  border-color: rgba(202, 237, 209, .28);
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-action:hover {
+  background: rgba(105, 154, 115, .32);
+}
+@media (max-width: 720px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity {
+    grid-template-columns: minmax(0,1fr);
+    grid-template-rows: auto auto auto;
+    gap: 12px;
+    min-height: 0;
+    padding: 19px 17px;
+    border-radius: 17px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-details,
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-placeholder {
+    margin: 0;
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-action {
+    grid-column: 1;
+    grid-row: 3;
+    justify-self: start;
+    margin-top: 4px;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity {
+    background-color: #f4f8f3;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity {
+    background-color: #253d2b;
+  }
+}
