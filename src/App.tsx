@@ -1082,6 +1082,13 @@ export default function App() {
           categories={data.categories}
           orderingEnabled={data.capabilities?.ordering === true}
           modelEditingEnabled={data.capabilities?.productModels === true}
+          showCategories={accountRole !== "editor"}
+          showUsers={accountsReady && accountRole === "super_admin"}
+          productCount={data.products.length}
+          onNavigate={(target) => {
+            if (target === "catalog") navigate("/catalog");
+            else switchTab(target);
+          }}
           onSave={persist}
           onClose={(warning) => { setEditor(null); if (warning) setToast(warning); }}
         />
