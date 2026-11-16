@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 # Deploys the approved, reviewed main branch to the separate project Pages URL:
-# https://brutti-team.github.io/brutti-catalog/
-# This keeps the user's established Catalog Admin link in sync with main.
+# https://brutti-team.github.io/catalog/
+# Project Pages path follows the renamed GitHub repository (Brutti-team/catalog).
 # Pure website integration remains in the separate benua-brutti-website workflow.
 # No production database writes or secret-role keys are used here.
 permissions:
@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   deploy-staging:
-    if: github.repository == 'Brutti-team/brutti-catalog' && github.ref == 'refs/heads/main'
+    if: github.repository == 'Brutti-team/catalog' && github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -31,6 +31,7 @@ jobs:
       VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
       GITHUB_PAGES: 'true'
+      VITE_BASE_PATH: '/catalog/'
     steps:
       - name: Checkout approved Catalog main branch
         uses: actions/checkout@v4
