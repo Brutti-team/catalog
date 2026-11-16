@@ -331,10 +331,16 @@ export default function ProductEditor({
         {isEditing && (
           <header className="catalog-editor-actionbar" aria-label="Product editor actions">
             <div className="catalog-editor-actionbar-identity">
-              <span className="catalog-editor-wordmark">BRUTTI WORKSPACE</span>
-              <button type="button" className="catalog-editor-back" onClick={() => void requestClose()}><ArrowLeft size={17} /> Products</button>
+              <button
+                type="button"
+                className="catalog-editor-back catalog-editor-back-icon"
+                aria-label="Back to products"
+                title="Back to products"
+                onClick={() => void requestClose()}
+              >
+                <ArrowLeft size={19} aria-hidden="true" />
+              </button>
               <strong title={draft.name}>{draft.name || "Untitled product"}</strong>
-              <span className={`product-editor-state product-editor-state--${draft.status}`}>{draft.status}</span>
             </div>
             <div className="catalog-editor-actionbar-actions">
               {product.status === "published" && <a href={`#/product/${product.id}`} target="_blank" rel="noopener noreferrer">View live</a>}
