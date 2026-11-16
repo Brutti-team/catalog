@@ -1277,3 +1277,47 @@
     transition: none;
   }
 }
+
+/* 2026-11-16: audit summary after removing recent-product and feature panels. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit {
+  display: block;
+  min-width: 0;
+  margin: 17px 0 28px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  padding: 17px 21px;
+  border: 1px solid rgba(55, 83, 59, .12);
+  border-radius: 14px;
+  background: rgba(255, 255, 253, .68);
+  backdrop-filter: blur(18px) saturate(125%);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  box-shadow: 0 5px 20px rgba(35, 54, 37, .04);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-heading h2 {
+  color: #284c36;
+  font: 400 21px/1.2 Georgia, "Times New Roman", serif;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-icon {
+  border: 0;
+  border-radius: 9px;
+  background: rgba(225, 238, 225, .68);
+  color: #315a40;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-action {
+  border-radius: 9px;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity {
+  background: rgba(31, 52, 39, .90);
+  border-color: rgba(189, 216, 189, .13);
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-heading h2 {
+  color: #e6efe6;
+}
+@media (max-width: 720px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity {
+    padding: 15px;
+  }
+}
