@@ -1899,6 +1899,10 @@ body:has(.product-editor-dialog--editing[open]) {
   padding-top: 18px;
   border-top: 1px solid rgba(220,235,220,.12);
 }
+.admin-app.brutti-staff-redesign[data-active-tab] .product-editor-dialog--editing aside.catalog-editor-sidebar .nav-group-label::after {
+  content: none;
+  display: none;
+}
 .admin-app.brutti-staff-redesign[data-active-tab] .product-editor-dialog--editing aside.catalog-editor-sidebar nav .nav-item,
 .admin-app.brutti-staff-redesign[data-active-tab][data-theme="dark"] .product-editor-dialog--editing aside.catalog-editor-sidebar nav .nav-item {
   display: flex;
