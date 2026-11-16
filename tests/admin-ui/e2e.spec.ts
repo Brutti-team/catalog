@@ -95,7 +95,7 @@ async function openAdmin(page: Page) {
   await expect(page.locator('.profile-copy strong')).toHaveText(/.+/);
   // Recent-product teaser was removed from the approved Overview. Verify live
   // inventory data through the current glass KPI instead.
-  await expect(page.locator('.overview-stats .overview-stat').first()).toContainText('Total Products');
+  await expect(page.getByRole('button', { name: 'View all products' })).toBeVisible();
   await expect(page.locator('.overview-stats .overview-stat').first().locator(':scope > strong')).toHaveText('1');
   await page.evaluate(() => document.fonts.ready);
 }
