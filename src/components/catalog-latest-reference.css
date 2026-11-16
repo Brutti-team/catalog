@@ -2660,3 +2660,405 @@
     transform: none;
   }
 }
+
+
+/* Brutti Catalog top navigation: calmer professional desktop hierarchy.
+   All existing search, catalog, theme, profile and sign-out actions remain. */
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: clamp(14px, 2vw, 28px);
+  height: 72px;
+  min-height: 72px;
+  padding: 0 clamp(19px, 2.2vw, 32px);
+  border-bottom: 1px solid rgba(48, 85, 57, .11);
+  background: rgba(255,255,255,.965);
+  box-shadow: 0 3px 12px rgba(34,67,43,.035);
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex: 0 1 235px;
+  min-width: 132px;
+  gap: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #7b8a7e;
+  font-size: 12px;
+  letter-spacing: .005em;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .breadcrumbs > svg {
+  flex: none;
+  color: #9cab9f;
+  stroke-width: 1.8;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .breadcrumbs > strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #234732;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .topbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  min-width: 0;
+  width: auto;
+  max-width: none;
+  gap: clamp(8px, .9vw, 13px);
+  margin: 0;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search {
+  display: flex;
+  align-items: center;
+  flex: 0 1 325px;
+  width: clamp(190px, 23vw, 325px);
+  min-width: 155px;
+  max-width: 325px;
+  height: 42px;
+  min-height: 42px;
+  gap: 10px;
+  margin-right: auto;
+  padding: 3px 4px 3px 13px;
+  border: 1px solid #e0e9e0;
+  border-radius: 12px;
+  background: #f7faf7;
+  box-shadow: inset 0 1px 1px rgba(34,67,43,.025);
+  transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search:focus-within {
+  background: #fff;
+  border-color: #84a992;
+  box-shadow: 0 0 0 3px rgba(78,129,92,.105);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search > svg {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  color: #728a79;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: transparent;
+  color: #274634;
+  font-family: inherit;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search input::placeholder {
+  color: #819487;
+  opacity: 1;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search button {
+  flex: 0 0 33px;
+  width: 33px;
+  height: 33px;
+  min-height: 33px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: #e9f0ea;
+  color: #315d40;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search button:hover {
+  background: #dceadd;
+  color: #214e34;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .connection-pill {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 8px;
+  min-height: 36px;
+  padding: 7px 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #547961;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 590;
+  white-space: nowrap;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .connection-pill > span {
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  background: #5c9368;
+  box-shadow: 0 0 0 3px rgba(92,147,104,.12);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 10px;
+  margin: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #28573e;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-link:hover {
+  color: #183e2a;
+  background: #edf5ee;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-link > svg {
+  width: 15px;
+  height: 15px;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.theme-toggle,.header-signout) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  height: 41px;
+  min-height: 41px;
+  margin: 0;
+  border: 1px solid #dce6dc;
+  border-radius: 11px;
+  background: #fff;
+  color: #687d6c;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .theme-toggle {
+  gap: 8px;
+  padding: 8px 11px;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 550;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .header-signout {
+  flex: 0 0 41px;
+  width: 41px;
+  min-width: 41px;
+  padding: 0;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.theme-toggle,.header-signout):hover {
+  border-color: #b9d1be;
+  background: #f4f8f4;
+  color: #244f36;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .header-profile {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 196px;
+  min-width: 0;
+  max-width: 196px;
+  min-height: 43px;
+  height: 43px;
+  gap: 10px;
+  margin: 0;
+  padding: 4px 11px 4px 5px;
+  border: 1px solid #dce6dc;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: none;
+  transition: background-color .16s ease, border-color .16s ease;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .header-profile:hover,
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .header-profile.active {
+  border-color: #b5cfbb;
+  background: #f4f9f4;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-avatar {
+  display: grid;
+  flex: 0 0 33px;
+  place-items: center;
+  width: 33px;
+  min-width: 33px;
+  height: 33px;
+  border-radius: 9px;
+  background: #e7f1e8;
+  color: #285c40;
+  font-size: 11px;
+  font-weight: 750;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-copy {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-copy strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: inherit;
+  color: #274733;
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 680;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-copy small {
+  color: #829084;
+  font-family: inherit;
+  font-size: 10.5px;
+  line-height: 1.25;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.catalog-link,.theme-toggle,.header-profile,.header-signout):focus-visible {
+  outline: 2px solid #5e906a;
+  outline-offset: 2px;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar {
+  background: rgba(26,46,33,.965);
+  border-bottom-color: rgba(180,211,184,.16);
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .breadcrumbs > strong {
+  color: #e5f2e5;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .breadcrumbs,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .breadcrumbs > svg {
+  color: #afc3b3;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .catalog-header-search,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar :is(.theme-toggle,.header-profile,.header-signout) {
+  border-color: #496752;
+  background: #273f2e;
+  color: #e2efdf;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .catalog-header-search input,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .profile-copy strong {
+  color: #edf7ec;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .catalog-header-search input::placeholder,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .profile-copy small {
+  color: #b4c8b7;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .catalog-header-search button {
+  background: #355a42;
+  color: #e3eee2;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar :is(.catalog-link,.connection-pill) {
+  color: #c7e6ce;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .header-profile .profile-avatar {
+  background: #3b6248;
+  color: #e8f5e8;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar :is(.theme-toggle,.header-profile,.header-signout):hover {
+  background: #33513d;
+}
+@media (max-width: 1330px) and (min-width: 1021px) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar {
+    gap: 12px;
+    padding-inline: 18px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .breadcrumbs {
+    flex-basis: 155px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .connection-pill {
+    display: none;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search {
+    flex-basis: 220px;
+    width: 220px;
+    margin-right: 2px;
+  }
+}
+@media (max-width: 1120px) and (min-width: 1021px) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-copy,
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .theme-label {
+    display: none;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .header-profile {
+    flex: 0 0 41px;
+    width: 41px;
+    min-width: 41px;
+    padding: 3px;
+    justify-content: center;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .theme-toggle {
+    width: 41px;
+    padding: 0;
+  }
+}
+@media (max-width: 1020px) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar {
+    height: 64px;
+    min-height: 64px;
+    padding-inline: 14px;
+    gap: 8px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .breadcrumbs {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .topbar-actions {
+    flex: 0 0 auto;
+    gap: 7px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search,
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .connection-pill,
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-link,
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .theme-label,
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-copy {
+    display: none;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.theme-toggle,.header-profile,.header-signout) {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 38px;
+    width: 38px;
+    min-width: 38px;
+    max-width: 38px;
+    height: 38px;
+    min-height: 38px;
+    padding: 2px;
+    border-radius: 10px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-avatar {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+  }
+}
+@media (max-width: 360px) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar {
+    padding-inline: 9px;
+    gap: 4px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .topbar-actions {
+    gap: 4px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.theme-toggle,.header-profile,.header-signout) {
+    flex-basis: 34px;
+    width: 34px;
+    min-width: 34px;
+    max-width: 34px;
+    height: 34px;
+    min-height: 34px;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar {
+    background: #fff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar {
+    background: #1b3425;
+  }
+}
