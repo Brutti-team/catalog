@@ -559,6 +559,16 @@ export default function App() {
             </section>
           ) : tab === "products" ? (
             <section className="catalog-product-hero" aria-labelledby="catalog-products-title">
+              {heroProduct?.images[0]?.url && (
+                <div className="catalog-product-hero-photo" aria-hidden="true">
+                  <SafeImage
+                    src={heroProduct.images[0].url}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              )}
               <div className="catalog-product-hero-main">
                 <span className="catalog-product-hero-eyebrow">Inventory</span>
                 <h1 id="catalog-products-title">Products</h1>
