@@ -592,6 +592,12 @@ export default function PublicCatalog({
                           <dt>Category</dt>
                           <dd>{categoryName(product.categoryId)}</dd>
                         </div>
+                        {(product.specifications ?? []).map((item) => (
+                          <div key={item.id}>
+                            <dt>{item.name}</dt>
+                            <dd>{item.value}</dd>
+                          </div>
+                        ))}
                         <div>
                           <dt>Product reference</dt>
                           <dd>{product.sku}</dd>
