@@ -1,0 +1,114 @@
+/* Sync belongs to the Collection snapshot heading, not its own page-width bar.
+   Scoped to Overview; the existing 30-second subscription and manual refresh stay in App. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline {
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: 18px;
+  row-gap: 10px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline > div:first-child {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-overview-automations {
+  display: inline-flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px 16px;
+  min-height: 0;
+  margin: 0 0 0 auto;
+  padding: 3px 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  animation: none;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync {
+  gap: 8px;
+  min-width: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync-dot {
+  flex-basis: 7px;
+  width: 7px;
+  height: 7px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync > div {
+  gap: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync strong {
+  color: #355d43;
+  font-size: 11px;
+  font-weight: 710;
+  line-height: 1.4;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync small {
+  color: #829186;
+  font-size: 9px;
+  line-height: 1.4;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync-tools {
+  flex: 0 0 auto;
+  width: auto;
+  gap: 10px;
+  margin: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync-time {
+  color: #758478;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync-button {
+  gap: 6px;
+  width: auto;
+  min-height: 33px;
+  padding: 6px 10px;
+  border: 1px solid rgba(49,94,65,.16);
+  border-radius: 9px;
+  background: rgba(236,245,237,.73);
+  color: #2c6145;
+  box-shadow: none;
+  font-size: 10.5px;
+  font-weight: 670;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync-button:hover:not(:disabled) {
+  background: #deeee1;
+  border-color: rgba(49,94,65,.3);
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync strong {
+  color: #d2e8d7;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync small,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync-time {
+  color: #b2c8b7;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync-button {
+  color: #d9eede;
+  background: #294636;
+  border-color: #496f56;
+}
+@media (max-width: 1120px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-overview-automations {
+    gap: 8px 13px;
+  }
+}
+@media (max-width: 720px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-overview-automations {
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+    padding-top: 5px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync-tools {
+    gap: 8px;
+  }
+}
+@media (max-width: 460px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline .catalog-auto-sync-time {
+    display: none;
+  }
+}
