@@ -1379,10 +1379,10 @@
   grid-template-columns: minmax(0,1fr) 110px;
   grid-template-rows: auto auto;
   align-content: center;
-  min-height: 122px;
-  padding: 11px 16px;
+  min-height: 134px;
+  padding: 15px 18px;
   column-gap: 18px;
-  row-gap: 4px;
+  row-gap: 10px;
   border: 1px solid rgba(224,232,220,.8);
   border-radius: 16px;
   background: linear-gradient(110deg,rgba(255,253,249,.93) 0%,rgba(251,252,248,.89) 68%,rgba(242,247,239,.76) 100%);
@@ -1391,6 +1391,7 @@
 .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-heading {
   gap: 9px;
   min-height: 28px;
+  margin-bottom: 0;
 }
 .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-latest-updates .catalog-latest-title-icon {
   flex: 0 0 28px;
@@ -1416,21 +1417,26 @@
   color: #457758;
 }
 .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-details {
-  gap: 3px;
+  gap: 5px;
+  margin-top: 0;
 }
 .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-latest-updates .catalog-latest-product {
   font-size: 13px;
-  line-height: 1.32;
+  line-height: 1.42;
   letter-spacing: -.01em;
+  margin-bottom: 2px;
 }
 .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-latest-updates .catalog-latest-product strong {
   font-weight: 685;
   color: #2e513b;
 }
 .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-latest-updates :is(.catalog-latest-actor,.catalog-latest-time) {
-  color: #77877b;
-  font-size: 10px;
-  line-height: 1.36;
+  color: #718276;
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-latest-updates .catalog-latest-time {
+  margin-top: 1px;
 }
 .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo.catalog-latest-photo-link {
   width: 110px;
@@ -1485,8 +1491,9 @@
   .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity.catalog-latest-updates {
     grid-template-columns: minmax(0,1fr) 83px;
     column-gap: 10px;
-    padding: 11px;
-    min-height: 122px;
+    padding: 12px;
+    min-height: 132px;
+    row-gap: 8px;
   }
   .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo.catalog-latest-photo-link {
     width: 83px;
