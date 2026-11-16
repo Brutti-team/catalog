@@ -433,9 +433,9 @@ test('five glass KPIs show actual counts, product photos and working date filter
   await expect(page.locator('.brutti-activity-chart svg')).toBeVisible();
   await expect(page.locator('.brutti-category-row img').first()).toBeVisible();
   await page.getByRole('combobox', { name: 'Activity time range' }).selectOption('7');
-  await expect(page.locator('.brutti-activity-summary')).toContainText('last updated in 7 days');
+  await expect(page.locator('.brutti-activity-summary')).toContainText('Updated in 7 days');
   await page.getByRole('combobox', { name: 'Activity time range' }).selectOption('90');
-  await expect(page.locator('.brutti-activity-summary')).toContainText('last updated in 90 days');
+  await expect(page.locator('.brutti-activity-summary')).toContainText('Updated in 90 days');
   await expectReadable(page, ['.brutti-glass-kpi > strong', '.brutti-glass-panel-title h2', '.brutti-category-name strong']);
 });
 
