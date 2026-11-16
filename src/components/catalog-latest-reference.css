@@ -1749,6 +1749,100 @@
   }
 }
 
+/* Overview hero actions: gently rounded, tactile buttons with soft depth.
+   Uses the same specificity as theme-specific overrides to win over older 4px rules. */
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-actions > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 11px 16px;
+  border-radius: 13px;
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 12.5px;
+  font-weight: 650;
+  line-height: 1.25;
+  box-shadow: 0 5px 12px rgba(7, 28, 17, .13), inset 0 1px 0 rgba(255,255,255,.15);
+  transition: transform .16s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-actions > button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(7,28,17,.20), inset 0 1px 0 rgba(255,255,255,.2);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-actions > button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(7,28,17,.12), inset 0 1px 2px rgba(0,0,0,.06);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-hero-primary {
+  color: #1d4931;
+  border: 1px solid rgba(255,255,255,.6);
+  background: linear-gradient(180deg, #fffaf1 0%, #eee7dc 100%);
+  box-shadow: 0 6px 14px rgba(4,22,12,.18), inset 0 1px 0 rgba(255,255,255,.75);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-hero-primary:hover:not(:disabled) {
+  color: #183e2b;
+  background: linear-gradient(180deg,#ffffff 0%,#f3eddf 100%);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-hero-secondary {
+  color: #f8fbf7;
+  border: 1px solid rgba(226,242,231,.3);
+  background: rgba(255,255,255,.105);
+  backdrop-filter: blur(10px) saturate(125%);
+  -webkit-backdrop-filter: blur(10px) saturate(125%);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-hero-secondary:hover:not(:disabled) {
+  color: #fff;
+  background: rgba(255,255,255,.16);
+  border-color: rgba(226,242,231,.44);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-hero-tertiary {
+  color: #eef5ed;
+  border: 1px solid rgba(226,242,231,.11);
+  background: rgba(255,255,255,.055);
+  box-shadow: 0 3px 9px rgba(7,28,17,.09), inset 0 1px 0 rgba(255,255,255,.07);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-hero-tertiary:hover:not(:disabled) {
+  color: #fff;
+  border-color: rgba(226,242,231,.3);
+  background: rgba(255,255,255,.12);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-actions > button:focus-visible {
+  outline: 2px solid #f1f8eb;
+  outline-offset: 3px;
+}
+@media (max-width: 640px) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-actions > button {
+    min-height: 42px;
+    padding: 10px 13px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-actions > button {
+    transition: none;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-actions > button:hover:not(:disabled) {
+    transform: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-hero-secondary,
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-hero-tertiary {
+    background: #2d5a40;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 /* Products workspace: professional sans-serif scale and balanced hero proportions.
    Scoped to Products; photos, numbers and Add product interactions are unchanged. */
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero {
