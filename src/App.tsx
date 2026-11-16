@@ -352,7 +352,6 @@ export default function App() {
   }).format(new Date(lastSyncedAt))} MYT`;
   const heroProduct = data.products.find(product => product.images.length && /chair|sofa|bench|armchair/i.test(product.name))
     ?? data.products.find(product => product.images.length);
-  const recentProducts = [...data.products].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 4);
   const filtered = data.products
     .filter((p) => {
       const needle = search.toLowerCase();
@@ -632,69 +631,12 @@ export default function App() {
                 onOpenCategory={id => { switchTab("products"); setCategory(id); }}
                 onManageCategories={() => switchTab(accountRole === "editor" ? "products" : "categories")}
               />
-              <div className="catalog-studio-bottom atelier-bottom brutti-editorial-bottom">
-                <section className="catalog-recent-card">
-                  <header className="catalog-studio-panel-head">
-                    <div>
-                      <span className="catalog-studio-kicker">THE WORKSHOP EDIT / 01</span>
-                      <h2>Recent products</h2>
-                      <p>Recent pieces and work in progress, directly from your catalog.</p>
-                    </div>
-                    <button type="button" className="catalog-chart-action" onClick={() => switchTab("products")}
-                      aria-label="View all products"><ArrowUpRight size={18} aria-hidden="true" /></button>
-                  </header>
-                  <div className="catalog-recent-list">
-                    {recentProducts.map((product, index) => (
-                      <button type="button" className="catalog-recent-item" key={product.id}
-                        onClick={() => setEditor(product)} aria-label={`Open ${product.name}`}>
-                        <span className="brutti-recent-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                        <span className="catalog-recent-thumb">
-                          <SafeImage src={product.images[0]?.url} alt="" loading="lazy" />
-                        </span>
-                        <span className="catalog-recent-title">
-                          <strong>{product.name || "Untitled product"}</strong>
-                          <small>{data.categories.find(item => item.id === product.categoryId)?.name || product.sku || "Uncategorised"}</small>
-                        </span>
-                        <span className={`catalog-recent-status is-${product.status}`}>{product.status}</span>
-                        <ChevronRight size={16} aria-hidden="true" />
-                      </button>
-                    ))}
-                    {!recentProducts.length && <p className="catalog-empty-hint">No products added yet.</p>}
-                  </div>
-                </section>
-                <div className="brutti-editorial-story">
-                  <section className="brutti-editorial-feature" aria-labelledby="brutti-editorial-feature-title">
-                    <div className="brutti-editorial-feature-heading">
-                      <span>THE COLLECTION / 02</span>
-                      <span>BUILT BY BRUTTI</span>
-                    </div>
-                    <button type="button" className="brutti-editorial-feature-art"
-                      aria-label={heroProduct ? `View ${heroProduct.name}` : "View catalog products"}
-                      onClick={() => { if (heroProduct) setEditor(heroProduct); else switchTab("products"); }}>
-                      {heroProduct ? (
-                        <SafeImage src={heroProduct.images[0]?.url} alt={heroProduct.images[0]?.alt || heroProduct.name} loading="lazy" />
-                      ) : (
-                        <img src={import.meta.env.BASE_URL + "reference/kiosk.jpg"} alt="Benua Brutti workshop furniture" loading="lazy" />
-                      )}
-                      <span className="brutti-editorial-feature-view"><ArrowUpRight size={18} aria-hidden="true" /></span>
-                    </button>
-                    <div className="brutti-editorial-feature-details">
-                      <div>
-                        <span>FROM THE CATALOG</span>
-                        <h3 id="brutti-editorial-feature-title">{heroProduct?.name || "The Brutti collection"}</h3>
-                        <p>{heroProduct ? (data.categories.find(item => item.id === heroProduct.categoryId)?.name || "Benua Brutti") : "Furniture, displays and spaces made with care."}</p>
-                      </div>
-                      <button type="button" onClick={() => { if (heroProduct) setEditor(heroProduct); else switchTab("products"); }}>
-                        Explore <ArrowUpRight size={15} aria-hidden="true" />
-                      </button>
-                    </div>
-                  </section>
-                  <LastChange
-                    authenticated={auth.isAdmin}
-                    refreshKey={data}
-                    onHistory={() => switchTab("activity")}
-                  />
-                </div>
+              <div className="brutti-overview-audit">
+                <LastChange
+                  authenticated={auth.isAdmin}
+                  refreshKey={data}
+                  onHistory={() => switchTab("activity")}
+                />
               </div>
             </>
           )}
