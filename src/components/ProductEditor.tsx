@@ -42,6 +42,16 @@ export default function ProductEditor({
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(false);
   const [showLivePreview, setShowLivePreview] = useState(false);
+  useEffect(() => {
+    if (!showLivePreview) return;
+    // Nested native dialogs can inherit the editor's scrolled Save/footer position.
+    // Reset after showModal() has mounted the preview on the top layer.
+    const frame = requestAnimationFrame(() => {
+      document.querySelector<HTMLDialogElement>("dialog.catalog-private-preview-dialog")
+        ?.scrollTo({ top: 0, behavior: "instant" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [showLivePreview]);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [show3DTools, setShow3DTools] = useState(false);
   const [dragging, setDragging] = useState(false);
