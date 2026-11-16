@@ -558,7 +558,7 @@ export default function PublicCatalog({
                   </div>
                   <div className="pub-detail-copy">
                     <p className="pub-eyebrow">
-                      {categoryName(product.categoryId)} · {product.sku}
+                      {categoryName(product.categoryId)}{previewProduct ? "" : ` · ${product.sku}`}
                     </p>
                     <h1>{product.name}</h1>
                     <div
