@@ -215,7 +215,7 @@ export default function PublicCatalog({
   );
 
   return (
-    <div className={previewProduct ? "pub-app pub-refined pub-private-preview" : "pub-app pub-refined"}>
+    <div className={previewProduct ? `pub-app pub-refined pub-private-preview${previewProduct.price === null ? " pub-private-preview-no-price" : ""}` : "pub-app pub-refined"}>
       {!previewProduct && <a
         className="pub-skip-link"
         href="#pub-main"
@@ -578,7 +578,11 @@ export default function PublicCatalog({
                         </small>
                       )}
                     </p>
-                    {enquiryEmail && !previewProduct ? (
+                    {previewProduct ? (
+                      <button className="pub-primary-button pub-enquiry-button" type="button" disabled>
+                        Enquire about this piece
+                      </button>
+                    ) : enquiryEmail ? (
                       <a
                         className="pub-primary-button pub-enquiry-button"
                         href={`mailto:${enquiryEmail}?subject=${encodeURIComponent(`Product enquiry: ${product.name} (${product.sku})`)}&body=${encodeURIComponent(`Hello Brutti team,\n\nI would like to know more about ${product.name} (${product.sku}).\n\nThank you.`)}`}
@@ -613,7 +617,7 @@ export default function PublicCatalog({
                             {product.height} H cm
                           </dd>
                         </div>
-                        <div>
+                        <div className={previewProduct ? "catalog-preview-hidden-meta" : ""}>
                           <dt>Category</dt>
                           <dd>{categoryName(product.categoryId)}</dd>
                         </div>
@@ -623,7 +627,7 @@ export default function PublicCatalog({
                             <dd>{item.value}</dd>
                           </div>
                         ))}
-                        <div>
+                        <div className={previewProduct ? "catalog-preview-hidden-meta" : ""}>
                           <dt>Product reference</dt>
                           <dd>{product.sku}</dd>
                         </div>
