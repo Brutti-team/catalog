@@ -1428,3 +1428,97 @@
 .admin-app .product-editor-dialog--editing #product-editor-photos .image-editor-photo {
   border-color: rgba(40, 83, 63, .16);
 }
+
+
+/* Brutti section headlines: readable editorial anchors for Details / Photos /
+   Specifications. Highlight the headings, not entire heavyweight section cards. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  .form-section.product-editor-section > .product-editor-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 66px;
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  background: linear-gradient(100deg, rgba(40,83,63,.11), rgba(40,83,63,.035));
+  border: 1px solid rgba(40,83,63,.10);
+  border-left: 3px solid #28533f;
+  border-radius: 10px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  .form-section.product-editor-section > .product-editor-section-heading > .product-editor-step {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: #28533f;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .035em;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  .form-section.product-editor-section > .product-editor-section-heading h3 {
+  margin: 0;
+  color: #214733;
+  font-size: clamp(21px, 1.7vw, 24px);
+  font-weight: 730;
+  line-height: 1.22;
+  letter-spacing: -.03em;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  .form-section.product-editor-section > .product-editor-section-heading p {
+  color: #65766b;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos
+  > .product-editor-section-heading > div {
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos
+  > .product-editor-section-heading .catalog-reference-manage-photos {
+  color: #28533f;
+  font-weight: 650;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  .form-section.product-editor-section > .product-editor-section-heading {
+  background: linear-gradient(100deg, rgba(114,164,128,.18), rgba(114,164,128,.045));
+  border-color: rgba(178,216,186,.14);
+  border-left-color: #88b99a;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  .form-section.product-editor-section > .product-editor-section-heading > .product-editor-step {
+  background: #477a59;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  .form-section.product-editor-section > .product-editor-section-heading h3 {
+  color: #d6ecdb;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  .form-section.product-editor-section > .product-editor-section-heading p {
+  color: #b0c5b5;
+}
+@media (max-width: 760px) {
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+    .form-section.product-editor-section > .product-editor-section-heading {
+    padding: 11px 13px;
+    gap: 11px;
+    min-height: 60px;
+    margin-bottom: 17px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+    .form-section.product-editor-section > .product-editor-section-heading > .product-editor-step {
+    width: 29px;
+    height: 29px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+    .form-section.product-editor-section > .product-editor-section-heading h3 {
+    font-size: 20px;
+  }
+}
