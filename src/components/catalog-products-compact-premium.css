@@ -12,11 +12,13 @@
   height: auto;
   margin: 0 0 16px;
   padding: 22px clamp(21px, 2.3vw, 29px);
-  border: 1px solid #d9e5da;
-  border-left: 3px solid #476d53;
-  border-radius: 16px;
-  background: linear-gradient(110deg, #f7faf5 0%, #fbfaf6 62%, #edf5ed 100%);
-  box-shadow: 0 8px 25px rgba(24, 65, 37, .045);
+  border: 0;
+  border-left: 0;
+  border-radius: 18px;
+  background: linear-gradient(115deg, rgba(255,255,255,.79) 0%, rgba(250,253,250,.63) 55%, rgba(234,245,235,.50) 100%);
+  -webkit-backdrop-filter: blur(22px) saturate(125%);
+  backdrop-filter: blur(22px) saturate(125%);
+  box-shadow: 0 12px 36px rgba(25,66,41,.055), inset 0 1px 0 rgba(255,255,255,.85);
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-eyebrow {
   margin: 0 0 5px;
@@ -268,8 +270,9 @@
 }
 /* Existing dark-mode behavior, with readable accents. */
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero {
-  border-color: #45644f;
-  background: linear-gradient(110deg, #1d3729, #213b2d);
+  border: 0;
+  background: linear-gradient(110deg, rgba(33,61,44,.82), rgba(32,61,45,.68));
+  box-shadow: 0 12px 36px rgba(0,0,0,.13), inset 0 1px 0 rgba(236,255,239,.08);
 }
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero h1 {
   color: #eff7ed;
