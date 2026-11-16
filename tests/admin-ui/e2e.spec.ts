@@ -93,7 +93,10 @@ async function backend(page: Page, options: FixtureOptions = {}) {
 async function openAdmin(page: Page) {
   await page.goto('/#/admin');
   await expect(page.locator('.profile-copy strong')).toHaveText(/.+/);
-  await expect(page.locator('.catalog-recent-title strong')).toHaveText(fixtureProduct.name);
+  // Recent-product teaser was removed from the approved Overview. Verify live
+  // inventory data through the current glass KPI instead.
+  await expect(page.locator('.overview-stats .overview-stat').first()).toContainText('Total Products');
+  await expect(page.locator('.overview-stats .overview-stat').first().locator(':scope > strong')).toHaveText('1');
   await page.evaluate(() => document.fonts.ready);
 }
 
@@ -300,7 +303,10 @@ test('Overview auto sync and read-only draft checks remain actionable', async ({
   await expect(refreshNow).toBeEnabled();
   await refreshNow.click();
   await expect(sync).toContainText('Auto-sync enabled');
-  await expect(page.locator('.catalog-recent-title strong')).toHaveText(fixtureProduct.name);
+  // Recent-product teaser was removed from the approved Overview. Verify live
+  // inventory data through the current glass KPI instead.
+  await expect(page.locator('.overview-stats .overview-stat').first()).toContainText('Total Products');
+  await expect(page.locator('.overview-stats .overview-stat').first().locator(':scope > strong')).toHaveText('1');
   const checks = page.locator('.atelier-checklist');
   await expect(checks).toContainText('Details to verify');
   await expect(checks).toContainText('Dimensions not confirmed');
@@ -334,10 +340,9 @@ test('glass overview shows real catalog health and opens filtered inventory', as
   await expect(page.getByRole('heading', { name: 'Catalog activity' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Categories', exact: true })).toBeVisible();
   await expect(page.locator('.catalog-command')).toBeVisible();
-  const feature = page.locator('.brutti-editorial-feature');
-  await expect(feature).toBeVisible();
-  await expect(feature.locator('img')).toBeVisible();
-  await expect(feature).toContainText(fixtureProduct.name);
+  // The old featured-product panel was intentionally removed. The live product
+  // thumbnail now sits on the first KPI and categories show actual product photos.
+  await expect(page.locator('.overview-stats .overview-stat').first().locator('img')).toBeVisible();
   await expect(page.locator('.atelier-category-row')).toHaveCount(Math.min(5, bruttiCategories.length));
   await expect(page.getByRole('progressbar', { name: 'Products with photos' })).toHaveAttribute('value', '1');
   await expect(page.getByRole('progressbar', { name: 'Published products' })).toHaveAttribute('value', '1');
