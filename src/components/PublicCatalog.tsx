@@ -6,6 +6,8 @@ import {
   ArrowUpRight,
   Check,
   ChevronDown,
+  Image as ImageIcon,
+  Box as BoxIcon,
   Mail,
   Search,
   SlidersHorizontal,
@@ -94,7 +96,13 @@ export default function PublicCatalog({
   const [viewMode, setViewMode] = useState<"photos" | "3d">("photos");
   const [mobileMenu, setMobileMenu] = useState(false);
   useEffect(() => {
-    if (previewProduct) return;
+    if (previewProduct) {
+      // A nested editor dialog may already be scrolled to its Save footer.
+      // Always start the private customer preview from the top.
+      const dialog = document.querySelector<HTMLDialogElement>("dialog.catalog-private-preview-dialog");
+      if (dialog) dialog.scrollTop = 0;
+      return;
+    }
     const changeRoute = () => {
       setProductId(currentProductId());
       setImageIndex(0);
@@ -207,7 +215,7 @@ export default function PublicCatalog({
   );
 
   return (
-    <div className={previewProduct ? "pub-app pub-refined pub-private-preview" : "pub-app pub-refined"}>
+    <div className={previewProduct ? `pub-app pub-refined pub-private-preview${previewProduct.price === null ? " pub-private-preview-no-price" : ""}` : "pub-app pub-refined"}>
       {!previewProduct && <a
         className="pub-skip-link"
         href="#pub-main"
@@ -487,7 +495,13 @@ export default function PublicCatalog({
               <>
                 <div className="pub-product-detail">
                   <div className="pub-detail-gallery">
-                    {selectedModel && (
+                    {previewProduct && (
+                      <div className="catalog-preview-media-tabs" role="group" aria-label="Preview image format">
+                        <button type="button" className={!showingModel ? "is-active" : ""} aria-pressed={!showingModel} onClick={() => setViewMode("photos")}><ImageIcon size={15} aria-hidden="true" /> Photo</button>
+                        <button type="button" className={showingModel ? "is-active" : ""} disabled={!selectedModel} aria-pressed={showingModel} onClick={() => setViewMode("3d")}><BoxIcon size={15} aria-hidden="true" /> 3D</button>
+                      </div>
+                    )}
+                    {!previewProduct && selectedModel && (
                       <div className="pub-media-switch" role="group" aria-label="Product viewing mode">
                         <button type="button" aria-pressed={viewMode === '3d'} onClick={() => setViewMode("3d")}>Interactive 3D</button>
                         <button type="button" aria-pressed={viewMode === 'photos'} onClick={() => setViewMode("photos")}>Original photos</button>
@@ -512,6 +526,11 @@ export default function PublicCatalog({
                       {product.featured && (
                         <span className="pub-featured-tag">
                           <Sparkles size={12} /> Featured piece
+                        </span>
+                      )}
+                      {previewProduct && (
+                        <span className="catalog-preview-photo-caption">
+                          Original photo · {selectedModel ? "3D model available" : "3D not yet available"}
                         </span>
                       )}
                     </div>
@@ -539,7 +558,7 @@ export default function PublicCatalog({
                   </div>
                   <div className="pub-detail-copy">
                     <p className="pub-eyebrow">
-                      {categoryName(product.categoryId)} · {product.sku}
+                      {categoryName(product.categoryId)}{previewProduct ? "" : ` · ${product.sku}`}
                     </p>
                     <h1>{product.name}</h1>
                     <div
@@ -559,7 +578,11 @@ export default function PublicCatalog({
                         </small>
                       )}
                     </p>
-                    {enquiryEmail && !previewProduct ? (
+                    {previewProduct ? (
+                      <button className="pub-primary-button pub-enquiry-button" type="button" disabled>
+                        Enquire about this piece
+                      </button>
+                    ) : enquiryEmail ? (
                       <a
                         className="pub-primary-button pub-enquiry-button"
                         href={`mailto:${enquiryEmail}?subject=${encodeURIComponent(`Product enquiry: ${product.name} (${product.sku})`)}&body=${encodeURIComponent(`Hello Brutti team,\n\nI would like to know more about ${product.name} (${product.sku}).\n\nThank you.`)}`}
@@ -594,7 +617,7 @@ export default function PublicCatalog({
                             {product.height} H cm
                           </dd>
                         </div>
-                        <div>
+                        <div className={previewProduct ? "catalog-preview-hidden-meta" : ""}>
                           <dt>Category</dt>
                           <dd>{categoryName(product.categoryId)}</dd>
                         </div>
@@ -604,7 +627,7 @@ export default function PublicCatalog({
                             <dd>{item.value}</dd>
                           </div>
                         ))}
-                        <div>
+                        <div className={previewProduct ? "catalog-preview-hidden-meta" : ""}>
                           <dt>Product reference</dt>
                           <dd>{product.sku}</dd>
                         </div>
@@ -620,7 +643,7 @@ export default function PublicCatalog({
                     </div>
                   </div>
                 </div>
-                {related.length > 0 && (
+                {!previewProduct && related.length > 0 && (
                   <section className="pub-related">
                     <div className="pub-section-heading">
                       <div>
