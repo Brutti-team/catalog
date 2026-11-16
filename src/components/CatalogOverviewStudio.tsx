@@ -299,6 +299,7 @@ export default function CatalogOverviewStudio({
         <button className="brutti-review-summary" type="button" onClick={() => onOpenProducts("draft")}>
           <span className="brutti-review-icon"><ClipboardCheck size={19} aria-hidden="true" /></span>
           <span className="brutti-review-copy"><strong>Draft review</strong><small>Details to verify</small></span>
+          <strong className="brutti-review-count" aria-label="Draft product count">{drafts.length}</strong>
           <ChevronRight className="brutti-review-arrow" size={16} aria-hidden="true" />
         </button>
         <button className="brutti-review-item" type="button" onClick={() => onOpenProducts("draft")}>
