@@ -558,21 +558,7 @@ export default function App() {
               </div>
             </section>
           ) : tab === "products" ? (
-            <section className={`catalog-product-hero${heroProduct?.images[0]?.url ? " has-photo" : ""}`} aria-labelledby="catalog-products-title">
-              {heroProduct?.images[0]?.url && (
-                <figure className="catalog-product-hero-photo">
-                  <SafeImage
-                    src={heroProduct.images[0].url}
-                    alt={heroProduct.images[0].alt || heroProduct.name}
-                    loading="eager"
-                    decoding="async"
-                  />
-                  <figcaption>
-                    <span>From the Brutti collection</span>
-                    <strong title={heroProduct.name}>{heroProduct.name}</strong>
-                  </figcaption>
-                </figure>
-              )}
+            <section className="catalog-product-hero" aria-labelledby="catalog-products-title">
               <div className="catalog-product-hero-main">
                 <span className="catalog-product-hero-eyebrow">Inventory</span>
                 <h1 id="catalog-products-title">Products</h1>
