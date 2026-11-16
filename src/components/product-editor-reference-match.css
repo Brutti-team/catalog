@@ -1582,3 +1582,85 @@
   background: #28533f;
   border-bottom-color: rgba(255,255,255,.12);
 }
+
+
+/* Full-viewport Edit Product workspace. It used to be a centered dialog capped
+   at 96dvh/1590px, with its own visible scrollbar and the admin page behind it.
+   Keep native dialog close/Escape semantics, but fill the browser viewport. */
+.admin-app .modal.product-editor-dialog--editing {
+  position: fixed;
+  inset: 0;
+  display: block;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  width: 100vw;
+  max-width: none;
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  max-height: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.admin-app .modal.product-editor-dialog--editing::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+html:has(.product-editor-dialog--editing[open]),
+body:has(.product-editor-dialog--editing[open]) {
+  overflow: hidden;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-columns {
+  flex: 1 0 auto;
+  width: 100%;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing .catalog-editor-actionbar {
+  position: sticky;
+  top: 0;
+  z-index: 26;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 26;
+  flex: 0 0 auto;
+}
+@media (max-width: 760px) {
+  .admin-app .modal.product-editor-dialog--editing {
+    inset: 0;
+    margin: 0;
+    width: 100vw;
+    max-width: none;
+    min-height: 100dvh;
+    height: 100dvh;
+    max-height: none;
+    border: 0;
+    border-radius: 0;
+  }
+  .admin-app .product-editor-dialog--editing .catalog-editor-actionbar {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+}
