@@ -416,10 +416,14 @@ export default function ProductEditor({
                 type="button"
                 className="catalog-editor-sidebar-toggle"
                 aria-label={editorNavCollapsed ? "Expand catalog sidebar" : editorNavOpen ? "Close catalog sidebar" : "Open catalog sidebar"}
-                aria-expanded={editorNavOpen || !editorNavCollapsed}
+                aria-expanded={editorNavOpen}
                 onClick={() => {
-                  if (editorNavCollapsed) setEditorNavCollapsed(false);
-                  else setEditorNavOpen((open) => !open);
+                  if (window.matchMedia("(max-width: 1100px)").matches) {
+                    setEditorNavCollapsed(false);
+                    setEditorNavOpen((open) => !open);
+                  } else {
+                    setEditorNavCollapsed(false);
+                  }
                 }}
               >
                 <Menu size={20} aria-hidden="true" />
