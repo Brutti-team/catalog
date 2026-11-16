@@ -683,3 +683,95 @@
   .admin-app .product-editor-dialog--editing .catalog-reference-spec-rows { gap: 14px; }
   .admin-app .product-editor-dialog--editing .catalog-reference-publishing > summary small { display: none; }
 }
+
+
+/* Custom specification rows — matches the reference screenshot's Add row pattern. */
+.admin-app .product-editor-dialog--editing .catalog-reference-custom-row {
+  display: grid;
+  grid-template-columns: minmax(155px, 22%) minmax(0, 1fr) 32px;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  margin-top: 10px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .catalog-reference-custom-row > input {
+  min-width: 0;
+  width: 100%;
+  min-height: 46px;
+  height: 46px;
+  margin: 0;
+  padding: 10px 13px;
+  border: 1px solid var(--studio-editor-edge);
+  border-radius: 8px;
+  background: var(--studio-editor-field);
+  color: var(--studio-editor-ink);
+  font-size: 12.5px;
+  box-shadow: none;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .catalog-reference-custom-row > input:first-child {
+  background: rgba(255,255,255,.58);
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-custom-row > input:focus {
+  border-color: rgba(155,115,58,.65);
+  outline: 2px solid rgba(184,139,74,.15);
+  outline-offset: 1px;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-remove-row {
+  width: 32px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: #6a746d;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-remove-row:hover,
+.admin-app .product-editor-dialog--editing .catalog-reference-remove-row:focus-visible {
+  background: rgba(135,98,76,.09);
+  color: #8e4736;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-add-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  margin: 10px 0 0 0;
+  padding: 9px 2px;
+  border: 0;
+  background: transparent;
+  color: #52655a;
+  font-size: 12.5px;
+  font-weight: 560;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-add-row:hover {
+  color: #234d38;
+}
+.admin-app .product-editor-dialog--editing .catalog-reference-add-row:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs.catalog-reference-specifications {
+  border-bottom: 1px solid var(--studio-editor-edge);
+  margin-bottom: 0;
+  padding-bottom: 25px;
+}
+@media (max-width: 1020px) {
+  .admin-app .product-editor-dialog--editing .catalog-reference-custom-row {
+    grid-template-columns: minmax(120px,27%) minmax(0,1fr) 30px;
+    gap: 9px;
+  }
+}
+@media (max-width: 540px) {
+  .admin-app .product-editor-dialog--editing .catalog-reference-custom-row {
+    grid-template-columns: minmax(0,1fr) minmax(0,1.35fr) 29px;
+    gap: 6px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .catalog-reference-custom-row > input {
+    min-height: 44px;
+    height: 44px;
+    padding: 9px 8px;
+    font-size: 11px;
+  }
+}
