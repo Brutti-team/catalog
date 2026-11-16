@@ -25,6 +25,7 @@ type FixtureOptions = {
   logoutFailure?: boolean;
   role?: 'super_admin' | 'admin' | 'editor';
   displayName?: string;
+  latestProductAudit?: "added" | "edited" | "unmatched";
 };
 
 async function backend(page: Page, options: FixtureOptions = {}) {
@@ -83,7 +84,19 @@ async function backend(page: Page, options: FixtureOptions = {}) {
       if (options.role) return json(options.role);
       return route.fulfill({ status: 404, contentType: 'application/json', body: JSON.stringify({ code: 'PGRST202', message: 'Test fixture has no role-management RPC.' }) });
     }
-    if (url.pathname.endsWith('/rpc/catalog_list_staff') || url.pathname.endsWith('/catalog_activity')) return json([]);
+    if (url.pathname.endsWith('/rpc/catalog_list_staff')) return json([]);
+    if (url.pathname.endsWith('/catalog_activity')) {
+      if (!options.latestProductAudit) return json([]);
+      return json([{
+        id: '90000000-0000-4000-8000-000000000120',
+        actor_id: fixtureUser.id, actor_email: fixtureUser.email,
+        action: options.latestProductAudit === 'added' ? 'products_created' : 'products_updated',
+        resource_type: 'products', resource_name: fixtureProduct.name,
+        resource_id: options.latestProductAudit === 'unmatched'
+          ? '90000000-0000-4000-8000-000000000130' : fixtureProduct.id,
+        created_at: '2026-11-16T03:00:00.000Z',
+      }]);
+    }
     if (url.pathname.includes('/storage/v1/object/public/')) return route.fulfill({ status: 200, contentType: 'image/png', body: pixel });
     return json({});
   });
@@ -292,6 +305,56 @@ test('Latest change glass card is compact and usable on a phone', async ({ page 
   expect(geometry.cardRight).toBeLessThanOrEqual(geometry.viewportWidth + 1);
 });
 
+for (const lastAction of ['added', 'edited'] as const) {
+  test('Latest change thumbnail matches the product last ' + lastAction, async ({ page }) => {
+    await backend(page, { savedTheme: 'light', latestProductAudit: lastAction });
+    await openAdmin(page);
+    const activity = page.getByRole('region', { name: 'Latest catalog change' });
+    await expect(activity).toBeVisible();
+    await expect(activity).toContainText(fixtureProduct.name);
+    await expect(activity).toContainText(lastAction === 'added' ? 'Product added' : 'Product edited');
+    const photo = activity.locator('.catalog-last-activity-photo img');
+    await expect(photo).toBeVisible();
+    await expect(photo).toHaveAttribute('alt', 'Latest edited or added product: ' + fixtureProduct.name);
+    await expect(photo).toHaveAttribute('src', fixtureProduct.images[0].url);
+    const photoBox = await activity.locator('.catalog-last-activity-photo').boundingBox();
+    const detailsBox = await activity.locator('.catalog-last-activity-details').boundingBox();
+    expect(photoBox && detailsBox && photoBox.x > detailsBox.x).toBeTruthy();
+    await activity.getByRole('button', { name: 'View activity log' }).click();
+    await expect(page.getByRole('heading', { name: 'Activity history.' })).toBeVisible();
+  });
+}
+
+test('Activity Snapshot never substitutes an unrelated product photo', async ({ page }) => {
+  await backend(page, { savedTheme: 'light', latestProductAudit: 'unmatched' });
+  await openAdmin(page);
+  const snapshot = page.getByRole('region', { name: 'Latest catalog change' });
+  await expect(snapshot).toContainText(fixtureProduct.name);
+  await expect(snapshot.locator('.catalog-last-activity-photo img')).toHaveCount(0);
+  await expect(snapshot.getByText('No product photo')).toBeVisible();
+});
+
+test('Reference Draft review uses four readable, clickable glass cards', async ({ page }) => {
+  await backend(page, { savedTheme: 'light' });
+  await openAdmin(page);
+  const review = page.getByLabel('Missing draft product information');
+  const cards = review.locator(':scope > button');
+  await expect(cards).toHaveCount(4);
+  await expect(cards.first()).toContainText('Draft review');
+  await expect(cards.nth(1)).toContainText('Dimensions not confirmed');
+  await expect(cards.nth(2)).toContainText('Material details missing');
+  await expect(cards.nth(3)).toContainText('Descriptions incomplete');
+  const appearances = await cards.evaluateAll(items => items.map(item => ({
+    radius: parseFloat(getComputedStyle(item).borderTopLeftRadius),
+    blur: getComputedStyle(item).backdropFilter,
+  })));
+  expect(appearances.every(style => style.radius >= 12 && style.blur.includes('blur('))).toBe(true);
+  await cards.first().click();
+  await expect(page.getByRole('heading', { name: 'Products', exact: true })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Quick product status filters' })
+    .getByRole('button', { name: /Draft/ })).toHaveAttribute('aria-pressed', 'true');
+});
+
 test('Overview auto sync and read-only draft checks remain actionable', async ({ page }) => {
   await backend(page, { savedTheme: 'light' });
   await openAdmin(page);
@@ -305,14 +368,14 @@ test('Overview auto sync and read-only draft checks remain actionable', async ({
   await expect(sync).toContainText('Auto-sync enabled');
   // Recent-product teaser was removed from the approved Overview. Verify live
   // inventory data through the current glass KPI instead.
-  await expect(page.locator('.overview-stats .overview-stat').first()).toContainText('Total Products');
+  await expect(page.getByRole('button', { name: 'View all products' })).toBeVisible();
   await expect(page.locator('.overview-stats .overview-stat').first().locator(':scope > strong')).toHaveText('1');
   const checks = page.locator('.atelier-checklist');
   await expect(checks).toContainText('Details to verify');
   await expect(checks).toContainText('Dimensions not confirmed');
   await expect(checks).toContainText('Material details missing');
   await expect(checks).toContainText('Descriptions incomplete');
-  await expect(checks.locator('button')).toHaveCount(3);
+  await expect(checks.locator('button')).toHaveCount(4);
   await page.locator('.atelier-review').getByRole('button', { name: 'Review drafts' }).click();
   await expect(page.getByRole('heading', { name: 'Products', exact: true })).toBeVisible();
   await expect(page.getByRole('group', { name: 'Quick product status filters' }).getByRole('button', { name: /Draft/ })).toHaveAttribute('aria-pressed', 'true');
@@ -357,11 +420,15 @@ test('five glass KPIs show actual counts, product photos and working date filter
   await expect(metrics).toHaveCount(5);
   expect(await metrics.locator(':scope > strong').allTextContents())
     .toEqual(['1',String(bruttiCategories.length),'0','1','0']);
-  const styles = await metrics.evaluateAll(items => items.map(element => ({
-    radius: parseFloat(getComputedStyle(element).borderTopLeftRadius),
-    blur: getComputedStyle(element).backdropFilter,
-  })));
-  expect(styles.every(item => item.radius >= 14 && item.blur.includes('blur('))).toBe(true);
+  // The four smaller KPIs intentionally share a single frosted metric tray;
+  // only the featured card has its own rounded glass panel.
+  const glassSurfaces = await page.locator('.brutti-glass-kpi-featured, .brutti-metric-tray')
+    .evaluateAll(items => items.map(element => ({
+      radius: parseFloat(getComputedStyle(element).borderTopLeftRadius),
+      blur: getComputedStyle(element).backdropFilter,
+    })));
+  expect(glassSurfaces).toHaveLength(2);
+  expect(glassSurfaces.every(item => item.radius >= 14 && item.blur.includes('blur('))).toBe(true);
   await expect(metrics.first().locator('img')).toBeVisible();
   await expect(page.locator('.brutti-activity-chart svg')).toBeVisible();
   await expect(page.locator('.brutti-category-row img').first()).toBeVisible();
