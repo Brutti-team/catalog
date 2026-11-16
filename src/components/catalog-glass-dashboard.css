@@ -731,6 +731,8 @@
   overflow: hidden;
 }
 .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi.overview-stat {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -747,6 +749,9 @@
   color: #234630;
   text-align: left;
   transition: background .18s ease;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi:first-child::before {
+  content: none;
 }
 .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi.overview-stat + .brutti-glass-kpi.overview-stat {
   border-left: 1px solid rgba(43,73,51,.10);
