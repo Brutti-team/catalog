@@ -2351,7 +2351,7 @@
   height: 18px;
   margin-top: 3px;
 }
-.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels .brutti-glass-panel-title h2 {
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.atelier-workbench > section:is(.brutti-activity-panel,.brutti-category-panel) .brutti-glass-panel-title h2 {
   font-family: var(--brutti-overview-sans, "DM Sans", system-ui, sans-serif);
   font-size: clamp(21px, 1.8vw, 25px);
   font-weight: 680;
@@ -2359,7 +2359,7 @@
   letter-spacing: -.035em;
   margin-bottom: 3px;
 }
-.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panel-title p {
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.atelier-workbench > section:is(.brutti-activity-panel,.brutti-category-panel) .brutti-glass-panel-title p {
   font-size: 11.5px;
   line-height: 1.45;
 }
@@ -2391,7 +2391,7 @@
     min-height: 0;
     padding: 16px 15px;
   }
-  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels .brutti-glass-panel-title h2 {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.atelier-workbench > section:is(.brutti-activity-panel,.brutti-category-panel) .brutti-glass-panel-title h2 {
     font-size: 22px;
   }
 }
