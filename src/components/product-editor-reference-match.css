@@ -108,7 +108,7 @@
   aspect-ratio: 1.36;
   height: auto;
   min-height: 125px;
-  background: #ede5d9;
+  background: #eaf2eb;
 }
 .admin-app .product-editor-dialog--editing .image-editor-photo > img {
   width: 100%;
@@ -1416,4 +1416,15 @@
   background-color: rgba(234, 242, 235, .96);
   border-color: rgba(40, 83, 63, .12);
   color: #365d46;
+}
+
+
+/* Photos section COVER and gallery thumbnails: neutralize the original cream letterbox.
+   The earlier sage correction targeted Customer Preview, not this upload thumbnail. */
+.admin-app .product-editor-dialog--editing #product-editor-photos .image-editor-photo,
+.admin-app .product-editor-dialog--editing #product-editor-photos .image-editor-photo > img {
+  background-color: #eaf2eb;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .image-editor-photo {
+  border-color: rgba(40, 83, 63, .16);
 }
