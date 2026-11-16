@@ -2462,3 +2462,34 @@
     min-height: 41px;
   }
 }
+
+
+/* Center the numeric value within each of the four Collection snapshot
+   status columns, horizontally and vertically between its label and caption.
+   Featured Total products keeps its existing left-aligned photo treatment. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi.overview-stat {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-items: stretch;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi.overview-stat > .brutti-glass-kpi-head {
+  justify-self: stretch;
+  align-self: start;
+  margin-bottom: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi.overview-stat > strong {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi.overview-stat > .brutti-glass-kpi-caption {
+  justify-self: stretch;
+  align-self: end;
+  margin: 0;
+}
