@@ -26,7 +26,6 @@ import {
   X,
   LogOut,
   LoaderCircle,
-  RefreshCw,
   CheckCircle2,
   AlertCircle,
   ShieldCheck,
@@ -105,7 +104,7 @@ export default function App() {
     categories: [],
   });
   const [loading, setLoading] = useState(true);
-  const [syncing, setSyncing] = useState(false);
+  const [, setSyncing] = useState(false);
   const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [auth, setAuth] = useState({
@@ -347,9 +346,6 @@ export default function App() {
   const draftCount = data.products.filter((p) => p.status === "draft").length;
   const archivedCount = data.products.filter((p) => p.status === "archived").length;
   const withPhotos = data.products.filter((p) => p.images.length > 0).length;
-  const lastSyncText = lastSyncedAt === null ? "Waiting for first sync" : `Updated ${new Intl.DateTimeFormat("en-MY", {
-    timeZone: "Asia/Kuala_Lumpur", hour: "numeric", minute: "2-digit",
-  }).format(new Date(lastSyncedAt))} MYT`;
   const heroProduct = data.products.find(product => product.images.length && /chair|sofa|bench|armchair/i.test(product.name))
     ?? data.products.find(product => product.images.length);
   const filtered = data.products
@@ -613,29 +609,6 @@ export default function App() {
           {tab === "overview" && (
             <>
               <CatalogOverviewStudio
-                headerControls={
-                  <div
-                    className={`catalog-snapshot-sync${error ? " has-error" : ""}`}
-                    role="group"
-                    aria-label="Catalog auto-sync status and manual refresh"
-                    title="Checks for product changes every 30 seconds while this tab is visible"
-                  >
-                    <span className="catalog-snapshot-sync-label" role="status" aria-live="polite">
-                      <span className="catalog-snapshot-sync-dot" aria-hidden="true" />
-                      {error ? "Sync needs attention" : syncing ? "Checking…" : lastSyncedAt ? lastSyncText : "Waiting to sync"}
-                    </span>
-                    <button
-                      type="button"
-                      className="catalog-snapshot-refresh"
-                      disabled={loading || syncing}
-                      onClick={() => void refresh(true)}
-                      aria-label="Refresh catalog now"
-                      title="Refresh now"
-                    >
-                      <RefreshCw size={16} aria-hidden="true" className={syncing ? "is-spinning" : ""} />
-                    </button>
-                  </div>
-                }
                 products={data.products}
                 categories={data.categories}
                 loading={loading}
