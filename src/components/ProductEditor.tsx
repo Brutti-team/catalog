@@ -14,6 +14,14 @@ import {
   Circle,
   Upload,
   ChevronDown,
+  LayoutDashboard,
+  Package,
+  Layers,
+  UsersRound,
+  History,
+  Grid2X2,
+  ArrowUpRight,
+  Menu,
 } from "lucide-react";
 import type { Product, Category, ProductImage } from "../lib/types";
 import { uploadImage, validateProduct, cleanupAbandonedImages, type ProductModelChange } from "../lib/catalog";
@@ -21,11 +29,18 @@ import Modal from "./Modal";
 import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
 import { formatProductPrice } from "../lib/price";
+import { publicAssetUrl } from "../lib/assets";
+
+export type CatalogEditorNavigation = "overview" | "products" | "categories" | "users" | "activity" | "catalog";
 export default function ProductEditor({
   product,
   categories,
   orderingEnabled = false,
   modelEditingEnabled = false,
+  showCategories = true,
+  showUsers = false,
+  productCount = 0,
+  onNavigate,
   onSave,
   onClose,
 }: {
@@ -33,6 +48,10 @@ export default function ProductEditor({
   categories: Category[];
   orderingEnabled?: boolean;
   modelEditingEnabled?: boolean;
+  showCategories?: boolean;
+  showUsers?: boolean;
+  productCount?: number;
+  onNavigate: (target: CatalogEditorNavigation) => void;
   onSave: (p: Product, modelChange?: ProductModelChange) => Promise<Product | void>;
   onClose: (warning?: string) => void;
 }) {
@@ -53,6 +72,7 @@ export default function ProductEditor({
     return () => cancelAnimationFrame(frame);
   }, [showLivePreview]);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
+  const [editorNavOpen, setEditorNavOpen] = useState(false);
   const [show3DTools, setShow3DTools] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [modelPending, setModelPending] = useState(false);
@@ -165,7 +185,7 @@ export default function ProductEditor({
       if (fileRef.current) fileRef.current.value = "";
     }
   }
-  async function requestClose() {
+  async function requestClose(next?: CatalogEditorNavigation) {
     if (busy || uploading || uploadLock.current || closing.current) return;
     if ((modelDirty || modelLocked.current || JSON.stringify(draft) !== JSON.stringify(product)) && !window.confirm('Discard your unsaved product changes?')) return;
     closing.current = true;
@@ -173,7 +193,10 @@ export default function ProductEditor({
     const abandoned = [...uploadedImages.current.values()];
     const result = await cleanupAbandonedImages(abandoned);
     uploadedImages.current.clear();
-    if (mounted.current) onClose(result.cleanupWarning);
+    if (mounted.current) {
+      onClose(result.cleanupWarning);
+      if (next) onNavigate(next);
+    }
     closing.current = false;
     if (mounted.current) setBusy(false);
   }
@@ -329,8 +352,67 @@ export default function ProductEditor({
     >
       <form onSubmit={submit} className="editor-form product-editor-v2">
         {isEditing && (
+          <>
+            <aside className={`sidebar catalog-editor-sidebar ${editorNavOpen ? "sidebar-open" : ""}`} aria-label="Catalog admin sidebar">
+              <button type="button" className="brand" aria-label="Brutti Catalog overview" onClick={() => void requestClose("overview")}>
+                <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="brutti-official-logo" />
+              </button>
+              <button type="button" className="catalog-editor-sidebar-close" aria-label="Close sidebar" onClick={() => setEditorNavOpen(false)}>
+                <X size={20} aria-hidden="true" />
+              </button>
+              <div className="workspace-label" aria-label="Current workspace: Brutti Catalog">
+                <span className="workspace-symbol" aria-hidden="true"><Layers size={19} strokeWidth={1.9} /></span>
+                <span className="workspace-meta"><strong>Benua Brutti</strong><small>Collection studio</small></span>
+              </div>
+              <nav aria-label="Catalog workspace">
+                <span className="nav-group-label">WORKSPACE</span>
+                <button type="button" className="nav-item" onClick={() => void requestClose("overview")}>
+                  <span className="nav-icon" aria-hidden="true"><LayoutDashboard size={19} strokeWidth={1.9} /></span>Overview
+                </button>
+                <button type="button" className="nav-item active" aria-current="page" onClick={() => void requestClose("products")}>
+                  <span className="nav-icon" aria-hidden="true"><Package size={19} strokeWidth={1.9} /></span>Products
+                  <span className="nav-count">{productCount}</span>
+                </button>
+                {showCategories && (
+                  <button type="button" className="nav-item" onClick={() => void requestClose("categories")}>
+                    <span className="nav-icon" aria-hidden="true"><Layers size={19} strokeWidth={1.9} /></span>Categories
+                  </button>
+                )}
+                <span className="nav-group-label nav-group-second">HISTORY &amp; ACCESS</span>
+                {showUsers && (
+                  <button type="button" className="nav-item" onClick={() => void requestClose("users")}>
+                    <span className="nav-icon" aria-hidden="true"><UsersRound size={19} strokeWidth={1.9} /></span>Users
+                  </button>
+                )}
+                <button type="button" className="nav-item" onClick={() => void requestClose("activity")}>
+                  <span className="nav-icon" aria-hidden="true"><History size={19} strokeWidth={1.9} /></span>Activity log
+                </button>
+              </nav>
+              <div className="sidebar-utility">
+                <button type="button" className="sidebar-public-link" onClick={() => void requestClose("catalog")}>
+                  <span className="sidebar-public-icon" aria-hidden="true"><Grid2X2 size={18} strokeWidth={1.9} /></span>
+                  <span className="sidebar-public-copy"><strong>View public catalog</strong><small>Customer view</small></span>
+                  <ArrowUpRight size={16} className="sidebar-public-arrow" aria-hidden="true" />
+                </button>
+              </div>
+            </aside>
+            {editorNavOpen && (
+              <button type="button" className="catalog-editor-sidebar-backdrop" aria-label="Close navigation" onClick={() => setEditorNavOpen(false)} />
+            )}
+          </>
+        )}
+        {isEditing && (
           <header className="catalog-editor-actionbar" aria-label="Product editor actions">
             <div className="catalog-editor-actionbar-identity">
+              <button
+                type="button"
+                className="catalog-editor-sidebar-toggle"
+                aria-label={editorNavOpen ? "Close catalog sidebar" : "Open catalog sidebar"}
+                aria-expanded={editorNavOpen}
+                onClick={() => setEditorNavOpen((open) => !open)}
+              >
+                <Menu size={20} aria-hidden="true" />
+              </button>
               <button
                 type="button"
                 className="catalog-editor-back catalog-editor-back-icon"
