@@ -342,11 +342,7 @@ export default function ProductEditor({
               </button>
               <strong title={draft.name}>{draft.name || "Untitled product"}</strong>
             </div>
-            <div className="catalog-editor-actionbar-actions">
-              {product.status === "published" && <a href={`#/product/${product.id}`} target="_blank" rel="noopener noreferrer">View live</a>}
-              <button type="button" className="catalog-editor-secondary" disabled={busy || uploading || modelPending || modelInvalid} onClick={() => void commit("draft")}>Save draft</button>
-              <button type="button" className="catalog-editor-update" disabled={busy || uploading || modelPending || modelInvalid} onClick={() => void commit("published")}>{draft.status === "published" ? "Update" : "Publish"}</button>
-            </div>
+
           </header>
         )}
         <div className="product-editor-intro">
