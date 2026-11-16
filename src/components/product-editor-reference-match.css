@@ -1590,7 +1590,6 @@
 .admin-app .modal.product-editor-dialog--editing {
   position: fixed;
   inset: 0;
-  display: block;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
