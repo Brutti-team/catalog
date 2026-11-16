@@ -194,7 +194,7 @@ export default function ProductEditor({
   );
   const publishingControls = (
     <>
-            <div className="product-editor-aside-heading" id="product-editor-publish">
+            <div className="product-editor-aside-heading" id={!isEditing ? "product-editor-publish" : undefined}>
               <span className="product-editor-step">04</span>
               <div>
                 <h3>Publishing</h3>
