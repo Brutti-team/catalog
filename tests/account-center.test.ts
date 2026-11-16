@@ -104,6 +104,51 @@ describe("catalog identities and staff management", () => {
   });
 });
 
+describe("latest photo-backed product activity", () => {
+  it("filters server audit records to product additions/edits and retrieves their exact ID", async () => {
+    const filters: unknown[][] = [];
+    mock.from.mockReturnValue({
+      select: (columns: string) => {
+        expect(columns).toContain("resource_id");
+        return {
+          eq: (field: string, value: string) => {
+            filters.push([field, value]);
+            return {
+              in: (fieldName: string, choices: string[]) => {
+                filters.push([fieldName, choices]);
+                return {
+                  order: () => ({
+                    limit: async () => ({ data: [{
+                      id: "a1", resource_id: "product-1",
+                      action: "products_updated", resource_type: "products",
+                      resource_name: "Cabinet",
+                    }], error: null }),
+                  }),
+                };
+              },
+            };
+          },
+        };
+      },
+    });
+    const { getLatestEditedOrAddedProduct } = await import("../src/lib/account-center");
+    await expect(getLatestEditedOrAddedProduct()).resolves.toMatchObject({
+      resource_id: "product-1", action: "products_updated",
+    });
+    expect(filters).toEqual([
+      ["resource_type", "products"],
+      ["action", ["products_created", "products_updated"]],
+    ]);
+  });
+
+  it("does not access the product edit audit without admin membership", async () => {
+    mock.getAuthState.mockResolvedValue({ authenticated: true, isAdmin: false });
+    const { getLatestEditedOrAddedProduct } = await import("../src/lib/account-center");
+    await expect(getLatestEditedOrAddedProduct()).rejects.toThrow(/approved catalog administrator/);
+    expect(mock.from).not.toHaveBeenCalled();
+  });
+});
+
 describe("catalog audit access", () => {
   it("reads actual activity for an approved catalog admin before role migration", async () => {
     mock.rpc.mockResolvedValue({ data: null, error: { code: "PGRST202", message: "Role RPC missing" } });
