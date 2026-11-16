@@ -21,7 +21,7 @@ export default defineConfig(({ mode, command }) => {
       (siteArtifact
         ? "/catalog-assets/"
         : env.GITHUB_PAGES === "true"
-          ? "/brutti-catalog/"
+          ? "/catalog/"
           : "/"),
   );
   if (siteArtifact && base === "/")
