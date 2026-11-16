@@ -19,6 +19,7 @@ import type { Product, Category, ProductImage } from "../lib/types";
 import { uploadImage, validateProduct, cleanupAbandonedImages, type ProductModelChange } from "../lib/catalog";
 import Modal from "./Modal";
 import ProductModelEditor from "./ProductModelEditor";
+import PublicCatalog from "./PublicCatalog";
 import { formatProductPrice } from "../lib/price";
 export default function ProductEditor({
   product,
@@ -40,6 +41,7 @@ export default function ProductEditor({
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [showLivePreview, setShowLivePreview] = useState(false);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [show3DTools, setShow3DTools] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -798,31 +800,40 @@ export default function ProductEditor({
               {busy ? "Saving…" : "Save product"}
             </button>
             {isEditing && (
-              product.status === "published" ? (
-                <a
-                  className="button secondary catalog-editor-footer-view-live"
-                  href={`#/product/${encodeURIComponent(product.id)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="View the currently published product in the public catalogue"
-                >
-                  <Eye size={16} aria-hidden="true" /> View live
-                </a>
-              ) : (
-                <button
-                  type="button"
-                  className="button secondary catalog-editor-footer-view-live"
-                  disabled
-                  title="Publish this product first to view its public listing"
-                  aria-label="View live (available after publishing)"
-                >
-                  <Eye size={16} aria-hidden="true" /> View live
-                </button>
-              )
+              <button
+                type="button"
+                className="button secondary catalog-editor-footer-view-live"
+                disabled={busy || uploading}
+                onClick={() => setShowLivePreview(true)}
+                title="Preview how this product will look in the public catalog without publishing"
+              >
+                <Eye size={16} aria-hidden="true" /> View live
+              </button>
             )}
           </div>
         </footer>
       </form>
+      {showLivePreview && (
+        <Modal
+          title="Private catalog preview"
+          wide
+          className="catalog-private-preview-dialog"
+          onClose={() => setShowLivePreview(false)}
+        >
+          <div className="catalog-private-preview-note" role="status">
+            Previewing your current edits. Nothing is published or saved by opening this preview.
+          </div>
+          <PublicCatalog
+            products={[]}
+            categories={categories}
+            loading={false}
+            error={null}
+            onRetry={() => {}}
+            onAdmin={() => setShowLivePreview(false)}
+            previewProduct={draft}
+          />
+        </Modal>
+      )}
     </Modal>
   );
 }
