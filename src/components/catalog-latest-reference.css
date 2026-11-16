@@ -1563,3 +1563,85 @@
     font-size: 22px;
   }
 }
+
+
+/* Brutti Catalog Overview: replace remaining editorial Georgia fonts with
+   a clean professional system sans-serif, consistent with Activity/Categories.
+   Remove only decorative dashes/dividers; preserve data chart gridlines. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] {
+  --brutti-overview-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero,
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-overview {
+  font-family: var(--brutti-overview-sans);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero h1,
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command h1 {
+  font-family: var(--brutti-overview-sans);
+  font-size: clamp(40px, 3.9vw, 57px);
+  font-weight: 680;
+  line-height: 1.12;
+  letter-spacing: -.045em;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content > p {
+  font-family: var(--brutti-overview-sans);
+  font-size: 13.5px;
+  line-height: 1.65;
+  letter-spacing: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline h2 {
+  font-family: var(--brutti-overview-sans);
+  font-size: clamp(26px, 2.55vw, 34px);
+  line-height: 1.2;
+  font-weight: 690;
+  letter-spacing: -.04em;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-kpis .brutti-glass-kpi.overview-stat > strong {
+  font-family: var(--brutti-overview-sans);
+  font-size: clamp(37px, 3.3vw, 48px);
+  line-height: 1.08;
+  font-weight: 680;
+  letter-spacing: -.052em;
+  font-variant-numeric: tabular-nums;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-kpis > .brutti-glass-kpi-featured.overview-stat > strong {
+  font-size: clamp(44px, 3.9vw, 56px);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels .brutti-glass-panel-title h2,
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-heading h2 {
+  font-family: var(--brutti-overview-sans);
+}
+/* Remove the decorative dash before the eyebrow, the hero separators and
+   the thin category KPI rails. Keep meaningful chart guides/axes intact. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-rule {
+  display: none;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-meta {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 20px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-meta > span + span {
+  border-left: 0;
+  padding-left: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art-label {
+  border-top: 0;
+  padding-top: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi.overview-stat + .brutti-glass-kpi.overview-stat {
+  border-left: 0;
+}
+@media (max-width: 800px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero h1 {
+    font-size: clamp(34px, 6.2vw, 44px);
+  }
+}
+@media (max-width: 530px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero h1 {
+    font-size: clamp(32px, 8vw, 39px);
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-topline h2 {
+    font-size: 25px;
+  }
+}

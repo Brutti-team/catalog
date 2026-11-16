@@ -525,9 +525,9 @@ export default function App() {
           {tab === "overview" ? (
             <section className="catalog-command brutti-editorial-hero" aria-labelledby="catalog-overview-title">
               <div className="catalog-command-content">
-                <div className="catalog-command-eyebrow"><span className="brutti-editorial-rule" aria-hidden="true" /> BENUA BRUTTI / COLLECTION STUDIO</div>
+                <div className="catalog-command-eyebrow">BENUA BRUTTI / COLLECTION STUDIO</div>
                 <h1 id="catalog-overview-title">Catalog overview</h1>
-                <p>A considered home for every piece — from workshop photography to the final published collection.</p>
+                <p>A considered home for every piece, from workshop photography to the final published collection.</p>
                 <div className="catalog-command-actions">
                   <button type="button" className="catalog-hero-primary" disabled={loading || busy}
                     onClick={() => setEditor(newProduct(data.categories[0]?.id))}>
@@ -554,7 +554,7 @@ export default function App() {
                   <img src={import.meta.env.BASE_URL + "reference/kiosk.jpg"} alt="Benua Brutti kiosk showroom design reference" loading="lazy" />
                 )}
                 <span className="catalog-command-art-label">{heroProduct ? heroProduct.name : "BRUTTI / SHOWROOM INSPIRATION"}</span>
-                <span className="brutti-editorial-photo-index" aria-hidden="true">B / B&nbsp;&nbsp;—&nbsp;&nbsp;EST. SABAH</span>
+                <span className="brutti-editorial-photo-index" aria-hidden="true">B / B · EST. SABAH</span>
               </div>
             </section>
           ) : tab === "products" ? (
