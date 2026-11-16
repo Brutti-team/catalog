@@ -2,6 +2,7 @@ import SafeImage from "./SafeImage";
 import { useState, useRef, useEffect, useCallback, type FormEvent } from "react";
 import {
   ImagePlus,
+  Box,
   ArrowLeft,
   ArrowRight,
   X,
@@ -38,7 +39,7 @@ export default function ProductEditor({
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(false);
-  const [show3DTools, setShow3DTools] = useState(false);
+  const [show3DTools, setShow3DTools] = useState(Boolean(product.name));
   const [dragging, setDragging] = useState(false);
   const [modelPending, setModelPending] = useState(false);
   const [modelInvalid, setModelInvalid] = useState(false);
@@ -74,14 +75,13 @@ export default function ProductEditor({
   }, []);
   const update = <K extends keyof Product>(key: K, value: Product[K]) =>
     setDraft((p) => ({ ...p, [key]: value }));
-  async function submit(e: FormEvent) {
-    e.preventDefault();
+  async function commit(status: Product["status"] = draft.status) {
     if (uploadLock.current || modelLocked.current || busy) return;
     setError("");
     try {
-      validateProduct(draft);
+      validateProduct({ ...draft, status });
       setBusy(true);
-      const saved = await onSave({ ...draft, updatedAt: new Date().toISOString() }, modelChange.current);
+      const saved = await onSave({ ...draft, status, updatedAt: new Date().toISOString() }, modelChange.current);
       const retained = new Set((saved?.images ?? draft.images).map(image => image.url));
       const abandoned = [...uploadedImages.current.values()].filter(image => !retained.has(image.url));
       const cleanup = await cleanupAbandonedImages(abandoned);
@@ -96,6 +96,10 @@ export default function ProductEditor({
     } finally {
       if (mounted.current) setBusy(false);
     }
+  }
+  function submit(e: FormEvent) {
+    e.preventDefault();
+    void commit();
   }
   async function addImages(files: FileList | null) {
     if (!files || uploadLock.current || busy) return;
@@ -163,6 +167,12 @@ export default function ProductEditor({
   const previewDescription = draft.description || (isEditing ? "" : "Your thoughtful product story will appear here.");
   const previewCard = (
     <article className="editor-preview">
+      {isEditing && (
+        <div className="catalog-editor-media-tabs" role="group" aria-label="Preview format">
+          <button type="button" className="is-active" aria-pressed="true"><ImagePlus size={15} /> Photo</button>
+          <button type="button" disabled={!product.model} aria-label={product.model ? "Open 3D model editor" : "3D not available"} onClick={() => { setShow3DTools(true); jumpTo("product-editor-model"); }}><Box size={15} /> 3D</button>
+        </div>
+      )}
       {cover ? (
         <SafeImage key={cover.url} src={cover.url} alt={cover.alt || draft.name} />
       ) : (
@@ -171,6 +181,7 @@ export default function ProductEditor({
           {isEditing && <span>No cover photo</span>}
         </div>
       )}
+      {isEditing && <span className="catalog-editor-media-caption">{product.model ? "ORIGINAL PHOTO · 3D MODEL AVAILABLE" : "ORIGINAL PHOTO · 3D NOT YET AVAILABLE"}</span>}
       <span className="eyebrow">
         {categories.find((category) => category.id === draft.categoryId)?.name || "Your category"}
       </span>
@@ -189,6 +200,21 @@ export default function ProductEditor({
       onClose={() => void requestClose()}
     >
       <form onSubmit={submit} className="editor-form product-editor-v2">
+        {isEditing && (
+          <header className="catalog-editor-actionbar" aria-label="Product editor actions">
+            <div className="catalog-editor-actionbar-identity">
+              <span className="catalog-editor-wordmark">BRUTTI WORKSPACE</span>
+              <button type="button" className="catalog-editor-back" onClick={() => void requestClose()}><ArrowLeft size={17} /> Products</button>
+              <strong title={draft.name}>{draft.name || "Untitled product"}</strong>
+              <span className={`product-editor-state product-editor-state--${draft.status}`}>{draft.status}</span>
+            </div>
+            <div className="catalog-editor-actionbar-actions">
+              {product.status === "published" && <a href={`#/product/${product.id}`} target="_blank" rel="noopener noreferrer">View live</a>}
+              <button type="button" className="catalog-editor-secondary" disabled={busy || uploading || modelPending || modelInvalid} onClick={() => void commit("draft")}>Save draft</button>
+              <button type="button" className="catalog-editor-update" disabled={busy || uploading || modelPending || modelInvalid} onClick={() => void commit("published")}>{draft.status === "published" ? "Update" : "Publish"}</button>
+            </div>
+          </header>
+        )}
         <div className="product-editor-intro">
           <div>
             <span className="product-editor-kicker">PRODUCT WORKSPACE</span>
@@ -231,12 +257,12 @@ export default function ProductEditor({
               <div className="product-editor-section-heading">
                 <span className="product-editor-step">01</span>
                 <div>
-                  <h3>The essentials</h3>
-                  <p>Name, product code and collection. All three are required.</p>
+                  <h3>Details</h3>
+                  <p>Name, product code, category and description.</p>
                 </div>
               </div>
               <label>
-                Product name <span aria-hidden="true">*</span>
+                Name <span aria-hidden="true">*</span>
                 <input
                   required
                   maxLength={120}
@@ -272,13 +298,24 @@ export default function ProductEditor({
                   </select>
                 </label>
               </div>
+              <label>
+                Description <span className="product-editor-publish-hint">Required to publish</span>
+                <textarea
+                  aria-label="Description"
+                  rows={4}
+                  maxLength={10000}
+                  value={draft.description}
+                  placeholder="Tell the story, the details, and what makes it special."
+                  onChange={(e) => update("description", e.target.value)}
+                />
+              </label>
             </section>
             <section className="form-section product-editor-section" id="product-editor-photos">
               <div className="product-editor-section-heading">
                 <span className="product-editor-step">02</span>
                 <div>
-                  <h3>Photography <span className="product-editor-photo-count">{draft.images.length}/8</span></h3>
-                  <p>The first photo becomes your cover. Add at least one before publishing.</p>
+                  <h3>Photos <span className="product-editor-photo-count">{draft.images.length}/8</span></h3>
+                  <p>First photo is the cover · add up to 8 images.</p>
                 </div>
               </div>
               <input
@@ -380,20 +417,9 @@ export default function ProductEditor({
                 <span className="product-editor-step">03</span>
                 <div>
                   <h3>Specifications</h3>
-                  <p>Complete descriptions and measurements when the piece is ready to publish.</p>
+                  <p>Materials, measurements and pricing.</p>
                 </div>
               </div>
-              <label>
-                Description <span className="product-editor-publish-hint">Required to publish</span>
-                <textarea
-                  aria-label="Description"
-                  rows={4}
-                  maxLength={10000}
-                  value={draft.description}
-                  placeholder="Tell the story, the details, and what makes it special."
-                  onChange={(e) => update("description", e.target.value)}
-                />
-              </label>
               <label>
                 Materials <span className="product-editor-publish-hint">Required to publish</span>
                 <input
@@ -443,7 +469,20 @@ export default function ProductEditor({
                 </div>
               </label>
             </section>
-            <section className="product-editor-deferred" aria-label="Optional 3D tools">
+
+          </div>
+          <aside className="editor-side product-editor-aside">
+            {isEditing && (
+              <section
+                className="product-editor-live-preview"
+                id="product-editor-preview"
+                aria-labelledby="product-editor-preview-label"
+              >
+                <p id="product-editor-preview-label" className="product-editor-preview-label">CUSTOMER PREVIEW</p>
+                {previewCard}
+              </section>
+            )}
+            <section className="product-editor-deferred" id="product-editor-model" aria-label="3D model manager">
               <button
                 type="button"
                 className="product-editor-deferred-toggle"
@@ -452,8 +491,8 @@ export default function ProductEditor({
                 onClick={() => setShow3DTools(value => !value)}
               >
                 <span>
-                  <strong>3D tools</strong>
-                  <small>On hold for now · optional</small>
+                  <strong>3D model</strong>
+                  <small>{product.model ? "Model available" : "No 3D model"}</small>
                 </span>
                 <ChevronDown size={17} aria-hidden="true" />
               </button>
@@ -466,18 +505,6 @@ export default function ProductEditor({
                 </div>
               )}
             </section>
-          </div>
-          <aside className="editor-side product-editor-aside">
-            {isEditing && (
-              <section
-                className="product-editor-live-preview"
-                id="product-editor-preview"
-                aria-labelledby="product-editor-preview-label"
-              >
-                <p id="product-editor-preview-label" className="product-editor-preview-label">Live preview</p>
-                {previewCard}
-              </section>
-            )}
             <div className="product-editor-aside-heading" id="product-editor-publish">
               <span className="product-editor-step">04</span>
               <div>
