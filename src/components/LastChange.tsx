@@ -99,12 +99,16 @@ export default function LastChange({
       <div className="catalog-last-activity-heading">
         <span className="catalog-latest-title-icon" aria-hidden="true"><History size={18} strokeWidth={1.9} /></span>
         <h2>Latest updates</h2>
+        {visibleStatus === "ready" && latest && (
+          <span className="catalog-latest-action" aria-label={"Change type: " + (latest.action === "products_created" ? "Added" : "Edited")}>
+            {latest.action === "products_created" ? "Added" : "Edited"}
+          </span>
+        )}
       </div>
       {visibleStatus === "ready" && latest ? (
         <div className="catalog-last-activity-details">
           <p className="catalog-latest-product" title={latest.resource_name || latest.resource_type}>
-            <strong>{latest.resource_name || latest.resource_type}</strong>{" "}
-            <span className="catalog-latest-action">({latest.action === "products_created" ? "added" : "edited"})</span>
+            <strong>{latest.resource_name || latest.resource_type}</strong>
           </p>
           <p className="catalog-latest-actor">By {latest.actor_email || "System"}</p>
           <time className="catalog-latest-time" dateTime={latest.created_at}>
