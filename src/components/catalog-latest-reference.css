@@ -2661,92 +2661,94 @@
   }
 }
 
-
-/* Brutti Catalog top navigation: calmer professional desktop hierarchy.
-   All existing search, catalog, theme, profile and sign-out actions remain. */
+/* Brutti Catalog admin navigation: compact, editorial and calm.
+   Keep all search, synchronization, profile, theme and logout interactions. */
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(136px, 210px) minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  gap: clamp(14px, 2vw, 28px);
-  height: 72px;
-  min-height: 72px;
-  padding: 0 clamp(19px, 2.2vw, 32px);
-  border-bottom: 1px solid rgba(48, 85, 57, .11);
-  background: rgba(255,255,255,.965);
-  box-shadow: 0 3px 12px rgba(34,67,43,.035);
+  gap: clamp(12px, 1.5vw, 24px);
+  height: 68px;
+  min-height: 68px;
+  padding: 0 clamp(18px, 2vw, 30px);
+  border-bottom: 1px solid rgba(47, 82, 58, .10);
+  background: linear-gradient(110deg, rgba(255,255,255,.98), rgba(249,251,247,.95));
+  box-shadow: 0 3px 16px rgba(35,66,44,.025);
   font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  backdrop-filter: blur(16px) saturate(120%);
-  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(115%);
+  -webkit-backdrop-filter: blur(14px) saturate(115%);
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .breadcrumbs {
   display: flex;
   align-items: center;
-  flex: 0 1 235px;
-  min-width: 132px;
-  gap: 10px;
+  min-width: 0;
+  gap: 9px;
   overflow: hidden;
   white-space: nowrap;
-  color: #7b8a7e;
+  color: #87958a;
   font-size: 12px;
-  letter-spacing: .005em;
+  letter-spacing: 0;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .breadcrumbs > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 0 1 auto;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .breadcrumbs > svg {
-  flex: none;
-  color: #9cab9f;
-  stroke-width: 1.8;
+  flex: 0 0 auto;
+  color: #b3bfb4;
+  stroke-width: 1.7;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .breadcrumbs > strong {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #234732;
+  color: #254b36;
   font-size: 13px;
-  line-height: 1.4;
-  font-weight: 700;
-  letter-spacing: -.01em;
+  line-height: 1.35;
+  font-weight: 710;
+  letter-spacing: -.014em;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .topbar-actions {
   display: flex;
+  flex: 1 1 auto;
   align-items: center;
   justify-content: flex-end;
-  flex: 1 1 auto;
   flex-wrap: nowrap;
   min-width: 0;
-  width: auto;
+  width: 100%;
   max-width: none;
-  gap: clamp(8px, .9vw, 13px);
+  gap: clamp(6px, .8vw, 11px);
   margin: 0;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search {
   display: flex;
+  flex: 1 1 210px;
   align-items: center;
-  flex: 0 1 325px;
-  width: clamp(190px, 23vw, 325px);
-  min-width: 155px;
-  max-width: 325px;
-  height: 42px;
-  min-height: 42px;
-  gap: 10px;
+  min-width: 145px;
+  max-width: 300px;
+  width: auto;
+  height: 40px;
+  min-height: 40px;
+  gap: 9px;
   margin-right: auto;
-  padding: 3px 4px 3px 13px;
-  border: 1px solid #e0e9e0;
+  padding: 3px 4px 3px 12px;
+  border: 1px solid rgba(80,115,84,.15);
   border-radius: 12px;
-  background: #f7faf7;
-  box-shadow: inset 0 1px 1px rgba(34,67,43,.025);
-  transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease;
+  background: rgba(239,245,239,.68);
+  box-shadow: inset 0 1px 2px rgba(44,78,51,.018);
+  transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search:focus-within {
   background: #fff;
-  border-color: #84a992;
-  box-shadow: 0 0 0 3px rgba(78,129,92,.105);
+  border-color: rgba(66,113,77,.52);
+  box-shadow: 0 0 0 3px rgba(66,113,77,.09);
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search > svg {
-  flex: none;
-  width: 17px;
-  height: 17px;
-  color: #728a79;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  color: #6f8876;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search input {
   flex: 1 1 auto;
@@ -2754,66 +2756,76 @@
   width: 100%;
   height: 100%;
   padding: 0;
+  border: 0;
   background: transparent;
-  color: #274634;
+  box-shadow: none;
+  color: #294b37;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 12px;
   line-height: 1.4;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search input::placeholder {
-  color: #819487;
+  color: #8a9b8e;
   opacity: 1;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search button {
-  flex: 0 0 33px;
-  width: 33px;
-  height: 33px;
-  min-height: 33px;
+  display: grid;
+  flex: 0 0 30px;
+  place-items: center;
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  min-height: 30px;
   padding: 0;
   border: 0;
   border-radius: 9px;
-  background: #e9f0ea;
-  color: #315d40;
+  background: rgba(211,226,213,.63);
+  color: #31583c;
+  box-shadow: none;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search button:hover {
-  background: #dceadd;
-  color: #214e34;
+  background: #d5e5d7;
+  color: #20472e;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .connection-pill {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
-  flex: none;
-  gap: 8px;
+  gap: 7px;
   min-height: 36px;
-  padding: 7px 4px;
+  padding: 4px 2px;
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: #547961;
+  color: #66836e;
   font-family: inherit;
-  font-size: 11.5px;
-  font-weight: 590;
+  font-size: 11px;
+  font-weight: 570;
+  line-height: 1.3;
   white-space: nowrap;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .connection-pill > span {
+  display: block;
   flex: 0 0 7px;
   width: 7px;
   height: 7px;
-  background: #5c9368;
-  box-shadow: 0 0 0 3px rgba(92,147,104,.12);
+  border-radius: 50%;
+  background: #6c9b73;
+  box-shadow: 0 0 0 3px rgba(101,156,110,.10);
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-link {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  flex: none;
-  gap: 8px;
-  min-height: 40px;
-  padding: 8px 10px;
+  min-height: 38px;
+  gap: 6px;
   margin: 0;
+  padding: 5px 7px;
+  border: 0;
   border-radius: 10px;
   background: transparent;
-  color: #28573e;
+  color: #335c40;
   font-family: inherit;
   font-size: 12px;
   font-weight: 650;
@@ -2821,8 +2833,8 @@
   white-space: nowrap;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-link:hover {
-  color: #183e2a;
-  background: #edf5ee;
+  background: rgba(219,235,221,.52);
+  color: #20492f;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-link > svg {
   width: 15px;
@@ -2830,226 +2842,222 @@
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.theme-toggle,.header-signout) {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  flex: none;
-  height: 41px;
-  min-height: 41px;
+  min-height: 38px;
+  height: 38px;
   margin: 0;
-  border: 1px solid #dce6dc;
+  border: 1px solid transparent;
   border-radius: 11px;
-  background: #fff;
-  color: #687d6c;
+  background: transparent;
+  color: #637a69;
   box-shadow: none;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .theme-toggle {
-  gap: 8px;
-  padding: 8px 11px;
+  gap: 7px;
+  padding: 6px 9px;
   font-family: inherit;
   font-size: 11.5px;
-  font-weight: 550;
+  font-weight: 560;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .header-signout {
-  flex: 0 0 41px;
-  width: 41px;
-  min-width: 41px;
+  flex: 0 0 38px;
+  width: 38px;
+  min-width: 38px;
   padding: 0;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.theme-toggle,.header-signout):hover {
-  border-color: #b9d1be;
-  background: #f4f8f4;
-  color: #244f36;
+  background: rgba(223,236,224,.68);
+  color: #244c32;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .header-profile {
   display: inline-flex;
+  flex: 0 1 184px;
   align-items: center;
-  flex: 0 1 196px;
   min-width: 0;
-  max-width: 196px;
-  min-height: 43px;
-  height: 43px;
-  gap: 10px;
+  max-width: 184px;
+  min-height: 41px;
+  height: 41px;
+  gap: 8px;
   margin: 0;
-  padding: 4px 11px 4px 5px;
-  border: 1px solid #dce6dc;
-  border-radius: 11px;
-  background: #fff;
-  box-shadow: none;
-  transition: background-color .16s ease, border-color .16s ease;
+  padding: 4px 10px 4px 5px;
+  border: 1px solid rgba(67,111,74,.12);
+  border-radius: 13px;
+  background: rgba(235,244,233,.65);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.65);
+  transition: background-color .15s ease, border-color .15s ease;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .header-profile:hover,
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .header-profile.active {
-  border-color: #b5cfbb;
-  background: #f4f9f4;
+  border-color: rgba(68,120,79,.32);
+  background: rgba(221,238,221,.87);
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-avatar {
   display: grid;
-  flex: 0 0 33px;
+  flex: 0 0 31px;
   place-items: center;
-  width: 33px;
-  min-width: 33px;
-  height: 33px;
-  border-radius: 9px;
-  background: #e7f1e8;
-  color: #285c40;
+  width: 31px;
+  min-width: 31px;
+  height: 31px;
+  border-radius: 10px;
+  background: #dce9dd;
+  color: #305b3d;
   font-size: 11px;
-  font-weight: 750;
+  font-weight: 740;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-copy {
   display: grid;
   min-width: 0;
   gap: 1px;
+  text-align: left;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-copy strong {
+  display: block;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #294b35;
   font-family: inherit;
-  color: #274733;
-  font-size: 12px;
-  line-height: 1.3;
-  font-weight: 680;
+  font-size: 11.5px;
+  font-weight: 690;
+  line-height: 1.35;
 }
 .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-copy small {
-  color: #829084;
+  display: block;
+  color: #819185;
   font-family: inherit;
-  font-size: 10.5px;
+  font-size: 10px;
   line-height: 1.25;
 }
-.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.catalog-link,.theme-toggle,.header-profile,.header-signout):focus-visible {
-  outline: 2px solid #5e906a;
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.catalog-link,.theme-toggle,.header-profile,.header-signout,.catalog-header-search button):focus-visible {
+  outline: 2px solid #63986f;
   outline-offset: 2px;
 }
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar {
-  background: rgba(26,46,33,.965);
-  border-bottom-color: rgba(180,211,184,.16);
-  box-shadow: 0 4px 12px rgba(0,0,0,.12);
-}
-.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .breadcrumbs > strong {
-  color: #e5f2e5;
+  background: linear-gradient(110deg, #1e3525, #213a2a);
+  border-bottom-color: rgba(182,215,188,.15);
 }
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .breadcrumbs,
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .breadcrumbs > svg {
-  color: #afc3b3;
+  color: #b1c4b5;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .breadcrumbs > strong,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .profile-copy strong {
+  color: #e6f2e6;
 }
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .catalog-header-search,
-.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar :is(.theme-toggle,.header-profile,.header-signout) {
-  border-color: #496752;
-  background: #273f2e;
-  color: #e2efdf;
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .header-profile {
+  border-color: rgba(178,211,182,.17);
+  background: rgba(47,74,53,.82);
 }
-.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .catalog-header-search input,
-.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .profile-copy strong {
-  color: #edf7ec;
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .catalog-header-search:focus-within {
+  border-color: #81a88a;
+  background: #304937;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .catalog-header-search input {
+  color: #edf6eb;
 }
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .catalog-header-search input::placeholder,
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .profile-copy small {
-  color: #b4c8b7;
+  color: #b0c5b3;
 }
-.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .catalog-header-search button {
-  background: #355a42;
-  color: #e3eee2;
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .catalog-header-search button,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .profile-avatar {
+  background: #40634a;
+  color: #e7f4e6;
 }
-.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar :is(.catalog-link,.connection-pill) {
-  color: #c7e6ce;
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar :is(.connection-pill,.catalog-link,.theme-toggle,.header-signout) {
+  color: #c1e0c7;
 }
-.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar .header-profile .profile-avatar {
-  background: #3b6248;
-  color: #e8f5e8;
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar :is(.catalog-link,.theme-toggle,.header-signout,.header-profile):hover {
+  background: rgba(81,124,88,.38);
 }
-.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar :is(.theme-toggle,.header-profile,.header-signout):hover {
-  background: #33513d;
-}
-@media (max-width: 1330px) and (min-width: 1021px) {
+@media (max-width: 1340px) and (min-width: 1041px) {
   .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar {
-    gap: 12px;
+    grid-template-columns: minmax(110px, 170px) minmax(0, 1fr);
+    gap: 14px;
     padding-inline: 18px;
   }
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .breadcrumbs {
-    flex-basis: 155px;
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search {
+    flex-basis: 180px;
+    min-width: 115px;
   }
   .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .connection-pill {
     display: none;
   }
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search {
-    flex-basis: 220px;
-    width: 220px;
-    margin-right: 2px;
-  }
 }
-@media (max-width: 1120px) and (min-width: 1021px) {
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-copy,
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .theme-label {
-    display: none;
-  }
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .header-profile {
-    flex: 0 0 41px;
-    width: 41px;
-    min-width: 41px;
-    padding: 3px;
-    justify-content: center;
-  }
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .theme-toggle {
-    width: 41px;
-    padding: 0;
-  }
-}
-@media (max-width: 1020px) {
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar {
-    height: 64px;
-    min-height: 64px;
-    padding-inline: 14px;
-    gap: 8px;
-  }
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .breadcrumbs {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .topbar-actions {
-    flex: 0 0 auto;
-    gap: 7px;
-  }
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-header-search,
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .connection-pill,
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .catalog-link,
+@media (max-width: 1180px) and (min-width: 1041px) {
   .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .theme-label,
   .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-copy {
     display: none;
   }
-  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.theme-toggle,.header-profile,.header-signout) {
-    display: inline-flex;
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .header-profile,
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .theme-toggle {
+    flex: 0 0 39px;
+    width: 39px;
+    min-width: 39px;
+    padding: 4px;
     justify-content: center;
-    align-items: center;
-    flex: 0 0 38px;
-    width: 38px;
-    min-width: 38px;
-    max-width: 38px;
-    height: 38px;
-    min-height: 38px;
-    padding: 2px;
-    border-radius: 10px;
   }
   .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .profile-avatar {
+    flex-basis: 30px;
     width: 30px;
     min-width: 30px;
     height: 30px;
-    flex-basis: 30px;
   }
 }
-@media (max-width: 360px) {
+@media (max-width: 1040px) {
   .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar {
-    padding-inline: 9px;
-    gap: 4px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    height: 62px;
+    min-height: 62px;
+    padding-inline: 14px;
   }
   .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .topbar-actions {
-    gap: 4px;
+    gap: 5px;
+    width: auto;
+    flex: 0 0 auto;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.catalog-header-search,.connection-pill,.catalog-link,.theme-label,.profile-copy) {
+    display: none;
   }
   .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.theme-toggle,.header-profile,.header-signout) {
-    flex-basis: 34px;
-    width: 34px;
-    min-width: 34px;
-    max-width: 34px;
-    height: 34px;
-    min-height: 34px;
+    display: inline-flex;
+    flex: 0 0 38px;
+    justify-content: center;
+    align-items: center;
+    min-width: 38px;
+    max-width: 38px;
+    width: 38px;
+    height: 38px;
+    min-height: 38px;
+    padding: 3px;
+    border-radius: 11px;
+  }
+}
+@media (max-width: 380px) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar {
+    gap: 4px;
+    padding-inline: 9px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar .topbar-actions {
+    gap: 3px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.theme-toggle,.header-profile,.header-signout) {
+    flex-basis: 35px;
+    width: 35px;
+    min-width: 35px;
+    max-width: 35px;
+    height: 35px;
+    min-height: 35px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab] .topbar :is(.catalog-header-search,.header-profile) {
+    transition: none;
   }
 }
 @media (prefers-reduced-transparency: reduce) {
@@ -3059,6 +3067,6 @@
     -webkit-backdrop-filter: none;
   }
   .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab] .topbar {
-    background: #1b3425;
+    background: #203928;
   }
 }
