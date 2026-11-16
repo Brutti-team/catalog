@@ -59,45 +59,81 @@ function ActivityChart({ products, days, asOfMs }: {
 }) {
   const gradientId = useId().replace(/:/g, "");
   const activity = useMemo(() => getUpdateActivity(products, days, asOfMs), [products, days, asOfMs]);
-  const yBase = 167, yTop = 28, xStart = 16, xEnd = 618;
-  const max = Math.max(1, activity.total);
-  const coordinates = activity.cumulative.map((value, index) => ({
-    x: xStart + index / Math.max(1, activity.cumulative.length - 1) * (xEnd - xStart),
-    y: yBase - value / max * (yBase - yTop),
-  }));
-  const line = coordinates.map((point, index) =>
-    (index === 0 ? "M " : " L ") + point.x.toFixed(2) + " " + point.y.toFixed(2)).join("");
-  const last = coordinates[coordinates.length - 1] ?? { x: xEnd, y: yBase };
-  const first = coordinates[0] ?? { x: xStart, y: yBase };
-  const fill = line + " L " + last.x + " " + yBase + " L " + first.x + " " + yBase + " Z";
-  const ticks = [...new Set([0, .25, .5, .75, 1].map(f =>
-    Math.round(f * (activity.keys.length - 1))))];
+
+  // Display real last-update counts, grouped to avoid 30/90 cramped daily columns.
+  // Unlike a cumulative line, this does not imply continuous growth or invented activity.
+  const binSize = days === 7 ? 1 : days === 30 ? 5 : 10;
+  const dailyCounts = activity.cumulative.map((count, index) =>
+    count - (activity.cumulative[index - 1] ?? 0));
+  const bins = Array.from({ length: Math.ceil(activity.keys.length / binSize) }, (_, index) => {
+    const start = index * binSize;
+    const end = Math.min(start + binSize, activity.keys.length);
+    const count = dailyCounts.slice(start, end).reduce((sum, value) => sum + value, 0);
+    const firstDate = shortDate(activity.keys[start]);
+    const lastDate = shortDate(activity.keys[end - 1]);
+    return {
+      count,
+      label: shortDate(activity.keys[Math.floor((start + end - 1) / 2)]),
+      range: firstDate === lastDate ? firstDate : firstDate + " – " + lastDate,
+    };
+  });
+  const max = Math.max(1, ...bins.map(bin => bin.count));
+  const xStart = 55, xEnd = 625, yTop = 25, yBase = 148;
+  const barSlot = (xEnd - xStart) / bins.length;
+  const barWidth = Math.min(45, barSlot * .54);
+  const yValue = (value: number) => yBase - (value / max) * (yBase - yTop);
+  const gridValues = [max, Math.round(max / 2), 0];
+  const granularity = days === 7 ? "daily" : days === 30 ? "5-day" : "10-day";
 
   return (
     <div className="brutti-activity-chart">
-      <svg viewBox="0 0 640 195" role="img"
-        aria-label={"Cumulative number of catalog products whose latest update was in the past " + days + " days: " + activity.total}>
+      <div className="brutti-activity-chart-legend" aria-hidden="true">
+        <span className="brutti-activity-chart-key" />
+        Product updates
+        <span className="brutti-activity-chart-granularity">{granularity} groups</span>
+      </div>
+      <svg viewBox="0 0 640 192" role="img"
+        aria-label={"Products by latest update date over the last " + days + " days: " + activity.total + " products"}>
         <defs>
           <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#39835C" stopOpacity=".31" />
-            <stop offset="100%" stopColor="#39835C" stopOpacity=".012" />
+            <stop offset="0%" stopColor="#245c40" />
+            <stop offset="100%" stopColor="#83a68a" />
           </linearGradient>
         </defs>
-        <path d={"M " + xStart + " " + yBase + " H " + xEnd} stroke="currentColor" strokeOpacity=".11" strokeWidth="1" />
-        <path d={fill} fill={"url(#" + gradientId + ")"} />
-        <path d={line} fill="none" stroke="#28533F" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
-        {activity.total > 0 && (
-          <>
-            <circle cx={last.x} cy={last.y} r="9" fill="#28533F" fillOpacity=".12" />
-            <circle cx={last.x} cy={last.y} r="4.3" fill="#28533F" stroke="#fff" strokeWidth="2" />
-          </>
-        )}
+        {gridValues.map((value, index) => (
+          <g key={index} className="brutti-activity-gridline">
+            <line x1={xStart} x2={xEnd} y1={yValue(value)} y2={yValue(value)} />
+            <text x={xStart - 12} y={yValue(value) + 4} textAnchor="end">{value}</text>
+          </g>
+        ))}
+        {bins.map((bin, index) => {
+          const x = xStart + (index + .5) * barSlot;
+          const height = bin.count / max * (yBase - yTop);
+          return (
+            <g key={bin.range} className={bin.count ? "brutti-activity-bin is-active" : "brutti-activity-bin"}>
+              <title>{bin.range + ": " + bin.count + (bin.count === 1 ? " product" : " products")}</title>
+              <rect className="brutti-activity-bar-track" x={x - barWidth / 2}
+                y={yTop} width={barWidth} height={yBase - yTop} rx="7" />
+              {bin.count > 0 ? (
+                <>
+                  <rect className="brutti-activity-bar" x={x - barWidth / 2}
+                    y={yBase - height} width={barWidth} height={height}
+                    rx={Math.min(7, height / 2)} fill={"url(#" + gradientId + ")"} />
+                  <text className="brutti-activity-bar-value" x={x}
+                    y={Math.max(15, yBase - height - 8)} textAnchor="middle">{bin.count}</text>
+                </>
+              ) : (
+                <rect className="brutti-activity-bar-zero" x={x - barWidth / 2}
+                  y={yBase - 2} width={barWidth} height="2" rx="1" />
+              )}
+              <text className="brutti-activity-axis-date" x={x} y="173"
+                textAnchor="middle">{bin.label}</text>
+            </g>
+          );
+        })}
       </svg>
-      <div className="brutti-activity-ticks" aria-hidden="true">
-        {ticks.map(index => <span key={index}>{shortDate(activity.keys[index])}</span>)}
-      </div>
       {activity.total === 0 && (
-        <p className="brutti-activity-empty">No products have a latest update within this period.</p>
+        <p className="brutti-activity-empty">No product updates recorded in this period.</p>
       )}
     </div>
   );
