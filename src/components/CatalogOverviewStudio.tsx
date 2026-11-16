@@ -77,8 +77,8 @@ function ActivityChart({ products, days, asOfMs }: {
       range: firstDate === lastDate ? firstDate : firstDate + " – " + lastDate,
     };
   });
-  const max = Math.max(1, ...bins.map(bin => bin.count));
-  const xStart = 55, xEnd = 625, yTop = 30, yBase = 184;
+  const max = Math.max(2, ...bins.map(bin => bin.count));
+  const xStart = 55, xEnd = 625, yTop = 28, yBase = 157;
   const barSlot = (xEnd - xStart) / bins.length;
   const barWidth = Math.min(45, barSlot * .54);
   const yValue = (value: number) => yBase - (value / max) * (yBase - yTop);
@@ -92,7 +92,7 @@ function ActivityChart({ products, days, asOfMs }: {
         Product updates
         <span className="brutti-activity-chart-granularity">{granularity} groups</span>
       </div>
-      <svg viewBox="0 0 640 230" role="img"
+      <svg viewBox="0 0 640 197" role="img"
         aria-label={"Products by latest update date over the last " + days + " days: " + activity.total + " products"}>
         <defs>
           <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
@@ -126,7 +126,7 @@ function ActivityChart({ products, days, asOfMs }: {
                 <rect className="brutti-activity-bar-zero" x={x - barWidth / 2}
                   y={yBase - 2} width={barWidth} height="2" rx="1" />
               )}
-              <text className="brutti-activity-axis-date" x={x} y="215"
+              <text className="brutti-activity-axis-date" x={x} y="188"
                 textAnchor="middle">{bin.label}</text>
             </g>
           );
@@ -164,7 +164,6 @@ export default function CatalogOverviewStudio({
   const featuredPhoto = products.find(product => product.images.length)?.images[0];
 
   const cards = [
-    { title: "Total Products", value: total, caption: "Across all categories", icon: Package, status: "all" as const },
     { title: "Categories", value: categories.length, caption: "Collection groups", icon: Layers3, status: "categories" as const },
     { title: "Drafts", value: drafts.length, caption: "Awaiting final review", icon: Pencil, status: "draft" as const },
     { title: "Published", value: published, caption: "Live in public catalog", icon: CheckCircle2, status: "published" as const },
@@ -184,20 +183,31 @@ export default function CatalogOverviewStudio({
         <span className="brutti-glass-live"><span aria-hidden="true" /> Live inventory</span>
       </div>
       <div className="overview-stats brutti-glass-kpis">
-        {cards.map((card, index) => (
-          <button type="button" className="overview-stat brutti-glass-kpi" key={card.title}
-            disabled={loading}
-            aria-label={"View " + card.title.toLowerCase()}
-            onClick={() => card.status === "categories" ? onManageCategories() : onOpenProducts(card.status)}>
-            {index === 0 && featuredPhoto && <SafeImage className="brutti-glass-kpi-photo" src={featuredPhoto.url} alt="" loading="lazy" />}
-            <span className="brutti-glass-kpi-head">
-              <span className="brutti-glass-icon"><card.icon size={19} strokeWidth={1.8} aria-hidden="true" /></span>
-              <span className="brutti-glass-kpi-title">{card.title}</span>
-            </span>
-            <strong>{loading ? "—" : card.value}</strong>
-            <span className="brutti-glass-kpi-caption">{card.caption}</span>
-          </button>
-        ))}
+        <button type="button" className="overview-stat brutti-glass-kpi brutti-glass-kpi-featured"
+          disabled={loading} aria-label="View all products" onClick={() => onOpenProducts("all")}>
+          {featuredPhoto && <SafeImage className="brutti-glass-kpi-photo" src={featuredPhoto.url} alt="" loading="lazy" />}
+          <span className="brutti-glass-kpi-head">
+            <span className="brutti-glass-icon"><Package size={20} strokeWidth={1.7} aria-hidden="true" /></span>
+            <span className="brutti-glass-kpi-title">Total products</span>
+          </span>
+          <strong>{loading ? "—" : total}</strong>
+          <span className="brutti-glass-kpi-caption">Pieces in the collection <ArrowUpRight size={13} aria-hidden="true" /></span>
+        </button>
+        <div className="brutti-metric-tray" role="group" aria-label="Collection status">
+          {cards.map(card => (
+            <button type="button" className="overview-stat brutti-glass-kpi" key={card.title}
+              disabled={loading}
+              aria-label={"View " + card.title.toLowerCase()}
+              onClick={() => card.status === "categories" ? onManageCategories() : onOpenProducts(card.status)}>
+              <span className="brutti-glass-kpi-head">
+                <span className="brutti-glass-icon"><card.icon size={19} strokeWidth={1.8} aria-hidden="true" /></span>
+                <span className="brutti-glass-kpi-title">{card.title}</span>
+              </span>
+              <strong>{loading ? "—" : card.value}</strong>
+              <span className="brutti-glass-kpi-caption">{card.caption}</span>
+            </button>
+          ))}
+        </div>
       </div>
       <div className="brutti-glass-panels atelier-workbench">
         <section className="brutti-activity-panel atelier-review" aria-labelledby="brutti-activity-title">
@@ -206,7 +216,7 @@ export default function CatalogOverviewStudio({
               <ChartNoAxesCombined size={21} aria-hidden="true" />
               <div>
                 <h2 id="brutti-activity-title">Catalog activity</h2>
-                <p>Products by their latest update date. Based on saved records.</p>
+                <p>Latest product changes from saved records.</p>
               </div>
             </div>
             <label className="brutti-activity-range">
@@ -222,11 +232,14 @@ export default function CatalogOverviewStudio({
           <div className="brutti-activity-layout">
             <ActivityChart products={products} days={days} asOfMs={asOfMs} />
             <aside className="brutti-activity-summary" aria-label="Publishing overview">
-              <strong className="brutti-activity-big">{loading ? "—" : drafts.length}</strong>
-              <span>Products in review</span>
-              <div className="brutti-activity-summary-rule" />
-              <strong className="brutti-activity-updated">{activeInPeriod}</strong>
-              <span>Products last updated in {days} days</span>
+              <div className="brutti-activity-summary-item">
+                <span>Awaiting review</span>
+                <strong className="brutti-activity-big">{loading ? "—" : drafts.length}</strong>
+              </div>
+              <div className="brutti-activity-summary-item">
+                <span>Updated in {days} days</span>
+                <strong className="brutti-activity-updated">{activeInPeriod}</strong>
+              </div>
               <button type="button" onClick={() => onOpenProducts("draft")}>
                 Review drafts <ArrowUpRight size={14} aria-hidden="true" />
               </button>
