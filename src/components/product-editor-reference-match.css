@@ -1399,3 +1399,21 @@
   border-color: #4c745c;
   color: #bdd6c5;
 }
+
+/* Fix beige/pink letterboxing behind portrait cover photos.
+   The earlier nested <img> still inherited --editor-photo-surface: #f8f5ef,
+   even though the surrounding preview card had been changed to green. */
+.admin-app .product-editor-dialog--editing .catalog-reference-preview-rail {
+  --editor-photo-surface: #eaf2eb;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .product-editor-live-preview .editor-preview,
+.admin-app .product-editor-dialog--editing .catalog-reference-preview-rail .editor-preview,
+.admin-app .product-editor-dialog--editing .product-editor-live-preview .editor-preview > img,
+.admin-app .product-editor-dialog--editing .product-editor-live-preview .editor-preview > .preview-placeholder {
+  background-color: #eaf2eb;
+}
+.admin-app .product-editor-dialog--editing .catalog-editor-media-caption {
+  background-color: rgba(234, 242, 235, .96);
+  border-color: rgba(40, 83, 63, .12);
+  color: #365d46;
+}
