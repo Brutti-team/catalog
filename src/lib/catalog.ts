@@ -76,6 +76,7 @@ type ProductRow = {
   category_id: string;
   description: string;
   materials: string;
+  specifications?: Product["specifications"];
   width: number;
   depth: number;
   height: number;
@@ -102,6 +103,7 @@ function fromRow(row: ProductRow): Product {
     categoryId: row.category_id,
     description: row.description,
     materials: row.materials,
+    specifications: Array.isArray(row.specifications) ? row.specifications : [],
     width: Number(row.width),
     depth: Number(row.depth),
     height: Number(row.height),
@@ -126,6 +128,7 @@ function toRow(product: Product, capabilities: CatalogCapabilities): ProductRow 
     category_id: product.categoryId,
     description: product.description,
     materials: product.materials,
+    specifications: product.specifications ?? [],
     width: product.width,
     depth: product.depth,
     height: product.height,
@@ -219,6 +222,17 @@ export function validateProduct(product: Product): void {
     throw new Error("Description must contain at most 10,000 characters.");
   if (product.materials.length > 2000)
     throw new Error("Materials must contain at most 2,000 characters.");
+  const specifications = product.specifications ?? [];
+  if (!Array.isArray(specifications) || specifications.length > 24)
+    throw new Error("You can add up to 24 specification rows.");
+  if (specifications.some((row) =>
+    !row || typeof row.id !== "string" || !row.id ||
+    typeof row.name !== "string" || !row.name.trim() || row.name.length > 80 ||
+    typeof row.value !== "string" || !row.value.trim() || row.value.length > 400
+  ))
+    throw new Error("Complete the name and value for every specification row, or remove the empty row.");
+  if (new Set(specifications.map(row => row.id)).size !== specifications.length)
+    throw new Error("Each specification row needs a unique ID.");
   if (!["draft", "published", "archived"].includes(product.status))
     throw new Error("Choose a valid product status.");
   if (
@@ -329,6 +343,9 @@ export async function saveProduct(product: Product, modelChange?: ProductModelCh
     sku: product.sku.trim().toUpperCase(),
     description: product.description.trim(),
     materials: product.materials.trim(),
+    specifications: (product.specifications ?? []).map(({ id, name, value }) => ({
+      id, name: name.trim(), value: value.trim(),
+    })),
     updatedAt: new Date().toISOString(),
   };
   await requireAdmin();
