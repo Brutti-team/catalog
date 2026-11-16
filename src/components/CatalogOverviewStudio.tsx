@@ -1,4 +1,4 @@
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useState, type ReactNode } from "react";
 import {
   Archive, ArrowRight, ArrowUpRight, CheckCircle2, ChevronDown, ChevronRight,
   ChartNoAxesCombined, Images, Layers3, Package, Pencil, ShieldCheck
@@ -18,6 +18,7 @@ interface Props {
   onOpenProducts: (status: StatusFilter) => void;
   onOpenCategory: (categoryId: string) => void;
   onManageCategories: () => void;
+  headerControls?: ReactNode;
 }
 
 /** Date-bucket the current products' most recent update in Malaysian local time.
@@ -141,7 +142,7 @@ function ActivityChart({ products, days, asOfMs }: {
 
 export default function CatalogOverviewStudio({
   products, categories, loading, asOfMs, canManageCategories,
-  onOpenProducts, onOpenCategory, onManageCategories,
+  onOpenProducts, onOpenCategory, onManageCategories, headerControls,
 }: Props) {
   const [days, setDays] = useState<Days>(30);
   const total = products.length;
@@ -176,7 +177,7 @@ export default function CatalogOverviewStudio({
           <span className="brutti-glass-kicker">BRUTTI COLLECTION / OVERVIEW</span>
           <h2>Collection snapshot</h2>
         </div>
-        <span className="brutti-glass-live"><span aria-hidden="true" /> Live inventory</span>
+        {headerControls ?? <span className="brutti-glass-live"><span aria-hidden="true" /> Live inventory</span>}
       </div>
       <div className="overview-stats brutti-glass-kpis">
         <button type="button" className="overview-stat brutti-glass-kpi brutti-glass-kpi-featured"
