@@ -2,6 +2,7 @@ import SafeImage from "./SafeImage";
 import { useState, useRef, useEffect, useCallback, type FormEvent } from "react";
 import {
   ImagePlus,
+  Plus,
   Box,
   ArrowLeft,
   ArrowRight,
@@ -76,6 +77,25 @@ export default function ProductEditor({
   }, []);
   const update = <K extends keyof Product>(key: K, value: Product[K]) =>
     setDraft((p) => ({ ...p, [key]: value }));
+  const addSpecificationRow = () =>
+    setDraft((current) => ({
+      ...current,
+      specifications: [...(current.specifications ?? []), {
+        id: crypto.randomUUID(), name: "", value: "",
+      }],
+    }));
+  const changeSpecification = (id: string, field: "name" | "value", value: string) =>
+    setDraft((current) => ({
+      ...current,
+      specifications: (current.specifications ?? []).map((row) =>
+        row.id === id ? { ...row, [field]: value } : row,
+      ),
+    }));
+  const removeSpecification = (id: string) =>
+    setDraft((current) => ({
+      ...current,
+      specifications: (current.specifications ?? []).filter((row) => row.id !== id),
+    }));
   async function commit(status: Product["status"] = draft.status) {
     if (uploadLock.current || modelLocked.current || busy) return;
     if (status === "draft" && product.status === "published" && !window.confirm("Saving as draft will unpublish this product from the public catalogue. Continue?")) return;
@@ -574,7 +594,39 @@ export default function ProductEditor({
                   </select>
                 </label>
               </div>
-              <p className="catalog-reference-spec-note">Dimensions are in centimetres. Materials and positive measurements are required to publish.</p>
+              {(draft.specifications ?? []).map((row, index) => (
+                <div className="catalog-reference-custom-row" key={row.id}>
+                  <input
+                    aria-label={`Specification ${index + 1} name`}
+                    placeholder="Specification name"
+                    maxLength={80}
+                    value={row.name}
+                    onChange={(event) => changeSpecification(row.id, "name", event.target.value)}
+                  />
+                  <input
+                    aria-label={`Specification ${index + 1} value`}
+                    placeholder="Enter value"
+                    maxLength={400}
+                    value={row.value}
+                    onChange={(event) => changeSpecification(row.id, "value", event.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="catalog-reference-remove-row"
+                    aria-label={`Remove specification ${row.name || index + 1}`}
+                    title="Remove row"
+                    onClick={() => removeSpecification(row.id)}
+                  ><X size={17} aria-hidden="true" /></button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="catalog-reference-add-row"
+                disabled={(draft.specifications ?? []).length >= 24 || busy}
+                onClick={addSpecificationRow}
+              >
+                <Plus size={17} aria-hidden="true" /> Add row
+              </button>
             </section>
             ) : (
             <section className="form-section product-editor-section" id="product-editor-specs">
@@ -636,16 +688,7 @@ export default function ProductEditor({
             </section>
             )}
 
-            {isEditing && (
-              <details className="catalog-reference-publishing" id="product-editor-publish">
-                <summary>
-                  <span>Publishing settings</span>
-                  <small>Status, display order and featured product</small>
-                  <ChevronDown size={17} aria-hidden="true" />
-                </summary>
-                <div className="catalog-reference-publishing-content">{publishingControls}</div>
-              </details>
-            )}
+
 
           </div>
           <aside className="editor-side product-editor-aside">
