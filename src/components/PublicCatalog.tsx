@@ -29,6 +29,8 @@ interface Props {
   error: string | null;
   onRetry: () => void;
   onAdmin: () => void;
+  /** Private admin-only rendering of draft product data without publishing. */
+  previewProduct?: Product;
 }
 
 const configuredEmail = (import.meta.env.VITE_ENQUIRY_EMAIL || "").trim();
@@ -80,8 +82,10 @@ export default function PublicCatalog({
   error,
   onRetry,
   onAdmin,
+  previewProduct,
 }: Props) {
-  const [productId, setProductId] = useState(currentProductId);
+  const [routeProductId, setProductId] = useState(currentProductId);
+  const productId = previewProduct ? previewProduct.id : routeProductId;
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [featuredOnly, setFeaturedOnly] = useState(false);
@@ -90,6 +94,7 @@ export default function PublicCatalog({
   const [viewMode, setViewMode] = useState<"photos" | "3d">("photos");
   const [mobileMenu, setMobileMenu] = useState(false);
   useEffect(() => {
+    if (previewProduct) return;
     const changeRoute = () => {
       setProductId(currentProductId());
       setImageIndex(0);
@@ -99,15 +104,14 @@ export default function PublicCatalog({
     };
     window.addEventListener("hashchange", changeRoute);
     return () => window.removeEventListener("hashchange", changeRoute);
-  }, []);
+  }, [previewProduct]);
   const published = useMemo(
     () => products.filter((product) => product.status === "published"),
     [products],
   );
-  const product =
-    productId === null
-      ? undefined
-      : published.find((item) => item.id === productId);
+  const product = previewProduct ?? (
+    productId === null ? undefined : published.find((item) => item.id === productId)
+  );
   const selectedModel = product?.model;
   const showingModel = viewMode === '3d' && Boolean(selectedModel);
   const categoryName = (id: string) =>
@@ -203,8 +207,8 @@ export default function PublicCatalog({
   );
 
   return (
-    <div className="pub-app pub-refined">
-      <a
+    <div className={previewProduct ? "pub-app pub-refined pub-private-preview" : "pub-app pub-refined"}>
+      {!previewProduct && <a
         className="pub-skip-link"
         href="#pub-main"
         onClick={(event) => {
@@ -213,17 +217,18 @@ export default function PublicCatalog({
         }}
       >
         Skip to content
-      </a>
+      </a>}
       <header className="pub-header">
         <a
-          href="#/catalog"
+          href={previewProduct ? undefined : "#/catalog"}
+          onClick={previewProduct ? (event) => event.preventDefault() : undefined}
           className="pub-wordmark"
           aria-label="Brutti catalog home"
         >
           <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="pub-official-logo" />
           <small>CUSTOM FURNITURE · KIOSKS · FIT-OUT</small>
         </a>
-        <nav
+        {!previewProduct && <nav
           id="pub-mobile-nav"
           className={mobileMenu ? "pub-nav pub-nav-open" : "pub-nav"}
           aria-label="Main navigation"
@@ -244,8 +249,8 @@ export default function PublicCatalog({
           >
             Our approach
           </button>
-        </nav>
-        <div className="pub-header-actions">
+        </nav>}
+        {!previewProduct && <div className="pub-header-actions">
           <button className="pub-admin-link" onClick={onAdmin}>
             Staff portal <ArrowUpRight size={15} />
           </button>
@@ -258,7 +263,8 @@ export default function PublicCatalog({
           >
             {mobileMenu ? <X size={22} /> : <SlidersHorizontal size={22} />}
           </button>
-        </div>
+        </div>}
+        {previewProduct && <span className="pub-private-preview-label">Preview only · Not published</span>}
       </header>
 
       <main id="pub-main" tabIndex={-1}>
@@ -447,9 +453,9 @@ export default function PublicCatalog({
         )}
         {productId !== null && (
           <section className="pub-detail-section">
-            <a href="#/catalog" className="pub-back-link">
+            {!previewProduct && <a href="#/catalog" className="pub-back-link">
               <ArrowLeft size={16} /> Back to the collection
-            </a>
+            </a>}
             {loading ? (
               <div className="pub-detail-loading" aria-busy="true">
                 <div className="pub-skeleton-card">
@@ -553,7 +559,7 @@ export default function PublicCatalog({
                         </small>
                       )}
                     </p>
-                    {enquiryEmail ? (
+                    {enquiryEmail && !previewProduct ? (
                       <a
                         className="pub-primary-button pub-enquiry-button"
                         href={`mailto:${enquiryEmail}?subject=${encodeURIComponent(`Product enquiry: ${product.name} (${product.sku})`)}&body=${encodeURIComponent(`Hello Brutti team,\n\nI would like to know more about ${product.name} (${product.sku}).\n\nThank you.`)}`}
@@ -633,7 +639,7 @@ export default function PublicCatalog({
           </section>
         )}
         {productId === null && <ShowroomSections onExplore={exploreShowroom} section="approach" />}
-        <section className="pub-story" id="pub-story">
+        {!previewProduct && <section className="pub-story" id="pub-story">
           <div>
             <p className="pub-eyebrow">CUSTOM BY NATURE</p>
             <h2>
@@ -650,9 +656,9 @@ export default function PublicCatalog({
               View our work <ArrowRight size={18} />
             </button>
           </div>
-        </section>
+        </section>}
       </main>
-      <footer className="pub-footer">
+      {!previewProduct && <footer className="pub-footer">
         <div>
           <a href="#/catalog" className="pub-wordmark">
             <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="pub-official-logo" />
@@ -675,7 +681,7 @@ export default function PublicCatalog({
             © {new Date().getFullYear()} Benua Brutti Sdn. Bhd.
           </small>
         </div>
-      </footer>
+      </footer>}
     </div>
   );
 }
