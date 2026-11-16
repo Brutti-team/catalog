@@ -1647,65 +1647,64 @@
 }
 
 
-/* Overview hero refinement: rounded silhouette and restrained Brutti glass.
-   Keep the original furniture photograph and dashboard behavior untouched. */
-.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero.catalog-command {
+/* Effective Overview hero radius and soft Brutti glass.
+   [data-theme] intentionally matches the old light-theme selector specificity
+   that previously forced 3px corners despite later 20px CSS rules. */
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero.catalog-command {
   overflow: hidden;
   isolation: isolate;
-  border-radius: 20px;
-  border: 1px solid rgba(212, 233, 217, .23);
-  box-shadow:
-    0 13px 35px rgba(16, 47, 29, .12),
-    inset 0 1px 0 rgba(255, 255, 255, .16);
+  border-radius: 24px;
+  border: 1px solid rgba(214, 233, 218, .23);
+  background: #1d4530;
+  box-shadow: 0 14px 34px rgba(16, 47, 29, .12), inset 0 1px 0 rgba(255,255,255,.14);
 }
-.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content {
-  background: linear-gradient(125deg, rgba(28, 67, 46, .96), rgba(22, 58, 40, .94));
-  -webkit-backdrop-filter: blur(14px) saturate(120%);
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content {
+  background: linear-gradient(132deg, rgba(26, 69, 46, .965) 0%, rgba(30, 77, 52, .915) 100%);
+  border-radius: 24px 0 0 24px;
   backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
 }
-.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art {
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art {
   position: relative;
   overflow: hidden;
+  border-radius: 0 24px 24px 0;
   background: #254936;
 }
-.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art::after {
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg,
-    rgba(16, 36, 25, .04) 0%,
-    rgba(16, 36, 25, .025) 54%,
-    rgba(12, 35, 22, .32) 100%);
+  background: linear-gradient(180deg, rgba(10, 26, 17, .03) 0%, rgba(10, 26, 17, .06) 60%, rgba(10, 26, 17, .25) 100%);
 }
-.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-photo-index {
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-photo-index {
   z-index: 5;
   top: 19px;
   right: 19px;
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, .28);
-  border-radius: 10px;
-  background: rgba(28, 62, 44, .55);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12);
-  -webkit-backdrop-filter: blur(12px) saturate(125%);
-  backdrop-filter: blur(12px) saturate(125%);
+  padding: 8px 13px;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 12px;
+  background: rgba(34, 74, 51, .55);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
 }
-.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art-label {
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art-label {
   position: absolute;
   z-index: 5;
   top: auto;
-  bottom: 31px;
+  bottom: 22px;
   left: 22px;
   right: auto;
   display: block;
   width: fit-content;
   max-width: calc(100% - 44px);
   margin: 0;
-  padding: 11px 14px;
-  border: 1px solid rgba(255, 255, 255, .26);
-  border-radius: 11px;
-  background: rgba(29, 58, 43, .6);
-  color: #ffffff;
+  padding: 11px 15px;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 14px;
+  background: rgba(35, 75, 52, .57);
+  color: #fff;
   font-family: var(--brutti-overview-sans, "DM Sans", system-ui, sans-serif);
   font-size: 13px;
   font-weight: 650;
@@ -1714,36 +1713,41 @@
   white-space: normal;
   overflow-wrap: anywhere;
   text-overflow: clip;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, .18);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
-  -webkit-backdrop-filter: blur(12px) saturate(125%);
-  backdrop-filter: blur(12px) saturate(125%);
+  text-shadow: 0 1px 4px rgba(0,0,0,.18);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
 }
 @media (max-width: 800px) {
-  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero.catalog-command {
-    border-radius: 17px;
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero.catalog-command {
+    border-radius: 18px;
   }
-  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art-label {
-    bottom: 19px;
-    left: 15px;
-    max-width: calc(100% - 30px);
-    padding: 9px 11px;
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content {
+    border-radius: 18px 18px 0 0;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art {
+    border-radius: 0 0 18px 18px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-photo-index {
+    top: 14px;
+    right: 14px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art-label {
+    bottom: 14px;
+    left: 14px;
+    max-width: calc(100% - 28px);
+    padding: 9px 12px;
     font-size: 12px;
-  }
-  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-photo-index {
-    top: 13px;
-    right: 13px;
   }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art-label,
-  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-photo-index {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-photo-index,
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art-label {
     background: #204633;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
 }
-
 
 /* Products workspace: professional sans-serif scale and balanced hero proportions.
    Scoped to Products; photos, numbers and Add product interactions are unchanged. */
