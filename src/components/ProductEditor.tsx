@@ -650,17 +650,16 @@ export default function ProductEditor({
           </div>
           <aside className="editor-side product-editor-aside">
             {isEditing && (
-              <section
-                className="product-editor-live-preview"
+              <div className="catalog-reference-preview-rail">
+                <section
+                  className="product-editor-live-preview"
                 id="product-editor-preview"
                 aria-labelledby="product-editor-preview-label"
               >
                 <p id="product-editor-preview-label" className="product-editor-preview-label">CUSTOMER PREVIEW</p>
-                {previewCard}
-              </section>
-            )}
-            {isEditing && (
-              <section className="catalog-reference-model-status" aria-label="3D model status">
+                  {previewCard}
+                </section>
+                <section className="catalog-reference-model-status" aria-label="3D model status">
                 <div className="catalog-reference-model-header">
                   <h3>3D model</h3>
                   <span>{product.model ? "MODEL ON FILE" : "NO 3D"}</span>
@@ -680,7 +679,8 @@ export default function ProductEditor({
                   </div>
                 )}
                 <p className="catalog-reference-model-note">Photo-to-3D generation is paused. Existing photographs remain unchanged.</p>
-              </section>
+                </section>
+              </div>
             )}
             {!isEditing && (
             <section className="product-editor-deferred" id="product-editor-model" aria-label="3D model manager">
