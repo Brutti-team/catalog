@@ -1274,3 +1274,35 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Overview vertical rhythm — keep review cards, updates and footer close together.
+   This adjusts only section spacing; card height, imagery and content stay unchanged. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-overview {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-overview .brutti-review-strip.atelier-checklist {
+  margin-top: 9px;
+  margin-bottom: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit {
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .workspace-footer {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+@media (max-width: 660px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-overview .brutti-review-strip.atelier-checklist {
+    margin-top: 8px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit {
+    margin-top: 9px;
+    margin-bottom: 8px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .workspace-footer {
+    padding-top: 11px;
+    padding-bottom: 13px;
+  }
+}
