@@ -1244,3 +1244,43 @@
     padding: 6px 12px;
   }
 }
+
+
+/* Minimal Edit Product header: only back arrow and the current product name. */
+.admin-app .product-editor-dialog--editing .catalog-editor-actionbar-identity {
+  gap: 11px;
+}
+.admin-app .product-editor-dialog--editing .catalog-editor-back.catalog-editor-back-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  color: var(--studio-editor-muted);
+  background: transparent;
+}
+.admin-app .product-editor-dialog--editing .catalog-editor-back.catalog-editor-back-icon:hover,
+.admin-app .product-editor-dialog--editing .catalog-editor-back.catalog-editor-back-icon:focus-visible {
+  color: #28533f;
+  background: rgba(51,93,67,.07);
+  border-color: rgba(51,93,67,.11);
+}
+.admin-app .product-editor-dialog--editing .catalog-editor-actionbar-identity > strong {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -.02em;
+}
+@media (max-width: 760px) {
+  .admin-app .product-editor-dialog--editing .catalog-editor-back.catalog-editor-back-icon {
+    width: 34px;
+    height: 34px;
+  }
+  .admin-app .product-editor-dialog--editing .catalog-editor-actionbar-identity > strong {
+    font-size: 13px;
+  }
+}
