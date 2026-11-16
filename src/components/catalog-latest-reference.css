@@ -2395,3 +2395,70 @@
     font-size: 22px;
   }
 }
+
+
+/* Products hero actions: photo bulk import now lives beside Add product
+   above the inventory list, rather than in All products heading. */
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 100%;
+  min-width: 0;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-actions .catalog-products-add-button {
+  width: 100%;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-products-bulk-import-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 43px;
+  padding: 9px 13px;
+  border: 1px solid rgba(40, 83, 63, .25);
+  border-radius: 11px;
+  color: #28533f;
+  background: rgba(255, 255, 255, .68);
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.35;
+  cursor: pointer;
+  transition: background-color .16s ease, border-color .16s ease;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-products-bulk-import-button:hover:not(:disabled) {
+  border-color: rgba(40, 83, 63, .42);
+  background: #f0f6f1;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-products-bulk-import-button:focus-visible {
+  outline: 2px solid #568567;
+  outline-offset: 2px;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-products-bulk-import-button:disabled {
+  opacity: .52;
+  cursor: not-allowed;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-bulk-import-button {
+  background: rgba(255, 255, 255, .07);
+  border-color: rgba(199, 226, 205, .28);
+  color: #e0eee2;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-bulk-import-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, .13);
+}
+@media (min-width: 541px) and (max-width: 950px) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-actions {
+    flex: 0 1 244px;
+    width: min(100%, 244px);
+  }
+}
+@media (max-width: 540px) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-actions {
+    width: 100%;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-products-bulk-import-button {
+    min-height: 41px;
+  }
+}
