@@ -40,7 +40,7 @@ export default function ProductEditor({
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(false);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
-  const [show3DTools, setShow3DTools] = useState(Boolean(product.name));
+  const [show3DTools, setShow3DTools] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [modelPending, setModelPending] = useState(false);
   const [modelInvalid, setModelInvalid] = useState(false);
