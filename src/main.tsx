@@ -28,6 +28,7 @@ import "./components/product-editor-refined.css";
 import "./components/product-model.css";
 import "./components/catalog-design-finish.css";
 import "./components/catalog-glass-dashboard.css";
+import "./components/product-editor-studio-layout.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
