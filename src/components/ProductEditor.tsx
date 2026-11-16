@@ -77,6 +77,7 @@ export default function ProductEditor({
     setDraft((p) => ({ ...p, [key]: value }));
   async function commit(status: Product["status"] = draft.status) {
     if (uploadLock.current || modelLocked.current || busy) return;
+    if (status === "draft" && product.status === "published" && !window.confirm("Saving as draft will unpublish this product from the public catalogue. Continue?")) return;
     setError("");
     try {
       validateProduct({ ...draft, status });
