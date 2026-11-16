@@ -341,6 +341,7 @@ test('Reference Draft review uses four readable, clickable glass cards', async (
   const cards = review.locator(':scope > button');
   await expect(cards).toHaveCount(4);
   await expect(cards.first()).toContainText('Draft review');
+  await expect(cards.first().locator(':scope > strong')).toHaveText('0');
   await expect(cards.nth(1)).toContainText('Dimensions not confirmed');
   await expect(cards.nth(2)).toContainText('Material details missing');
   await expect(cards.nth(3)).toContainText('Descriptions incomplete');
