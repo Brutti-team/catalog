@@ -391,3 +391,210 @@
   background-image: linear-gradient(135deg, rgba(43, 71, 49, .35), rgba(20, 40, 26, .2));
   border-color: rgba(190, 219, 193, .2);
 }
+/* 2026-11-16 — Compact review row and activity card, matched to the
+   approved small reference. Presentation-only; no data or actions changed. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-strip.atelier-checklist {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 9px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-strip.atelier-checklist > button:is(.brutti-review-summary, .brutti-review-item) {
+  min-height: 39px;
+  padding: 6px 9px;
+  gap: 7px;
+  border-radius: 11px;
+  font-size: 10px;
+  line-height: 1.18;
+  box-shadow: 0 4px 12px rgba(31,59,40,.055), inset 0 1px 0 rgba(255,255,255,.86);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-icon {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  border-radius: 7px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-icon svg {
+  width: 15px;
+  height: 15px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-copy { gap: 1px; }
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-copy strong,
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-strip.atelier-checklist > button > strong {
+  font-size: 10px;
+  line-height: 1.2;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-copy small {
+  font-size: 8px;
+  line-height: 1.25;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-label {
+  font-size: 10px;
+  line-height: 1.2;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-arrow {
+  width: 13px;
+  height: 13px;
+}
+
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit {
+  margin: 10px 0 20px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 104px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  column-gap: 14px;
+  row-gap: 1px;
+  align-items: start;
+  min-height: 105px;
+  padding: 10px 13px;
+  border-radius: 16px;
+  box-shadow: 0 7px 17px rgba(36,58,41,.07), inset 0 1px 0 rgba(255,255,255,.9);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity::before {
+  width: min(440px, 56%);
+  height: 210px;
+  top: -98px;
+  right: 30px;
+  opacity: .75;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-heading {
+  grid-column: 1;
+  grid-row: 1;
+  align-items: center;
+  gap: 8px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-icon {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border-radius: 9px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-kicker {
+  font-size: 8px;
+  line-height: 1.2;
+  letter-spacing: .1em;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-heading h2 {
+  margin: 2px 0 0;
+  font: 700 15px/1.16 "DM Sans", sans-serif;
+  letter-spacing: -.025em;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-details,
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-placeholder {
+  grid-column: 1;
+  grid-row: 2;
+  margin: 3px 0 0 38px;
+  min-width: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-details {
+  gap: 1px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-details > strong {
+  font-size: 10px;
+  line-height: 1.2;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-resource {
+  font-size: 10px;
+  line-height: 1.2;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-meta {
+  gap: 3px 7px;
+  margin-top: 1px;
+  font-size: 8px;
+  line-height: 1.3;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-meta time svg {
+  width: 11px;
+  height: 11px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-action {
+  grid-column: 1;
+  grid-row: 3;
+  justify-self: start;
+  align-self: center;
+  min-height: 15px;
+  margin: 2px 0 0 38px;
+  padding: 0;
+  gap: 5px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #315d41;
+  font-size: 9px;
+  line-height: 1.3;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-action svg {
+  width: 12px;
+  height: 12px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-photo {
+  grid-column: 2;
+  grid-row: 1 / 4;
+  align-self: center;
+  justify-self: stretch;
+  width: 104px;
+  height: 81px;
+  border-radius: 11px;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-action {
+  color: #d1ead3;
+}
+@media (max-width: 980px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-strip.atelier-checklist {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 660px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-strip.atelier-checklist {
+    gap: 7px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-strip.atelier-checklist > button:is(.brutti-review-summary, .brutti-review-item) {
+    min-height: 43px;
+    padding: 7px 8px;
+    gap: 6px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity {
+    grid-template-columns: minmax(0, 1fr) 80px;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 2px 8px;
+    min-height: 114px;
+    padding: 10px;
+    border-radius: 13px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-photo {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    width: 80px;
+    height: 83px;
+    border-radius: 9px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-details,
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-placeholder,
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-action {
+    grid-column: 1;
+    margin-left: 0;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-details,
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-placeholder { grid-row: 2; }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-action { grid-row: 3; }
+}
+@media (max-width: 370px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-strip.atelier-checklist {
+    grid-template-columns: 1fr;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity {
+    grid-template-columns: minmax(0, 1fr) 68px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity-photo {
+    width: 68px;
+    height: 74px;
+  }
+}
