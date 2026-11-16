@@ -1555,3 +1555,30 @@
     font-size: 24px;
   }
 }
+
+
+/* Brutti branding for the Edit Product top bar.
+   Keep the back arrow and current product title, with a forest-green header. */
+.admin-app .product-editor-dialog--editing .catalog-editor-actionbar {
+  background: #28533f;
+  border-bottom: 1px solid rgba(17, 55, 33, .25);
+  color: #ffffff;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.admin-app .product-editor-dialog--editing .catalog-editor-actionbar-identity > strong {
+  color: #ffffff;
+}
+.admin-app .product-editor-dialog--editing .catalog-editor-back.catalog-editor-back-icon {
+  color: #f5faf6;
+}
+.admin-app .product-editor-dialog--editing .catalog-editor-back.catalog-editor-back-icon:hover,
+.admin-app .product-editor-dialog--editing .catalog-editor-back.catalog-editor-back-icon:focus-visible {
+  color: #ffffff;
+  background: rgba(255,255,255,.14);
+  border-color: rgba(255,255,255,.22);
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-editor-actionbar {
+  background: #28533f;
+  border-bottom-color: rgba(255,255,255,.12);
+}
