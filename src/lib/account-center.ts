@@ -24,6 +24,8 @@ export type ActivityEntry = {
   action: string;
   resource_type: string;
   resource_name: string;
+  /** Server-side audit row ID of the affected product/category, not a name guess. */
+  resource_id?: string | null;
   created_at: string;
 };
 
@@ -109,6 +111,24 @@ export async function getLatestCatalogActivity(): Promise<ActivityEntry | null> 
   const { data, error } = await catalogClient()
     .from("catalog_activity")
     .select("id,actor_id,actor_email,action,resource_type,resource_name,created_at")
+    .order("created_at", { ascending: false })
+    .limit(1);
+  if (error) throw new Error(error.message);
+  return (data?.[0] as ActivityEntry | undefined) ?? null;
+}
+
+/** Latest real add/edit product activity, used for the photo-backed Overview snapshot.
+ * The audit row's resource_id is matched to a loaded product; never use a
+ * random product photo to illustrate another event. */
+export async function getLatestEditedOrAddedProduct(): Promise<ActivityEntry | null> {
+  const access = await getAuthState();
+  if (!access.authenticated || !access.isAdmin)
+    throw new Error("An approved catalog administrator is required to view activity.");
+  const { data, error } = await catalogClient()
+    .from("catalog_activity")
+    .select("id,actor_id,actor_email,action,resource_type,resource_name,resource_id,created_at")
+    .eq("resource_type", "products")
+    .in("action", ["products_created", "products_updated"])
     .order("created_at", { ascending: false })
     .limit(1);
   if (error) throw new Error(error.message);
