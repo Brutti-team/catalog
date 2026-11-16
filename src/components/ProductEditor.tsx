@@ -73,6 +73,7 @@ export default function ProductEditor({
   }, [showLivePreview]);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [editorNavOpen, setEditorNavOpen] = useState(false);
+  const [editorNavCollapsed, setEditorNavCollapsed] = useState(false);
   const [show3DTools, setShow3DTools] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [modelPending, setModelPending] = useState(false);
@@ -350,22 +351,29 @@ export default function ProductEditor({
       className={isEditing ? "product-editor-dialog product-editor-dialog--editing" : "product-editor-dialog"}
       onClose={() => void requestClose()}
     >
-      <form onSubmit={submit} className="editor-form product-editor-v2">
+      <form onSubmit={submit} className={`editor-form product-editor-v2${isEditing && editorNavCollapsed ? " editor-nav-collapsed" : ""}`}>
         {isEditing && (
           <>
-            <aside className={`sidebar catalog-editor-sidebar ${editorNavOpen ? "sidebar-open" : ""}`} aria-label="Catalog admin sidebar">
-              <button type="button" className="brand" aria-label="Brutti Catalog overview" onClick={() => void requestClose("overview")}>
-                <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="brutti-official-logo" />
-              </button>
-              <button type="button" className="catalog-editor-sidebar-close" aria-label="Close sidebar" onClick={() => setEditorNavOpen(false)}>
-                <X size={20} aria-hidden="true" />
-              </button>
-              <div className="workspace-label" aria-label="Current workspace: Brutti Catalog">
-                <span className="workspace-symbol" aria-hidden="true"><Layers size={19} strokeWidth={1.9} /></span>
-                <span className="workspace-meta"><strong>Benua Brutti</strong><small>Collection studio</small></span>
+            <aside className={`sidebar catalog-editor-sidebar ${editorNavOpen ? "sidebar-open" : ""} ${editorNavCollapsed ? "sidebar-collapsed" : ""}`} aria-label="Catalog admin sidebar">
+              <div className="catalog-editor-sidebar-identity">
+                <button type="button" className="brand" aria-label="Brutti Catalog overview" onClick={() => void requestClose("overview")}>
+                  <span className="catalog-editor-brand-icon">
+                    <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="" className="brutti-official-logo" />
+                  </span>
+                  <span className="catalog-editor-brand-copy">
+                    <strong>Brutti Catalog</strong>
+                    <small>PRODUCT CATALOG</small>
+                  </span>
+                </button>
+                <button type="button" className="catalog-editor-sidebar-collapse" aria-label="Collapse sidebar" title="Collapse sidebar" onClick={() => setEditorNavCollapsed(true)}>
+                  <Menu size={19} aria-hidden="true" />
+                </button>
+                <button type="button" className="catalog-editor-sidebar-close" aria-label="Close sidebar" onClick={() => setEditorNavOpen(false)}>
+                  <X size={20} aria-hidden="true" />
+                </button>
               </div>
               <nav aria-label="Catalog workspace">
-                <span className="nav-group-label">WORKSPACE</span>
+                <span className="nav-group-label">CATALOG MANAGEMENT</span>
                 <button type="button" className="nav-item" onClick={() => void requestClose("overview")}>
                   <span className="nav-icon" aria-hidden="true"><LayoutDashboard size={19} strokeWidth={1.9} /></span>Overview
                 </button>
@@ -378,7 +386,7 @@ export default function ProductEditor({
                     <span className="nav-icon" aria-hidden="true"><Layers size={19} strokeWidth={1.9} /></span>Categories
                   </button>
                 )}
-                <span className="nav-group-label nav-group-second">HISTORY &amp; ACCESS</span>
+                <span className="nav-group-label nav-group-second">MANAGEMENT</span>
                 {showUsers && (
                   <button type="button" className="nav-item" onClick={() => void requestClose("users")}>
                     <span className="nav-icon" aria-hidden="true"><UsersRound size={19} strokeWidth={1.9} /></span>Users
@@ -407,9 +415,12 @@ export default function ProductEditor({
               <button
                 type="button"
                 className="catalog-editor-sidebar-toggle"
-                aria-label={editorNavOpen ? "Close catalog sidebar" : "Open catalog sidebar"}
-                aria-expanded={editorNavOpen}
-                onClick={() => setEditorNavOpen((open) => !open)}
+                aria-label={editorNavCollapsed ? "Expand catalog sidebar" : editorNavOpen ? "Close catalog sidebar" : "Open catalog sidebar"}
+                aria-expanded={editorNavOpen || !editorNavCollapsed}
+                onClick={() => {
+                  if (editorNavCollapsed) setEditorNavCollapsed(false);
+                  else setEditorNavOpen((open) => !open);
+                }}
               >
                 <Menu size={20} aria-hidden="true" />
               </button>
