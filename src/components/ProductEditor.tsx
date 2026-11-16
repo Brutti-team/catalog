@@ -2,6 +2,7 @@ import SafeImage from "./SafeImage";
 import { useState, useRef, useEffect, useCallback, type FormEvent } from "react";
 import {
   ImagePlus,
+  Box,
   ArrowLeft,
   ArrowRight,
   X,
@@ -38,6 +39,7 @@ export default function ProductEditor({
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [show3DTools, setShow3DTools] = useState(Boolean(product.name));
   const [dragging, setDragging] = useState(false);
   const [modelPending, setModelPending] = useState(false);
@@ -167,6 +169,10 @@ export default function ProductEditor({
   const previewDescription = draft.description || (isEditing ? "" : "Your thoughtful product story will appear here.");
   const previewCard = (
     <article className="editor-preview">
+      {isEditing && <div className="catalog-reference-preview-switch" aria-label="Customer preview format">
+        <span className="is-active"><ImagePlus size={14} aria-hidden="true" /> Photo</span>
+        <span className="is-disabled" aria-label="3D preview currently unavailable"><Box size={14} aria-hidden="true" /> 3D</span>
+      </div>}
       {cover ? (
         <SafeImage key={cover.url} src={cover.url} alt={cover.alt || draft.name} />
       ) : (
@@ -185,6 +191,102 @@ export default function ProductEditor({
       </p>
       {previewDescription && <p className="preview-description tiny muted">{previewDescription}</p>}
     </article>
+  );
+  const publishingControls = (
+    <>
+            <div className="product-editor-aside-heading" id={!isEditing ? "product-editor-publish" : undefined}>
+              <span className="product-editor-step">04</span>
+              <div>
+                <h3>Publishing</h3>
+                <p>Control how this product appears in the catalogue.</p>
+              </div>
+            </div>
+            <section className="form-section product-editor-publish-fields">
+              <h3 className="product-editor-minor-heading">Visibility & availability</h3>
+              <label>
+                Status
+                <select
+                  value={draft.status}
+                  onChange={(e) =>
+                    update("status", e.target.value as Product["status"])
+                  }
+                >
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </label>
+              <p className="tiny muted">
+                Only published products appear in the public catalog.
+              </p>
+              <label>
+                Availability
+                <select
+                  value={draft.availability}
+                  onChange={(e) =>
+                    update(
+                      "availability",
+                      e.target.value as Product["availability"],
+                    )
+                  }
+                >
+                  <option value="available">Available</option>
+                  <option value="made-to-order">Made to order</option>
+                  <option value="unavailable">Unavailable</option>
+                </select>
+              </label>
+              {orderingEnabled && (
+                <label>
+                  Display order <span className="product-editor-publish-hint">Lower numbers appear first</span>
+                  <input
+                    aria-label="Display order"
+                    type="number"
+                    min={0}
+                    max={1000000}
+                    step={1}
+                    value={draft.displayOrder ?? 0}
+                    onChange={(e) => update("displayOrder", Number(e.target.value))}
+                  />
+                </label>
+              )}
+              <label className="checkbox-field">
+                <input
+                  type="checkbox"
+                  checked={draft.featured}
+                  onChange={(e) => update("featured", e.target.checked)}
+                />
+                <span>
+                  Feature this product
+                  <small>Give it a place in the spotlight.</small>
+                </span>
+              </label>
+            </section>
+            <section className="product-editor-readiness" aria-label="Publishing checklist">
+              <div className="product-editor-readiness-top">
+                <h3>Publishing checklist</h3>
+                <span>{readyCount} of {publishChecks.length}</span>
+              </div>
+              <div className="product-editor-readiness-track" role="progressbar"
+                aria-label="Publishing checklist completion" aria-valuenow={readyCount}
+                aria-valuemin={0} aria-valuemax={publishChecks.length}>
+                <span style={{ width: `${readyCount / publishChecks.length * 100}%` }} />
+              </div>
+              <ul>
+                {publishChecks.map((item) => (
+                  <li className={item.done ? "is-complete" : ""} key={item.label}>
+                    {item.done ? <CheckCircle2 size={15} aria-hidden="true" /> : <Circle size={15} aria-hidden="true" />}
+                    {item.label}
+                  </li>
+                ))}
+              </ul>
+              <p>Drafts only need a name, SKU and category.</p>
+            </section>
+            <section className="editor-note">
+              <span className="eyebrow">GOOD TO KNOW</span>
+              <h3>Drafts stay private</h3>
+              <p>Save now and finish the listing later. Only published products appear in the public catalogue.</p>
+            </section>
+    </>
   );
   return (
     <Modal
@@ -310,6 +412,7 @@ export default function ProductEditor({
                 <div>
                   <h3>Photos <span className="product-editor-photo-count">{draft.images.length}/8</span></h3>
                   <p>First photo is the cover · add up to 8 images.</p>
+                  {isEditing && <button type="button" className="catalog-reference-manage-photos" onClick={() => setShowPhotoOptions(value => !value)}>{showPhotoOptions ? "Hide photo options" : "Manage photos"}</button>}
                 </div>
               </div>
               <input
@@ -345,7 +448,7 @@ export default function ProductEditor({
                 </strong>
                 <span>{isEditing ? "JPG, PNG or WebP" : "Choose files or drag photos here · JPG, PNG, WebP"}</span>
               </button>
-              <div className="image-editor-grid">
+              <div className={`image-editor-grid ${isEditing && showPhotoOptions ? "is-managing-photos" : ""}`}>
                 {draft.images.map((img, index) => (
                   <div className="image-editor-item" key={img.id}>
                     <div className="image-editor-photo">
@@ -406,6 +509,74 @@ export default function ProductEditor({
                 Uploaded photos are public assets. Avoid confidential images; unused uploads can be removed from Supabase Storage.
               </p>
             </section>
+            {isEditing ? (
+
+            <section className="form-section product-editor-section catalog-reference-specifications" id="product-editor-specs">
+              <div className="product-editor-section-heading">
+                <span className="product-editor-step">03</span>
+                <div><h3>Specifications</h3></div>
+              </div>
+              <div className="catalog-reference-spec-rows">
+                <div className="catalog-reference-spec-row">
+                  <span className="catalog-reference-spec-key">Dimensions</span>
+                  <div className="catalog-reference-dimension-inputs" role="group" aria-label="Dimensions in centimetres">
+                    {(["width", "depth", "height"] as const).map((key) => (
+                      <label key={key}>
+                        <span>{key === "width" ? "W" : key === "depth" ? "D" : "H"} (cm)</span>
+                        <input
+                          aria-label={`${key} in centimetres`}
+                          type="number"
+                          min={0}
+                          max={99999.99}
+                          step="0.01"
+                          value={draft[key]}
+                          onChange={(e) => update(key, Number(e.target.value))}
+                        />
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <label className="catalog-reference-spec-row">
+                  <span className="catalog-reference-spec-key">Materials</span>
+                  <input
+                    aria-label="Materials"
+                    maxLength={2000}
+                    value={draft.materials}
+                    placeholder="e.g. Walnut veneer, timber, brass"
+                    onChange={(e) => update("materials", e.target.value)}
+                  />
+                </label>
+                <label className="catalog-reference-spec-row">
+                  <span className="catalog-reference-spec-key">{draft.priceBasis === "starting-from" ? "Starting price" : "Price"}</span>
+                  <div className="catalog-reference-price-field">
+                    <span>RM</span>
+                    <input
+                      aria-label="Price in MYR"
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      value={draft.price ?? ""}
+                      placeholder="Price on enquiry"
+                      onChange={(e) => update("price", e.target.value === "" ? null : Number(e.target.value))}
+                    />
+                  </div>
+                </label>
+                <label className="catalog-reference-spec-row">
+                  <span className="catalog-reference-spec-key">Availability</span>
+                  <select
+                    aria-label="Availability"
+                    value={draft.availability}
+                    onChange={(e) => update("availability", e.target.value as Product["availability"])}
+                  >
+                    <option value="available">Available</option>
+                    <option value="made-to-order">Made to order</option>
+                    <option value="unavailable">Unavailable</option>
+                  </select>
+                </label>
+              </div>
+              <p className="catalog-reference-spec-note">Dimensions are in centimetres. Materials and positive measurements are required to publish.</p>
+            </section>
+            ) : (
             <section className="form-section product-editor-section" id="product-editor-specs">
               <div className="product-editor-section-heading">
                 <span className="product-editor-step">03</span>
@@ -463,6 +634,18 @@ export default function ProductEditor({
                 </div>
               </label>
             </section>
+            )}
+
+            {isEditing && (
+              <details className="catalog-reference-publishing" id="product-editor-publish">
+                <summary>
+                  <span>Publishing settings</span>
+                  <small>Status, display order and featured product</small>
+                  <ChevronDown size={17} aria-hidden="true" />
+                </summary>
+                <div className="catalog-reference-publishing-content">{publishingControls}</div>
+              </details>
+            )}
 
           </div>
           <aside className="editor-side product-editor-aside">
@@ -474,6 +657,29 @@ export default function ProductEditor({
               >
                 <p id="product-editor-preview-label" className="product-editor-preview-label">CUSTOMER PREVIEW</p>
                 {previewCard}
+              </section>
+            )}
+            {isEditing && (
+              <section className="catalog-reference-model-status" aria-label="3D model status">
+                <div className="catalog-reference-model-header">
+                  <h3>3D model</h3>
+                  <span>{product.model ? "MODEL ON FILE" : "NO 3D"}</span>
+                </div>
+                <p>Without an approved 3D model, customers see the original product photos — nothing is faked.</p>
+                <button type="button" className="catalog-reference-model-generate" disabled><Box size={16} aria-hidden="true" /> Generate from photos</button>
+                {modelEditingEnabled && (
+                  <button type="button" className="catalog-reference-model-upload" onClick={() => setShow3DTools(value => !value)} aria-expanded={show3DTools}>
+                    <Upload size={16} aria-hidden="true" /> {show3DTools ? "Hide model tools" : "Upload GLB / GLTF"}
+                  </button>
+                )}
+                {show3DTools && modelEditingEnabled && (
+                  <div className="catalog-reference-model-tools">
+                    <ProductModelEditor productName={draft.name || "this product"} productId={product.id} saved={isEditing} status={draft.status} model={product.model}
+                      photos={draft.images} savedPhotoIds={product.images.map(image => image.id)} modelEnabled={modelEditingEnabled} poster={cover?.url} disabled={busy}
+                      onChange={setModelChange} onPending={setModelLoading} />
+                  </div>
+                )}
+                <p className="catalog-reference-model-note">Photo-to-3D generation is paused. Existing photographs remain unchanged.</p>
               </section>
             )}
             {!isEditing && (
@@ -501,98 +707,7 @@ export default function ProductEditor({
               )}
             </section>
             )}
-            <div className="product-editor-aside-heading" id="product-editor-publish">
-              <span className="product-editor-step">04</span>
-              <div>
-                <h3>Publishing</h3>
-                <p>Control how this product appears in the catalogue.</p>
-              </div>
-            </div>
-            <section className="form-section product-editor-publish-fields">
-              <h3 className="product-editor-minor-heading">Visibility & availability</h3>
-              <label>
-                Status
-                <select
-                  value={draft.status}
-                  onChange={(e) =>
-                    update("status", e.target.value as Product["status"])
-                  }
-                >
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                  <option value="archived">Archived</option>
-                </select>
-              </label>
-              <p className="tiny muted">
-                Only published products appear in the public catalog.
-              </p>
-              <label>
-                Availability
-                <select
-                  value={draft.availability}
-                  onChange={(e) =>
-                    update(
-                      "availability",
-                      e.target.value as Product["availability"],
-                    )
-                  }
-                >
-                  <option value="available">Available</option>
-                  <option value="made-to-order">Made to order</option>
-                  <option value="unavailable">Unavailable</option>
-                </select>
-              </label>
-              {orderingEnabled && (
-                <label>
-                  Display order <span className="product-editor-publish-hint">Lower numbers appear first</span>
-                  <input
-                    aria-label="Display order"
-                    type="number"
-                    min={0}
-                    max={1000000}
-                    step={1}
-                    value={draft.displayOrder ?? 0}
-                    onChange={(e) => update("displayOrder", Number(e.target.value))}
-                  />
-                </label>
-              )}
-              <label className="checkbox-field">
-                <input
-                  type="checkbox"
-                  checked={draft.featured}
-                  onChange={(e) => update("featured", e.target.checked)}
-                />
-                <span>
-                  Feature this product
-                  <small>Give it a place in the spotlight.</small>
-                </span>
-              </label>
-            </section>
-            <section className="product-editor-readiness" aria-label="Publishing checklist">
-              <div className="product-editor-readiness-top">
-                <h3>Publishing checklist</h3>
-                <span>{readyCount} of {publishChecks.length}</span>
-              </div>
-              <div className="product-editor-readiness-track" role="progressbar"
-                aria-label="Publishing checklist completion" aria-valuenow={readyCount}
-                aria-valuemin={0} aria-valuemax={publishChecks.length}>
-                <span style={{ width: `${readyCount / publishChecks.length * 100}%` }} />
-              </div>
-              <ul>
-                {publishChecks.map((item) => (
-                  <li className={item.done ? "is-complete" : ""} key={item.label}>
-                    {item.done ? <CheckCircle2 size={15} aria-hidden="true" /> : <Circle size={15} aria-hidden="true" />}
-                    {item.label}
-                  </li>
-                ))}
-              </ul>
-              <p>Drafts only need a name, SKU and category.</p>
-            </section>
-            <section className="editor-note">
-              <span className="eyebrow">GOOD TO KNOW</span>
-              <h3>Drafts stay private</h3>
-              <p>Save now and finish the listing later. Only published products appear in the public catalogue.</p>
-            </section>
+            {!isEditing && publishingControls}
             {!isEditing && (
               <>
                 <button
