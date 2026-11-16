@@ -2,7 +2,6 @@ import SafeImage from "./SafeImage";
 import { useState, useRef, useEffect, useCallback, type FormEvent } from "react";
 import {
   ImagePlus,
-  Box,
   ArrowLeft,
   ArrowRight,
   X,
@@ -168,12 +167,6 @@ export default function ProductEditor({
   const previewDescription = draft.description || (isEditing ? "" : "Your thoughtful product story will appear here.");
   const previewCard = (
     <article className="editor-preview">
-      {isEditing && (
-        <div className="catalog-editor-media-tabs" role="group" aria-label="Preview format">
-          <button type="button" className="is-active" aria-pressed="true"><ImagePlus size={15} /> Photo</button>
-          <button type="button" disabled={!product.model} aria-label={product.model ? "Open 3D model editor" : "3D not available"} onClick={() => { setShow3DTools(true); jumpTo("product-editor-model"); }}><Box size={15} /> 3D</button>
-        </div>
-      )}
       {cover ? (
         <SafeImage key={cover.url} src={cover.url} alt={cover.alt || draft.name} />
       ) : (
@@ -483,6 +476,7 @@ export default function ProductEditor({
                 {previewCard}
               </section>
             )}
+            {!isEditing && (
             <section className="product-editor-deferred" id="product-editor-model" aria-label="3D model manager">
               <button
                 type="button"
@@ -506,6 +500,7 @@ export default function ProductEditor({
                 </div>
               )}
             </section>
+            )}
             <div className="product-editor-aside-heading" id="product-editor-publish">
               <span className="product-editor-step">04</span>
               <div>
