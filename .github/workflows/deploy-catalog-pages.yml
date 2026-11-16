@@ -1,0 +1,50 @@
+name: Deploy Brutti Catalog to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: brutti-catalog-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      # This is the public browser URL/key for the existing Brutti Supabase project.
+      # Never use a Supabase secret or service-role key in a browser build.
+      VITE_SUPABASE_URL: https://lgdjoxafleqnbomtfzqt.supabase.co
+      VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_E5-tPfhYUXJ4pLVIv-oKQQ_T4T2J-VR
+      GITHUB_PAGES: "true"
+      VITE_BASE_PATH: /catalog/
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Build GitHub Pages site
+        run: npm run build:pages
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload built site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist
+      - name: Deploy site
+        id: deployment
+        uses: actions/deploy-pages@v4
