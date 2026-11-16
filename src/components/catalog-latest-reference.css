@@ -1515,3 +1515,51 @@
     height: 88px;
   }
 }
+
+
+/* Overview typography: consistent professional system font for the
+   Catalog activity and Categories cards. Preserve layout and Brutti colors. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"]
+  .brutti-glass-panels.atelier-workbench > section:is(.brutti-activity-panel,.brutti-category-panel) {
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"]
+  .brutti-glass-panels.atelier-workbench > section:is(.brutti-activity-panel,.brutti-category-panel)
+  .brutti-glass-panel-title h2 {
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: clamp(23px, 2.1vw, 29px);
+  font-weight: 700;
+  line-height: 1.23;
+  letter-spacing: -.035em;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"]
+  .brutti-glass-panels.atelier-workbench > section:is(.brutti-activity-panel,.brutti-category-panel)
+  .brutti-glass-panel-title p {
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"]
+  .brutti-glass-panels.atelier-workbench > section:is(.brutti-activity-panel,.brutti-category-panel)
+  :is(button, select, .brutti-category-name, .brutti-category-count, .brutti-activity-chart,
+    .brutti-activity-chart-legend, .brutti-activity-axis-date) {
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"]
+  .brutti-glass-panels.atelier-workbench > section.brutti-activity-panel
+  .brutti-activity-summary-item > strong:is(.brutti-activity-big,.brutti-activity-updated) {
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -.035em;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 660px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"]
+    .brutti-glass-panels.atelier-workbench > section:is(.brutti-activity-panel,.brutti-category-panel)
+    .brutti-glass-panel-title h2 {
+    font-size: 22px;
+  }
+}
