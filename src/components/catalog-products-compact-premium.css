@@ -312,3 +312,76 @@
   border-bottom-color: #34513d;
   color: #e0efe1;
 }
+
+
+/* A real Catalog product photograph gives the pale glass Inventory hero a
+   furniture-studio identity. The image lives in the quiet centre-right area,
+   away from the title and the functional Add / Bulk import controls. */
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-photo {
+  position: absolute;
+  z-index: 0;
+  inset: 0 17% 0 43%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: .58;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 24%, #000 73%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 24%, #000 73%, transparent 100%);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
+  object-position: 50% 50%;
+  filter: saturate(.75) contrast(.95) brightness(1.09);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(248,251,248,.44), rgba(239,247,240,.14) 46%, rgba(239,247,240,.24));
+  pointer-events: none;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-main,
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-side {
+  position: relative;
+  z-index: 1;
+}
+/* The action area remains readable over the softly diffused photograph. */
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-side {
+  background: linear-gradient(90deg, rgba(248,252,248,.23), rgba(248,252,248,.45));
+  border-radius: 0 9px 9px 0;
+}
+@media (max-width: 950px) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-photo {
+    inset: 0 0 30% 42%;
+    opacity: .30;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 52%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent, #000 52%, transparent 100%);
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-side {
+    background: transparent;
+    border-radius: 0;
+  }
+}
+@media (max-width: 620px) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-product-hero-photo {
+    inset: 0 0 43% 49%;
+    opacity: .20;
+  }
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero-photo {
+  opacity: .23;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero-photo::after {
+  background: rgba(20,52,34,.35);
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-product-hero-side {
+  background: rgba(25,54,35,.16);
+}
