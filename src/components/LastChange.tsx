@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Clock3, History, ImageOff } from "lucide-react";
+import { ImageOff } from "lucide-react";
 import { getLatestEditedOrAddedProduct, type ActivityEntry } from "../lib/account-center";
 import SafeImage from "./SafeImage";
 import type { CatalogData } from "../lib/types";
@@ -19,6 +19,25 @@ export function formatActivityTime(value: string): string {
     minute: "2-digit",
     hour12: true,
   }).format(date)} MYT`;
+}
+
+/** Show the real audit date, weekday, and time in Malaysia local time. */
+function formatOverviewActivityTime(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Time unavailable";
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kuala_Lumpur",
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).formatToParts(date);
+  const get = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find(part => part.type === type)?.value ?? "";
+  return `${get("day")} ${get("month")} ${get("year")} (${get("weekday")}), ${get("hour")}:${get("minute")} ${get("dayPeriod").toLowerCase()} MYT`;
 }
 
 export function activityLabel(event: Pick<ActivityEntry, "action" | "resource_type">): string {
@@ -41,7 +60,6 @@ export function activityLabel(event: Pick<ActivityEntry, "action" | "resource_ty
 export default function LastChange({
   authenticated,
   refreshKey,
-  onHistory,
 }: {
   authenticated: boolean;
   refreshKey: CatalogData;
@@ -73,52 +91,41 @@ export default function LastChange({
     : undefined;
   const productPhoto = changedProduct?.images.find(image => image.url.trim());
 
-  const canRead = authenticated;
   const visibleStatus = authenticated ? (status === "not-enabled" ? "loading" : status) : "not-enabled";
 
   return (
-    <section className="catalog-last-activity" aria-label="Latest catalog change">
+    <section className="catalog-last-activity catalog-latest-updates" aria-label="Latest catalog updates">
       <div className="catalog-last-activity-heading">
-        <span className="catalog-last-activity-icon"><History size={18} aria-hidden="true" /></span>
-        <div>
-          <span className="catalog-last-activity-kicker">ACTIVITY SNAPSHOT</span>
-          <h2>Latest change</h2>
-        </div>
+        <h2>Latest updates</h2>
       </div>
       {visibleStatus === "ready" && latest ? (
         <div className="catalog-last-activity-details">
-          <strong title={activityLabel(latest)}>{activityLabel(latest)}</strong>
-          <span className="catalog-last-activity-resource" title={latest.resource_name || latest.resource_type}>
-            {latest.resource_name || latest.resource_type}
-          </span>
-          <span className="catalog-last-activity-meta">
-            <span title={latest.actor_email}>By {latest.actor_email || "System"}</span>
-            <span className="catalog-last-activity-separator" aria-hidden="true">·</span>
-            <time dateTime={latest.created_at}>
-              <Clock3 size={13} aria-hidden="true" /> {formatActivityTime(latest.created_at)}
-            </time>
-          </span>
+          <p className="catalog-latest-product" title={latest.resource_name || latest.resource_type}>
+            <strong>{latest.resource_name || latest.resource_type}</strong>{" "}
+            <span className="catalog-latest-action">({latest.action === "products_created" ? "added" : "edited"})</span>
+          </p>
+          <p className="catalog-latest-actor">By {latest.actor_email || "System"}</p>
+          <time className="catalog-latest-time" dateTime={latest.created_at}>
+            {formatOverviewActivityTime(latest.created_at)}
+          </time>
         </div>
       ) : (
         <p className="catalog-last-activity-placeholder">
-          {visibleStatus === "loading" ? "Checking latest changes…"
+          {visibleStatus === "loading" ? "Checking latest updates…"
             : visibleStatus === "empty" ? "No product additions or edits recorded yet."
-              : visibleStatus === "error" ? "Activity history is temporarily unavailable."
-                : "Recording will start after your administrator account is verified."}
+              : visibleStatus === "error" ? "Latest updates are temporarily unavailable."
+                : "Updates will appear when your administrator account is verified."}
         </p>
       )}
-      {canRead && <button type="button" className="catalog-last-activity-action" onClick={onHistory}>
-        View activity log <ArrowUpRight size={15} aria-hidden="true" />
-      </button>}
       <div className={"catalog-last-activity-photo" + (productPhoto ? " has-photo" : " is-empty")}
-        aria-label={productPhoto ? "Photo of latest edited or added product: " + (changedProduct?.name ?? "") : "No product photo available"}>
+        aria-label={productPhoto ? "Latest updated product photo: " + (changedProduct?.name ?? "") : "No product photo available"}>
         {productPhoto ? (
           <SafeImage src={productPhoto.url}
-            alt={"Latest edited or added product: " + (changedProduct?.name ?? "")}
+            alt={"Product: " + (changedProduct?.name ?? "")}
             loading="lazy" />
         ) : (
           <span className="catalog-last-activity-photo-empty">
-            <ImageOff size={25} aria-hidden="true" />
+            <ImageOff size={24} aria-hidden="true" />
             <small>No product photo</small>
           </span>
         )}
