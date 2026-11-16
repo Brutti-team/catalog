@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Clock3, History } from "lucide-react";
-import { getLatestCatalogActivity, type ActivityEntry } from "../lib/account-center";
+import { ArrowUpRight, Clock3, History, ImageOff } from "lucide-react";
+import { getLatestEditedOrAddedProduct, type ActivityEntry } from "../lib/account-center";
+import SafeImage from "./SafeImage";
 import type { CatalogData } from "../lib/types";
 
 type RecordStatus = "not-enabled" | "loading" | "ready" | "empty" | "error";
@@ -53,7 +54,7 @@ export default function LastChange({
     let mounted = true;
     if (!authenticated) return;
     // Do not fabricate actor/time from product timestamps while audit is absent.
-    void getLatestCatalogActivity().then(record => {
+    void getLatestEditedOrAddedProduct().then(record => {
       if (!mounted) return;
       setLatest(record);
       setStatus(record ? "ready" : "empty");
@@ -64,6 +65,13 @@ export default function LastChange({
     });
     return () => { mounted = false; };
   }, [authenticated, refreshKey]);
+
+  // Only use the exact audited product ID. Missing/removed product photos are
+  // never replaced with an unrelated catalog image.
+  const changedProduct = latest?.resource_id
+    ? refreshKey.products.find(product => product.id === latest.resource_id)
+    : undefined;
+  const productPhoto = changedProduct?.images.find(image => image.url.trim());
 
   const canRead = authenticated;
   const visibleStatus = authenticated ? (status === "not-enabled" ? "loading" : status) : "not-enabled";
@@ -94,7 +102,7 @@ export default function LastChange({
       ) : (
         <p className="catalog-last-activity-placeholder">
           {visibleStatus === "loading" ? "Checking latest changes…"
-            : visibleStatus === "empty" ? "No changes recorded yet."
+            : visibleStatus === "empty" ? "No product additions or edits recorded yet."
               : visibleStatus === "error" ? "Activity history is temporarily unavailable."
                 : "Recording will start after your administrator account is verified."}
         </p>
@@ -102,6 +110,19 @@ export default function LastChange({
       {canRead && <button type="button" className="catalog-last-activity-action" onClick={onHistory}>
         View activity log <ArrowUpRight size={15} aria-hidden="true" />
       </button>}
+      <div className={"catalog-last-activity-photo" + (productPhoto ? " has-photo" : " is-empty")}
+        aria-label={productPhoto ? "Photo of latest edited or added product: " + (changedProduct?.name ?? "") : "No product photo available"}>
+        {productPhoto ? (
+          <SafeImage src={productPhoto.url}
+            alt={"Latest edited or added product: " + (changedProduct?.name ?? "")}
+            loading="lazy" />
+        ) : (
+          <span className="catalog-last-activity-photo-empty">
+            <ImageOff size={25} aria-hidden="true" />
+            <small>No product photo</small>
+          </span>
+        )}
+      </div>
     </section>
   );
 }
