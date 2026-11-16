@@ -6,6 +6,8 @@ import {
   ArrowUpRight,
   Check,
   ChevronDown,
+  Image as ImageIcon,
+  Box as BoxIcon,
   Mail,
   Search,
   SlidersHorizontal,
@@ -94,7 +96,13 @@ export default function PublicCatalog({
   const [viewMode, setViewMode] = useState<"photos" | "3d">("photos");
   const [mobileMenu, setMobileMenu] = useState(false);
   useEffect(() => {
-    if (previewProduct) return;
+    if (previewProduct) {
+      // A nested editor dialog may already be scrolled to its Save footer.
+      // Always start the private customer preview from the top.
+      const dialog = document.querySelector<HTMLDialogElement>("dialog.catalog-private-preview-dialog");
+      if (dialog) dialog.scrollTop = 0;
+      return;
+    }
     const changeRoute = () => {
       setProductId(currentProductId());
       setImageIndex(0);
@@ -487,7 +495,13 @@ export default function PublicCatalog({
               <>
                 <div className="pub-product-detail">
                   <div className="pub-detail-gallery">
-                    {selectedModel && (
+                    {previewProduct && (
+                      <div className="catalog-preview-media-tabs" role="group" aria-label="Preview image format">
+                        <button type="button" className={!showingModel ? "is-active" : ""} aria-pressed={!showingModel} onClick={() => setViewMode("photos")}><ImageIcon size={15} aria-hidden="true" /> Photo</button>
+                        <button type="button" className={showingModel ? "is-active" : ""} disabled={!selectedModel} aria-pressed={showingModel} onClick={() => setViewMode("3d")}><BoxIcon size={15} aria-hidden="true" /> 3D</button>
+                      </div>
+                    )}
+                    {!previewProduct && selectedModel && (
                       <div className="pub-media-switch" role="group" aria-label="Product viewing mode">
                         <button type="button" aria-pressed={viewMode === '3d'} onClick={() => setViewMode("3d")}>Interactive 3D</button>
                         <button type="button" aria-pressed={viewMode === 'photos'} onClick={() => setViewMode("photos")}>Original photos</button>
@@ -512,6 +526,11 @@ export default function PublicCatalog({
                       {product.featured && (
                         <span className="pub-featured-tag">
                           <Sparkles size={12} /> Featured piece
+                        </span>
+                      )}
+                      {previewProduct && (
+                        <span className="catalog-preview-photo-caption">
+                          Original photo · {selectedModel ? "3D model available" : "3D not yet available"}
                         </span>
                       )}
                     </div>
@@ -620,7 +639,7 @@ export default function PublicCatalog({
                     </div>
                   </div>
                 </div>
-                {related.length > 0 && (
+                {!previewProduct && related.length > 0 && (
                   <section className="pub-related">
                     <div className="pub-section-heading">
                       <div>
