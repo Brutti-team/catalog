@@ -94,7 +94,8 @@
   margin-left: auto;
   color: #789282;
 }
-.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-item .brutti-review-arrow {
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-item .brutti-review-arrow,
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-review-summary .brutti-review-arrow {
   margin-left: 0;
 }
 
