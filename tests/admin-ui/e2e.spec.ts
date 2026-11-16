@@ -239,6 +239,56 @@ test('latest change appears only on Overview, not in sidebar, and opens Activity
   await expect(snapshot).toHaveCount(0);
 });
 
+for (const theme of ['light', 'dark'] as const) {
+  test('Latest change has readable, curved glass in ' + theme + ' mode', async ({ page }) => {
+    await backend(page, { savedTheme: theme });
+    await openAdmin(page);
+    const card = page.getByRole('region', { name: 'Latest catalog change' });
+    await expect(card).toBeVisible();
+    const appearance = await card.evaluate(element => {
+      const style = getComputedStyle(element);
+      return {
+        display: style.display,
+        radius: parseFloat(style.borderTopLeftRadius),
+        blur: style.backdropFilter,
+        background: style.backgroundColor,
+        border: style.borderTopWidth,
+      };
+    });
+    expect(appearance.display).toBe('grid');
+    expect(appearance.radius).toBeGreaterThanOrEqual(20);
+    expect(appearance.blur).toContain('blur(');
+    expect(appearance.background).toContain('rgba(');
+    expect(appearance.border).toBe('1px');
+    await expect(card.getByRole('heading', { name: 'Latest change' })).toBeVisible();
+    await expect(card.getByRole('button', { name: 'View activity log' })).toBeVisible();
+  });
+}
+
+test('Latest change glass card is compact and usable on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await backend(page, { savedTheme: 'light' });
+  await openAdmin(page);
+  const card = page.getByRole('region', { name: 'Latest catalog change' });
+  const action = card.getByRole('button', { name: 'View activity log' });
+  await expect(card).toBeVisible();
+  await expect(action).toBeVisible();
+  const geometry = await card.evaluate(element => {
+    const button = element.querySelector('.catalog-last-activity-action')!;
+    const heading = element.querySelector('.catalog-last-activity-heading')!;
+    return {
+      radius: parseFloat(getComputedStyle(element).borderTopLeftRadius),
+      buttonY: button.getBoundingClientRect().top,
+      headingBottom: heading.getBoundingClientRect().bottom,
+      cardRight: element.getBoundingClientRect().right,
+      viewportWidth: window.innerWidth,
+    };
+  });
+  expect(geometry.radius).toBeGreaterThanOrEqual(16);
+  expect(geometry.buttonY).toBeGreaterThan(geometry.headingBottom);
+  expect(geometry.cardRight).toBeLessThanOrEqual(geometry.viewportWidth + 1);
+});
+
 test('Overview auto sync and read-only draft checks remain actionable', async ({ page }) => {
   await backend(page, { savedTheme: 'light' });
   await openAdmin(page);
