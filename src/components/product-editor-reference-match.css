@@ -1430,91 +1430,114 @@
 }
 
 
-/* Editorial section headings: no artificial glass cards, numbered blocks, or
-   filled backgrounds. Strong typography + a deliberate hairline green accent. */
+/* Product editor section typography — independent of boxes, bars and underlines.
+   A small editorial section index above a confident title with intentional whitespace. */
 .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
   .form-section.product-editor-section > .product-editor-section-heading {
-  position: relative;
-  display: flex;
-  align-items: baseline;
-  gap: 15px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  justify-items: start;
+  gap: 5px;
   min-height: 0;
-  margin: 0 0 24px;
-  padding: 7px 0 16px;
-  background: transparent;
+  margin: 0 0 22px;
+  padding: 6px 0 0;
+  background: none;
   box-shadow: none;
   border: 0;
-  border-bottom: 1px solid rgba(40,83,63,.18);
   border-radius: 0;
 }
 .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
-  .form-section.product-editor-section > .product-editor-section-heading::after {
-  content: "";
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 40px;
-  height: 2px;
-  background: #28533f;
-  border-radius: 2px;
+  .form-section.product-editor-section > .product-editor-section-heading::after,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  .form-section.product-editor-section > .product-editor-section-heading::before {
+  content: none;
+  display: none;
 }
 .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
   .form-section.product-editor-section > .product-editor-section-heading > .product-editor-step {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   flex: none;
-  width: 21px;
+  width: auto;
   height: auto;
   padding: 0;
   border: 0;
   border-radius: 0;
   background: none;
-  color: #4e7660;
-  font-size: 11px;
+  color: #53715e;
+  font-family: inherit;
+  font-size: 10px;
+  line-height: 1.4;
   font-weight: 700;
-  letter-spacing: .12em;
-  line-height: 1.55;
+  letter-spacing: .14em;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  .form-section.product-editor-section > .product-editor-section-heading > .product-editor-step::before {
+  content: "SECTION";
+  display: inline-block;
+  margin-right: 7px;
+  color: #839588;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: .16em;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  .form-section.product-editor-section > .product-editor-section-heading > div {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 5px 14px;
 }
 .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
   .form-section.product-editor-section > .product-editor-section-heading h3 {
   margin: 0;
-  color: #253c30;
-  font-size: clamp(21px,1.75vw,24px);
-  font-weight: 650;
+  color: #243c2e;
+  font-size: clamp(24px, 2vw, 28px);
+  font-weight: 630;
   line-height: 1.18;
-  letter-spacing: -.035em;
+  letter-spacing: -.04em;
 }
 .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
   .form-section.product-editor-section > .product-editor-section-heading p {
-  color: #707e74;
+  margin: 0;
+  color: #708075;
   font-size: 11px;
-  line-height: 1.45;
+  font-weight: 450;
+  line-height: 1.5;
 }
 .admin-app .product-editor-dialog--editing #product-editor-photos
   > .product-editor-section-heading > div {
-  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 12px;
 }
 .admin-app .product-editor-dialog--editing #product-editor-photos
   > .product-editor-section-heading .catalog-reference-manage-photos {
   color: #28533f;
-  font-weight: 650;
+  font-weight: 600;
 }
 .admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
   .form-section.product-editor-section > .product-editor-section-heading {
-  background: transparent;
-  border-bottom-color: rgba(178,216,186,.20);
-}
-.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
-  .form-section.product-editor-section > .product-editor-section-heading::after {
-  background: #8ab89a;
+  background: none;
+  border: 0;
 }
 .admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
   .form-section.product-editor-section > .product-editor-section-heading > .product-editor-step {
-  color: #9ac6a6;
-  background: transparent;
+  color: #a9cbb2;
+  background: none;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  .form-section.product-editor-section > .product-editor-section-heading > .product-editor-step::before {
+  color: #819d88;
 }
 .admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
   .form-section.product-editor-section > .product-editor-section-heading h3 {
-  color: #dbece0;
+  color: #dfefe3;
 }
 .admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
   .form-section.product-editor-section > .product-editor-section-heading p {
@@ -1523,13 +1546,12 @@
 @media (max-width: 760px) {
   .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
     .form-section.product-editor-section > .product-editor-section-heading {
-    padding: 5px 0 13px;
-    gap: 12px;
-    min-height: 0;
-    margin-bottom: 19px;
+    gap: 4px;
+    padding: 3px 0 0;
+    margin-bottom: 18px;
   }
   .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
     .form-section.product-editor-section > .product-editor-section-heading h3 {
-    font-size: 21px;
+    font-size: 24px;
   }
 }
