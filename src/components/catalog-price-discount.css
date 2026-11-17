@@ -1,0 +1,285 @@
+/* Brutti Catalog · compact pricing and real original-price discounts.
+   Applies to admin editor and public catalog without modifying stored product data. */
+
+/* Refined product title: no oversized multi-line heading. */
+.pub-app.pub-refined .pub-product-detail .pub-detail-copy > h1 {
+  font-size: clamp(27px, 2.8vw, 41px);
+  line-height: 1.18;
+  letter-spacing: -.027em;
+  text-wrap: balance;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+  max-width: 23ch;
+  font-size: clamp(27px, 2.65vw, 37px);
+  line-height: 1.19;
+  letter-spacing: -.023em;
+}
+@media (max-width: 760px) {
+  .pub-app.pub-refined .pub-product-detail .pub-detail-copy > h1,
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    font-size: clamp(24px, 6.6vw, 32px);
+    line-height: 1.22;
+    letter-spacing: -.025em;
+  }
+}
+
+/* Product detail / private preview price arrangement. */
+.pub-app.pub-refined .pub-detail-price {
+  display: block;
+  margin: 20px 0 14px !important;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 690;
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+.pub-app.pub-refined .pub-detail-price .catalog-price-line {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+  vertical-align: middle;
+}
+.pub-app.pub-refined .pub-detail-price .catalog-price-current {
+  color: #244835;
+  font-size: 18px;
+  font-weight: 740;
+  white-space: nowrap;
+}
+.pub-app.pub-refined .pub-detail-price .catalog-price-old {
+  color: #939993;
+  font-size: 14.5px;
+  font-weight: 490;
+  text-decoration-color: #8b938c;
+  text-decoration-thickness: 1px;
+  white-space: nowrap;
+}
+.pub-app.pub-refined .pub-detail-price .catalog-price-discount {
+  color: #188455;
+  font-size: 14px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+.pub-app.pub-refined .pub-detail-price > small {
+  display: block;
+  margin-top: 5px;
+  color: #8a978c;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 450;
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+  order: 5;
+  display: block;
+  align-self: center;
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto 18px !important;
+  padding: 0;
+  text-align: center;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price .catalog-price-line {
+  justify-content: center;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price .catalog-price-current {
+  color: #2a4332;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price > small {
+  color: #8b9389;
+}
+
+/* Product card prices get a smaller single compact line; wrap only if required. */
+.pub-app.pub-refined .pub-card-price {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+}
+.pub-app.pub-refined .pub-card-price .catalog-price-line {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  line-height: 1.5;
+}
+.pub-app.pub-refined .pub-card-price .catalog-price-current {
+  color: #2b4433;
+  font-weight: 730;
+}
+.pub-app.pub-refined .pub-card-price .catalog-price-old {
+  color: #8b958b;
+  font-size: 11px;
+  text-decoration: line-through;
+  white-space: nowrap;
+}
+.pub-app.pub-refined .pub-card-price .catalog-price-discount {
+  color: #168451;
+  font-size: 11px;
+  font-weight: 760;
+  white-space: nowrap;
+}
+
+/* Admin edit: current and original prices are two balanced cards on ONE row. */
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-reference-pricing-row {
+  align-items: center;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-pricing-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-pricing-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 7px;
+  margin: 0;
+  color: #536c59;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 640;
+  line-height: 1.3;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-pricing-field > span {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: #566e5b;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 660;
+  line-height: 1.4;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-pricing-field em {
+  color: #87998a;
+  font-size: 10px;
+  font-weight: 500;
+  font-style: normal;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-pricing-field :is(.catalog-reference-price-field, .price-input) {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  min-height: 46px;
+  max-height: 46px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #d5dfd6;
+  border-radius: 10px;
+  background: rgba(255,255,255,.96);
+  box-shadow: none;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-pricing-field :is(.catalog-reference-price-field, .price-input) > span {
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  flex: 0 0 43px;
+  min-width: 43px;
+  width: 43px;
+  margin: 0;
+  border-right: 1px solid #e1e9e2;
+  background: #f1f6f2;
+  color: #52765e;
+  font-size: 11px;
+  font-weight: 750;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-pricing-field :is(.catalog-reference-price-field, .price-input) > input {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  min-height: 44px;
+  margin: 0 !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  outline: none;
+  border-radius: 0 !important;
+  background: transparent;
+  box-shadow: none !important;
+  color: #273e30;
+  font-size: 12.5px;
+  line-height: normal;
+  font-variant-numeric: tabular-nums;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-pricing-field :is(.catalog-reference-price-field, .price-input):focus-within {
+  border-color: #639274;
+  box-shadow: 0 0 0 3px rgba(77,130,93,.13);
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-new-pricing-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-pricing-hint {
+  margin: 8px 0 0;
+  color: #87978a;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.admin-app .product-editor-dialog .editor-preview .catalog-price-line {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.admin-app .product-editor-dialog .editor-preview .catalog-price-old {
+  color: #8a958b;
+  text-decoration: line-through;
+  font-size: 11px;
+}
+.admin-app .product-editor-dialog .editor-preview .catalog-price-discount {
+  color: #13804e;
+  font-weight: 750;
+  font-size: 11px;
+}
+@media (max-width: 680px) {
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-pricing-fields,
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-new-pricing-fields {
+    grid-template-columns: minmax(0,1fr);
+    gap: 12px;
+  }
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-pricing-field :is(.catalog-reference-price-field, .price-input) {
+  border-color: #56705d;
+  background: #304a38;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-pricing-field :is(.catalog-reference-price-field, .price-input) > span {
+  border-color: #56705d;
+  background: #385441;
+  color: #d6e8d9;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-pricing-field :is(.catalog-reference-price-field, .price-input) > input {
+  color: #e7f2e8;
+}
