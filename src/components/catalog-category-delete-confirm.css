@@ -1,0 +1,166 @@
+/* Brutti Catalog — dangerous category deletion confirmation.
+   Appears ONLY after an administrator clicks the trash icon; no deletion occurs on open. */
+.admin-app.brutti-staff-redesign .catalog-category-delete-dialog {
+  width: min(480px, calc(100vw - 28px));
+  max-width: min(480px, calc(100vw - 28px));
+  border-radius: 18px;
+  border: 1px solid rgba(212,228,216,.9);
+  background: #fafcf9;
+  box-shadow: 0 28px 70px rgba(22,52,34,.25), 0 7px 20px rgba(22,52,34,.1);
+}
+.admin-app.brutti-staff-redesign .catalog-category-delete-dialog .modal-heading {
+  padding-bottom: 10px;
+}
+.admin-app.brutti-staff-redesign .catalog-category-delete-dialog .modal-heading h2 {
+  color: #264333;
+  font-size: clamp(19px, 2vw, 23px);
+  font-weight: 740;
+  letter-spacing: -.035em;
+}
+.admin-app.brutti-staff-redesign .catalog-category-delete-dialog .modal-heading .eyebrow {
+  color: #aa6356;
+}
+.admin-app.brutti-staff-redesign .catalog-category-delete-dialog .modal-description {
+  color: #708478;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.admin-app.brutti-staff-redesign .catalog-delete-confirmation {
+  padding: 2px 20px 20px;
+}
+.admin-app.brutti-staff-redesign .catalog-delete-warning {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border: 1px solid #efcec6;
+  border-radius: 12px;
+  background: #fff4f0;
+  padding: 14px;
+  color: #8e4035;
+}
+.admin-app.brutti-staff-redesign .catalog-delete-warning > svg {
+  flex: 0 0 22px;
+  margin-top: 1px;
+  color: #b85b4b;
+}
+.admin-app.brutti-staff-redesign .catalog-delete-warning strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 770;
+  line-height: 1.4;
+}
+.admin-app.brutti-staff-redesign .catalog-delete-warning p {
+  margin: 5px 0 0;
+  color: #945f53;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.admin-app.brutti-staff-redesign .catalog-delete-confirm-label {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  margin-top: 19px;
+  color: #506958;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.admin-app.brutti-staff-redesign .catalog-delete-confirm-label strong {
+  display: inline;
+  color: #294b36;
+  font-weight: 740;
+}
+.admin-app.brutti-staff-redesign .catalog-delete-confirm-label input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 9px 12px;
+  background: #fff;
+  border: 1px solid #d4dfd6;
+  border-radius: 10px;
+  color: #264432;
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color .16s ease, box-shadow .16s ease;
+}
+.admin-app.brutti-staff-redesign .catalog-delete-confirm-label input:focus-visible {
+  border-color: #8dad94;
+  box-shadow: 0 0 0 3px rgba(70,128,87,.12);
+}
+.admin-app.brutti-staff-redesign .catalog-delete-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 22px;
+}
+.admin-app.brutti-staff-redesign .catalog-delete-confirm-actions .button {
+  min-height: 41px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.admin-app.brutti-staff-redesign .catalog-delete-confirm-actions .catalog-delete-confirm-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid #af5446;
+  background: #aa4e42;
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(154,59,44,.12);
+}
+.admin-app.brutti-staff-redesign .catalog-delete-confirm-actions .catalog-delete-confirm-button:hover:not(:disabled) {
+  border-color: #893b30;
+  background: #943f33;
+  color: #fff;
+  box-shadow: 0 5px 14px rgba(154,59,44,.2);
+}
+.admin-app.brutti-staff-redesign .catalog-delete-confirm-actions .catalog-delete-confirm-button:disabled {
+  opacity: .42;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign .catalog-category-delete-dialog .notice.error {
+  margin: 13px 0 0;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .catalog-category-delete-dialog {
+  background: #1d3427;
+  border-color: #476d50;
+  box-shadow: 0 30px 70px rgba(0,0,0,.45);
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .catalog-category-delete-dialog .modal-heading h2,
+.admin-app.brutti-staff-redesign[data-theme="dark"] .catalog-delete-confirm-label strong {
+  color: #e9f3e9;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .catalog-delete-warning {
+  background: #4d302d;
+  border-color: #85564d;
+  color: #f3c2b8;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .catalog-delete-warning p {
+  color: #efb6aa;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .catalog-delete-confirm-label {
+  color: #c5dccb;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .catalog-delete-confirm-label input {
+  background: #264735;
+  border-color: #51745a;
+  color: #f4fbf4;
+}
+@media (max-width: 540px) {
+  .admin-app.brutti-staff-redesign .catalog-delete-confirmation {
+    padding-inline: 14px;
+  }
+  .admin-app.brutti-staff-redesign .catalog-delete-confirm-actions .button {
+    flex: 1 1 auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign .catalog-delete-confirm-label input {
+    transition: none;
+  }
+}
