@@ -10,6 +10,7 @@ import {
   Eye,
   Save,
   LoaderCircle,
+  LockKeyhole,
   CheckCircle2,
   Circle,
   Upload,
@@ -422,21 +423,24 @@ export default function ProductEditor({
                 />
               </label>
               <div className="field-pair">
-                <label className="catalog-product-id-field">
-                  <span className="catalog-product-id-label">Product ID <span aria-hidden="true">*</span></span>
-                  <input
-                    required
-                    maxLength={64}
-                    aria-label="Product ID (read only)"
-                    readOnly
-                    value={isNewProduct ? draft.sku : product.sku}
-                    placeholder="Choose a category to generate Product ID"
-                    title="Product ID is managed by the system and cannot be edited"
-                  />
+                <div className="catalog-product-id-field">
+                  <span className="catalog-product-id-label" id="catalog-product-id-label">
+                    Product ID <span aria-hidden="true">*</span>
+                  </span>
+                  <output
+                    className="catalog-product-id-display"
+                    aria-labelledby="catalog-product-id-label"
+                    title="Product ID is system-managed and cannot be edited"
+                  >
+                    <span className="catalog-product-id-value">
+                      {(isNewProduct ? draft.sku : product.sku) || "Choose a category to generate ID"}
+                    </span>
+                    <LockKeyhole size={16} strokeWidth={1.8} aria-hidden="true" />
+                  </output>
                   <small className="catalog-product-id-help">
-                    {isNewProduct ? "Generated automatically · final ID confirmed on Save" : "Assigned Product ID · read only"}
+                    {isNewProduct ? "Generated automatically · final ID confirmed on Save" : "Assigned Product ID · cannot be changed"}
                   </small>
-                </label>
+                </div>
                 <div className="catalog-editor-category-field">
                   <span className="catalog-editor-category-label">Category <span aria-hidden="true">*</span></span>
                   <EditorCategoryPicker
