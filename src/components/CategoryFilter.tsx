@@ -31,9 +31,9 @@ function categoryIcon(name: string) {
   if (label.includes("kiosk")) return Store;
   if (label.includes("panel")) return Layers;
   if (label.includes("rack") || label.includes("shel")) return BookOpen;
+  if (label.includes("table") || label.includes("kitchen")) return Table2;
   if (label.includes("reception") || label.includes("counter")) return Armchair;
   if (label.includes("rental")) return CalendarDays;
-  if (label.includes("table") || label.includes("kitchen")) return Table2;
   return Shapes;
 }
 
