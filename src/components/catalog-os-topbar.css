@@ -785,3 +785,9 @@
     animation: none;
   }
 }
+
+
+/* Account chip: softly rounded rectangle, not a full pill. Keep avatar circular. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile {
+  border-radius: 14px;
+}
