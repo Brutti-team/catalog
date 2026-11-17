@@ -136,7 +136,7 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
       <button type="button" ref={triggerRef} disabled={disabled}
         className="catalog-editor-category-trigger"
         aria-label={selected ? `Category: ${selected.name}` : "Select a category"}
-        aria-required="true" aria-haspopup="listbox" aria-expanded={open}
+        aria-required="true" aria-haspopup="dialog" aria-expanded={open}
         aria-controls={open ? menuId : undefined}
         onClick={() => { setSearch(""); setLayout(null); setOpen(previous => !previous); }}
         onKeyDown={event => {
@@ -152,7 +152,7 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
       </button>
       {open && dialog && createPortal(
         <div id={menuId} className="catalog-editor-category-popover" ref={menuRef}
-          role="listbox" aria-label="Product category" style={{ ...layout, visibility: layout ? "visible" : "hidden" }}
+          role="dialog" aria-label="Choose product category" style={{ ...layout, visibility: layout ? "visible" : "hidden" }}
           onKeyDown={handleKeys}>
           <div className="catalog-editor-category-menu-head">
             <span>SELECT CATEGORY</span>
@@ -163,7 +163,7 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
             <input ref={searchRef} value={search} onChange={event => setSearch(event.target.value)}
               placeholder="Search categories..." aria-label="Search categories" autoComplete="off" />
           </div>
-          <div className="catalog-editor-category-options">
+          <div className="catalog-editor-category-options" role="listbox" aria-label="Product categories">
             {filtered.length ? filtered.map((category, index) => {
               const OptionIcon = categoryIcon(category.name);
               return (
