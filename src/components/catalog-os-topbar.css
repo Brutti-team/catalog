@@ -1246,3 +1246,72 @@
     transition: none;
   }
 }
+
+
+/* Sidebar footer: live sync status beneath View public catalog. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-utility {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-sync-status {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 9px;
+  min-height: 35px;
+  margin: 1px 0 0;
+  padding: 6px 12px 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #597a65;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-sync-dot {
+  display: block;
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #63966c;
+  box-shadow: 0 0 0 3px rgba(107, 154, 114, .13);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-sync-status.sync-error {
+  color: #9a5042;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-sync-status.sync-error .sidebar-sync-dot {
+  background: #c66956;
+  box-shadow: 0 0 0 3px rgba(198, 105, 86, .13);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-sync-status.sync-pending {
+  color: #7e8f83;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-sync-status.sync-pending .sidebar-sync-dot {
+  background: #a0b3a5;
+  box-shadow: 0 0 0 3px rgba(133, 161, 141, .12);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar .sidebar-sync-status {
+  color: #b8d5bf;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar .sidebar-sync-status.sync-error {
+  color: #e5aaa0;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar .sidebar-sync-status.sync-pending {
+  color: #acbeb1;
+}
+@media (min-width: 801px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] > .sidebar .sidebar-sync-status {
+    justify-content: center;
+    padding-inline: 0;
+    margin-top: 2px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] > .sidebar .sidebar-sync-label {
+    display: none;
+  }
+}
