@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
-import { AlertCircle, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, PencilLine, ArrowLeftRight } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight } from "lucide-react";
 import {
   getAccountSummary, initials, listCatalogActivity, listCatalogStaff,
   roleLabel, updateOwnDisplayName, updateStaffRole,
