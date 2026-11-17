@@ -29,6 +29,8 @@ export interface Product {
   depth: number;
   height: number;
   price: number | null;
+  /** Optional original (pre-discount) price, null when no sale. */
+  originalPrice?: number | null;
   /** Optional until inspected/approved price_basis schema addition is installed. */
   priceBasis?: 'fixed' | 'starting-from';
   /** Optional until the workspace has enabled catalog ordering. */
