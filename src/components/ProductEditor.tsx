@@ -19,6 +19,7 @@ import type { Product, Category, ProductImage } from "../lib/types";
 import { uploadImage, validateProduct, cleanupAbandonedImages, type ProductModelChange } from "../lib/catalog";
 import Modal from "./Modal";
 import AvailabilityPicker from "./AvailabilityPicker";
+import EditorCategoryPicker from "./EditorCategoryPicker";
 import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
 import { formatProductPrice } from "../lib/price";
@@ -414,30 +415,24 @@ export default function ProductEditor({
               </label>
               <div className="field-pair">
                 <label>
-                  SKU <span>*</span>
+                  Product ID <span>*</span>
                   <input
                     required
                     maxLength={64}
                     value={draft.sku}
-                    placeholder="BR-CHR-001"
+                    placeholder="BRT25-P086"
                     onChange={(e) => update("sku", e.target.value)}
                   />
                 </label>
-                <label>
-                  Category <span>*</span>
-                  <select
-                    required
+                <div className="catalog-editor-category-field">
+                  <span className="catalog-editor-category-label">Category <span aria-hidden="true">*</span></span>
+                  <EditorCategoryPicker
+                    categories={categories}
                     value={draft.categoryId}
-                    onChange={(e) => update("categoryId", e.target.value)}
-                  >
-                    <option value="">Select a category</option>
-                    {categories.map((c) => (
-                      <option value={c.id} key={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                    onChange={value => update("categoryId", value)}
+                    disabled={busy || uploading}
+                  />
+                </div>
               </div>
               <label>
                 Description <span className="product-editor-publish-hint">Required to publish</span>
