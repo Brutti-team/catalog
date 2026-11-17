@@ -14,14 +14,6 @@ import {
   Circle,
   Upload,
   ChevronDown,
-  LayoutDashboard,
-  Package,
-  Layers,
-  UsersRound,
-  History,
-  Grid2X2,
-  ArrowUpRight,
-  Menu,
 } from "lucide-react";
 import type { Product, Category, ProductImage } from "../lib/types";
 import { uploadImage, validateProduct, cleanupAbandonedImages, type ProductModelChange } from "../lib/catalog";
@@ -30,7 +22,6 @@ import AvailabilityPicker from "./AvailabilityPicker";
 import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
 import { formatProductPrice } from "../lib/price";
-import { publicAssetUrl } from "../lib/assets";
 
 export type CatalogEditorNavigation = "overview" | "products" | "categories" | "users" | "activity" | "catalog";
 export default function ProductEditor({
@@ -38,9 +29,6 @@ export default function ProductEditor({
   categories,
   orderingEnabled = false,
   modelEditingEnabled = false,
-  showCategories = true,
-  showUsers = false,
-  productCount = 0,
   onNavigate,
   onSave,
   onClose,
@@ -73,8 +61,6 @@ export default function ProductEditor({
     return () => cancelAnimationFrame(frame);
   }, [showLivePreview]);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
-  const [editorNavOpen, setEditorNavOpen] = useState(false);
-  const [editorNavCollapsed, setEditorNavCollapsed] = useState(false);
   const [show3DTools, setShow3DTools] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [modelPending, setModelPending] = useState(false);
@@ -352,83 +338,10 @@ export default function ProductEditor({
       className={isEditing ? "product-editor-dialog product-editor-dialog--editing" : "product-editor-dialog"}
       onClose={() => void requestClose()}
     >
-      <form onSubmit={submit} className={`editor-form product-editor-v2${isEditing && editorNavCollapsed ? " editor-nav-collapsed" : ""}`}>
-        {isEditing && (
-          <>
-            <aside className={`sidebar catalog-editor-sidebar ${editorNavOpen ? "sidebar-open" : ""} ${editorNavCollapsed ? "sidebar-collapsed" : ""}`} aria-label="Catalog admin sidebar">
-              <div className="catalog-editor-sidebar-identity">
-                <button type="button" className="brand" aria-label="Brutti Catalog overview" onClick={() => void requestClose("overview")}>
-                  <span className="catalog-editor-brand-icon">
-                    <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="" className="brutti-official-logo" />
-                  </span>
-                  <span className="catalog-editor-brand-copy">
-                    <strong>Brutti Catalog</strong>
-                    <small>PRODUCT CATALOG</small>
-                  </span>
-                </button>
-                <button type="button" className="catalog-editor-sidebar-collapse" aria-label="Collapse sidebar" title="Collapse sidebar" onClick={() => setEditorNavCollapsed(true)}>
-                  <Menu size={19} aria-hidden="true" />
-                </button>
-                <button type="button" className="catalog-editor-sidebar-close" aria-label="Close sidebar" onClick={() => setEditorNavOpen(false)}>
-                  <X size={20} aria-hidden="true" />
-                </button>
-              </div>
-              <nav aria-label="Catalog workspace">
-                <span className="nav-group-label">CATALOG MANAGEMENT</span>
-                <button type="button" className="nav-item" onClick={() => void requestClose("overview")}>
-                  <span className="nav-icon" aria-hidden="true"><LayoutDashboard size={19} strokeWidth={1.9} /></span>Overview
-                </button>
-                <button type="button" className="nav-item active" aria-current="page" onClick={() => void requestClose("products")}>
-                  <span className="nav-icon" aria-hidden="true"><Package size={19} strokeWidth={1.9} /></span>Products
-                  <span className="nav-count">{productCount}</span>
-                </button>
-                {showCategories && (
-                  <button type="button" className="nav-item" onClick={() => void requestClose("categories")}>
-                    <span className="nav-icon" aria-hidden="true"><Layers size={19} strokeWidth={1.9} /></span>Categories
-                  </button>
-                )}
-                <span className="nav-group-label nav-group-second">MANAGEMENT</span>
-                {showUsers && (
-                  <button type="button" className="nav-item" onClick={() => void requestClose("users")}>
-                    <span className="nav-icon" aria-hidden="true"><UsersRound size={19} strokeWidth={1.9} /></span>Users
-                  </button>
-                )}
-                <button type="button" className="nav-item" onClick={() => void requestClose("activity")}>
-                  <span className="nav-icon" aria-hidden="true"><History size={19} strokeWidth={1.9} /></span>Activity log
-                </button>
-              </nav>
-              <div className="sidebar-utility">
-                <button type="button" className="sidebar-public-link" onClick={() => void requestClose("catalog")}>
-                  <span className="sidebar-public-icon" aria-hidden="true"><Grid2X2 size={18} strokeWidth={1.9} /></span>
-                  <span className="sidebar-public-copy"><strong>View public catalog</strong><small>Customer view</small></span>
-                  <ArrowUpRight size={16} className="sidebar-public-arrow" aria-hidden="true" />
-                </button>
-              </div>
-            </aside>
-            {editorNavOpen && (
-              <button type="button" className="catalog-editor-sidebar-backdrop" aria-label="Close navigation" onClick={() => setEditorNavOpen(false)} />
-            )}
-          </>
-        )}
+      <form onSubmit={submit} className="editor-form product-editor-v2">
         {isEditing && (
           <header className="catalog-editor-actionbar" aria-label="Product editor actions">
             <div className="catalog-editor-actionbar-identity">
-              <button
-                type="button"
-                className="catalog-editor-sidebar-toggle"
-                aria-label={editorNavCollapsed ? "Expand catalog sidebar" : editorNavOpen ? "Close catalog sidebar" : "Open catalog sidebar"}
-                aria-expanded={editorNavOpen}
-                onClick={() => {
-                  if (window.matchMedia("(max-width: 1100px)").matches) {
-                    setEditorNavCollapsed(false);
-                    setEditorNavOpen((open) => !open);
-                  } else {
-                    setEditorNavCollapsed(false);
-                  }
-                }}
-              >
-                <Menu size={20} aria-hidden="true" />
-              </button>
               <button
                 type="button"
                 className="catalog-editor-back catalog-editor-back-icon"
