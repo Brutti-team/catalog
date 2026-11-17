@@ -1642,3 +1642,33 @@
     padding: 7px 10px;
   }
 }
+
+
+/* Compact public catalog tile: distinguish storefront icon, copy and Brutti mark. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link {
+  gap: 13px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link .sidebar-public-copy {
+  min-width: 0;
+  padding-right: 39px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link .catalog-sidebar-product-photo {
+  object-position: center 52%;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link .catalog-sidebar-brand {
+  top: 5px;
+  right: 10px;
+  width: 29px;
+  height: 16px;
+  opacity: .82;
+}
+@media (min-width: 801px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link {
+    gap: 0;
+  }
+}
+@media (max-width: 800px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link {
+    gap: 12px;
+  }
+}
