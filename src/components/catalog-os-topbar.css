@@ -791,3 +791,17 @@
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile {
   border-radius: 14px;
 }
+
+
+/* Brutti Catalog refinement: sync status stays text-only; DP is a rounded square. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .connection-pill {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .profile-avatar {
+  border-radius: 10px;
+}
