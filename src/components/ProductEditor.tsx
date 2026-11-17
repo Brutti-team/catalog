@@ -15,6 +15,7 @@ import {
   Circle,
   Upload,
   ChevronDown,
+  Crop,
 } from "lucide-react";
 import type { Product, Category, ProductImage } from "../lib/types";
 import { uploadImage, validateProduct, cleanupAbandonedImages, type ProductModelChange } from "../lib/catalog";
@@ -27,6 +28,8 @@ import ProductPrice from "./ProductPrice";
 import { nextProductId } from "../lib/product-ids";
 import { cmToUnit, unitToCm, unitMax, type DimensionUnit } from "../lib/dimensions";
 import DimensionUnitPicker from "./DimensionUnitPicker";
+import PhotoCropEditor from "./PhotoCropEditor";
+import { photoCropStyle } from "../lib/photo-crop";
 
 export type CatalogEditorNavigation = "overview" | "products" | "categories" | "users" | "activity" | "catalog";
 export default function ProductEditor({
@@ -74,6 +77,7 @@ export default function ProductEditor({
     return () => cancelAnimationFrame(frame);
   }, [showLivePreview]);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
+  const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [show3DTools, setShow3DTools] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [modelPending, setModelPending] = useState(false);
@@ -403,11 +407,6 @@ export default function ProductEditor({
             <span className="product-editor-jump-number" aria-hidden="true">03</span>
             <span>Specifications</span>
           </button>
-          {isEditing && (
-            <button type="button" onClick={() => jumpTo("product-editor-preview")}>
-              <span>Preview</span>
-            </button>
-          )}
           <button type="button" onClick={() => jumpTo("product-editor-publish")}>
             <span className="product-editor-jump-number" aria-hidden="true">04</span>
             <span>Publishing</span>
@@ -524,7 +523,7 @@ export default function ProductEditor({
                 {draft.images.map((img, index) => (
                   <div className="image-editor-item" key={img.id}>
                     <div className="image-editor-photo">
-                      <SafeImage src={img.url} alt={img.alt || draft.name} />
+                      <SafeImage src={img.url} alt={img.alt || draft.name} style={photoCropStyle(img)} />
                       {index === 0 && <span>Cover</span>}
                       <button
                         type="button"
@@ -540,6 +539,15 @@ export default function ProductEditor({
                         <X size={14} />
                       </button>
                     </div>
+                    <button
+                      type="button"
+                      className="catalog-photo-crop-open"
+                      aria-label={`Adjust crop, position and zoom for photo ${index + 1}`}
+                      disabled={busy || uploading}
+                      onClick={() => setEditingPhotoId(img.id)}
+                    >
+                      <Crop size={14} aria-hidden="true" /> Adjust image
+                    </button>
                     <input
                       aria-label={`Image ${index + 1} description`}
                       placeholder="Image description"
@@ -578,8 +586,41 @@ export default function ProductEditor({
                 ))}
               </div>
               <p className="tiny muted">
-                Uploaded photos are public assets. Avoid confidential images; unused uploads can be removed from Supabase Storage.
+                Use Adjust image to crop, drag and zoom how customers see each photo. The original upload stays intact.
               </p>
+              {isEditing && (
+                <section className="catalog-photo-model-inline" aria-label="3D model management">
+                  <button
+                    type="button"
+                    className="catalog-photo-model-toggle"
+                    aria-expanded={show3DTools}
+                    onClick={() => setShow3DTools(open => !open)}
+                  >
+                    <Box size={18} aria-hidden="true" />
+                    <span><strong>3D model</strong><small>{product.model ? "Model on file" : "Not yet available · optional"}</small></span>
+                    <ChevronDown size={17} aria-hidden="true" />
+                  </button>
+                  {show3DTools && (
+                    <div className="catalog-photo-model-content">
+                      <p>Photo-to-3D generation is paused. Manage existing approved 3D files here; original photos remain unchanged.</p>
+                      <ProductModelEditor
+                        productName={draft.name || "this product"}
+                        productId={product.id}
+                        saved={isEditing}
+                        status={draft.status}
+                        model={product.model}
+                        photos={draft.images}
+                        savedPhotoIds={product.images.map(image => image.id)}
+                        modelEnabled={modelEditingEnabled}
+                        poster={cover?.url}
+                        disabled={busy}
+                        onChange={setModelChange}
+                        onPending={setModelLoading}
+                      />
+                    </div>
+                  )}
+                </section>
+              )}
             </section>
             {isEditing ? (
 
@@ -779,81 +820,35 @@ export default function ProductEditor({
 
 
           </div>
-          <aside className="editor-side product-editor-aside">
-            {isEditing && (
-              <div className="catalog-reference-preview-rail">
-                <section
-                  className="product-editor-live-preview"
-                id="product-editor-preview"
-                aria-labelledby="product-editor-preview-label"
-              >
-                <p id="product-editor-preview-label" className="product-editor-preview-label">CUSTOMER PREVIEW</p>
-                  {previewCard}
-                </section>
-                <section className="catalog-reference-model-status" aria-label="3D model status">
-                <div className="catalog-reference-model-header">
-                  <h3>3D model</h3>
-                  <span>{product.model ? "MODEL ON FILE" : "NO 3D"}</span>
-                </div>
-                <p>Without an approved 3D model, customers see the original product photos — nothing is faked.</p>
-                <button type="button" className="catalog-reference-model-generate" disabled><Box size={16} aria-hidden="true" /> Generate from photos</button>
-                {modelEditingEnabled && (
-                  <button type="button" className="catalog-reference-model-upload" onClick={() => setShow3DTools(value => !value)} aria-expanded={show3DTools}>
-                    <Upload size={16} aria-hidden="true" /> {show3DTools ? "Hide model tools" : "Upload GLB / GLTF"}
-                  </button>
-                )}
-                {show3DTools && modelEditingEnabled && (
-                  <div className="catalog-reference-model-tools">
+          {!isEditing && (
+            <aside className="editor-side product-editor-aside">
+              <section className="product-editor-deferred" id="product-editor-model" aria-label="3D model manager">
+                <button
+                  type="button"
+                  className="product-editor-deferred-toggle"
+                  aria-expanded={show3DTools}
+                  aria-controls="product-editor-deferred-content"
+                  onClick={() => setShow3DTools(value => !value)}
+                >
+                  <span><strong>3D model</strong><small>{product.model ? "Model available" : "No 3D model"}</small></span>
+                  <ChevronDown size={17} aria-hidden="true" />
+                </button>
+                {show3DTools && (
+                  <div id="product-editor-deferred-content">
+                    <p className="product-editor-deferred-note">3D generation is paused while we refine the catalog. Existing model files can still be reviewed or managed here.</p>
                     <ProductModelEditor productName={draft.name || "this product"} productId={product.id} saved={isEditing} status={draft.status} model={product.model}
                       photos={draft.images} savedPhotoIds={product.images.map(image => image.id)} modelEnabled={modelEditingEnabled} poster={cover?.url} disabled={busy}
                       onChange={setModelChange} onPending={setModelLoading} />
                   </div>
                 )}
-                <p className="catalog-reference-model-note">Photo-to-3D generation is paused. Existing photographs remain unchanged.</p>
-                </section>
-              </div>
-            )}
-            {!isEditing && (
-            <section className="product-editor-deferred" id="product-editor-model" aria-label="3D model manager">
-              <button
-                type="button"
-                className="product-editor-deferred-toggle"
-                aria-expanded={show3DTools}
-                aria-controls="product-editor-deferred-content"
-                onClick={() => setShow3DTools(value => !value)}
-              >
-                <span>
-                  <strong>3D model</strong>
-                  <small>{product.model ? "Model available" : "No 3D model"}</small>
-                </span>
-                <ChevronDown size={17} aria-hidden="true" />
+              </section>
+              {publishingControls}
+              <button type="button" className="button secondary full" aria-expanded={preview} onClick={() => setPreview(open => !open)}>
+                <Eye size={16} /> {preview ? "Hide preview" : "Preview product"}
               </button>
-              {show3DTools && (
-                <div id="product-editor-deferred-content">
-                  <p className="product-editor-deferred-note">3D generation is paused while we refine the catalog. Existing model files can still be reviewed or managed here.</p>
-                  <ProductModelEditor productName={draft.name || 'this product'} productId={product.id} saved={isEditing} status={draft.status} model={product.model}
-                    photos={draft.images} savedPhotoIds={product.images.map(image => image.id)} modelEnabled={modelEditingEnabled} poster={cover?.url} disabled={busy}
-                    onChange={setModelChange} onPending={setModelLoading} />
-                </div>
-              )}
-            </section>
-            )}
-            {!isEditing && publishingControls}
-            {!isEditing && (
-              <>
-                <button
-                  type="button"
-                  className="button secondary full"
-                  aria-expanded={preview}
-                  onClick={() => setPreview((open) => !open)}
-                >
-                  <Eye size={16} />
-                  {preview ? "Hide preview" : "Preview product"}
-                </button>
-                {preview && previewCard}
-              </>
-            )}
-          </aside>
+              {preview && previewCard}
+            </aside>
+          )}
         </div>
         {error && (
           <div className="notice error" role="alert">
@@ -899,6 +894,24 @@ export default function ProductEditor({
           </div>
         </footer>
       </form>
+      {editingPhotoId && draft.images.some(image => image.id === editingPhotoId) && (
+        <PhotoCropEditor
+          key={editingPhotoId}
+          image={draft.images.find(image => image.id === editingPhotoId)!}
+          onClose={() => setEditingPhotoId(null)}
+          onApply={crop => {
+            setDraft(current => ({
+              ...current,
+              images: current.images.map(image =>
+                image.id === editingPhotoId
+                  ? { ...image, crop }
+                  : image,
+              ),
+            }));
+            setEditingPhotoId(null);
+          }}
+        />
+      )}
       {showLivePreview && (
         <Modal
           title="Private catalog preview"
