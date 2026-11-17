@@ -1,4 +1,5 @@
 import SafeImage from "./components/SafeImage";
+import { photoCropStyle } from "./lib/photo-crop";
 import { formatProductPrice } from "./lib/price";
 import { publicAssetUrl } from "./lib/assets";
 import { categoryCover } from "./lib/category-covers";
@@ -648,7 +649,7 @@ export default function App() {
               </div>
               <div className="catalog-command-art" aria-label={heroProduct ? `Catalog photo: ${heroProduct.name}` : "Brutti kiosk design reference"}>
                 {heroProduct ? (
-                  <SafeImage src={heroProduct.images[0]?.url} alt={heroProduct.images[0]?.alt || heroProduct.name} loading="lazy" />
+                  <SafeImage src={heroProduct.images[0]?.url} alt={heroProduct.images[0]?.alt || heroProduct.name} style={photoCropStyle(heroProduct.images[0])} loading="lazy" />
                 ) : (
                   <img src={import.meta.env.BASE_URL + "reference/kiosk.jpg"} alt="Benua Brutti kiosk showroom design reference" loading="lazy" />
                 )}
@@ -802,7 +803,7 @@ export default function App() {
                       <button className="catalog-gallery-card" type="button" key={p.id}
                         onClick={() => setEditor(p)} aria-label={`Edit ${p.name}`}>
                         <div className="catalog-gallery-photo">
-                          <SafeImage src={p.images[0]?.url || "/images/placeholder.svg"} alt="" loading="lazy" decoding="async" />
+                          <SafeImage src={p.images[0]?.url || "/images/placeholder.svg"} alt="" style={photoCropStyle(p.images[0])} loading="lazy" decoding="async" />
                           <span className={`status-badge status-${p.status}`}><i />{label(p.status)}</span>
                         </div>
                         <div className="catalog-gallery-body">
@@ -848,6 +849,7 @@ export default function App() {
                                   <SafeImage
                                     src={p.images[0]?.url || "/images/placeholder.svg"}
                                     alt=""
+                                    style={photoCropStyle(p.images[0])}
                                   />
                                   <span>
                                     <strong>{p.name}</strong>
