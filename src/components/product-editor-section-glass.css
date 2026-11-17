@@ -1,0 +1,125 @@
+/* Brutti Catalog · restrained frosted-glass section headings.
+   Applies only to Edit Product: Details, Photos and Specifications.
+   Keeps all original form interactions, validation and responsiveness. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+.editor-primary > .form-section.product-editor-section > .product-editor-section-heading {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 66px;
+  margin: 0 0 21px;
+  padding: 11px 17px;
+  box-sizing: border-box;
+  border: 1px solid rgba(203, 223, 207, .86);
+  border-left: 3px solid rgba(54, 111, 73, .66);
+  border-radius: 14px;
+  background: linear-gradient(117deg,
+    rgba(255, 255, 255, .80) 0%,
+    rgba(246, 253, 248, .60) 58%,
+    rgba(231, 244, 235, .44) 100%);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .94),
+    0 7px 21px rgba(27, 73, 42, .07),
+    0 1px 3px rgba(37, 76, 49, .035);
+}
+
+/* Clean, floating number, not a harsh boxed KPI treatment. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+.editor-primary > .form-section.product-editor-section > .product-editor-section-heading > .product-editor-step {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 35px;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  min-width: 35px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(191, 218, 198, .9);
+  border-radius: 10px;
+  background: rgba(255,255,255,.74);
+  color: #276342;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: .01em;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 2px 6px rgba(35,77,48,.05);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+.editor-primary > .form-section.product-editor-section > .product-editor-section-heading > .product-editor-step::before {
+  content: none;
+  display: none;
+}
+
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+.editor-primary > .form-section.product-editor-section > .product-editor-section-heading h3 {
+  color: #20442f;
+  font-family: "Manrope", "DM Sans", sans-serif;
+  font-size: clamp(19px, 1.58vw, 23px);
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -.035em;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+.editor-primary > .form-section.product-editor-section > .product-editor-section-heading p {
+  color: #718579;
+  font-size: 11px;
+}
+
+/* Mobile headings stay tidy and touch-friendly, without awkward wrapping. */
+@media (max-width: 760px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  .editor-primary > .form-section.product-editor-section > .product-editor-section-heading {
+    min-height: 59px;
+    margin-bottom: 17px;
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: 12px;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  .editor-primary > .form-section.product-editor-section > .product-editor-section-heading > .product-editor-step {
+    flex-basis: 32px;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  .editor-primary > .form-section.product-editor-section > .product-editor-section-heading h3 {
+    font-size: 19px;
+  }
+}
+
+/* Maintain glass treatment and readable headings in dark appearance. */
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+.editor-primary > .form-section.product-editor-section > .product-editor-section-heading {
+  border: 1px solid rgba(111, 150, 120, .4);
+  border-left: 3px solid #80aa89;
+  background: linear-gradient(115deg,rgba(61, 88, 65, .73),rgba(40, 64, 47, .54));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 8px 20px rgba(0,0,0,.10);
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+.editor-primary > .form-section.product-editor-section > .product-editor-section-heading > .product-editor-step {
+  border-color: rgba(147, 183, 153, .42);
+  background: rgba(255,255,255,.09);
+  color: #cdeed3;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+.editor-primary > .form-section.product-editor-section > .product-editor-section-heading h3 {
+  color: #edf7ef;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  .editor-primary > .form-section.product-editor-section > .product-editor-section-heading {
+    background: #f4faf4;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
