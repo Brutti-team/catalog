@@ -1,0 +1,242 @@
+/* Brutti Catalog · Product details form — consistent control system.
+   Scope: Name, immutable Product ID, Category and Description only.
+   No changes to data, picker interactions, product images or publishing logic. */
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics {
+  --brutti-detail-control-h: 52px;
+  --brutti-detail-radius: 11px;
+  --brutti-detail-border: #d5dfd7;
+  --brutti-detail-ink: #233c2d;
+  --brutti-detail-muted: #68796c;
+  --brutti-detail-focus: #4c8661;
+  min-width: 0;
+}
+
+/* A single typographic rhythm for field titles and annotation. */
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label,
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-product-id-field,
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-field {
+  box-sizing: border-box;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label {
+  display: block;
+  margin: 0 0 17px;
+  color: #475b4c;
+  font-size: 13px;
+  font-weight: 670;
+  line-height: 19px;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label > span[aria-hidden="true"],
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-product-id-label > span,
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-label > span {
+  color: #537e5f;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-product-id-label,
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-label {
+  display: block;
+  height: 19px;
+  margin: 0 0 9px;
+  color: #475b4c;
+  font-size: 13px;
+  font-weight: 670;
+  line-height: 19px;
+}
+
+/* Name input, ID and picker use identical height, radius and border weight. */
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label > input,
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label > textarea {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin: 9px 0 0;
+  border: 1px solid var(--brutti-detail-border);
+  border-radius: var(--brutti-detail-radius);
+  background: #fff;
+  color: var(--brutti-detail-ink);
+  box-shadow: 0 1px 2px rgba(26, 53, 33, .02);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 470;
+  letter-spacing: 0;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label > input {
+  height: var(--brutti-detail-control-h);
+  min-height: var(--brutti-detail-control-h);
+  padding: 0 15px;
+  line-height: normal;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label > textarea {
+  height: 116px;
+  min-height: 116px;
+  max-height: 320px;
+  padding: 13px 15px;
+  line-height: 1.55;
+  resize: vertical;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label > :is(input,textarea)::placeholder {
+  color: #9aa79e;
+  font-size: 13px;
+  opacity: 1;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label > :is(input,textarea):focus {
+  border-color: var(--brutti-detail-focus);
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(75, 134, 96, .12);
+}
+
+/* Two balanced fields; no awkward 35/65 split or unequal controls. */
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .field-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 16px;
+  margin: 0 0 17px;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-product-id-field,
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-field {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-product-id-display,
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-trigger {
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--brutti-detail-control-h);
+  min-height: var(--brutti-detail-control-h);
+  margin: 0;
+  border: 1px solid var(--brutti-detail-border);
+  border-radius: var(--brutti-detail-radius);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: normal;
+  box-shadow: 0 1px 2px rgba(26, 53, 33, .02);
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-product-id-display {
+  padding: 0 15px;
+  background: #f6f9f6;
+  color: #2f5940;
+  font-weight: 710;
+  letter-spacing: .012em;
+  cursor: default;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-product-id-display > svg {
+  color: #769581;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-product-id-help {
+  display: block;
+  min-height: 17px;
+  margin: 6px 0 0;
+  color: var(--brutti-detail-muted);
+  font-size: 11px;
+  font-weight: 450;
+  line-height: 1.45;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-trigger {
+  gap: 10px;
+  padding: 0 13px;
+  background: #fff;
+  color: var(--brutti-detail-ink);
+  font-weight: 610;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-trigger-icon {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #eef4ef;
+  color: #3f7652;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-chevron {
+  color: #72917c;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-trigger:hover:not(:disabled) {
+  border-color: #a6c3ae;
+  background: #fbfdfb;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-trigger:focus-visible,
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category.is-open .catalog-editor-category-trigger {
+  border-color: var(--brutti-detail-focus);
+  outline: none;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(75, 134, 96, .12);
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .product-editor-publish-hint {
+  float: right;
+  margin: 0;
+  color: #829185;
+  font-size: 11px;
+  font-weight: 490;
+  line-height: 19px;
+}
+
+/* Phone: consistent 48px control height with stacked full-width fields. */
+@media (max-width: 900px) {
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics {
+    --brutti-detail-control-h: 48px;
+  }
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .field-pair {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+    margin-bottom: 17px;
+  }
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label {
+    margin-bottom: 16px;
+  }
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label > textarea {
+    height: 112px;
+    min-height: 112px;
+  }
+}
+@media (max-width: 480px) {
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics {
+    --brutti-detail-control-h: 48px;
+  }
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label,
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-product-id-label,
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-label {
+    font-size: 12.5px;
+  }
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics .product-editor-publish-hint {
+    font-size: 10px;
+  }
+}
+
+/* Preserve readable native dark-mode fields without gradients. */
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-basics {
+  --brutti-detail-border: #506759;
+  --brutti-detail-ink: #ecf5eb;
+  --brutti-detail-muted: #b6c8b7;
+  --brutti-detail-focus: #8bb99a;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-basics > label,
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-basics :is(.catalog-product-id-label,.catalog-editor-category-label) {
+  color: #d3e2d5;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-basics > label > :is(input,textarea),
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-trigger {
+  background: #2e4536;
+  color: #edf5ec;
+  border-color: var(--brutti-detail-border);
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-product-id-display {
+  background: #294332;
+  color: #e4f4e7;
+  border-color: var(--brutti-detail-border);
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-editor-category-trigger-icon {
+  background: #3b5a44;
+  color: #c7e1cd;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-basics .product-editor-publish-hint,
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-basics .catalog-product-id-help {
+  color: #b6c8b7;
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-basics > label > :is(input,textarea) {
+    transition: none;
+  }
+}
