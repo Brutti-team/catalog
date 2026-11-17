@@ -1,6 +1,7 @@
 import SafeImage from "./components/SafeImage";
 import { formatProductPrice } from "./lib/price";
 import { publicAssetUrl } from "./lib/assets";
+import { categoryCover } from "./lib/category-covers";
 import { resolveAppRoute } from "./lib/routes";
 import { useState, useEffect, useCallback, useRef, type FormEvent } from "react";
 import {
@@ -999,15 +1000,17 @@ export default function App() {
                   const items = data.products.filter(
                     (p) => p.categoryId === c.id,
                   );
+                  const cover = categoryCover(c.name, items);
                   return (
                     <article className="category-card" key={c.id}>
                       <div className="category-cover">
                         <SafeImage
-                          src={
-                            items.find((p) => p.images.length)?.images[0].url ||
-                            "/images/hero.jpg"
-                          }
-                          alt=""
+                          className="category-cover-image"
+                          src={cover.src}
+                          alt={`${c.name} category cover`}
+                          loading="lazy"
+                          decoding="async"
+                          style={{ objectPosition: cover.position }}
                         />
                         <span>0{index + 1}</span>
                       </div>
