@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import {
   Armchair,
   BedDouble,
@@ -55,7 +55,7 @@ export default function CategoryFilter({ categories, value, onChange }: Props) {
     const onOutside = (event: PointerEvent) => {
       if (!containerRef.current?.contains(event.target as Node)) setOpen(false);
     };
-    const onEscape = (event: globalThis.KeyboardEvent) => {
+    const onEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setOpen(false);
         triggerRef.current?.focus();
@@ -82,7 +82,7 @@ export default function CategoryFilter({ categories, value, onChange }: Props) {
     triggerRef.current?.focus();
   }
 
-  function handleOptionKeys(event: KeyboardEvent<HTMLDivElement>) {
+  function handleOptionKeys(event: ReactKeyboardEvent<HTMLDivElement>) {
     if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
     const currentIndex = optionRefs.current.findIndex(node => node === document.activeElement);
