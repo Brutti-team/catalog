@@ -1,0 +1,37 @@
+/* Brutti Catalog: edit product is a focused full-width workspace.
+   The duplicate navigation has been removed from ProductEditor; keep back arrow
+   in its green title bar and the existing customer preview on the right. */
+.admin-app .modal.product-editor-dialog--editing {
+  --catalog-editor-nav-width: 0px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2.editor-nav-collapsed {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin-left: 0;
+  padding-left: 0;
+}
+.admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-columns,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-footer {
+  width: 100%;
+  min-width: 0;
+  margin-left: 0;
+}
+.admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar-identity {
+  min-width: 0;
+}
+.admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar-identity > strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Desktop editing area benefits from reclaimed sidebar width without squeezing
+   the customer preview. The existing mobile stacking remains unchanged. */
+@media (min-width: 1101px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-columns {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 26%);
+  }
+}
