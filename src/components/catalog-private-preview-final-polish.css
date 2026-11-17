@@ -27,7 +27,7 @@
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
   order: 2;
   max-width: 27ch;
-  margin-bottom: 19px;
+  margin-bottom: 12px;
   color: #293c2f;
   font-family: "Manrope", "DM Sans", system-ui, sans-serif;
   font-size: clamp(27px, 2.45vw, 38px);
@@ -45,10 +45,10 @@
   letter-spacing: .12em;
 }
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-availability {
-  order: 3;
+  order: 4;
 }
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
-  order: 4;
+  order: 5;
   margin-bottom: 19px;
   color: #6b756c;
   font-family: "DM Sans", system-ui, sans-serif;
@@ -57,13 +57,16 @@
   line-height: 1.7;
 }
 
-/* Display the actual price/discount BEFORE materials and dimensions. */
+/* Price directly below the product title, before description and specifications. */
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
-  order: 5;
+  order: 3;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1;
   align-self: center;
   width: auto;
   max-width: 100%;
-  margin: 0 auto 24px !important;
+  margin: 0 auto 19px !important;
   padding: 0;
   color: #244b37;
   font-family: "DM Sans", system-ui, sans-serif;
@@ -100,8 +103,7 @@
   font-weight: 440;
 }
 
-/* Subtle specification rows now follow pricing, rather than separating it
-   from the title / description. */
+/* Subtle specification rows follow the description and pricing block. */
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications {
   order: 6;
   margin-bottom: 24px;
@@ -130,6 +132,6 @@
     margin-bottom: 17px;
   }
   .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
-    margin-bottom: 20px !important;
+    margin-bottom: 16px !important;
   }
 }
