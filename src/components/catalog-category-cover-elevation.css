@@ -23,7 +23,7 @@
     transform 260ms cubic-bezier(.2,.78,.24,1),
     box-shadow 260ms ease,
     border-color 260ms ease;
-  animation: brutti-category-reveal 420ms cubic-bezier(.19,.85,.29,1) both;
+  animation: brutti-category-reveal 420ms cubic-bezier(.19,.85,.29,1) backwards;
 }
 
 .admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card:nth-child(3n + 2) {
@@ -130,7 +130,7 @@
   transform: translateY(0) scale(1);
   transition: transform 260ms cubic-bezier(.2,.78,.24,1),
     border-color 260ms ease, box-shadow 260ms ease;
-  animation: brutti-category-reveal 420ms cubic-bezier(.19,.85,.29,1) both;
+  animation: brutti-category-reveal 420ms cubic-bezier(.19,.85,.29,1) backwards;
 }
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .category-card:hover,
 .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .category-card:focus-within {
