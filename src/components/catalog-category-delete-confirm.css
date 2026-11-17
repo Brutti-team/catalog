@@ -445,3 +445,71 @@
     transition: none;
   }
 }
+
+
+/* Clean editorial warning — remove the thick red stripe and nested pink panel.
+   The dialog header/button carry the burgundy accent; the message stays readable. */
+.admin-app.brutti-staff-redesign .catalog-category-delete-dialog .catalog-delete-warning {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  margin: 0;
+  padding: 2px 0 20px;
+  border: 0;
+  border-bottom: 1px solid #eadfdb;
+  border-radius: 0;
+  background: transparent;
+  color: #713e48;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign .catalog-category-delete-dialog .catalog-delete-warning > svg {
+  box-sizing: content-box;
+  display: block;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid #f0d9d7;
+  border-radius: 12px;
+  background: #fbefed;
+  color: #9a4653;
+  filter: none;
+}
+.admin-app.brutti-staff-redesign .catalog-category-delete-dialog .catalog-delete-warning > div {
+  min-width: 0;
+  padding-top: 1px;
+}
+.admin-app.brutti-staff-redesign .catalog-category-delete-dialog .catalog-delete-warning strong {
+  margin: 0;
+  color: #6d2d3a;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 750;
+  letter-spacing: -.012em;
+}
+.admin-app.brutti-staff-redesign .catalog-category-delete-dialog .catalog-delete-warning p {
+  margin: 6px 0 0;
+  color: #796e6d;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .catalog-category-delete-dialog .catalog-delete-warning {
+  border: 0;
+  border-bottom: 1px solid #58454c;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .catalog-category-delete-dialog .catalog-delete-warning > svg {
+  border-color: #725158;
+  background: #49323a;
+  color: #eeaab2;
+  filter: none;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .catalog-category-delete-dialog .catalog-delete-warning strong {
+  color: #f5d1d5;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .catalog-category-delete-dialog .catalog-delete-warning p {
+  color: #d0babc;
+}
