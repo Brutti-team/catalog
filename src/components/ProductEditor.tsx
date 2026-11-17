@@ -26,6 +26,7 @@ import {
 import type { Product, Category, ProductImage } from "../lib/types";
 import { uploadImage, validateProduct, cleanupAbandonedImages, type ProductModelChange } from "../lib/catalog";
 import Modal from "./Modal";
+import AvailabilityPicker from "./AvailabilityPicker";
 import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
 import { formatProductPrice } from "../lib/price";
@@ -692,18 +693,14 @@ export default function ProductEditor({
                     />
                   </div>
                 </label>
-                <label className="catalog-reference-spec-row">
-                  <span className="catalog-reference-spec-key">Availability</span>
-                  <select
-                    aria-label="Availability"
+                <div className="catalog-reference-spec-row">
+                  <span className="catalog-reference-spec-key" id="catalog-spec-availability-label">Availability</span>
+                  <AvailabilityPicker
                     value={draft.availability}
-                    onChange={(e) => update("availability", e.target.value as Product["availability"])}
-                  >
-                    <option value="available">Available</option>
-                    <option value="made-to-order">Made to order</option>
-                    <option value="unavailable">Unavailable</option>
-                  </select>
-                </label>
+                    onChange={(next) => update("availability", next)}
+                    disabled={busy}
+                  />
+                </div>
               </div>
               {(draft.specifications ?? []).map((row, index) => (
                 <div className="catalog-reference-custom-row" key={row.id}>
