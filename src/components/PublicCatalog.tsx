@@ -18,6 +18,7 @@ import type { Category, Product } from "../lib/types";
 import { publicAssetUrl } from "../lib/assets";
 import { formatProductPrice } from "../lib/price";
 import { productIdFromHash } from "../lib/routes";
+import { recordCatalogEvent } from "../lib/customer-analytics";
 import ShowroomSections from "./ShowroomSections";
 import "./public.css";
 import "./brutti-3d.css";
@@ -120,6 +121,15 @@ export default function PublicCatalog({
   const product = previewProduct ?? (
     productId === null ? undefined : published.find((item) => item.id === productId)
   );
+  // Track only the public catalog, never the admin's private product preview.
+  useEffect(() => {
+    if (!previewProduct && !loading && !error) recordCatalogEvent("catalog_open");
+  }, [previewProduct, loading, error]);
+  useEffect(() => {
+    if (!previewProduct && !loading && !error && product?.status === "published") {
+      recordCatalogEvent("product_view", product.id);
+    }
+  }, [previewProduct, loading, error, product?.id, product?.status]);
   const selectedModel = product?.model;
   const showingModel = viewMode === '3d' && Boolean(selectedModel);
   const categoryName = (id: string) =>
@@ -184,6 +194,7 @@ export default function PublicCatalog({
       href={`#/product/${encodeURIComponent(item.id)}`}
       className="pub-product-card"
       key={item.id}
+      onClick={() => { if (!previewProduct) recordCatalogEvent("product_click", item.id); }}
     >
       <div className="pub-card-image">
         <FurnitureImage
