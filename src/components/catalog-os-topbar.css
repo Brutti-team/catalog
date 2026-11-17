@@ -1,0 +1,583 @@
+/* Brutti Catalog — OS-inspired navigation, 17 Nov 2026.
+   Navigation-only layer: no changes to product layout, data or permissions. */
+.admin-app.catalog-os-layout {
+  --catalog-nav-width: 264px;
+  --catalog-os-ink: #203e2e;
+  --catalog-os-muted: #698074;
+  --catalog-os-border: #d4e3d8;
+  --catalog-os-pale: #eef7f0;
+}
+.admin-app.catalog-os-layout.catalog-sidebar-collapsed { --catalog-nav-width: 74px; }
+
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar {
+  width: var(--catalog-nav-width);
+  padding: 0 12px 18px;
+  color: var(--catalog-os-ink);
+  background: #eaf4ed;
+  border-right: 1px solid #cdded1;
+  box-shadow: 2px 0 16px rgb(29 64 40 / 3%);
+  overflow-x: hidden;
+  transition: width .2s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .admin-main {
+  min-width: 0;
+  margin-left: var(--catalog-nav-width);
+  transition: margin-left .2s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .sidebar .catalog-sidebar-head {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+  width: 100%;
+  height: 82px;
+  min-height: 82px;
+  padding: 12px 0;
+  margin: 0 0 8px;
+  border-bottom: 1px solid #d0dfd4;
+}
+.admin-app.catalog-os-layout .catalog-sidebar-identity {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 10px;
+  padding: 0 2px;
+  text-decoration: none;
+  color: #1e3e2e;
+}
+.admin-app.catalog-os-layout .catalog-sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 43px;
+  width: 43px;
+  height: 43px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #193a2a;
+  box-shadow: 0 2px 5px rgb(25 58 42 / 11%);
+}
+.admin-app.catalog-os-layout .catalog-sidebar-logo img {
+  display: block;
+  width: 41px;
+  height: 37px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+.admin-app.catalog-os-layout .catalog-sidebar-title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+}
+.admin-app.catalog-os-layout .catalog-sidebar-title strong {
+  color: #153c29;
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.1;
+  white-space: nowrap;
+  letter-spacing: -.025em;
+}
+.admin-app.catalog-os-layout .catalog-sidebar-title small {
+  color: #668272;
+  font-size: 9px;
+  font-weight: 680;
+  line-height: 1.2;
+  letter-spacing: .14em;
+  white-space: nowrap;
+}
+.admin-app.catalog-os-layout .catalog-sidebar-toggle {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #c5dacb;
+  border-radius: 11px;
+  background: #e0eee3;
+  color: #365a43;
+  box-shadow: 0 1px 2px rgb(40 70 49 / 6%);
+  cursor: pointer;
+}
+.admin-app.catalog-os-layout .catalog-sidebar-toggle:hover {
+  background: #d2e6d8;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .sidebar nav {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 4px;
+  padding-top: 5px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .sidebar nav .nav-group-label {
+  color: #708b7b;
+  font-size: 10px;
+  letter-spacing: .1em;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .sidebar nav .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: none;
+  color: #425d4c;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .sidebar nav .nav-item .nav-icon {
+  color: #517260;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .sidebar nav .nav-item:hover:not(.active) {
+  border-color: #d1e1d4;
+  background: #e0ede3;
+  color: #204631;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .sidebar nav .nav-item.active {
+  border-color: #d1e5d6;
+  border-radius: 12px;
+  background: #d3e9d9;
+  color: #173d28;
+  font-weight: 750;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .sidebar nav .nav-item.active .nav-icon {
+  color: #245837;
+}
+.admin-app.catalog-os-layout .sidebar nav .nav-item .nav-count {
+  background: #d8e9db;
+  color: #315a3c;
+  border: none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .sidebar .sidebar-utility {
+  border-top: 1px solid #d1e0d6;
+  padding-top: 12px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .sidebar .sidebar-public-link {
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #2a563b;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .sidebar .sidebar-public-copy :is(strong,small),
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .sidebar .sidebar-public-arrow {
+  color: #3c674a;
+}
+.admin-app.catalog-os-layout .sidebar .sidebar-public-icon { color: #315f42; }
+
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar {
+  display: flex;
+  align-items: center;
+  height: 70px;
+  min-height: 70px;
+  padding: 0 clamp(14px, 1.85vw, 30px);
+  border-bottom: 1px solid #d5e5d8;
+  background: #f2faf4;
+  box-shadow: 0 2px 7px rgb(42 74 49 / 3%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  position: sticky;
+  top: 0;
+  z-index: 45;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .topbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: none;
+  gap: clamp(7px, 1vw, 16px);
+  min-width: 0;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-search {
+  display: flex;
+  flex: 1 1 420px;
+  align-items: center;
+  width: 100%;
+  max-width: 510px;
+  min-width: 155px;
+  height: 41px;
+  min-height: 41px;
+  gap: 11px;
+  margin: 0 auto 0 0;
+  padding: 0 12px 0 14px;
+  border: 1px solid #d1dfd5;
+  border-radius: 14px;
+  background: #f8fdfa;
+  box-shadow: 0 2px 3px rgb(30 69 42 / 5%), inset 0 1px 1px rgb(255 255 255 / 95%);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-search input {
+  font-size: 13px;
+  color: #254631;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-search input::placeholder {
+  color: #70877b;
+}
+.admin-app.catalog-os-layout .catalog-search-shortcut {
+  display: inline-block;
+  flex: 0 0 auto;
+  padding: 4px 6px;
+  border: 1px solid #dce9df;
+  border-radius: 5px;
+  color: #7a8f82;
+  font-size: 10px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-search .catalog-search-submit {
+  display: none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .connection-pill {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 0;
+  color: #4e7c5d;
+  font-size: 11px;
+  font-weight: 620;
+  white-space: nowrap;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .connection-pill > span {
+  width: 8px;
+  height: 8px;
+  flex-basis: 8px;
+  background: #608d6a;
+  box-shadow: 0 0 0 3px #d9e9dc;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .connection-pill.sync-error {
+  color: #a34a3d;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .connection-pill.sync-error > span {
+  background: #c65f4f;
+  box-shadow: 0 0 0 3px #f8e6df;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .theme-toggle,
+.admin-app.catalog-os-layout .catalog-header-icon-button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 38px;
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  min-height: 38px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: #294b37;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .theme-toggle:hover,
+.admin-app.catalog-os-layout .catalog-header-icon-button:hover,
+.admin-app.catalog-os-layout .catalog-header-icon-button.is-open {
+  background: #e2efe5;
+  border-color: #d5e6d9;
+}
+.admin-app.catalog-os-layout .catalog-header-popover-anchor {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-width: 0;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile {
+  display: flex;
+  align-items: center;
+  flex: 0 1 auto;
+  max-width: 203px;
+  min-width: 0;
+  width: auto;
+  height: 44px;
+  min-height: 44px;
+  gap: 9px;
+  margin: 0;
+  padding: 3px 8px 3px 3px;
+  border: 1px solid transparent;
+  border-radius: 25px;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile:hover,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile.active {
+  border-color: #d7e9dc;
+  background: #e6f3e8;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .profile-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 39px;
+  width: 39px;
+  min-width: 39px;
+  height: 39px;
+  border-radius: 50%;
+  background: #214735;
+  color: #f2f9f2;
+  box-shadow: 0 2px 4px rgb(22 56 37 / 12%);
+  font-size: 11px;
+  font-weight: 720;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .profile-copy strong {
+  color: #263f30;
+  font-size: 12px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .profile-copy small {
+  color: #6f8575;
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.admin-app.catalog-os-layout .catalog-account-chevron {
+  flex: 0 0 auto;
+  color: #62816d;
+  margin-left: 1px;
+}
+.admin-app.catalog-os-layout .catalog-bell-alert {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #f2faf4;
+  background: #c75f4e;
+  border-radius: 50%;
+}
+
+/* Functional activity and account popovers; no simulated unread counts. */
+.admin-app.catalog-os-layout .catalog-header-popover {
+  position: absolute;
+  z-index: 100;
+  top: calc(100% + 13px);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(348px, calc(100vw - 24px));
+  max-height: min(520px, calc(100dvh - 110px));
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid #d1e2d5;
+  border-radius: 17px;
+  background: #fdfefc;
+  color: #254633;
+  box-shadow: 0 18px 48px rgb(23 52 35 / 16%);
+}
+.admin-app.catalog-os-layout .catalog-popover-heading,
+.admin-app.catalog-os-layout .catalog-account-menu-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 12px 13px;
+  border-bottom: 1px solid #e4ece6;
+}
+.admin-app.catalog-os-layout .catalog-popover-heading strong,
+.admin-app.catalog-os-layout .catalog-account-menu-heading strong {
+  font-size: 14px;
+  color: #23452f;
+}
+.admin-app.catalog-os-layout .catalog-popover-heading span,
+.admin-app.catalog-os-layout .catalog-account-menu-heading small {
+  overflow: hidden;
+  color: #778e7c;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-app.catalog-os-layout .catalog-notification-item,
+.admin-app.catalog-os-layout .catalog-account-menu > button,
+.admin-app.catalog-os-layout .catalog-popover-footer {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 11px 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #2d5138;
+  text-align: left;
+  cursor: pointer;
+}
+.admin-app.catalog-os-layout .catalog-notification-item:hover,
+.admin-app.catalog-os-layout .catalog-account-menu > button:hover,
+.admin-app.catalog-os-layout .catalog-popover-footer:hover {
+  background: #eaf4ed;
+}
+.admin-app.catalog-os-layout .catalog-notification-item > span:last-child {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+.admin-app.catalog-os-layout .catalog-notification-item strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.admin-app.catalog-os-layout .catalog-notification-item small {
+  color: #7e9080;
+  font-size: 10px;
+}
+.admin-app.catalog-os-layout .catalog-notification-dot {
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #79a887;
+}
+.admin-app.catalog-os-layout .catalog-popover-footer {
+  justify-content: space-between;
+  border-top: 1px solid #e1eae2;
+  color: #275738;
+  font-size: 12px;
+  font-weight: 680;
+}
+.admin-app.catalog-os-layout .catalog-empty-updates,
+.admin-app.catalog-os-layout .catalog-sync-warning {
+  margin: 0;
+  padding: 14px 12px;
+  color: #70877a;
+  font-size: 12px;
+}
+.admin-app.catalog-os-layout .catalog-sync-warning { color: #a34a3d; }
+.admin-app.catalog-os-layout .catalog-account-menu { width: 250px; }
+.admin-app.catalog-os-layout .catalog-account-menu > button { font-size: 12px; font-weight: 600; }
+.admin-app.catalog-os-layout .catalog-header-popover-anchor :is(button,a):focus-visible,
+.admin-app.catalog-os-layout .catalog-sidebar-head :is(button,a):focus-visible {
+  outline: 2px solid #538b64;
+  outline-offset: 2px;
+}
+
+/* Sidebar collapse keeps all navigation operable and fixed on desktop. */
+@media (min-width: 801px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] > .sidebar {
+    padding: 0 9px 15px;
+  }
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .catalog-sidebar-head {
+    flex-direction: column;
+    gap: 6px;
+    min-height: 114px;
+    height: 114px;
+  }
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .catalog-sidebar-title,
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .sidebar nav .nav-group-label,
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .sidebar nav .nav-count,
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .sidebar .sidebar-public-copy,
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .sidebar .sidebar-public-arrow {
+    display: none;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] .sidebar nav .nav-item {
+    justify-content: center;
+    width: 48px;
+    min-height: 48px;
+    padding: 0;
+    font-size: 0;
+    gap: 0;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] .sidebar .sidebar-public-link {
+    justify-content: center;
+    padding: 8px 0;
+  }
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .catalog-sidebar-identity { flex: 0 0 auto; }
+}
+.admin-app.catalog-os-layout .catalog-mobile-menu { display: none; }
+
+@media (max-width: 1150px) and (min-width: 801px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-search { max-width: 420px; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .profile-copy,
+  .admin-app.catalog-os-layout .catalog-account-chevron { display: none; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile {
+    width: 42px; min-width: 42px; padding: 2px;
+  }
+}
+@media (max-width: 960px) and (min-width: 801px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .connection-pill {
+    font-size: 0;
+    gap: 0;
+  }
+}
+
+@media (max-width: 800px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar {
+    width: min(276px, 88vw);
+    padding: 0 12px 18px;
+    transform: translateX(-103%);
+    transition: transform .2s ease;
+    z-index: 70;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .admin-main { margin-left: 0; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar {
+    min-height: 64px; height: 64px; padding-inline: 12px;
+  }
+  .admin-app.catalog-os-layout .catalog-mobile-menu {
+    display: grid; place-items: center; flex: 0 0 36px;
+    width: 36px; height: 36px; padding: 0; border: 0;
+    border-radius: 10px; color: #28533b; background: #e1efe5;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-search {
+    flex: 1 1 auto; min-width: 0; max-width: none; height: 39px; min-height: 39px;
+    padding-inline: 10px; gap: 7px;
+  }
+  .admin-app.catalog-os-layout .catalog-search-shortcut { display: none; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .connection-pill {
+    font-size: 0; gap: 0;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .profile-copy,
+  .admin-app.catalog-os-layout .catalog-account-chevron { display: none; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile {
+    flex: 0 0 40px; width: 40px; min-width: 40px; max-width: 40px;
+    height: 40px; min-height: 40px; padding: 1px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .profile-avatar {
+    flex-basis: 35px; width: 35px; min-width: 35px; height: 35px;
+  }
+}
+@media (max-width: 520px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .topbar-actions { gap: 4px; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .theme-toggle,
+  .admin-app.catalog-os-layout .catalog-header-icon-button {
+    flex-basis: 34px; width: 34px; min-width: 34px; height: 36px; min-height: 36px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-search input {
+    font-size: 11px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-search input::placeholder { color: transparent; }
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar.catalog-os-topbar {
+  background: #203b2a;
+  border-color: #405c47;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .catalog-sidebar-title :is(strong,small),
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .profile-copy strong,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .connection-pill,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .theme-toggle,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .catalog-header-icon-button {
+  color: #deeee0;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .catalog-header-search {
+  background: #2b4934;
+  border-color: #4e6b56;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .profile-avatar {
+  background: #b8d6bb;
+  color: #1d3928;
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.catalog-os-layout .sidebar,
+  .admin-app.catalog-os-layout .admin-main { transition: none; }
+}
