@@ -662,3 +662,96 @@
     padding: 5px 3px;
   }
 }
+
+
+/* Brutti Categories — raised glass panel & tactile rows (2026-11-17). */
+/* Preserve the Categories photo index and its compact spacing; enhance depth rather than layout. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.brutti-category-panel.atelier-categories {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, .95);
+  background: linear-gradient(150deg, rgba(255, 255, 254, .94) 0%, rgba(249, 252, 247, .86) 100%);
+  box-shadow:
+    0 3px 8px rgba(27, 59, 39, .035),
+    0 16px 35px rgba(31, 66, 43, .10),
+    0 30px 55px rgba(35, 64, 41, .035),
+    inset 0 1px 0 rgba(255,255,255,.96);
+  transition: transform .24s cubic-bezier(.22,1,.36,1), box-shadow .24s ease, border-color .24s ease;
+  will-change: auto;
+}
+@media (hover: hover) and (pointer: fine) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.brutti-category-panel.atelier-categories:hover {
+    transform: translateY(-3px);
+    border-color: rgba(216, 232, 219, .92);
+    box-shadow:
+      0 7px 16px rgba(29, 58, 39, .06),
+      0 24px 49px rgba(31, 66, 43, .135),
+      0 37px 66px rgba(35, 64, 41, .045),
+      inset 0 1px 0 rgba(255,255,255,.96);
+  }
+}
+/* A subtle raised surface follows each selectable category — not a stack of permanent cards. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.customer-insights-workbench .brutti-category-row.atelier-category-row {
+  position: relative;
+  padding-inline: 7px;
+  margin-inline: -7px;
+  width: calc(100% + 14px);
+  border-radius: 11px;
+  transition: background .18s ease, transform .20s cubic-bezier(.22,1,.36,1),
+    box-shadow .20s ease, border-color .20s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.customer-insights-workbench .brutti-category-row.atelier-category-row:hover {
+    transform: translateY(-2px);
+    border-bottom-color: transparent;
+    background: linear-gradient(110deg, rgba(245, 251, 245, .98), rgba(255, 255, 255, .94));
+    box-shadow: 0 8px 20px rgba(34, 72, 46, .115), 0 2px 5px rgba(34, 72, 46, .045),
+      inset 0 0 0 1px rgba(143, 184, 149, .20);
+    z-index: 2;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.customer-insights-workbench .brutti-category-row.atelier-category-row:hover .brutti-category-image {
+    transform: scale(1.035);
+    box-shadow: 0 5px 11px rgba(35, 68, 44, .13);
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.customer-insights-workbench .brutti-category-row.atelier-category-row:hover > svg {
+    transform: translateX(2px);
+    color: #2a6841;
+  }
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.customer-insights-workbench .brutti-category-row.atelier-category-row:focus-visible {
+  outline: 2px solid #6e9e79;
+  outline-offset: 2px;
+  background: rgba(232, 244, 232, .92);
+  box-shadow: 0 5px 16px rgba(34, 72, 46, .10);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.customer-insights-workbench .brutti-category-image {
+  transition: transform .20s ease, box-shadow .20s ease;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.customer-insights-workbench .brutti-category-row.atelier-category-row > svg {
+  transition: transform .20s ease, color .20s ease;
+}
+/* Match the treatment in dark mode without a bright floating white tile. */
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.brutti-category-panel.atelier-categories {
+  background: linear-gradient(155deg, rgba(39, 62, 45, .98), rgba(27, 48, 34, .94));
+  border-color: rgba(145, 188, 151, .20);
+  box-shadow: 0 14px 38px rgba(0,0,0,.24), inset 0 1px rgba(223,244,222,.07);
+}
+@media (hover: hover) and (pointer: fine) {
+  .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.brutti-category-panel.atelier-categories:hover {
+    border-color: rgba(145, 188, 151, .36);
+    box-shadow: 0 19px 47px rgba(0,0,0,.30), inset 0 1px rgba(223,244,222,.08);
+  }
+  .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-glass-panels.customer-insights-workbench .brutti-category-row.atelier-category-row:hover {
+    background: rgba(66, 104, 74, .45);
+    box-shadow: 0 8px 18px rgba(0,0,0,.16), inset 0 0 0 1px rgba(149, 189, 156, .19);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.brutti-category-panel.atelier-categories,
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.customer-insights-workbench .brutti-category-row.atelier-category-row,
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.customer-insights-workbench .brutti-category-image,
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-panels.customer-insights-workbench .brutti-category-row.atelier-category-row > svg {
+    transition: none;
+    transform: none;
+  }
+}
