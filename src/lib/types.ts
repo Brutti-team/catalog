@@ -11,6 +11,8 @@ export interface ProductImage {
   url: string;
   alt: string;
   storagePath?: string;
+  /** Non-destructive focus and zoom for catalog presentation (0-100% position). */
+  crop?: { x: number; y: number; zoom: number };
 }
 export interface ProductModel {
   path: string;
