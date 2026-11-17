@@ -37,6 +37,7 @@ import "./components/catalog-os-topbar.css";
 import "./components/product-editor-specifications-premium.css";
 import "./components/customer-insights.css";
 import "./components/catalog-latest-updates-refine.css";
+import "./components/product-editor-no-sidebar.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
