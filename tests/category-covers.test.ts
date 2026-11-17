@@ -15,10 +15,10 @@ describe("curated admin category covers", () => {
       photo("B&B-06", "room-bed.webp"),
     ]).src).toBe("room-bed.webp");
   });
-  it("does not show stock photos or placeholder images for empty groups", () => {
-    expect(categoryCover("Built in Cabinet", []).src).toBeUndefined();
-    expect(categoryCover("Kiosks", []).src).toBeUndefined();
-    expect(categoryCover("Panels", []).src).toBeUndefined();
+  it("restores the original placeholder illustration for empty categories", () => {
+    expect(categoryCover("Built in Cabinet", []).src).toBe("/images/placeholder.svg");
+    expect(categoryCover("Kiosks", []).src).toBe("/images/placeholder.svg");
+    expect(categoryCover("Panels", []).src).toBe("/images/placeholder.svg");
   });
   it("uses an existing product photo if none of the preferred ones exist", () => {
     expect(categoryCover("Reception Counters", [photo("RC-08", "counter-in-store.webp")]).src)
@@ -32,8 +32,8 @@ describe("curated admin category covers", () => {
     expect(categoryCover("Kiosks", [photo("KSK-01", "real-kiosk.webp")]).src)
       .toBe("real-kiosk.webp");
   });
-  it("shows no photo when the category has products without photographs", () => {
+  it("shows the same icon when a product has no uploaded photo", () => {
     expect(categoryCover("Beds & Bunkbeds", [{ sku: "B&B-01", images: [] }]).src)
-      .toBeUndefined();
+      .toBe("/images/placeholder.svg");
   });
 });
