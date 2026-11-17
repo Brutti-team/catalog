@@ -50,6 +50,7 @@ export default function Modal({
           {description && <p className="modal-description">{description}</p>}
         </div>
         <button
+          type="button"
           className="icon-button"
           onClick={onClose}
           aria-label="Close dialog"
