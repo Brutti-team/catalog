@@ -1,0 +1,454 @@
+/* Brutti Catalog / Private product preview — refined studio presentation.
+   Isolated to the editor's private preview. Public catalog product pages stay unchanged. */
+.admin-app .modal.catalog-private-preview-dialog {
+  width: min(1380px, calc(100vw - 34px));
+  max-width: calc(100vw - 34px);
+  height: auto;
+  max-height: min(94dvh, 1080px);
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid rgba(202, 215, 204, .76);
+  border-radius: 17px;
+  background: #fbfcf9;
+  color: #253c2f;
+  box-shadow: 0 26px 85px rgba(19, 44, 29, .24);
+  scrollbar-gutter: stable;
+}
+.admin-app .modal.catalog-private-preview-dialog::backdrop {
+  background: rgba(19, 37, 28, .54);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+.admin-app .catalog-private-preview-dialog .modal-heading {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  min-height: 72px;
+  padding: 16px 27px 15px;
+  border-bottom: 1px solid #e3e9e1;
+  background: #fff;
+  box-shadow: none;
+}
+.admin-app .catalog-private-preview-dialog .modal-heading .eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  color: #65816d;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 9.5px;
+  font-weight: 750;
+  line-height: 1.4;
+  letter-spacing: .16em;
+}
+.admin-app .catalog-private-preview-dialog .modal-heading h2 {
+  margin: 0;
+  color: #233e2d;
+  font-family: "Manrope", "DM Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 740;
+  letter-spacing: -.035em;
+  line-height: 1.3;
+}
+.admin-app .catalog-private-preview-dialog .modal-heading > .icon-button {
+  flex: 0 0 36px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0;
+  border: 1px solid #e4ebe3;
+  border-radius: 10px;
+  background: #f8faf7;
+  color: #61776a;
+}
+.admin-app .catalog-private-preview-dialog .modal-heading > .icon-button:hover {
+  border-color: #c7d9ca;
+  color: #264d34;
+  background: #eef6ee;
+}
+.admin-app .catalog-private-preview-dialog .catalog-private-preview-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 35px;
+  margin: 0;
+  padding: 9px 24px;
+  border-bottom: 1px solid #e7ede5;
+  background: #f2f7f1;
+  color: #607668;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-section {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  background: #fbfcf9;
+  color: #273c2f;
+  font-family: "DM Sans", Arial, sans-serif;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-product-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 47%) minmax(0, 53%);
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+/* Quiet product-photo stage: preserve the complete original photo, never crop it. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery {
+  position: relative;
+  min-width: 0;
+  width: 100%;
+  padding: 20px;
+  border-right: 1px solid #e0e8de;
+  background: #f0f4ee;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: clamp(425px, 65dvh, 685px);
+  max-height: 685px;
+  min-height: 0;
+  aspect-ratio: auto;
+  margin: 0;
+  border: 1px solid rgba(211, 222, 209, .8);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e9efe8;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0;
+  object-fit: contain;
+  object-position: center;
+  background: #e9efe8;
+  mix-blend-mode: normal;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs {
+  position: absolute;
+  z-index: 4;
+  top: 33px;
+  right: 33px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  border: 1px solid rgba(218, 226, 215, .93);
+  border-radius: 11px;
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 5px 18px rgba(26, 51, 35, .08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 68px;
+  min-height: 35px;
+  gap: 7px;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #677b6e;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: none;
+  cursor: pointer;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs button.is-active {
+  background: #28563e;
+  color: #fff;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs button:disabled {
+  color: #aab6ac;
+  opacity: .6;
+  cursor: not-allowed;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-photo-caption {
+  position: absolute;
+  z-index: 3;
+  bottom: 35px;
+  left: 34px;
+  display: inline-flex;
+  align-items: center;
+  max-width: calc(100% - 68px);
+  padding: 7px 10px;
+  border: 1px solid #e2eae1;
+  border-radius: 7px;
+  background: rgba(255,255,255,.93);
+  color: #567160;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 670;
+  line-height: 1.5;
+  letter-spacing: .015em;
+  text-transform: none;
+  box-shadow: 0 3px 13px rgba(23, 47, 32, .045);
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-gallery-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 0 0;
+  background: transparent;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-gallery-thumbnails button {
+  width: 59px;
+  height: 59px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* Compact editorial information: Manrope heading, DM Sans supporting copy. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: stretch;
+  justify-content: flex-start;
+  min-width: 0;
+  margin: 0;
+  padding: clamp(33px, 4.5vw, 67px) clamp(30px, 4.5vw, 63px) 49px;
+  background: #fbfcf9;
+  color: #263b2c;
+  font-family: "DM Sans", Arial, sans-serif;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {
+  order: 1;
+  margin: 0 0 14px;
+  color: #51735d;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: .17em;
+  line-height: 1.55;
+  text-transform: uppercase;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+  order: 2;
+  max-width: 100%;
+  margin: 0 0 24px;
+  color: #233c2c;
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-size: clamp(30px, 3.05vw, 46px);
+  font-weight: 710;
+  line-height: 1.17;
+  letter-spacing: -.046em;
+  overflow-wrap: break-word;
+  word-break: normal;
+  text-wrap: pretty;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+  order: 3;
+  display: block;
+  max-width: 59ch;
+  margin: 0 0 27px;
+  color: #66756a;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: clamp(13px, 1vw, 14.5px);
+  font-weight: 420;
+  line-height: 1.77;
+  letter-spacing: 0;
+  white-space: pre-line;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications {
+  order: 4;
+  width: 100%;
+  margin: 0 0 23px;
+  padding: 0;
+  border-top: 1px solid #e0e7dd;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl {
+  display: block;
+  margin: 0;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div {
+  display: grid;
+  grid-template-columns: minmax(102px, 30%) minmax(0, 1fr);
+  align-items: start;
+  gap: 15px;
+  margin: 0;
+  padding: 13px 0;
+  border-bottom: 1px solid #e8eee7;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dt {
+  color: #7c8c7f;
+  font-size: 12px;
+  font-weight: 540;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dd {
+  min-width: 0;
+  color: #304736;
+  font-size: 12.5px;
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+  order: 5;
+  margin: 0 0 16px !important;
+  color: #294936;
+  font-family: "Manrope", "DM Sans", sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button:disabled {
+  order: 6;
+  align-self: flex-start;
+  width: auto;
+  min-height: 43px;
+  margin: 2px 0 0;
+  padding: 11px 18px;
+  border: 1px solid #28563e;
+  border-radius: 10px;
+  background: #28563e !important;
+  color: #fff !important;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 710;
+  letter-spacing: 0;
+  opacity: 1 !important;
+  box-shadow: 0 4px 10px rgba(28, 62, 39, .08);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* No changes to the live public product page; only preview viewport refinements. */
+@media (max-width: 1050px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-product-detail {
+    grid-template-columns: minmax(0, 46%) minmax(0, 54%);
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery {
+    padding: 15px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image {
+    height: clamp(390px, 60dvh, 620px);
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs {
+    top: 27px;
+    right: 27px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-photo-caption {
+    bottom: 28px;
+    left: 28px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    padding: 35px 28px 36px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    font-size: clamp(28px, 3.8vw, 40px);
+    margin-bottom: 20px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+    font-size: 13px;
+    margin-bottom: 22px;
+  }
+}
+@media (max-width: 760px) {
+  .admin-app .modal.catalog-private-preview-dialog {
+    width: calc(100vw - 12px);
+    max-width: calc(100vw - 12px);
+    height: auto;
+    max-height: 96dvh;
+    border-radius: 13px;
+  }
+  .admin-app .catalog-private-preview-dialog .modal-heading {
+    min-height: 64px;
+    padding: 12px 16px;
+  }
+  .admin-app .catalog-private-preview-dialog .catalog-private-preview-note {
+    justify-content: flex-start;
+    padding: 8px 16px;
+    font-size: 10px;
+    text-align: left;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-product-detail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery {
+    border-right: 0;
+    border-bottom: 1px solid #e0e8de;
+    padding: 13px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image {
+    aspect-ratio: 1 / 1;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    border-radius: 10px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs {
+    top: 23px;
+    right: 23px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-photo-caption {
+    left: 22px;
+    bottom: 22px;
+    max-width: calc(100% - 44px);
+    font-size: 9px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    padding: 26px 21px 35px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {
+    font-size: 10px;
+    margin-bottom: 11px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    font-size: clamp(27px, 6.8vw, 37px);
+    line-height: 1.22;
+    margin-bottom: 17px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+    font-size: 13px;
+    line-height: 1.72;
+    margin-bottom: 21px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div {
+    grid-template-columns: minmax(90px, 32%) minmax(0, 1fr);
+    gap: 11px;
+    padding: 12px 0;
+  }
+}
+@media (max-width: 390px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs button {
+    min-width: 56px;
+    padding: 6px 9px;
+    font-size: 10px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    padding-inline: 17px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs button {
+    transition: none;
+  }
+}
