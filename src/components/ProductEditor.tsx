@@ -23,7 +23,7 @@ import AvailabilityPicker from "./AvailabilityPicker";
 import EditorCategoryPicker from "./EditorCategoryPicker";
 import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
-import { formatProductPrice } from "../lib/price";
+import ProductPrice from "./ProductPrice";
 import { nextProductId } from "../lib/product-ids";
 import { cmToUnit, unitToCm, unitMax, type DimensionUnit } from "../lib/dimensions";
 import DimensionUnitPicker from "./DimensionUnitPicker";
@@ -243,7 +243,7 @@ export default function ProductEditor({
       </span>
       <h3>{draft.name || "Your product name"}</h3>
       <p>
-        {draft.price === null ? "Price on enquiry" : formatProductPrice(draft, 'editor')}
+        <ProductPrice product={draft} surface="editor" />
       </p>
       {previewDescription && <p className="preview-description tiny muted">{previewDescription}</p>}
     </article>
@@ -611,21 +611,43 @@ export default function ProductEditor({
                     onChange={(e) => update("materials", e.target.value)}
                   />
                 </label>
-                <label className="catalog-reference-spec-row">
-                  <span className="catalog-reference-spec-key">{draft.priceBasis === "starting-from" ? "Starting price" : "Price"}</span>
-                  <div className="catalog-reference-price-field">
-                    <span>RM</span>
-                    <input
-                      aria-label="Price in MYR"
-                      type="number"
-                      min={0}
-                      step="0.01"
-                      value={draft.price ?? ""}
-                      placeholder="Price on enquiry"
-                      onChange={(e) => update("price", e.target.value === "" ? null : Number(e.target.value))}
-                    />
+                <div className="catalog-reference-spec-row catalog-reference-pricing-row">
+                  <span className="catalog-reference-spec-key">Pricing</span>
+                  <div className="catalog-pricing-fields">
+                    <label className="catalog-pricing-field">
+                      <span>{draft.priceBasis === "starting-from" ? "Starting price (RM)" : "Current price (RM)"}</span>
+                      <div className="catalog-reference-price-field">
+                        <span>RM</span>
+                        <input
+                          aria-label="Current price in MYR"
+                          type="number"
+                          min={0}
+                          max={9999999999.99}
+                          step="0.01"
+                          value={draft.price ?? ""}
+                          placeholder="Price on enquiry"
+                          onChange={(e) => update("price", e.target.value === "" ? null : Number(e.target.value))}
+                        />
+                      </div>
+                    </label>
+                    <label className="catalog-pricing-field">
+                      <span>Original price <em>Optional</em></span>
+                      <div className="catalog-reference-price-field">
+                        <span>RM</span>
+                        <input
+                          aria-label="Original price before discount in MYR"
+                          type="number"
+                          min={0}
+                          max={9999999999.99}
+                          step="0.01"
+                          value={draft.originalPrice ?? ""}
+                          placeholder="No discount"
+                          onChange={(e) => update("originalPrice", e.target.value === "" ? null : Number(e.target.value))}
+                        />
+                      </div>
+                    </label>
                   </div>
-                </label>
+                </div>
                 <div className="catalog-reference-spec-row">
                   <span className="catalog-reference-spec-key" id="catalog-spec-availability-label">Availability</span>
                   <AvailabilityPicker
@@ -708,25 +730,41 @@ export default function ProductEditor({
                 ))}
                 <DimensionUnitPicker value={dimensionUnit} onChange={setDimensionUnit} disabled={busy || uploading} />
               </div>
-              <label>
-                {draft.priceBasis === 'starting-from' ? 'Starting price' : 'Price'} <span className="muted">optional · MYR</span>
-                <div className="price-input">
-                  <span>RM</span>
-                  <input
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    value={draft.price ?? ""}
-                    placeholder="Leave blank for price on enquiry"
-                    onChange={(e) =>
-                      update(
-                        "price",
-                        e.target.value === "" ? null : Number(e.target.value),
-                      )
-                    }
-                  />
-                </div>
-              </label>
+              <div className="catalog-new-pricing-fields" role="group" aria-label="Product pricing">
+                <label className="catalog-pricing-field">
+                  <span>{draft.priceBasis === "starting-from" ? "Starting price" : "Current price"} <em>RM</em></span>
+                  <div className="price-input">
+                    <span>RM</span>
+                    <input
+                      aria-label="Current price in MYR"
+                      type="number"
+                      min={0}
+                      max={9999999999.99}
+                      step="0.01"
+                      value={draft.price ?? ""}
+                      placeholder="Price on enquiry"
+                      onChange={(e) => update("price", e.target.value === "" ? null : Number(e.target.value))}
+                    />
+                  </div>
+                </label>
+                <label className="catalog-pricing-field">
+                  <span>Original price <em>Optional · RM</em></span>
+                  <div className="price-input">
+                    <span>RM</span>
+                    <input
+                      aria-label="Original price before discount in MYR"
+                      type="number"
+                      min={0}
+                      max={9999999999.99}
+                      step="0.01"
+                      value={draft.originalPrice ?? ""}
+                      placeholder="No discount"
+                      onChange={(e) => update("originalPrice", e.target.value === "" ? null : Number(e.target.value))}
+                    />
+                  </div>
+                </label>
+              </div>
+              <p className="catalog-pricing-hint">Add an original price higher than the current price to show a discount in the catalog.</p>
             </section>
             )}
 
