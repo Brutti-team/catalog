@@ -1,0 +1,515 @@
+/* Brutti Catalog — Edit Product / sections 02 and 03.
+   The existing React upload, reordering, Supabase and specifications logic is unchanged.
+   This stylesheet is loaded last to normalize density and prevent oversized media boxes. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 {
+  --brutti-edit-input-height: 52px;
+  --brutti-edit-input-border: #d5dfd7;
+  --brutti-edit-input-radius: 11px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary {
+  min-width: 0;
+  padding-bottom: max(106px, env(safe-area-inset-bottom));
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary > :is(#product-editor-photos, #product-editor-specs) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0 0 27px;
+  padding: 0 0 27px;
+  border-bottom: 1px solid rgba(49, 78, 55, .13);
+}
+
+/* Photos — a restrained, responsive image strip + compact upload action. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 320px);
+  gap: 14px 20px;
+  align-items: start;
+  max-width: 1060px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .product-editor-section-heading {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  margin-bottom: 3px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .product-editor-section-heading > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 18px;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .product-editor-section-heading h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .product-editor-photo-count {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: #e7eee8;
+  color: #52745d;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 660;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .product-editor-section-heading p {
+  margin: 0 0 0 auto;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #75857a;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .catalog-reference-manage-photos {
+  flex: 0 0 auto;
+  padding: 3px 0;
+  color: #285b40;
+  font-size: 11.5px;
+  font-weight: 650;
+  text-underline-offset: 4px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .image-editor-grid {
+  display: grid;
+  grid-column: 1;
+  grid-row: 2;
+  grid-template-columns: repeat(auto-fill, minmax(142px, 162px));
+  align-items: start;
+  align-content: start;
+  justify-content: start;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .image-editor-grid:empty {
+  display: none;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .image-editor-item {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 162px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .image-editor-photo {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 176px;
+  min-height: 176px;
+  aspect-ratio: auto;
+  overflow: hidden;
+  border: 1px solid #d5e0d6;
+  border-radius: 11px;
+  background: #ecf2ed;
+  box-shadow: 0 2px 7px rgba(28, 62, 38, .035);
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .image-editor-photo > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center;
+  background: transparent;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .image-editor-photo > span {
+  top: 8px;
+  bottom: auto;
+  left: 8px;
+  padding: 4px 7px;
+  border: 1px solid #e4d3af;
+  border-radius: 6px;
+  background: rgba(255,255,255,.95);
+  color: #76582f;
+  font-size: 9px;
+  font-weight: 720;
+  letter-spacing: .04em;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .image-editor-photo > .image-remove {
+  top: auto;
+  right: 8px;
+  bottom: 8px;
+  left: auto;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(218, 224, 218, .95);
+  border-radius: 8px;
+  background: rgba(255,255,255,.96);
+  color: #526456;
+  box-shadow: 0 2px 6px rgba(24,55,33,.1);
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .image-editor-photo > .image-remove:hover {
+  color: #a15444;
+  background: #fff6f4;
+  border-color: #e9cfc9;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .upload-zone {
+  box-sizing: border-box;
+  grid-column: 2;
+  grid-row: 2;
+  width: 100%;
+  height: 176px;
+  min-height: 176px;
+  max-height: 176px;
+  margin: 0;
+  padding: 14px 16px;
+  gap: 7px;
+  border: 1.5px dashed #bed0c1;
+  border-radius: 11px;
+  background: rgba(255,255,255,.55);
+  color: #668371;
+  box-shadow: none;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .upload-zone > svg {
+  width: 24px;
+  height: 24px;
+  color: #6c9077;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .upload-zone strong {
+  color: #365441;
+  font-size: 12.5px;
+  font-weight: 680;
+  line-height: 1.4;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .upload-zone > span {
+  color: #7d8e81;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .upload-zone:hover:not(:disabled),
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .upload-zone.is-dragging {
+  border-color: #739f80;
+  background: #f2f8f3;
+  color: #315e43;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos:has(> .image-editor-grid:empty) > .upload-zone {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  width: min(100%, 550px);
+  max-width: none;
+  justify-self: start;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .tiny {
+  grid-column: 1 / -1;
+  grid-row: auto;
+  margin: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .image-editor-grid:not(.is-managing-photos) .image-editor-item > input,
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .image-editor-grid:not(.is-managing-photos) .image-order {
+  display: none;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .image-editor-grid.is-managing-photos .image-editor-item > input {
+  display: block;
+  width: 100%;
+  margin-top: 7px;
+  font-size: 11px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .image-editor-grid.is-managing-photos .image-order {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+}
+
+/* Specifications — labels are typography, controls match the 52px Details fields. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs.catalog-reference-specifications {
+  max-width: 1060px;
+  padding-bottom: 35px;
+  margin-bottom: 0;
+  overflow: visible;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .product-editor-section-heading {
+  margin-bottom: 18px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-reference-spec-rows {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-spec-row {
+  display: grid;
+  grid-template-columns: minmax(148px, 21%) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-spec-row > .catalog-reference-spec-key {
+  display: flex;
+  align-items: center;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: #546c5a !important;
+  font-size: 13px;
+  font-weight: 640;
+  line-height: 1.4;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-spec-row > input,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-dimension-inputs input,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-price-field,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-spec-availability-trigger {
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--brutti-edit-input-height);
+  min-height: var(--brutti-edit-input-height);
+  margin: 0;
+  border: 1px solid var(--brutti-edit-input-border);
+  border-radius: var(--brutti-edit-input-radius);
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(26, 53, 33, .025);
+  color: #294331;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 485;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-spec-row > input {
+  padding: 0 15px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-dimension-inputs {
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 10px;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-dimension-inputs label {
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  height: var(--brutti-edit-input-height);
+  min-width: 0;
+  margin: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-dimension-inputs label > span {
+  position: absolute;
+  top: 6px;
+  left: 13px;
+  z-index: 1;
+  color: #718576 !important;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-dimension-inputs input {
+  padding: 21px 13px 5px !important;
+  font-variant-numeric: tabular-nums;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-price-field {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-price-field > span {
+  display: grid;
+  align-self: stretch;
+  place-items: center;
+  flex: 0 0 54px;
+  width: 54px;
+  margin: 0;
+  border-right: 1px solid #e1e9e2;
+  background: #f4f8f4;
+  color: #4d7457;
+  font-size: 12px;
+  font-weight: 700;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-price-field > input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  height: calc(var(--brutti-edit-input-height) - 2px);
+  min-height: calc(var(--brutti-edit-input-height) - 2px);
+  margin: 0 !important;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-spec-row > input:focus,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-dimension-inputs input:focus,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-price-field:focus-within,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-spec-availability-trigger:focus-visible {
+  outline: 0;
+  border-color: #558b65;
+  box-shadow: 0 0 0 3px rgba(74,131,93,.12);
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-custom-row {
+  display: grid;
+  grid-template-columns: minmax(148px,21%) minmax(0,1fr) 38px;
+  gap: 16px;
+  width: 100%;
+  margin-top: 12px;
+  align-items: center;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-custom-row > input {
+  width: 100%;
+  height: var(--brutti-edit-input-height);
+  min-height: var(--brutti-edit-input-height);
+  margin: 0;
+  padding: 0 14px;
+  border: 1px solid var(--brutti-edit-input-border);
+  border-radius: var(--brutti-edit-input-radius);
+  background: #fff;
+  color: #294331;
+  font-size: 13px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-custom-row > .catalog-reference-remove-row {
+  min-width: 38px;
+  min-height: 38px;
+  border-radius: 9px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-reference-add-row {
+  min-height: 39px;
+  margin-top: 13px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #f7faf7;
+  border-color: #d3e3d6;
+  color: #346247;
+}
+
+/* Prevent the persistent footer from visually crowding the last controls. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-columns {
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs {
+  scroll-margin-top: 95px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer {
+  min-height: 70px;
+  padding-block: 12px;
+}
+
+/* Portrait/narrow workspaces: stacked media, three equal dimension inputs. */
+@media (max-width: 1120px) {
+  .admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos {
+    grid-template-columns: minmax(0,1fr) minmax(215px,285px);
+    max-width: 100%;
+  }
+}
+@media (max-width: 800px) {
+  .admin-app .product-editor-dialog--editing .product-editor-v2 {
+    --brutti-edit-input-height: 48px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 13px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .image-editor-grid {
+    grid-column: 1;
+    grid-row: 2;
+    grid-template-columns: repeat(auto-fill, minmax(125px, 150px));
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .upload-zone,
+  .admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos:has(> .image-editor-grid:empty) > .upload-zone {
+    grid-column: 1;
+    grid-row: 3;
+    width: 100%;
+    height: 128px;
+    min-height: 128px;
+    max-height: 128px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos:has(> .image-editor-grid:empty) > .upload-zone {
+    grid-row: 2;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .image-editor-photo {
+    height: 164px;
+    min-height: 164px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-spec-row {
+    grid-template-columns: minmax(0,1fr);
+    gap: 7px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-spec-row > .catalog-reference-spec-key {
+    font-size: 12.5px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-custom-row {
+    grid-template-columns: minmax(0,1fr) minmax(0,1.1fr) 34px;
+    gap: 8px;
+  }
+}
+@media (max-width: 420px) {
+  .admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .product-editor-section-heading > div {
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .product-editor-section-heading p {
+    order: 3;
+    flex-basis: 100%;
+    margin: 0;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .image-editor-photo {
+    height: 155px;
+    min-height: 155px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-dimension-inputs {
+    gap: 7px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-dimension-inputs label > span {
+    left: 9px;
+    font-size: 9px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-dimension-inputs input {
+    padding-left: 9px !important;
+    padding-right: 6px !important;
+  }
+}
+
+/* Contrast for theme switching without affecting the public catalog. */
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 {
+  --brutti-edit-input-border: #536b58;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .image-editor-photo {
+  background: #2b4434;
+  border-color: #4b6852;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .upload-zone {
+  background: #2c4333;
+  border-color: #64806c;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .upload-zone strong,
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .upload-zone > span {
+  color: #d6e8d8;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 #product-editor-photos .product-editor-photo-count {
+  background: #365842;
+  color: #d6ecda;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-spec-row > input,
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-dimension-inputs input,
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-price-field,
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-spec-availability-trigger,
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-custom-row > input {
+  background: #2c4535;
+  border-color: #54705d;
+  color: #e6f1e8;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-spec-row > .catalog-reference-spec-key {
+  color: #cbdccd !important;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary #product-editor-specs .catalog-reference-price-field > span {
+  background: #345440;
+  border-color: #57705c;
+  color: #d5e9d6;
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-photos > .upload-zone {
+    transition: none;
+  }
+}
