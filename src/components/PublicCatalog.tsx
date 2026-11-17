@@ -13,7 +13,8 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import type { Category, Product } from "../lib/types";
+import type { Category, Product, ProductImage } from "../lib/types";
+import { photoCropStyle } from "../lib/photo-crop";
 import { publicAssetUrl } from "../lib/assets";
 import ProductPrice from "./ProductPrice";
 import { productIdFromHash } from "../lib/routes";
@@ -54,17 +55,20 @@ function FurnitureImage({
   alt,
   className = "",
   eager = false,
+  image,
 }: {
   src?: string;
   alt: string;
   className?: string;
   eager?: boolean;
+  image?: ProductImage;
 }) {
   return (
     <img
       src={publicAssetUrl(src)}
       alt={alt}
-      className={className}
+      className={`${className}${image?.crop ? " catalog-image-cropped" : ""}`.trim()}
+      style={photoCropStyle(image)}
       loading={eager ? "eager" : "lazy"}
       onError={(event) => {
         if (!event.currentTarget.src.endsWith("/images/placeholder.svg"))
@@ -196,6 +200,7 @@ export default function PublicCatalog({
         <FurnitureImage
           src={item.images[0]?.url}
           alt={item.images[0]?.alt || item.name}
+          image={item.images[0]}
         />
         {item.featured && (
           <span className="pub-featured-tag">
@@ -528,6 +533,7 @@ export default function PublicCatalog({
                           (product.images[imageIndex] || product.images[0])
                             ?.alt || product.name
                         }
+                        image={product.images[imageIndex] || product.images[0]}
                         eager
                       />
                       {product.featured && (
@@ -557,7 +563,7 @@ export default function PublicCatalog({
                             }
                             onClick={() => setImageIndex(index)}
                           >
-                            <FurnitureImage src={item.url} alt="" />
+                            <FurnitureImage src={item.url} alt="" image={item} />
                           </button>
                         ))}
                       </div>
