@@ -285,10 +285,10 @@ export default function App() {
     setAccountMenuOpen(false);
     window.scrollTo(0, 0);
   };
-  async function persist(p: Product, modelChange?: ProductModelChange) {
-    const saved = await saveProduct(p, modelChange);
+  async function persist(p: Product, modelChange?: ProductModelChange, autoProductId = false) {
+    const saved = await saveProduct(p, modelChange, autoProductId);
     await refresh();
-    setToast(saved.cleanupWarning || `${saved.name} saved`);
+    setToast(saved.cleanupWarning || `${saved.name} saved · ${saved.sku}`);
     return saved;
   }
   async function action(fn: () => Promise<unknown>, message: string) {
@@ -1091,6 +1091,8 @@ export default function App() {
           key={editor.id}
           product={editor}
           categories={data.categories}
+          existingProducts={data.products}
+          isNewProduct={!data.products.some(item => item.id === editor.id)}
           orderingEnabled={data.capabilities?.ordering === true}
           modelEditingEnabled={data.capabilities?.productModels === true}
           showCategories={accountRole !== "editor"}
