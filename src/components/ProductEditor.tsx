@@ -25,7 +25,8 @@ import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
 import { formatProductPrice } from "../lib/price";
 import { nextProductId } from "../lib/product-ids";
-import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
+import { cmToUnit, unitToCm, unitMax, type DimensionUnit } from "../lib/dimensions";
+import DimensionUnitPicker from "./DimensionUnitPicker";
 
 export type CatalogEditorNavigation = "overview" | "products" | "categories" | "users" | "activity" | "catalog";
 export default function ProductEditor({
@@ -597,18 +598,7 @@ export default function ProductEditor({
                         />
                       </label>
                     ))}
-                    <label className="catalog-dimension-unit">
-                      <span>Unit</span>
-                      <select
-                        aria-label="Measurement unit"
-                        value={dimensionUnit}
-                        onChange={(event) => setDimensionUnit(event.target.value as DimensionUnit)}
-                      >
-                        {DIMENSION_UNIT_OPTIONS.map(({ value, label }) => (
-                          <option key={value} value={value}>{label}</option>
-                        ))}
-                      </select>
-                    </label>
+                    <DimensionUnitPicker value={dimensionUnit} onChange={setDimensionUnit} disabled={busy || uploading} />
                   </div>
                 </div>
                 <label className="catalog-reference-spec-row">
@@ -716,18 +706,7 @@ export default function ProductEditor({
                     />
                   </label>
                 ))}
-                <label className="catalog-dimension-unit">
-                  <span>Unit</span>
-                  <select
-                    aria-label="Measurement unit"
-                    value={dimensionUnit}
-                    onChange={(event) => setDimensionUnit(event.target.value as DimensionUnit)}
-                  >
-                    {DIMENSION_UNIT_OPTIONS.map(({ value, label }) => (
-                      <option key={value} value={value}>{label}</option>
-                    ))}
-                  </select>
-                </label>
+                <DimensionUnitPicker value={dimensionUnit} onChange={setDimensionUnit} disabled={busy || uploading} />
               </div>
               <label>
                 {draft.priceBasis === 'starting-from' ? 'Starting price' : 'Price'} <span className="muted">optional · MYR</span>
