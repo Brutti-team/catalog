@@ -107,12 +107,12 @@ export default function AccountCenter({
     <section className="account-center">
       <div className="account-heading">
         <div>
-          <span className="eyebrow">YOUR BRUTTI WORKSPACE</span>
-          <h1>{view === "profile" ? "My profile." : view === "users" ? "Your people." : "Activity history."}</h1>
+          <span className="eyebrow">{view === "users" ? "CATALOG ACCESS CONTROL" : "YOUR BRUTTI WORKSPACE"}</span>
+          <h1>{view === "profile" ? "My profile." : view === "users" ? "Account Permission" : "Activity history."}</h1>
           <p>{view === "profile"
             ? "Your name, account and access in one simple place."
             : view === "users"
-              ? "Manage who can work on the catalog. Every person signs in with their own account."
+              ? "View and manage catalog access roles. Only Super Admins can update permissions."
               : "A trustworthy record of changes made by your team."}</p>
         </div>
         <button type="button" className="button secondary" disabled={pending || busyId !== null} onClick={() => void load()}>
@@ -153,8 +153,10 @@ export default function AccountCenter({
       )}
       {view === "users" && !pending && account && (
         account.role !== "super_admin" || !account.managementReady
-          ? <div className="account-empty"><ShieldCheck size={28} /><h2>Super Admin only</h2>
-              <p>Secure team management will be available after the reviewed role migration is approved and installed.</p></div>
+          ? <div className="account-empty"><ShieldCheck size={28} /><h2>Restricted access</h2>
+              <p>{account.role !== "super_admin"
+                ? "Only Super Admins can view or change account permissions."
+                : "Account permission management is not enabled on this workspace yet."}</p></div>
           : <div className="account-table-wrap">
               <div className="account-table-title"><UsersRound size={19} /><strong>Catalog users</strong><span>{members.length}</span></div>
               <p className="account-hint account-table-hint">Invite new people through Supabase Authentication first. You can then assign their catalog role here. Never share passwords.</p>
