@@ -25,6 +25,7 @@ import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
 import { formatProductPrice } from "../lib/price";
 import { nextProductId } from "../lib/product-ids";
+import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
 
 export type CatalogEditorNavigation = "overview" | "products" | "categories" | "users" | "activity" | "catalog";
 export default function ProductEditor({
@@ -55,6 +56,7 @@ export default function ProductEditor({
     ...structuredClone(product),
     sku: isNewProduct ? nextProductId(product.categoryId, categories, existingProducts) : product.sku,
   }));
+  const [dimensionUnit, setDimensionUnit] = useState<DimensionUnit>("cm");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -580,21 +582,33 @@ export default function ProductEditor({
               <div className="catalog-reference-spec-rows">
                 <div className="catalog-reference-spec-row">
                   <span className="catalog-reference-spec-key">Dimensions</span>
-                  <div className="catalog-reference-dimension-inputs" role="group" aria-label="Dimensions in centimetres">
+                  <div className="catalog-reference-dimension-inputs catalog-unified-dimensions" role="group" aria-label="Product dimensions">
                     {(["width", "depth", "height"] as const).map((key) => (
                       <label key={key}>
-                        <span>{key === "width" ? "W" : key === "depth" ? "D" : "H"} (cm)</span>
+                        <span>{key === "width" ? "Width" : key === "depth" ? "Depth" : "Height"}</span>
                         <input
-                          aria-label={`${key} in centimetres`}
+                          aria-label={`${key} in ${dimensionUnit}`}
                           type="number"
                           min={0}
-                          max={99999.99}
-                          step="0.01"
-                          value={draft[key]}
-                          onChange={(e) => update(key, Number(e.target.value))}
+                          max={unitMax(dimensionUnit)}
+                          step="any"
+                          value={cmToUnit(draft[key], dimensionUnit)}
+                          onChange={(e) => update(key, unitToCm(Number(e.target.value), dimensionUnit))}
                         />
                       </label>
                     ))}
+                    <label className="catalog-dimension-unit">
+                      <span>Unit</span>
+                      <select
+                        aria-label="Measurement unit"
+                        value={dimensionUnit}
+                        onChange={(event) => setDimensionUnit(event.target.value as DimensionUnit)}
+                      >
+                        {DIMENSION_UNIT_OPTIONS.map(({ value, label }) => (
+                          <option key={value} value={value}>{label}</option>
+                        ))}
+                      </select>
+                    </label>
                   </div>
                 </div>
                 <label className="catalog-reference-spec-row">
@@ -685,23 +699,35 @@ export default function ProductEditor({
                 />
               </label>
               <div className="section-label">
-                Dimensions <span className="muted">cm · required to publish</span>
+                Dimensions <span className="muted">Required to publish</span>
               </div>
-              <div className="field-trio">
+              <div className="field-trio catalog-unified-dimensions" role="group" aria-label="Product dimensions">
                 {(["width", "depth", "height"] as const).map((key) => (
                   <label key={key}>
-                    {key[0].toUpperCase() + key.slice(1)}
+                    <span>{key === "width" ? "Width" : key === "depth" ? "Depth" : "Height"}</span>
                     <input
-                      aria-label={`${key} in centimetres`}
+                      aria-label={`${key} in ${dimensionUnit}`}
                       type="number"
                       min={0}
-                      max={99999.99}
-                      step="0.01"
-                      value={draft[key]}
-                      onChange={(e) => update(key, Number(e.target.value))}
+                      max={unitMax(dimensionUnit)}
+                      step="any"
+                      value={cmToUnit(draft[key], dimensionUnit)}
+                      onChange={(e) => update(key, unitToCm(Number(e.target.value), dimensionUnit))}
                     />
                   </label>
                 ))}
+                <label className="catalog-dimension-unit">
+                  <span>Unit</span>
+                  <select
+                    aria-label="Measurement unit"
+                    value={dimensionUnit}
+                    onChange={(event) => setDimensionUnit(event.target.value as DimensionUnit)}
+                  >
+                    {DIMENSION_UNIT_OPTIONS.map(({ value, label }) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
+                  </select>
+                </label>
               </div>
               <label>
                 {draft.priceBasis === 'starting-from' ? 'Starting price' : 'Price'} <span className="muted">optional · MYR</span>
