@@ -28,5 +28,5 @@ export function unitToCm(value: number, unit: DimensionUnit): number {
 }
 
 export function unitMax(unit: DimensionUnit): number {
-  return Math.floor((100000 / DIMENSION_UNIT_TO_CM[unit]) * 10000) / 10000;
+  return Math.floor((99999.99 / DIMENSION_UNIT_TO_CM[unit]) * 10000) / 10000;
 }
