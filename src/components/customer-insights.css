@@ -755,3 +755,122 @@
     transform: none;
   }
 }
+
+
+/* Brutti Analytics — matched raised glass and subtle depth interactions. */
+/* The overall analytics panel mirrors Categories' raised, refined glass finish. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.customer-insights-panel.is-compact {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid rgba(255,255,255,.95);
+  background: linear-gradient(150deg, rgba(255,255,254,.94) 0%, rgba(249,252,247,.86) 100%);
+  box-shadow:
+    0 3px 8px rgba(27,59,39,.035),
+    0 16px 35px rgba(31,66,43,.10),
+    0 30px 55px rgba(35,64,41,.035),
+    inset 0 1px 0 rgba(255,255,255,.96);
+  transition: transform .24s cubic-bezier(.22,1,.36,1),
+              box-shadow .24s ease, border-color .24s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.customer-insights-panel.is-compact:hover {
+    transform: translateY(-3px);
+    border-color: rgba(216,232,219,.92);
+    box-shadow:
+      0 7px 16px rgba(29,58,39,.06),
+      0 24px 49px rgba(31,66,43,.135),
+      0 37px 66px rgba(35,64,41,.045),
+      inset 0 1px 0 rgba(255,255,255,.96);
+  }
+}
+/* Metrics stay informational, but feel layered when hovered without fake click cues. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi {
+  position: relative;
+  transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi-icon {
+  transition: transform .18s ease, background .18s ease, color .18s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:hover {
+    background: linear-gradient(180deg, rgba(235,245,234,.70),rgba(250,253,248,.45));
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px rgba(87,137,96,.10), 0 4px 12px rgba(38,80,51,.055);
+    transform: translateY(-1px);
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:hover .customer-insights-kpi-icon {
+    background: rgba(215,235,217,.93);
+    color: #286f43;
+    transform: translateY(-1px);
+  }
+}
+/* The chart retains its true zero-value state. Bars only brighten on hover. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg rect {
+  transition: filter .18s ease, opacity .18s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg g:hover > rect:not(.customer-insights-bar-track):not(.customer-insights-zero) {
+    filter: drop-shadow(0 3px 4px rgba(39,100,56,.18)) brightness(1.06);
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg g:hover > rect.customer-insights-bar-track {
+    opacity: .75;
+  }
+}
+/* Interactive range control gets a real, readable focus/hover treatment. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-period {
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-period:hover {
+    border-color: rgba(90,149,106,.58);
+    background: rgba(250,255,249,.96);
+    box-shadow: 0 4px 12px rgba(32,80,46,.09);
+    transform: translateY(-1px);
+  }
+}
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-period:focus-within {
+  outline: 2px solid rgba(54,122,72,.17);
+  outline-offset: 2px;
+}
+/* Footer product thumbnail and summary retain a crisp, premium edge. */
+.admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-feature-photo {
+  box-shadow: 0 3px 8px rgba(27,65,41,.065), inset 0 1px rgba(255,255,255,.8);
+  transition: transform .20s ease, box-shadow .20s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-footer-top:hover .customer-insights-feature-photo {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(31,69,43,.12);
+  }
+}
+/* Dark surfaces follow the surrounding Brutti OS palette. */
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.customer-insights-panel.is-compact {
+  background: linear-gradient(155deg, rgba(39,62,45,.98), rgba(27,48,34,.94));
+  border-color: rgba(145,188,151,.20);
+  box-shadow: 0 14px 38px rgba(0,0,0,.24), inset 0 1px rgba(223,244,222,.07);
+}
+@media (hover: hover) and (pointer: fine) {
+  .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.customer-insights-panel.is-compact:hover {
+    border-color: rgba(145,188,151,.36);
+    box-shadow: 0 19px 47px rgba(0,0,0,.30), inset 0 1px rgba(223,244,222,.08);
+  }
+  .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:hover {
+    background: rgba(66,104,74,.45);
+    box-shadow: inset 0 0 0 1px rgba(149,189,156,.15);
+  }
+  .admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-period:hover {
+    background: rgba(53,85,61,.92);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.customer-insights-panel.is-compact,
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi,
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi-icon,
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg rect,
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-period,
+  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-feature-photo {
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
