@@ -805,3 +805,123 @@
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .profile-avatar {
   border-radius: 10px;
 }
+
+
+/* Compact OS account control — one-line name, rounded-square avatar. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-popover-anchor .header-profile {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: flex-start;
+  width: auto;
+  min-width: 0;
+  max-width: 196px;
+  height: 44px;
+  min-height: 44px;
+  gap: 9px;
+  padding: 4px 10px 4px 5px;
+  border-radius: 13px;
+  border: 1px solid #cbded0;
+  background: linear-gradient(150deg, #fff, #f2f9f4);
+  box-shadow: 0 4px 12px rgb(33 71 44 / 8%), inset 0 1px 0 #fff;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile .profile-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 34px;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: #214b35;
+  font-size: 11px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile .profile-copy {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  min-width: 0;
+  max-width: 126px;
+  padding: 0;
+  margin: 0;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile .profile-copy strong {
+  display: block;
+  overflow: hidden;
+  color: #234633;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile .catalog-account-chevron {
+  display: block;
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  margin: 0 0 0 1px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile:hover,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile.active {
+  border-color: #aacdb5;
+  background: #fafffb;
+  box-shadow: 0 7px 16px rgb(33 71 44 / 12%), inset 0 1px 0 #fff;
+}
+@media (max-width: 1150px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile .profile-copy {
+    display: flex;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile .catalog-account-chevron {
+    display: block;
+  }
+}
+@media (max-width: 800px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-popover-anchor .header-profile {
+    flex: 0 1 auto;
+    width: auto;
+    min-width: 0;
+    max-width: 168px;
+    height: 40px;
+    min-height: 40px;
+    padding: 3px 8px 3px 3px;
+    gap: 6px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile .profile-avatar {
+    flex-basis: 33px;
+    width: 33px;
+    min-width: 33px;
+    height: 33px;
+    border-radius: 8px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile .profile-copy {
+    display: flex;
+    max-width: 90px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile .profile-copy strong {
+    font-size: 12px;
+  }
+}
+@media (max-width: 520px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-popover-anchor .header-profile {
+    max-width: 119px;
+    padding: 2px 6px 2px 2px;
+    gap: 5px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile .profile-copy {
+    display: flex;
+    max-width: 71px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile .catalog-account-chevron {
+    display: none;
+  }
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .catalog-header-popover-anchor .header-profile {
+  background: #2c4b37;
+  border-color: #50735a;
+  box-shadow: 0 5px 13px rgb(0 0 0 / 14%), inset 0 1px 0 rgb(255 255 255 / 6%);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .header-profile .profile-copy strong {
+  color: #e3efe5;
+}
