@@ -1,0 +1,216 @@
+/* Brutti Catalog — icon category picker, layered above the inventory table. */
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .table-toolbar {
+  position: relative;
+  z-index: 20;
+  overflow: visible;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 194px;
+  width: 216px;
+  max-width: 100%;
+  align-self: stretch;
+  z-index: 21;
+  font-family: inherit;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-trigger {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  min-height: 43px;
+  padding: 0 13px;
+  border: 1px solid #d7e4d9;
+  border-radius: 12px;
+  background: rgba(250, 252, 249, .94);
+  color: #314a38;
+  font: 600 12px/1.35 inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  box-shadow: inset 0 1px rgba(255,255,255,.75);
+  cursor: pointer;
+  transition: background .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-trigger:hover {
+  background: #f1f7f1;
+  border-color: #adcbb4;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-trigger:focus-visible,
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter.is-open .catalog-category-filter-trigger {
+  outline: 2px solid rgba(55, 113, 74, .17);
+  outline-offset: 1px;
+  border-color: #67967a;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-trigger > svg:first-child {
+  flex-shrink: 0;
+  color: #61846b;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-chevron {
+  flex-shrink: 0;
+  color: #627769;
+  transition: transform .18s ease;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter.is-open .catalog-category-filter-chevron {
+  transform: rotate(180deg);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-menu {
+  position: absolute;
+  z-index: 200;
+  top: calc(100% + 9px);
+  right: 0;
+  width: max(100%, 280px);
+  max-width: min(340px, calc(100vw - 36px));
+  box-sizing: border-box;
+  padding: 8px;
+  border-radius: 16px;
+  border: 1px solid rgba(205, 222, 207, .93);
+  background: rgba(255, 255, 253, .97);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 18px 42px rgba(24, 57, 35, .15), 0 3px 11px rgba(24, 57, 35, .045);
+  animation: catalog-category-menu-in .15s ease-out;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-heading {
+  padding: 9px 11px 10px;
+  color: #7d8f81;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.1;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-options {
+  display: grid;
+  gap: 2px;
+  max-height: min(378px, 52vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c5d4c7 transparent;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  width: 100%;
+  min-height: 39px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 6px 10px;
+  text-align: left;
+  color: #38503e;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 550;
+  cursor: pointer;
+  transition: color .14s ease, background .14s ease;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option:hover,
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option:focus-visible {
+  background: #eff5ef;
+  color: #22593a;
+  outline: none;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option.is-selected {
+  background: #e7f1e8;
+  color: #28593a;
+  font-weight: 680;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  flex: 0 0 28px;
+  place-items: center;
+  color: #69836f;
+  background: rgba(100, 145, 111, .085);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option.is-selected .catalog-category-filter-option-icon {
+  background: #d8e8da;
+  color: #2e6b46;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option-name {
+  flex: 1;
+  min-width: 0;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option > svg:last-child {
+  flex-shrink: 0;
+  color: #2b6e45;
+}
+@keyframes catalog-category-menu-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-category-filter-trigger {
+  background: #253d2e;
+  color: #e3eee5;
+  border-color: #46614c;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-category-filter-menu {
+  background: rgba(28, 47, 35, .98);
+  border-color: #45614b;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .35);
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option {
+  color: #dfebdf;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option:hover,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option:focus-visible,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option.is-selected {
+  background: #35553e;
+  color: #f2fbf3;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option-icon,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option.is-selected .catalog-category-filter-option-icon {
+  background: rgba(190, 219, 191, .1);
+  color: #b7d8bc;
+}
+@media (max-width: 900px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter {
+    flex: 1 1 160px;
+    width: auto;
+    min-width: 0;
+  }
+}
+@media (max-width: 480px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-trigger {
+    min-height: 43px;
+    padding-inline: 11px;
+    gap: 8px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-menu {
+    max-width: calc(100vw - 28px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-menu {
+    animation: none;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-chevron {
+    transition: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-menu {
+    background: #fff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
