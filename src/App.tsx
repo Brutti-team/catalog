@@ -677,6 +677,7 @@ export default function App() {
                 loading={loading}
                 asOfMs={lastSyncedAt ?? 0}
                 canManageCategories={accountRole !== "editor"}
+                enabled={auth.isAdmin}
                 onOpenProducts={next => { switchTab("products"); setStatus(next); }}
                 onOpenCategory={id => { switchTab("products"); setCategory(id); }}
                 onManageCategories={() => switchTab(accountRole === "editor" ? "products" : "categories")}
