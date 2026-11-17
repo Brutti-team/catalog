@@ -482,7 +482,7 @@ export default function App() {
             onClick={() => navigate("/catalog")} aria-label="View public catalog">
             <SafeImage
               className="catalog-sidebar-product-photo"
-              src={heroProduct?.images[0]?.url || "/images/lounge-chair.jpg"}
+              src="/reference/cabinetry.jpg"
               alt="" loading="lazy" aria-hidden="true"
             />
             <span className="sidebar-public-icon" aria-hidden="true"><Store size={19} strokeWidth={1.9} /></span>
@@ -494,7 +494,10 @@ export default function App() {
                 {error ? "Sync needs attention" : lastSyncedAt ? "Catalog synced" : "Checking catalog..."}
               </small>
             </span>
-            <ArrowUpRight size={16} className="sidebar-public-arrow" aria-hidden="true" />
+            <span className="catalog-sidebar-brand" aria-hidden="true">
+              <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="" />
+            </span>
+            <ArrowUpRight size={15} className="sidebar-public-arrow" aria-hidden="true" />
           </button>
         </div>
       </aside>
