@@ -31,7 +31,7 @@ All `VITE_` variables are public in the browser bundle. Never provide a service-
 
 Routes during review: `/admin/`, `/catalog/`, `/#/admin`, `/#/catalog`, `/#/product/<id>` and `/#/catalog/product/<id>`. Static entry files and refreshed product hash routes are tested. `npm run build:pages` prepares the existing `/catalog/` base. `npm run build:site` prepares an additive website artifact with `/admin/`, `/catalog/` and `/catalog-assets/`; [docs/website-integration.md](docs/website-integration.md) explains review assembly. These builds do not change the live `brutti.my` website.
 
-Optionally configure `VITE_ENQUIRY_EMAIL` to an approved business email. Without it, enquiries are disabled. The action opens a mailto draft; there is no server-side email delivery or checkout.
+Optionally configure `VITE_ENQUIRY_EMAIL` to an approved business email for the footer contact link. Product-level **Enquire** buttons open WhatsApp (+60 11-3604 3432, the official @brutti.my WhatsApp contact) with a prefilled message containing that product's name and Product ID. Customers review and send the message in WhatsApp; opening the link does not automatically send, publish, or save anything. There is no server-side enquiry delivery or checkout.
 
 ## Inspect before schema changes or importing
 
