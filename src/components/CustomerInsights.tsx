@@ -140,7 +140,7 @@ export default function CustomerInsights({ products, categories, loading: produc
           <div className="customer-insights-kpis" aria-live="polite">
             {totals.map(item => <div key={item.name} className="customer-insights-kpi">
               <span className="customer-insights-kpi-icon"><item.Icon size={23} strokeWidth={1.7} aria-hidden="true" /></span>
-              <div><strong>{busy || !data ? "—" : compact(item.value ?? 0)}</strong><span>{item.name}</span></div>
+              <div><strong>{busy || !data ? "—" : compact(item.value ?? 0)}</strong><span>{compactLayout ? ({ "Total product views": "Views", "Visitor sessions": "Sessions", "Product clicks": "Clicks", "Products viewed": "Products" }[item.name] ?? item.name) : item.name}</span></div>
             </div>)}
           </div>
           <div className="customer-insights-mid">
