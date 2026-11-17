@@ -1,7 +1,8 @@
-/* Brutti Catalog private preview — clean typography, price hierarchy,
-   and invisible scrollbars. This does not alter the live public catalog. */
+/* Brutti Catalog — private Product Preview, reference-inspired studio layout.
+   Scope everything to the admin-only preview. Public catalog remains unchanged.
+   Content order: category > title > description > price > specs > WhatsApp. */
 
-/* Preserve normal mouse wheel, touch and keyboard scrolling, but no visible rail. */
+/* Hide scrollbar chrome, never disable scrolling. */
 .admin-app .modal.catalog-private-preview-dialog {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -18,120 +19,280 @@
   -ms-overflow-style: none;
 }
 
-/* Restore the familiar professional sans font, not the oversized Georgia serif.
-   Match the hierarchy and alignment of the surrounding catalog workspace. */
-.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy,
-.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > :is(h1, p, div) {
-  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
-}
-.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
-  order: 2;
-  max-width: 27ch;
-  margin-bottom: 12px;
-  color: #293c2f;
-  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
-  font-size: clamp(27px, 2.45vw, 38px);
-  font-weight: 740;
-  line-height: 1.26;
-  letter-spacing: -.036em;
-  text-wrap: balance;
+/* Match the visual reference: ivory canvas, left-aligned editorial type. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 0;
+  min-width: 0;
+  padding: clamp(35px, 4.4vw, 65px) clamp(28px, 4.1vw, 58px) 43px;
+  background: #fbf7f2;
+  color: #302923;
+  font-family: "DM Sans", system-ui, sans-serif;
+  text-align: left;
 }
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {
   order: 1;
-  color: #6c806f;
+  width: 100%;
+  margin: 0 0 18px;
+  color: #736f6b;
   font-family: "DM Sans", system-ui, sans-serif;
-  font-size: 10.5px;
-  font-weight: 740;
-  letter-spacing: .12em;
+  font-size: 11px;
+  font-weight: 630;
+  line-height: 1.5;
+  letter-spacing: .14em;
+  text-align: left;
+  text-transform: uppercase;
 }
-.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-availability {
-  order: 4;
-}
-.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
-  order: 5;
-  margin-bottom: 19px;
-  color: #6b756c;
-  font-family: "DM Sans", system-ui, sans-serif;
-  font-size: clamp(12.5px, 1vw, 14px);
-  font-weight: 470;
-  line-height: 1.7;
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+  order: 2;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 30px;
+  color: #261f1b;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(38px, 3.75vw, 55px);
+  font-weight: 400;
+  line-height: 1.13;
+  letter-spacing: -.023em;
+  text-align: left;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
 }
 
-/* Price directly below the product title, before description and specifications. */
-.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+/* Reference doesn't have an availability badge between title and copy;
+   the underlying availability data remains unchanged. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-availability {
   order: 3;
+  display: none;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+  order: 4;
+  width: 100%;
+  max-width: 61ch;
+  margin: 0 0 28px;
+  color: #746d68;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: clamp(14px, 1.14vw, 17px);
+  font-weight: 440;
+  line-height: 1.68;
+  letter-spacing: -.005em;
+  text-align: left;
+  white-space: pre-line;
+}
+
+/* The price follows the description like the supplied example.
+   With no price stored, PublicCatalog displays "Price on request". */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+  order: 5;
   display: block !important;
   visibility: visible !important;
   opacity: 1;
-  align-self: center;
-  width: auto;
-  max-width: 100%;
-  margin: 0 auto 19px !important;
+  align-self: stretch;
+  width: 100%;
+  max-width: none;
+  margin: 0 0 29px !important;
   padding: 0;
-  color: #244b37;
-  font-family: "DM Sans", system-ui, sans-serif;
-  font-size: 20px;
-  font-weight: 730;
-  line-height: 1.35;
-  text-align: center;
+  color: #2f2622;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(24px, 2vw, 29px);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -.018em;
+  text-align: left;
 }
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-line {
+  display: inline-flex;
   align-items: baseline;
-  justify-content: center;
-  gap: 9px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-current {
-  font-size: clamp(20px, 1.65vw, 25px);
-  font-weight: 770;
-  letter-spacing: -.025em;
-  color: #254e38;
+  color: #2b2420;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(24px, 2vw, 29px);
+  font-weight: 400;
+  letter-spacing: -.02em;
 }
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-old {
-  color: #949b94;
-  font-size: 13.5px;
-  font-weight: 500;
+  color: #9a928a;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 450;
 }
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-discount {
-  color: #2e8560;
-  font-size: 12.5px;
-  font-weight: 740;
+  color: #358263;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
 }
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price > small {
-  margin-top: 6px;
-  color: #859187;
+  display: block;
+  margin-top: 8px;
+  color: #90877e;
+  font-family: "DM Sans", system-ui, sans-serif;
   font-size: 10px;
-  font-weight: 440;
+  font-weight: 450;
+  line-height: 1.5;
+  letter-spacing: 0;
 }
 
-/* Subtle specification rows follow the description and pricing block. */
+/* Clean hairline specification rows, no extra box, precisely as reference. */
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications {
   order: 6;
-  margin-bottom: 24px;
+  align-self: stretch;
+  width: 100%;
+  max-width: none;
+  margin: 0 0 30px;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid #d9d1c9;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications > h2 {
+  display: none;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div {
+  display: grid;
+  grid-template-columns: minmax(105px, 31%) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 14px;
+  margin: 0;
+  padding: 15px 0;
+  border: 0;
+  border-bottom: 1px solid #d9d1c9;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications :is(dt, dd) {
+  margin: 0;
   font-family: "DM Sans", system-ui, sans-serif;
-  font-size: 12.5px;
+  font-size: clamp(12px, .98vw, 14px);
   line-height: 1.55;
 }
-.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry {
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dt {
+  color: #817b75;
+  font-weight: 460;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dd {
+  min-width: 0;
+  color: #34302c;
+  font-weight: 510;
+  overflow-wrap: anywhere;
+}
+
+/* Preserve the existing real WhatsApp link and click behavior.
+   It remains BELOW the specification rows, like the supplied reference. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry:disabled {
   order: 7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  gap: 10px;
+  width: auto;
+  max-width: 100%;
+  min-height: 47px;
+  margin: 0;
+  padding: 12px 21px;
+  border: 1px solid #30251e;
+  border-radius: 3px;
+  background: #30251e !important;
+  color: #fff !important;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-align: center;
+  text-decoration: none;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 12px rgba(44,31,22,.11);
+  transition: background-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry:hover {
+  background: #4b392c !important;
+  border-color: #4b392c;
+  box-shadow: 0 7px 15px rgba(44,31,22,.17);
+  transform: translateY(-1px);
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry:focus-visible {
+  outline: 2px solid #719f81;
+  outline-offset: 3px;
 }
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-note {
   order: 8;
+  display: block;
+  align-self: flex-start;
+  max-width: 50ch;
+  margin: 10px 0 0;
+  color: #968b82;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 10px;
+  line-height: 1.55;
+  text-align: left;
 }
 .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-promise {
   order: 9;
 }
-@media (max-width: 760px) {
+
+/* Respect mobile sizing without changing the real product image preview. */
+@media (max-width: 1050px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    padding: 32px 28px 36px;
+  }
   .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
-    max-width: 100%;
-    font-size: clamp(25px, 6.2vw, 32px);
-    line-height: 1.26;
+    font-size: clamp(35px, 4.1vw, 47px);
+  }
+}
+@media (max-width: 760px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    justify-content: flex-start;
+    padding: 26px 21px 32px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {
+    margin-bottom: 12px;
+    font-size: 10px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    margin-bottom: 22px;
+    font-size: clamp(34px, 8.2vw, 43px);
+    line-height: 1.16;
   }
   .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
-    margin-bottom: 17px;
+    margin-bottom: 22px;
+    font-size: 14px;
   }
   .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
-    margin-bottom: 16px !important;
+    margin-bottom: 22px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div {
+    grid-template-columns: minmax(91px, 33%) minmax(0, 1fr);
+    gap: 11px;
+    padding: 13px 0;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry {
+    width: auto;
+    min-height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry {
+    transition: none;
+    transform: none;
   }
 }
