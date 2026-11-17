@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
-import { AlertCircle, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, PencilLine, ArrowLeftRight } from "lucide-react";
 import {
   getAccountSummary, initials, listCatalogActivity, listCatalogStaff,
   roleLabel, updateOwnDisplayName, updateStaffRole,
@@ -24,7 +24,29 @@ function dateText(value: string | null): string {
     : new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kuala_Lumpur" }).format(date) + " MYT";
 }
 function actionText(event: ActivityEntry): string {
-  return event.action.replace(/_/g, " ").replace(/\b\w/g, letter => letter.toUpperCase());
+  const labels: Record<string, string> = {
+    products_created: "Product added",
+    products_updated: "Product updated",
+    products_deleted: "Product deleted",
+    products_id_migrated: "Product IDs migrated",
+    categories_created: "Category added",
+    categories_updated: "Category updated",
+    categories_deleted: "Category deleted",
+  };
+  return labels[event.action] || event.action.replace(/_/g, " ").replace(/\b\w/g, letter => letter.toUpperCase());
+}
+function activityDate(value: string, kind: "date" | "time"): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Date unavailable";
+  return new Intl.DateTimeFormat("en-MY", kind === "date"
+    ? { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" }
+    : { hour: "numeric", minute: "2-digit", hour12: true, timeZone: "Asia/Kuala_Lumpur" }).format(date);
+}
+function activityType(entry: ActivityEntry): "products" | "categories" | "system" {
+  return entry.action === "products_id_migrated" ? "system"
+    : entry.resource_type === "products" ? "products"
+    : entry.resource_type === "categories" ? "categories"
+    : "system";
 }
 
 export default function AccountCenter({
@@ -36,6 +58,7 @@ export default function AccountCenter({
   const [account, setAccount] = useState<AccountSummary | null>(null);
   const [members, setMembers] = useState<StaffMember[]>([]);
   const [events, setEvents] = useState<ActivityEntry[]>([]);
+  const [activityFilter, setActivityFilter] = useState<"all" | "products" | "categories">("all");
   const [draftRoles, setDraftRoles] = useState<Record<string, string>>({});
   const [displayName, setDisplayName] = useState("");
   const [pending, setPending] = useState(false);
@@ -103,8 +126,10 @@ export default function AccountCenter({
     } finally { setBusyId(null); }
   }
 
+  const visibleEvents = activityFilter === "all"
+    ? events : events.filter(item => item.resource_type === activityFilter);
   return (
-    <section className="account-center">
+    <section className={`account-center${view === "activity" ? " account-center--activity" : ""}`}>
       <div className="account-heading">
         <div>
           <span className="eyebrow">{view === "users" ? "CATALOG ACCESS CONTROL" : "YOUR BRUTTI WORKSPACE"}</span>
@@ -183,16 +208,75 @@ export default function AccountCenter({
             </div>
       )}
       {view === "activity" && !pending && account && (
-          <div className="account-table-wrap">
-              <div className="account-table-title"><Clock3 size={19}/><strong>Recent changes</strong><span>{events.length}</span></div>
-              {!events.length ? <div className="account-empty"><Clock3 size={24}/><p>No activity has been recorded yet.</p></div> : (
-              <div className="account-timeline">{events.map(item => <div className="account-event" key={item.id}>
-                <div className="account-event-dot" /><div className="account-event-main">
-                  <strong>{actionText(item)}</strong><span>{item.resource_name || item.resource_type}</span>
-                  <p>By {item.actor_email || "System"} · {dateText(item.created_at)}</p>
-                </div>
-              </div>)}</div>)}
+        <div className="account-table-wrap account-activity-panel">
+          <div className="account-activity-toolbar">
+            <div className="account-activity-toolbar-heading">
+              <div className="account-activity-toolbar-icon" aria-hidden="true"><Clock3 size={20}/></div>
+              <div>
+                <h2>Recent changes <span className="account-activity-count">{events.length}</span></h2>
+                <p>Latest recorded changes to your catalog</p>
+              </div>
             </div>
+            <div className="account-activity-filters" role="group" aria-label="Filter activity by type">
+              {([
+                { id: "all", label: "All activity" },
+                { id: "products", label: "Products" },
+                { id: "categories", label: "Categories" },
+              ] as const).map(filter => (
+                <button
+                  type="button"
+                  key={filter.id}
+                  className={`account-activity-filter${activityFilter === filter.id ? " is-active" : ""}`}
+                  aria-pressed={activityFilter === filter.id}
+                  onClick={() => setActivityFilter(filter.id)}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          {!events.length ? (
+            <div className="account-empty"><Clock3 size={24}/><p>No activity has been recorded yet.</p></div>
+          ) : !visibleEvents.length ? (
+            <div className="account-activity-empty"><Clock3 size={20}/><p>No {activityFilter} changes in the latest records.</p></div>
+          ) : (
+            <div className="account-timeline" role="list" aria-label="Recent catalog changes">
+              {visibleEvents.map(item => {
+                const type = activityType(item);
+                const deleted = item.action.endsWith("_deleted");
+                const added = item.action.endsWith("_created");
+                const migrated = item.action.includes("migrated");
+                const Icon = migrated ? ArrowLeftRight : deleted ? Trash2 : added ? Plus : type === "categories" ? Layers3 : type === "products" ? Package : ShieldCheck;
+                const typeLabel = type === "products" ? "Product" : type === "categories" ? "Category" : "System";
+                return (
+                  <article className={`account-event account-event--${type}`} key={item.id} role="listitem">
+                    <div className="account-event-track" aria-hidden="true">
+                      <span className="account-event-icon"><Icon size={17} strokeWidth={1.9}/></span>
+                    </div>
+                    <div className="account-event-main">
+                      <div className="account-event-heading">
+                        <strong>{actionText(item)}</strong>
+                        <span className={`account-event-type account-event-type--${type}`}>{typeLabel}</span>
+                      </div>
+                      <p className="account-event-resource">{item.resource_name || item.resource_type}</p>
+                      <div className="account-event-byline">
+                        <UserRound size={12} aria-hidden="true"/>
+                        <span>{item.actor_email || "System"}</span>
+                      </div>
+                    </div>
+                    <time className="account-event-when" dateTime={item.created_at}>
+                      <span>{activityDate(item.created_at, "date")}</span>
+                      <small>{activityDate(item.created_at, "time")} MYT</small>
+                    </time>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+          {events.length === 50 && (
+            <p className="account-activity-limit">Displaying the latest 50 recorded changes.</p>
+          )}
+        </div>
       )}
       <div className="account-privacy"><UserRound size={15} /> Every session is connected to a unique Supabase user ID. Activity actors are written by database triggers, not by the browser.</div>
     </section>
