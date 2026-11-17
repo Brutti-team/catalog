@@ -74,11 +74,11 @@ export function recordCatalogEvent(kind: CatalogEventKind, productId: string | n
   if (now - (recentEvents.get(key) ?? 0) < 16_000) return;
   recentEvents.set(key, now);
   try {
-    void catalogClient().rpc("catalog_record_customer_event", {
+    void Promise.resolve(catalogClient().rpc("catalog_record_customer_event", {
       p_event_type: kind,
       p_product_id: productId,
       p_session_id: activeSessionId(),
-    }).then(({ error }) => {
+    })).then(({ error }) => {
       if (error && import.meta.env.DEV) console.warn("Customer analytics event not stored:", error.message);
     }).catch((error: unknown) => {
       if (import.meta.env.DEV) console.warn("Customer analytics tracking unavailable:", error);
