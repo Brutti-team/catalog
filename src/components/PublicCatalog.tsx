@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import { publicAssetUrl } from "../lib/assets";
-import { formatProductPrice } from "../lib/price";
+import ProductPrice from "./ProductPrice";
 import { productIdFromHash } from "../lib/routes";
 import { recordCatalogEvent } from "../lib/customer-analytics";
 import { BRUTTI_WHATSAPP_NUMBER, productWhatsAppUrl } from "../lib/whatsapp-enquiry";
@@ -46,10 +46,6 @@ const availabilityLabels = {
   "made-to-order": "Made to order",
   unavailable: "Currently unavailable",
 };
-const price = (product: Product) =>
-  product.price === null
-    ? "Price on enquiry"
-    : formatProductPrice(product, 'public');
 function currentProductId() {
   return productIdFromHash(window.location.hash);
 }
@@ -219,7 +215,7 @@ export default function PublicCatalog({
       </div>
       <div className="pub-card-bottom">
         <h3>{item.name}</h3>
-        <span>{price(item)}</span>
+        <span className="pub-card-price"><ProductPrice product={item} /></span>
       </div>
       <p className="pub-card-material">{item.materials}</p>
     </a>
@@ -582,7 +578,7 @@ export default function PublicCatalog({
                       {product.description}
                     </p>
                     <p className="pub-detail-price">
-                      {price(product)}
+                      <ProductPrice product={product} />
                       {product.price !== null && (
                         <small>
                           Indicative price · Confirm details on enquiry
