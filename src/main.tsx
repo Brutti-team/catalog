@@ -44,6 +44,7 @@ import "./components/catalog-category-dialog-premium.css";
 import "./components/catalog-category-cover-elevation.css";
 import "./components/product-editor-essentials-unified.css";
 import "./components/product-editor-media-specs-unified.css";
+import "./components/product-editor-dimension-units.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
