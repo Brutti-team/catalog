@@ -1,0 +1,135 @@
+/* Brutti Catalog private preview — clean typography, price hierarchy,
+   and invisible scrollbars. This does not alter the live public catalog. */
+
+/* Preserve normal mouse wheel, touch and keyboard scrolling, but no visible rail. */
+.admin-app .modal.catalog-private-preview-dialog {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-gutter: auto;
+}
+.admin-app .modal.catalog-private-preview-dialog::-webkit-scrollbar,
+.admin-app .modal.catalog-private-preview-dialog .pub-private-preview::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.admin-app .modal.catalog-private-preview-dialog .pub-private-preview {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Restore the familiar professional sans font, not the oversized Georgia serif.
+   Match the hierarchy and alignment of the surrounding catalog workspace. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > :is(h1, p, div) {
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+  order: 2;
+  max-width: 27ch;
+  margin-bottom: 19px;
+  color: #293c2f;
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-size: clamp(27px, 2.45vw, 38px);
+  font-weight: 740;
+  line-height: 1.26;
+  letter-spacing: -.036em;
+  text-wrap: balance;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {
+  order: 1;
+  color: #6c806f;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 10.5px;
+  font-weight: 740;
+  letter-spacing: .12em;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-availability {
+  order: 3;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+  order: 4;
+  margin-bottom: 19px;
+  color: #6b756c;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: clamp(12.5px, 1vw, 14px);
+  font-weight: 470;
+  line-height: 1.7;
+}
+
+/* Display the actual price/discount BEFORE materials and dimensions. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+  order: 5;
+  align-self: center;
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto 24px !important;
+  padding: 0;
+  color: #244b37;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 730;
+  line-height: 1.35;
+  text-align: center;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-line {
+  align-items: baseline;
+  justify-content: center;
+  gap: 9px;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-current {
+  font-size: clamp(20px, 1.65vw, 25px);
+  font-weight: 770;
+  letter-spacing: -.025em;
+  color: #254e38;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-old {
+  color: #949b94;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-discount {
+  color: #2e8560;
+  font-size: 12.5px;
+  font-weight: 740;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price > small {
+  margin-top: 6px;
+  color: #859187;
+  font-size: 10px;
+  font-weight: 440;
+}
+
+/* Subtle specification rows now follow pricing, rather than separating it
+   from the title / description. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications {
+  order: 6;
+  margin-bottom: 24px;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications :is(dt, dd) {
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry {
+  order: 7;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-note {
+  order: 8;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-promise {
+  order: 9;
+}
+@media (max-width: 760px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    max-width: 100%;
+    font-size: clamp(25px, 6.2vw, 32px);
+    line-height: 1.26;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+    margin-bottom: 17px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+    margin-bottom: 20px !important;
+  }
+}
