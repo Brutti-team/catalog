@@ -11,7 +11,6 @@ import {
   ArrowUpRight,
   Plus,
   Search,
-  SlidersHorizontal,
   Grid2X2,
   List,
   MoreHorizontal,
@@ -66,6 +65,7 @@ import AccountCenter from "./components/AccountCenter";
 import CataloguePhotoImport from "./components/CataloguePhotoImport";
 import LastChange from "./components/LastChange";
 import CategoryFilter from "./components/CategoryFilter";
+import SortFilter from "./components/SortFilter";
 import { getAccountSummary, initials, roleLabel, type StaffRole } from "./lib/account-center";
 import { useAdminTheme } from "./lib/admin-theme";
 
@@ -738,19 +738,7 @@ export default function App() {
                 </div>
                 <div className="filters">
                   <CategoryFilter categories={data.categories} value={category} onChange={setCategory} />
-                  <label className="sort-field">
-                    <SlidersHorizontal size={15} />
-                    <select
-                      aria-label="Sort products"
-                      value={sort}
-                      onChange={(e) => setSort(e.target.value)}
-                    >
-                      <option value="recent">Latest updated</option>
-                      <option value="name">Name A–Z</option>
-                      <option value="price">Price low–high</option>
-                      <option value="display-order">Display order</option>
-                    </select>
-                  </label>
+                  <SortFilter value={sort} onChange={setSort} />
                 </div>
               </div>
               {tab === "products" && (
