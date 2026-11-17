@@ -74,7 +74,7 @@ function CustomerInterestChart({ data, days }: { data: CustomerInsightData; days
   );
 }
 
-export default function CustomerInsights({ products, categories, loading: productsLoading, enabled, onOpenCategory, compact = false }: Props) {
+export default function CustomerInsights({ products, categories, loading: productsLoading, enabled, onOpenCategory, compact: compactLayout = false }: Props) {
   const [days, setDays] = useState<InsightPeriod>(30);
   const [data, setData] = useState<CustomerInsightData | null>(null);
   const [busy, setBusy] = useState(true);
@@ -111,7 +111,7 @@ export default function CustomerInsights({ products, categories, loading: produc
   ];
 
   return (
-    <section className={`customer-insights-panel${compact ? " is-compact" : ""}`} aria-labelledby="customer-insights-title">
+    <section className={`customer-insights-panel${compactLayout ? " is-compact" : ""}`} aria-labelledby="customer-insights-title">
       <header className="customer-insights-header">
         <div className="customer-insights-heading">
           <ChartNoAxesCombined size={27} strokeWidth={1.8} aria-hidden="true" />
@@ -148,7 +148,7 @@ export default function CustomerInsights({ products, categories, loading: produc
               {data ? <CustomerInterestChart data={data} days={days} /> :
                 <p className="customer-insights-loading">Loading customer interest…</p>}
             </div>
-            {!compact && <div className="customer-insights-categories">
+            {!compactLayout && <div className="customer-insights-categories">
               <h3>Most viewed categories</h3>
               {categoryRows.length ? categoryRows.map(row => <button key={row.id} type="button"
                 className="customer-insights-category" onClick={() => onOpenCategory(row.id)}>
