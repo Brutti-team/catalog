@@ -65,7 +65,17 @@ export default function CatalogOverviewStudio({
       product.categoryId === category.id && product.images.length > 0)?.images[0],
   })).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
   const maxCategoryCount = Math.max(1, ...categoryInsights.map(item => item.count));
-  const featuredPhoto = products.find(product => product.images.length)?.images[0];
+  // Use the earlier white cabinet photograph consistently. Picking the first
+  // database row made the cover unexpectedly switch to event/party images.
+  const featuredPhoto =
+    products.find(product =>
+      product.name === "White Base Cabinet With Timber Display Shelves" &&
+      product.images.length > 0
+    )?.images[0]
+    ?? products.find(product =>
+      product.sku === "PNL-16" && product.images.length > 0
+    )?.images[0]
+    ?? products.find(product => product.images.length > 0)?.images[0];
 
   const cards = [
     { title: "Categories", value: categories.length, caption: "Collection groups", icon: Layers3, status: "categories" as const },
