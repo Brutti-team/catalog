@@ -1566,3 +1566,79 @@
     padding: 10px 9px;
   }
 }
+
+
+/* 17 Nov — truly compact catalog footer tile; keep the real cabinetry photograph. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link {
+  height: 57px;
+  min-height: 57px;
+  max-height: 57px;
+  padding: 7px 10px;
+  gap: 8px;
+  border-radius: 11px;
+  box-shadow: 0 3px 9px rgba(24, 59, 38, .09);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link::before {
+  background: linear-gradient(90deg,rgba(17,50,33,.98),rgba(17,50,33,.87) 64%,rgba(17,50,33,.42));
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link .sidebar-public-icon {
+  flex: 0 0 23px;
+  min-width: 23px;
+  width: 23px;
+  height: 23px;
+  border-radius: 7px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link .sidebar-public-icon svg {
+  width: 14px;
+  height: 14px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link .sidebar-public-copy {
+  gap: 3px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link .sidebar-public-copy strong {
+  font-size: 10.8px;
+  line-height: 1.18;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link .sidebar-public-sync {
+  font-size: 9.5px;
+  gap: 5px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link .sidebar-sync-dot {
+  flex-basis: 6px;
+  width: 6px;
+  height: 6px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link .catalog-sidebar-brand {
+  top: 2px;
+  right: 7px;
+  width: 28px;
+  height: 15px;
+  opacity: .7;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link .sidebar-public-arrow {
+  bottom: 7px;
+  right: 9px;
+  width: 11px;
+  height: 11px;
+}
+@media (min-width:801px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link {
+    height: 42px;
+    min-height: 42px;
+    max-height: 42px;
+    padding: 5px 0;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link .sidebar-public-icon {
+    flex-basis: 23px;
+    width: 23px;
+    height: 23px;
+  }
+}
+@media (max-width:800px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .sidebar-public-link.catalog-photo-link {
+    height: 57px;
+    min-height: 57px;
+    max-height: 57px;
+    padding: 7px 10px;
+  }
+}
