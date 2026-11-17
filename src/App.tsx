@@ -460,18 +460,19 @@ export default function App() {
           {auth.isAdmin && (
             <span className="nav-group-label nav-group-second">HISTORY & ACCESS</span>
           )}
-          {accountsReady && accountRole === "super_admin" && (
-            <button className={`nav-item ${tab === "users" ? "active" : ""}`}
-              aria-current={tab === "users" ? "page" : undefined}
-              onClick={() => switchTab("users")}>
-              <span className="nav-icon" aria-hidden="true"><UsersRound size={19} strokeWidth={1.9} /></span> Users
-            </button>
-          )}
           {auth.isAdmin && (
             <button className={`nav-item ${tab === "activity" ? "active" : ""}`}
               aria-current={tab === "activity" ? "page" : undefined}
               onClick={() => switchTab("activity")}>
               <span className="nav-icon" aria-hidden="true"><History size={19} strokeWidth={1.9} /></span> Activity log
+            </button>
+          )}
+          {auth.isAdmin && (
+            <button className={`nav-item ${tab === "users" ? "active" : ""}`}
+              aria-current={tab === "users" ? "page" : undefined}
+              title="Account Permission"
+              onClick={() => switchTab("users")}>
+              <span className="nav-icon" aria-hidden="true"><ShieldCheck size={19} strokeWidth={1.9} /></span> Account Permission
             </button>
           )}
         </nav>
