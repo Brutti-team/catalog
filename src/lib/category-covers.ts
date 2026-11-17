@@ -4,7 +4,8 @@ import type { Product } from "./types";
  * Category cover choices for the admin workspace.
  * Prioritise real Brutti product photography rather than the first item returned
  * by the database (which can be a cutout on black or a small printed plaque).
- * Empty categories have no cover at all: never insert stock or placeholder imagery.
+ * If no product photo exists, use the original catalog illustration rather than
+ * leaving a large empty area or inserting an unrelated stock photograph.
  */
 type CoverChoice = {
   preferred: string[];
@@ -68,7 +69,7 @@ const covers: Record<string, CoverChoice> = {
   },
 };
 
-export type CategoryCover = { src?: string; position: string };
+export type CategoryCover = { src: string; position: string };
 
 export function categoryCover(
   categoryName: string,
@@ -77,12 +78,13 @@ export function categoryCover(
   const choice = covers[categoryName.trim().toLowerCase()] ?? {
     preferred: [], position: "center",
   };
-  // Use real product images, including the only photo in a category.
-  // If none exist, return no src so the card does not render an image element.
+  // Prefer real product photos, including the only photo in a category.
+  // For empty/photo-less categories, restore the original illustrated placeholder.
   const preferred = choice.preferred
     .map(sku => items.find(item => item.sku.toUpperCase() === sku.toUpperCase()))
     .find(item => item?.images?.[0]?.url);
   const src = preferred?.images?.[0]?.url
-    || items.find(item => item.images?.[0]?.url)?.images?.[0]?.url;
+    || items.find(item => item.images?.[0]?.url)?.images?.[0]?.url
+    || "/images/placeholder.svg";
   return { src, position: choice.position };
 }
