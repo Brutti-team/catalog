@@ -10,7 +10,6 @@ type CoverChoice = {
   preferred: string[];
   fallback: string;
   position: string;
-  useReference?: boolean;
 };
 const covers: Record<string, CoverChoice> = {
   "beds & bunkbeds": {
@@ -27,13 +26,11 @@ const covers: Record<string, CoverChoice> = {
     preferred: [],
     fallback: "/reference/cabinetry.jpg",
     position: "center 51%",
-    useReference: true,
   },
   "built-in cabinet": {
     preferred: [],
     fallback: "/reference/cabinetry.jpg",
     position: "center 51%",
-    useReference: true,
   },
   "displays & mementos": {
     preferred: ["D&M-03", "D&M-13", "D&M-11"],
@@ -44,7 +41,6 @@ const covers: Record<string, CoverChoice> = {
     preferred: [],
     fallback: "/reference/kiosk.jpg",
     position: "center 49%",
-    useReference: true,
   },
   "panels": {
     preferred: ["PNL-17", "PNL-06", "PNL-16"],
@@ -65,7 +61,6 @@ const covers: Record<string, CoverChoice> = {
     preferred: [],
     fallback: "/reference/chair.jpg",
     position: "center 55%",
-    useReference: true,
   },
   "tables & kitchen counters": {
     preferred: ["T&KC-15", "T&KC-02", "T&KC-13"],
@@ -83,9 +78,9 @@ export function categoryCover(
   const choice = covers[categoryName.trim().toLowerCase()] ?? {
     preferred: [], fallback: "/reference/hero.jpg", position: "center",
   };
-  if (choice.useReference) {
-    return { src: choice.fallback, position: choice.position };
-  }
+  // Always use an actual uploaded product photo when one exists, including
+  // categories containing just one product. Use local category imagery only
+  // while that category has no usable product photo.
   const preferred = choice.preferred
     .map(sku => items.find(item => item.sku.toUpperCase() === sku.toUpperCase()))
     .find(item => item?.images?.[0]?.url);
