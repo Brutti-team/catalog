@@ -8,7 +8,6 @@ import {
   ChevronDown,
   Image as ImageIcon,
   Box as BoxIcon,
-  Mail,
   Search,
   SlidersHorizontal,
   Sparkles,
@@ -19,6 +18,7 @@ import { publicAssetUrl } from "../lib/assets";
 import { formatProductPrice } from "../lib/price";
 import { productIdFromHash } from "../lib/routes";
 import { recordCatalogEvent } from "../lib/customer-analytics";
+import { productWhatsAppUrl } from "../lib/whatsapp-enquiry";
 import ShowroomSections from "./ShowroomSections";
 import "./public.css";
 import "./brutti-3d.css";
@@ -589,30 +589,17 @@ export default function PublicCatalog({
                         </small>
                       )}
                     </p>
-                    {previewProduct ? (
-                      <button className="pub-primary-button pub-enquiry-button" type="button" disabled>
-                        Enquire about this piece
-                      </button>
-                    ) : enquiryEmail ? (
-                      <a
-                        className="pub-primary-button pub-enquiry-button"
-                        href={`mailto:${enquiryEmail}?subject=${encodeURIComponent(`Product enquiry: ${product.name} (${product.sku})`)}&body=${encodeURIComponent(`Hello Brutti team,\n\nI would like to know more about ${product.name} (${product.sku}).\n\nThank you.`)}`}
-                      >
-                        <Mail size={16} /> Enquire about this piece{" "}
-                        <ArrowUpRight size={17} />
-                      </a>
-                    ) : (
-                      <button
-                        className="pub-primary-button pub-enquiry-button"
-                        disabled
-                      >
-                        <Mail size={16} /> Enquiries coming soon
-                      </button>
-                    )}
+                    <a
+                      className="pub-primary-button pub-enquiry-button pub-whatsapp-enquiry"
+                      href={productWhatsAppUrl(product)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Enquire about ${product.name} on WhatsApp`}
+                    >
+                      Enquire about this piece <ArrowUpRight size={16} aria-hidden="true" />
+                    </a>
                     <p className="pub-enquiry-note">
-                      {enquiryEmail
-                        ? "Opens your email app. No enquiry is sent by this catalog."
-                        : "An enquiry contact has not been configured yet."}
+                      Opens WhatsApp with a ready-to-send message about this product. You can review it before sending.
                     </p>
                     <div className="pub-specifications">
                       <h2>The details</h2>
