@@ -13,6 +13,7 @@ type Props = {
   loading: boolean;
   enabled: boolean;
   onOpenCategory: (id: string) => void;
+  compact?: boolean;
 };
 
 const nfmt = new Intl.NumberFormat("en-MY");
@@ -73,7 +74,7 @@ function CustomerInterestChart({ data, days }: { data: CustomerInsightData; days
   );
 }
 
-export default function CustomerInsights({ products, categories, loading: productsLoading, enabled, onOpenCategory }: Props) {
+export default function CustomerInsights({ products, categories, loading: productsLoading, enabled, onOpenCategory, compact = false }: Props) {
   const [days, setDays] = useState<InsightPeriod>(30);
   const [data, setData] = useState<CustomerInsightData | null>(null);
   const [busy, setBusy] = useState(true);
@@ -110,7 +111,7 @@ export default function CustomerInsights({ products, categories, loading: produc
   ];
 
   return (
-    <section className="customer-insights-panel" aria-labelledby="customer-insights-title">
+    <section className={`customer-insights-panel${compact ? " is-compact" : ""}`} aria-labelledby="customer-insights-title">
       <header className="customer-insights-header">
         <div className="customer-insights-heading">
           <ChartNoAxesCombined size={27} strokeWidth={1.8} aria-hidden="true" />
@@ -147,7 +148,7 @@ export default function CustomerInsights({ products, categories, loading: produc
               {data ? <CustomerInterestChart data={data} days={days} /> :
                 <p className="customer-insights-loading">Loading customer interest…</p>}
             </div>
-            <div className="customer-insights-categories">
+            {!compact && <div className="customer-insights-categories">
               <h3>Most viewed categories</h3>
               {categoryRows.length ? categoryRows.map(row => <button key={row.id} type="button"
                 className="customer-insights-category" onClick={() => onOpenCategory(row.id)}>
@@ -156,7 +157,7 @@ export default function CustomerInsights({ products, categories, loading: produc
                 </span>
                 <span className="customer-insights-category-track"><i style={{ width: row.views / categoryMax * 100 + "%" }} /></span>
               </button>) : <p className="customer-insights-no-category">{busy || !data ? "Loading category interest…" : "No category views yet. Results appear after customers open published products."}</p>}
-            </div>
+            </div>}
           </div>
           <footer className="customer-insights-footer">
             <div className="customer-insights-footer-top">
