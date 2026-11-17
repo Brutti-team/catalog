@@ -7,6 +7,7 @@ import {
 } from "../lib/account-center";
 import { requestPasswordReset } from "../lib/catalog";
 import "./account-center.css";
+import "./catalog-activity-history-premium.css";
 
 type View = "profile" | "users" | "activity";
 
