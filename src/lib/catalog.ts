@@ -497,6 +497,58 @@ export async function deleteCategory(id: string): Promise<void> {
   if (!data) throw new Error('This category was not deleted. Please refresh and sign in again.');
 }
 
+/** Delete a confirmed category and its products in a single DB transaction.
+ * The dialog must display the exact category name/count before calling this.
+ * Product images and models are cleaned up after the DB commit, like deleteProduct.
+ */
+export async function deleteCategoryWithProducts(
+  categoryId: string,
+  categoryName: string,
+  expectedCount: number,
+): Promise<CatalogMutationOutcome & { deletedCount: number }> {
+  await requireAdmin();
+  if (!categoryId || !categoryName || !Number.isSafeInteger(expectedCount) || expectedCount < 0)
+    throw new Error("Invalid category deletion request.");
+  const db = supabase();
+  const { data, error } = await db.rpc('catalog_delete_category_with_products', {
+    p_category_id: categoryId,
+    p_expected_name: categoryName,
+    p_expected_count: expectedCount,
+  });
+  if (error) throw backendError(error.message, "delete the category and its products");
+  const payload = data as {
+    deleted_category_id?: string;
+    deleted_count?: number;
+    products?: Array<{ id: string; images?: ProductImage[]; model_path?: string | null }>;
+  } | null;
+  if (!payload || payload.deleted_category_id !== categoryId || payload.deleted_count !== expectedCount)
+    throw new Error("The server response could not be verified. Refresh before attempting any further changes.");
+
+  // Database deletion is now complete. Storage cleanup is best effort: never
+  // claim the deletion failed if a photo/model could not be removed from storage.
+  let cleanupWarning = "";
+  const images = (payload.products ?? []).flatMap(product => Array.isArray(product.images) ? product.images : []);
+  if (images.length) {
+    try {
+      const caps = await loadCatalogCapabilities(db);
+      if (caps.imageCleanup) {
+        const cleanup = await cleanupImages(images, 'deleted');
+        if (cleanup.cleanupWarning) cleanupWarning = cleanup.cleanupWarning;
+      }
+    } catch {
+      cleanupWarning = "Category deleted, but some unused images may remain in storage.";
+    }
+  }
+  const modelPaths = [...new Set((payload.products ?? []).map(product => product.model_path).filter((path): path is string => !!path))];
+  for (const path of modelPaths) {
+    if (!await removeUnusedModel(db, path)) {
+      cleanupWarning = [cleanupWarning, "Category deleted, but some 3D files could not be cleaned up."].filter(Boolean).join(" ");
+      break;
+    }
+  }
+  return { deletedCount: expectedCount, ...(cleanupWarning ? { cleanupWarning } : {}) };
+}
+
 export function subscribeCatalog(
   callback: () => Promise<void> | void,
   visibility: Pick<Document, 'visibilityState' | 'addEventListener' | 'removeEventListener'> | undefined = typeof document === 'undefined' ? undefined : document,
