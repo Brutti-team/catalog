@@ -1,5 +1,97 @@
 /* Brutti Catalog — remove Customer Preview rail; give staff a focused full-width editor.
    Photo composition is non-destructive and saved with images JSON on product Save. */
+/* Restore the familiar centered Edit Product POPUP, not an edge-to-edge workspace.
+   This keeps the photo-adjuster and removes the empty area left by Customer Preview. */
+@media (min-width: 761px) {
+  .admin-app .modal.product-editor-dialog--editing {
+    box-sizing: border-box;
+    display: block;
+    width: min(1080px, calc(100vw - 48px));
+    max-width: calc(100vw - 48px);
+    height: auto;
+    max-height: min(92dvh, 950px);
+    margin: auto;
+    border-radius: 17px;
+  }
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  padding: 25px clamp(22px, 3vw, 42px) 34px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-columns {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Footer spans the actual editor, not the removed right-hand preview rail. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 12px clamp(22px, 3vw, 42px);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer > .tiny {
+  display: block;
+  flex: 1 1 180px;
+  grid-column: auto;
+  align-self: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer > .button-row {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  grid-column: auto;
+  align-self: center;
+  gap: 9px;
+  width: auto;
+  min-width: 0;
+  margin: 0 0 0 auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+@media (max-width: 760px) {
+  .admin-app .modal.product-editor-dialog--editing {
+    width: calc(100vw - 12px);
+    max-width: calc(100vw - 12px);
+    max-height: 96dvh;
+    margin: auto;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+    padding: 18px 16px 26px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+    padding: 11px 16px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer > .tiny {
+    display: none;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer > .button-row {
+    width: 100%;
+    flex: 1 1 100%;
+    margin: 0;
+    justify-content: stretch;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer > .button-row > button {
+    flex: 1 1 0;
+  }
+}
 .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-columns {
   display: block;
   grid-template-columns: minmax(0, 1fr);
@@ -8,10 +100,10 @@
 }
 .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
   width: 100%;
-  max-width: 1210px;
+  max-width: 100%;
   min-width: 0;
   margin: 0 auto;
-  padding: 28px clamp(18px, 3.8vw, 55px) 42px;
+  padding: 25px clamp(22px, 3vw, 42px) 34px;
 }
 .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-side {
   display: none;
