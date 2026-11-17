@@ -1002,19 +1002,22 @@ export default function App() {
                   );
                   const cover = categoryCover(c.name, items);
                   return (
-                    <article className="category-card" key={c.id}>
-                      <div className="category-cover">
-                        <SafeImage
-                          className="category-cover-image"
-                          src={cover.src}
-                          alt={`${c.name} category cover`}
-                          loading="lazy"
-                          decoding="async"
-                          style={{ objectPosition: cover.position }}
-                        />
-                        <span>0{index + 1}</span>
-                      </div>
+                    <article className={`category-card${cover.src ? "" : " category-card--without-cover"}`} key={c.id}>
+                      {cover.src && (
+                        <div className="category-cover">
+                          <SafeImage
+                            className="category-cover-image"
+                            src={cover.src}
+                            alt={`${c.name} category cover`}
+                            loading="lazy"
+                            decoding="async"
+                            style={{ objectPosition: cover.position }}
+                          />
+                          <span>0{index + 1}</span>
+                        </div>
+                      )}
                       <div className="category-card-body">
+                        {!cover.src && <span className="category-card-index">0{index + 1}</span>}
                         <div className="section-title">
                           <h2>{c.name}</h2>
                           <span className="category-count">
