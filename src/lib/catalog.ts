@@ -194,7 +194,7 @@ export function validateProduct(product: Product): void {
   if (product.name.trim().length < 2 || product.name.length > 120)
     throw new Error("Product name must contain 2–120 characters.");
   if (!product.sku.trim() || product.sku.length > 64)
-    throw new Error("SKU is required and must contain at most 64 characters.");
+    throw new Error("Product ID is required and must contain at most 64 characters.");
   if (!product.categoryId.trim())
     throw new Error("Choose a category for this product.");
   if (
