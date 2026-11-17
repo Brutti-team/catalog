@@ -51,6 +51,7 @@ import "./components/catalog-private-preview-premium.css";
 import "./components/product-editor-dimensions-polish.css";
 import "./components/catalog-price-discount.css";
 import "./components/product-editor-footer-alignment.css";
+import "./components/catalog-private-preview-final-polish.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
