@@ -34,6 +34,7 @@ import "./components/product-editor-reference-match.css";
 import "./components/catalog-products-compact-premium.css";
 import "./components/category-filter-premium.css";
 import "./components/catalog-os-topbar.css";
+import "./components/product-editor-specifications-premium.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
