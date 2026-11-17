@@ -46,6 +46,7 @@ import "./components/product-editor-essentials-unified.css";
 import "./components/product-editor-media-specs-unified.css";
 import "./components/product-editor-dimension-units.css";
 import "./components/product-editor-specifications-aligned.css";
+import "./components/catalog-category-delete-confirm.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
