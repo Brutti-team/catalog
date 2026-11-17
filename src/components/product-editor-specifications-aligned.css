@@ -1,0 +1,291 @@
+/* Brutti Catalog · Specification form alignment (Nov 2026).
+   Edit Product only. Preserve real availability state, unit conversion and data bindings. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs.catalog-reference-specifications {
+  --spec-label-width: 156px;
+  --spec-row-gap: 13px;
+  --spec-field-height: 46px;
+  max-width: 990px;
+  width: 100%;
+  min-width: 0;
+  margin-inline: 0;
+  padding-bottom: 30px;
+  background: transparent;
+  overflow: visible;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs > .product-editor-section-heading {
+  margin-bottom: 18px;
+  padding-bottom: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs > .catalog-reference-spec-rows {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: var(--spec-row-gap);
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-row {
+  display: grid;
+  grid-template-columns: var(--spec-label-width) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--spec-field-height);
+  margin: 0;
+  padding: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-row > .catalog-reference-spec-key {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #506754 !important;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 660;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+/* All simple controls share the compact 46px rhythm. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-row > input,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-price-field,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-availability-trigger {
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--spec-field-height);
+  min-height: var(--spec-field-height);
+  max-height: var(--spec-field-height);
+  margin: 0;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-row > input {
+  padding: 0 14px;
+  border: 1px solid #d3ded5;
+  background: rgba(255,255,255,.88);
+  box-shadow: none;
+  color: #283f31;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-price-field {
+  overflow: hidden;
+  border: 1px solid #d3ded5;
+  background: rgba(255,255,255,.9);
+  box-shadow: none;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-price-field > span {
+  flex: 0 0 52px;
+  width: 52px;
+  min-width: 52px;
+  border-color: #e0e9e1;
+  background: #f1f6f2;
+  font-size: 11.5px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-price-field > input {
+  height: calc(var(--spec-field-height) - 2px);
+  min-height: calc(var(--spec-field-height) - 2px);
+  max-height: calc(var(--spec-field-height) - 2px);
+  padding: 0 13px;
+  font-size: 13px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-availability {
+  width: 100%;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-availability-trigger {
+  padding: 0 14px;
+  gap: 12px;
+  font-weight: 600;
+}
+/* Preserve user-requested semantic status colours, but keep them restrained. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs
+.catalog-spec-availability[data-status="available"] {
+  --availability-bg: #edf7f0;
+  --availability-hover: #e5f4e9;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs
+.catalog-spec-availability[data-status="made-to-order"] {
+  --availability-bg: #fff7e8;
+  --availability-hover: #fff1d7;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs
+.catalog-spec-availability[data-status="unavailable"] {
+  --availability-bg: #fdf0ed;
+  --availability-hover: #fbe8e4;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-availability-status {
+  font-size: 13px;
+}
+
+/* Width, Depth, Height and Unit remain in ONE row on desktop, equal compact height. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr)) 94px !important;
+  gap: 10px;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions > label,
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions > label > :is(input,select) {
+  height: var(--spec-field-height) !important;
+  min-height: var(--spec-field-height) !important;
+  max-height: var(--spec-field-height);
+  border-radius: 10px !important;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions > label > :is(input,select) {
+  padding: 17px 12px 3px !important;
+  border: 1px solid #d3ded5;
+  background: rgba(255,255,255,.9);
+  box-shadow: none;
+  font-size: 12.5px !important;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions > label > span {
+  top: 4px;
+  left: 12px;
+  font-size: 9.5px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions > .catalog-dimension-unit > select {
+  background-color: #f3f8f3;
+  color: #315e42;
+  padding-right: 6px !important;
+}
+
+/* Custom rows share the same label/content grid as the standard rows. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-custom-row {
+  display: grid;
+  grid-template-columns: var(--spec-label-width) minmax(0, 1fr) 34px;
+  gap: 16px;
+  min-width: 0;
+  width: 100%;
+  margin-top: var(--spec-row-gap);
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-custom-row > input {
+  box-sizing: border-box;
+  height: var(--spec-field-height);
+  min-height: var(--spec-field-height);
+  width: 100%;
+  margin: 0;
+  padding: 0 13px;
+  border-radius: 10px;
+  font-size: 12.5px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-custom-row > button {
+  width: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  border-radius: 9px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs > .catalog-reference-add-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-width: 0;
+  min-height: 36px;
+  margin: 15px 0 0 calc(var(--spec-label-width) + 16px);
+  padding: 7px 13px;
+  border: 1px solid #d4e3d8;
+  border-radius: 9px;
+  background: #f7faf7;
+  color: #345d42;
+  font-size: 12px;
+  font-weight: 650;
+  box-shadow: none;
+}
+
+/* Full width on narrow layouts; no clipped dimension fields or giant label gap. */
+@media (max-width: 760px) {
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs.catalog-reference-specifications {
+    --spec-label-width: 100%;
+    --spec-row-gap: 14px;
+    max-width: 100%;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-spec-row {
+    grid-template-columns: minmax(0,1fr);
+    gap: 6px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-spec-row > .catalog-reference-spec-key {
+    font-size: 12px;
+    padding: 0;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 9px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-custom-row {
+    grid-template-columns: minmax(0,1fr) minmax(0,1.15fr) 34px;
+    gap: 8px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs > .catalog-reference-add-row {
+    margin-left: 0;
+  }
+}
+@media (min-width: 761px) and (max-width: 1020px) {
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs.catalog-reference-specifications {
+    --spec-label-width: 130px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-custom-row {
+    gap: 10px;
+  }
+  .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs > .catalog-reference-add-row {
+    margin-left: calc(var(--spec-label-width) + 16px);
+  }
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-row > input,
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions > label > :is(input,select),
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-price-field {
+  background: #2c4535;
+  color: #e8f3eb;
+  border-color: #516c57;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 #product-editor-specs
+.catalog-spec-availability[data-status="available"] { --availability-bg: #244b34; --availability-hover: #2e5b3e; }
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 #product-editor-specs
+.catalog-spec-availability[data-status="made-to-order"] { --availability-bg: #514023; --availability-hover: #604b29; }
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 #product-editor-specs
+.catalog-spec-availability[data-status="unavailable"] { --availability-bg: #50332f; --availability-hover: #62403b; }
