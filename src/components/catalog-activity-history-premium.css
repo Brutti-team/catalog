@@ -487,3 +487,140 @@
     transition: none;
   }
 }
+
+
+/* Activity History palette — remove the inherited warm/pink backdrop and
+   use an understated Brutti sage-neutral canvas with true white log surface. */
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="activity"] {
+  background-color: #f2f7f4;
+  background-image: none;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="activity"] .admin-content {
+  background-color: #f2f7f4;
+  background-image: none;
+}
+.admin-app[data-theme="light"] .account-center--activity .account-activity-panel {
+  background: #fff;
+  border-color: #dce8df;
+  box-shadow: 0 8px 28px rgba(28,65,42,.055);
+}
+.admin-app[data-theme="light"] .account-center--activity .account-activity-toolbar {
+  background: #f8fbf9;
+  border-bottom-color: #e3ede5;
+}
+.admin-app[data-theme="light"] .account-center--activity .account-event {
+  background: #fff;
+}
+.admin-app[data-theme="light"] .account-center--activity .account-event:hover {
+  background: #f4f9f5;
+}
+
+/* Two independent filter groups: date is queried from Supabase, type is
+   applied within the returned result. Stays compact on desktop & phones. */
+.admin-app .account-center--activity .account-activity-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  min-width: 0;
+}
+.admin-app .account-center--activity .account-activity-period {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 3px;
+  min-height: 42px;
+  padding: 4px;
+  border: 1px solid #dde9e0;
+  border-radius: 11px;
+  background: #fff;
+}
+.admin-app .account-center--activity .account-activity-period > svg {
+  flex: none;
+  margin: 0 5px 0 8px;
+  color: #61816b;
+}
+.admin-app .account-center--activity .account-activity-period-button {
+  flex: 0 0 auto;
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #687c6d;
+  font: 680 11.5px/1.4 "DM Sans", system-ui, sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease;
+}
+.admin-app .account-center--activity .account-activity-period-button:hover:not(.is-active):not(:disabled) {
+  background: #eff6f0;
+  color: #285239;
+}
+.admin-app .account-center--activity .account-activity-period-button.is-active {
+  border-color: #cde4d1;
+  background: #eaf4ec;
+  color: #275b3d;
+  box-shadow: 0 1px 3px rgba(32,76,43,.045);
+}
+.admin-app .account-center--activity .account-activity-period-button:focus-visible {
+  outline: 2px solid #5c9970;
+  outline-offset: 2px;
+}
+.admin-app .account-center--activity .account-activity-period-button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+.admin-app[data-theme="dark"] .account-center--activity .account-activity-period {
+  border-color: #496b52;
+  background: #263e30;
+}
+.admin-app[data-theme="dark"] .account-center--activity .account-activity-period > svg {
+  color: #b6d4bf;
+}
+.admin-app[data-theme="dark"] .account-center--activity .account-activity-period-button {
+  color: #b9d0c0;
+}
+.admin-app[data-theme="dark"] .account-center--activity .account-activity-period-button.is-active {
+  border-color: #5a8765;
+  color: #e2f6e6;
+  background: #3b6348;
+}
+.admin-app[data-theme="dark"] .account-center--activity .account-activity-period-button:hover:not(.is-active):not(:disabled) {
+  background: #35543e;
+  color: #e0f4e5;
+}
+@media (max-width: 1120px) {
+  .admin-app .account-center--activity .account-activity-toolbar {
+    align-items: flex-start;
+  }
+  .admin-app .account-center--activity .account-activity-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 640px) {
+  .admin-app .account-center--activity .account-activity-controls {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .admin-app .account-center--activity .account-activity-period {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .admin-app .account-center--activity .account-activity-period-button {
+    flex: 1 1 0;
+    padding-inline: 7px;
+  }
+  .admin-app .account-center--activity .account-activity-filters {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .account-center--activity .account-activity-period-button {
+    transition: none;
+  }
+}
