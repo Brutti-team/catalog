@@ -578,7 +578,9 @@ export default function PublicCatalog({
                       {product.description}
                     </p>
                     <p className="pub-detail-price">
-                      <ProductPrice product={product} />
+                      {previewProduct && product.price === null
+                        ? <span className="catalog-price-current">Price on request</span>
+                        : <ProductPrice product={product} />}
                       {product.price !== null && (
                         <small>
                           Indicative price · Confirm details on enquiry
