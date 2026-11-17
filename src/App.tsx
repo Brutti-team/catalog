@@ -485,6 +485,12 @@ export default function App() {
             </span>
             <ArrowUpRight size={16} className="sidebar-public-arrow" aria-hidden="true" />
           </button>
+          <div className={`sidebar-sync-status ${error ? "sync-error" : !lastSyncedAt ? "sync-pending" : "sync-success"}`}
+            role="status" aria-live="polite"
+            title={error ? "Catalog sync needs attention" : lastSyncedAt ? "Last catalog sync completed successfully" : "Checking catalog sync"}>
+            <span className="sidebar-sync-dot" aria-hidden="true" />
+            <span className="sidebar-sync-label">{error ? "Sync needs attention" : lastSyncedAt ? "Catalog synced" : "Checking catalog..."}</span>
+          </div>
         </div>
       </aside>
       {mobileNav && (
