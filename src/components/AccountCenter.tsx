@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState, type FormEvent } from "react";
-import { AlertCircle, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import { AlertCircle, CalendarDays, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight } from "lucide-react";
 import {
   getAccountSummary, initials, listCatalogActivity, listCatalogStaff,
   roleLabel, updateOwnDisplayName, updateStaffRole,
-  type AccountSummary, type ActivityEntry, type StaffMember, type StaffRole,
+  type AccountSummary, type ActivityEntry, type ActivityPeriod, type StaffMember, type StaffRole,
 } from "../lib/account-center";
 import { requestPasswordReset } from "../lib/catalog";
 import "./account-center.css";
@@ -60,6 +60,8 @@ export default function AccountCenter({
   const [members, setMembers] = useState<StaffMember[]>([]);
   const [events, setEvents] = useState<ActivityEntry[]>([]);
   const [activityFilter, setActivityFilter] = useState<"all" | "products" | "categories">("all");
+  const [activityPeriod, setActivityPeriod] = useState<ActivityPeriod>("all");
+  const activityLoadRequest = useRef(0);
   const [draftRoles, setDraftRoles] = useState<Record<string, string>>({});
   const [displayName, setDisplayName] = useState("");
   const [pending, setPending] = useState(false);
@@ -68,23 +70,30 @@ export default function AccountCenter({
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
+    const request = ++activityLoadRequest.current;
     setPending(true); setError(""); setMessage("");
     try {
       const current = await getAccountSummary();
+      if (request !== activityLoadRequest.current) return;
       setAccount(current);
       setDisplayName(current.displayName);
       if (view === "users") {
-        setMembers(await listCatalogStaff());
+        const staff = await listCatalogStaff();
+        if (request !== activityLoadRequest.current) return;
+        setMembers(staff);
         setDraftRoles({});
       } else if (view === "activity") {
-        setEvents(await listCatalogActivity());
+        const entries = await listCatalogActivity(activityPeriod);
+        if (request !== activityLoadRequest.current) return;
+        setEvents(entries);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Unable to load this page.");
+      if (request === activityLoadRequest.current)
+        setError(e instanceof Error ? e.message : "Unable to load this page.");
     } finally {
-      setPending(false);
+      if (request === activityLoadRequest.current) setPending(false);
     }
-  }, [view]);
+  }, [view, activityPeriod]);
   useEffect(() => { void load(); }, [load]);
 
   async function saveProfile(event: FormEvent<HTMLFormElement>) {
@@ -215,10 +224,28 @@ export default function AccountCenter({
               <div className="account-activity-toolbar-icon" aria-hidden="true"><Clock3 size={20}/></div>
               <div>
                 <h2>Recent changes <span className="account-activity-count">{events.length}</span></h2>
-                <p>Latest recorded changes to your catalog</p>
+                <p>{activityPeriod === "all" ? "Latest recorded changes to your catalog" : activityPeriod === "today" ? "Changes recorded today · Malaysia time" : "Changes recorded yesterday · Malaysia time"}</p>
               </div>
             </div>
-            <div className="account-activity-filters" role="group" aria-label="Filter activity by type">
+            <div className="account-activity-controls">
+              <div className="account-activity-period" role="group" aria-label="Filter activity by date">
+                <CalendarDays size={16} aria-hidden="true" />
+                {([
+                  { id: "all", label: "All dates" },
+                  { id: "today", label: "Today" },
+                  { id: "yesterday", label: "Yesterday" },
+                ] as const).map(period => (
+                  <button
+                    type="button"
+                    key={period.id}
+                    className={`account-activity-period-button${activityPeriod === period.id ? " is-active" : ""}`}
+                    aria-pressed={activityPeriod === period.id}
+                    disabled={pending}
+                    onClick={() => setActivityPeriod(period.id)}
+                  >{period.label}</button>
+                ))}
+              </div>
+              <div className="account-activity-filters" role="group" aria-label="Filter activity by type">
               {([
                 { id: "all", label: "All activity" },
                 { id: "products", label: "Products" },
@@ -234,10 +261,11 @@ export default function AccountCenter({
                   {filter.label}
                 </button>
               ))}
+              </div>
             </div>
           </div>
           {!events.length ? (
-            <div className="account-empty"><Clock3 size={24}/><p>No activity has been recorded yet.</p></div>
+            <div className="account-empty"><Clock3 size={24}/><p>{activityPeriod === "today" ? "No activity recorded today." : activityPeriod === "yesterday" ? "No activity recorded yesterday." : "No activity has been recorded yet."}</p></div>
           ) : !visibleEvents.length ? (
             <div className="account-activity-empty"><Clock3 size={20}/><p>No {activityFilter} changes in the latest records.</p></div>
           ) : (
@@ -274,8 +302,8 @@ export default function AccountCenter({
               })}
             </div>
           )}
-          {events.length === 50 && (
-            <p className="account-activity-limit">Displaying the latest 50 recorded changes.</p>
+          {events.length === (activityPeriod === "all" ? 50 : 200) && (
+            <p className="account-activity-limit">Displaying the latest {events.length} recorded changes {activityPeriod === "all" ? "overall" : `for ${activityPeriod}`}.</p>
           )}
         </div>
       )}
