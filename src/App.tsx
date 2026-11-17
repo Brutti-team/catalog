@@ -65,6 +65,7 @@ import Modal from "./components/Modal";
 import AccountCenter from "./components/AccountCenter";
 import CataloguePhotoImport from "./components/CataloguePhotoImport";
 import LastChange from "./components/LastChange";
+import CategoryFilter from "./components/CategoryFilter";
 import { getAccountSummary, initials, roleLabel, type StaffRole } from "./lib/account-center";
 import { useAdminTheme } from "./lib/admin-theme";
 
@@ -736,21 +737,7 @@ export default function App() {
                   )}
                 </div>
                 <div className="filters">
-                  <label className="sr-only" htmlFor="category-filter">
-                    Filter by category
-                  </label>
-                  <select
-                    id="category-filter"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  >
-                    <option value="all">All categories</option>
-                    {data.categories.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
+                  <CategoryFilter categories={data.categories} value={category} onChange={setCategory} />
                   <label className="sort-field">
                     <SlidersHorizontal size={15} />
                     <select
