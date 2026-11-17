@@ -12,6 +12,7 @@ import {
   Plus,
   Search,
   Grid2X2,
+  Store,
   List,
   MoreHorizontal,
   Pencil,
@@ -477,20 +478,24 @@ export default function App() {
           )}
         </nav>
         <div className="sidebar-utility">
-          <button type="button" className="sidebar-public-link" onClick={() => navigate("/catalog")}>
-            <span className="sidebar-public-icon" aria-hidden="true"><Grid2X2 size={18} strokeWidth={1.9} /></span>
+          <button type="button" className="sidebar-public-link catalog-photo-link"
+            onClick={() => navigate("/catalog")} aria-label="View public catalog">
+            <SafeImage
+              className="catalog-sidebar-product-photo"
+              src={heroProduct?.images[0]?.url || "/images/lounge-chair.jpg"}
+              alt="" loading="lazy" aria-hidden="true"
+            />
+            <span className="sidebar-public-icon" aria-hidden="true"><Store size={19} strokeWidth={1.9} /></span>
             <span className="sidebar-public-copy">
               <strong>View public catalog</strong>
-              <small>Customer view</small>
+              <small className={`sidebar-public-sync ${error ? "sync-error" : !lastSyncedAt ? "sync-pending" : "sync-success"}`}
+                role="status" aria-live="polite">
+                <span className="sidebar-sync-dot" aria-hidden="true" />
+                {error ? "Sync needs attention" : lastSyncedAt ? "Catalog synced" : "Checking catalog..."}
+              </small>
             </span>
             <ArrowUpRight size={16} className="sidebar-public-arrow" aria-hidden="true" />
           </button>
-          <div className={`sidebar-sync-status ${error ? "sync-error" : !lastSyncedAt ? "sync-pending" : "sync-success"}`}
-            role="status" aria-live="polite"
-            title={error ? "Catalog sync needs attention" : lastSyncedAt ? "Last catalog sync completed successfully" : "Checking catalog sync"}>
-            <span className="sidebar-sync-dot" aria-hidden="true" />
-            <span className="sidebar-sync-label">{error ? "Sync needs attention" : lastSyncedAt ? "Catalog synced" : "Checking catalog..."}</span>
-          </div>
         </div>
       </aside>
       {mobileNav && (
