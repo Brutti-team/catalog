@@ -6,12 +6,16 @@ export default function Modal({
   children,
   wide = false,
   className = "",
+  eyebrow = "BRUTTI WORKSPACE",
+  description,
 }: {
   title: string;
   onClose: () => void;
   children: ReactNode;
   wide?: boolean;
   className?: string;
+  eyebrow?: string;
+  description?: string;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -41,8 +45,9 @@ export default function Modal({
     >
       <header className="modal-heading">
         <div>
-          <span className="eyebrow">BRUTTI WORKSPACE</span>
+          <span className="eyebrow">{eyebrow}</span>
           <h2>{title}</h2>
+          {description && <p className="modal-description">{description}</p>}
         </div>
         <button
           className="icon-button"
