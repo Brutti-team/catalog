@@ -115,12 +115,13 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
   }
 
   function handleKeys(event: ReactKeyboardEvent<HTMLElement>) {
-    if (event.key === "Enter" && event.currentTarget === searchRef.current && filtered.length) {
+    if (event.key === "Enter" && event.target === searchRef.current && filtered.length) {
       event.preventDefault();
       choose(filtered[0].id);
       return;
     }
     if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    if (!filtered.length) return;
     event.preventDefault();
     const active = optionRefs.current.findIndex(node => node === document.activeElement);
     const next = event.key === "ArrowDown"
