@@ -1,0 +1,277 @@
+/* Brutti Catalog | Clean category editor dialog — scoped; all other dialogs unchanged. */
+.admin-app.brutti-staff-redesign .modal.category-editor-dialog {
+  width: min(510px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  max-height: min(90dvh, 680px);
+  padding: 0;
+  border: 1px solid #e0e8df;
+  border-radius: 18px;
+  overflow: auto;
+  color: #283b2f;
+  background: #ffffff;
+  box-shadow: 0 32px 90px rgba(15, 35, 24, .22), 0 4px 18px rgba(20, 43, 30, .05);
+  scrollbar-width: none;
+}
+.admin-app.brutti-staff-redesign .modal.category-editor-dialog::-webkit-scrollbar {
+  display: none;
+}
+.admin-app.brutti-staff-redesign .modal.category-editor-dialog::backdrop {
+  background: rgba(18, 36, 27, .42);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .modal-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 25px 27px 21px;
+  border-bottom: 1px solid #edf1eb;
+  background: #fff;
+  position: relative;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .modal-heading > div {
+  min-width: 0;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .modal-heading .eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  color: #62816a;
+  font-family: "Manrope", sans-serif;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 1.35px;
+  line-height: 1.4;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .modal-heading h2 {
+  margin: 0;
+  color: #1c4230;
+  font-family: "Manrope", sans-serif;
+  font-size: 23px;
+  font-weight: 760;
+  letter-spacing: -.75px;
+  line-height: 1.25;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .modal-description {
+  margin: 7px 0 0;
+  color: #7a897e;
+  font-size: 12px;
+  font-weight: 450;
+  line-height: 1.55;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .modal-heading > .icon-button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 35px;
+  width: 35px;
+  height: 35px;
+  min-height: 35px;
+  padding: 0;
+  border: 1px solid #e8ede7;
+  border-radius: 10px;
+  background: #f9fbf8;
+  color: #6e8073;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .modal-heading > .icon-button:hover {
+  border-color: #d5e0d5;
+  background: #eef4ed;
+  color: #244f38;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .modal-heading > .icon-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-form {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+  padding: 22px 27px 24px;
+  background: #fff;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-form .category-editor-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 0;
+  color: #354a3b;
+  font-size: 12.5px;
+  font-weight: 680;
+  line-height: 1.5;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-editor-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #344d3c;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-required {
+  color: #b27364;
+  font-weight: 800;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-optional {
+  margin-left: auto;
+  color: #97a49a;
+  font-size: 11px;
+  font-weight: 500;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-form :is(input, textarea) {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0;
+  padding: 12px 14px;
+  border: 1px solid #dce5dc;
+  border-radius: 10px;
+  outline: none;
+  background: #fcfdfb;
+  color: #243b2d;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.55;
+  box-shadow: 0 1px 2px rgba(26, 59, 38, .025);
+  transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-form input {
+  min-height: 46px;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-form textarea {
+  min-height: 96px;
+  max-height: 220px;
+  resize: vertical;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-form :is(input, textarea)::placeholder {
+  color: #9ba89d;
+  font-size: 12px;
+  font-weight: 400;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-form :is(input, textarea):focus {
+  border-color: #68977b;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(82, 132, 99, .14);
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-form .notice {
+  margin: 0;
+  padding: 11px 13px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0;
+  padding-top: 18px;
+  border-top: 1px solid #edf1eb;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-editor-actions .button {
+  min-height: 42px;
+  padding: 0 17px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 720;
+  line-height: 1.2;
+  letter-spacing: 0;
+  transition: background-color .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-editor-actions .button.secondary {
+  border: 1px solid #dfe8e0;
+  background: #fff;
+  color: #445b4b;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-editor-actions .button.secondary:hover:not(:disabled) {
+  border-color: #bdcebf;
+  background: #f4f8f3;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-editor-actions .button.primary {
+  border: 1px solid #27543d;
+  background: #27543d;
+  color: #fff;
+  box-shadow: 0 3px 9px rgba(24, 69, 42, .1);
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-editor-actions .button.primary:hover:not(:disabled) {
+  border-color: #1b432f;
+  background: #1b432f;
+  box-shadow: 0 5px 12px rgba(24, 69, 42, .15);
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog :is(button, input, textarea):focus-visible {
+  outline: 3px solid rgba(90, 140, 103, .45);
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign .modal.category-editor-dialog {
+    width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
+    max-height: 92dvh;
+    border-radius: 15px;
+  }
+  .admin-app.brutti-staff-redesign .category-editor-dialog .modal-heading {
+    padding: 20px 20px 17px;
+  }
+  .admin-app.brutti-staff-redesign .category-editor-dialog .modal-heading h2 {
+    font-size: 21px;
+  }
+  .admin-app.brutti-staff-redesign .category-editor-dialog .category-form {
+    gap: 16px;
+    padding: 19px 20px 20px;
+  }
+  .admin-app.brutti-staff-redesign .category-editor-dialog .category-editor-actions {
+    gap: 9px;
+    padding-top: 16px;
+  }
+  .admin-app.brutti-staff-redesign .category-editor-dialog .category-editor-actions .button {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-inline: 11px;
+  }
+}
+
+.admin-app.brutti-staff-redesign[data-theme="dark"] .modal.category-editor-dialog,
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .modal-heading,
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .category-form {
+  background: #253b2c;
+  border-color: #475e4d;
+  color: #ecf4eb;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .modal-heading h2,
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .category-editor-label {
+  color: #f0f6ef;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog :is(.modal-description, .category-optional) {
+  color: #c1d0c2;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .modal-heading .eyebrow {
+  color: #a4c9aa;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .category-form :is(input,textarea) {
+  background: #304a37;
+  color: #f4f7f1;
+  border-color: #54715a;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .category-form :is(input,textarea):focus {
+  border-color: #9cbca2;
+  box-shadow: 0 0 0 3px rgba(134, 185, 143, .18);
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .modal-heading > .icon-button,
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .category-editor-actions .button.secondary {
+  background: #304a37;
+  border-color: #56705b;
+  color: #e9f2e6;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .category-editor-actions {
+  border-color: #475e4d;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign .category-editor-dialog *,
+  .admin-app.brutti-staff-redesign .category-editor-dialog .category-form :is(input, textarea) {
+    transition: none;
+  }
+}
