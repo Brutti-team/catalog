@@ -18,7 +18,7 @@ import { publicAssetUrl } from "../lib/assets";
 import { formatProductPrice } from "../lib/price";
 import { productIdFromHash } from "../lib/routes";
 import { recordCatalogEvent } from "../lib/customer-analytics";
-import { productWhatsAppUrl } from "../lib/whatsapp-enquiry";
+import { BRUTTI_WHATSAPP_NUMBER, productWhatsAppUrl } from "../lib/whatsapp-enquiry";
 import ShowroomSections from "./ShowroomSections";
 import "./public.css";
 import "./brutti-3d.css";
@@ -696,7 +696,9 @@ export default function PublicCatalog({
               Let’s make room. <ArrowUpRight size={15} />
             </a>
           ) : (
-            <span className="pub-footer-enquiry">Enquiries coming soon.</span>
+            <a href={`https://wa.me/${BRUTTI_WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer">
+              Chat on WhatsApp <ArrowUpRight size={15} />
+            </a>
           )}
           <small>
             © {new Date().getFullYear()} Benua Brutti Sdn. Bhd.
