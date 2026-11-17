@@ -1,0 +1,369 @@
+/* Brutti Catalog — remove Customer Preview rail; give staff a focused full-width editor.
+   Photo composition is non-destructive and saved with images JSON on product Save. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-columns {
+  display: block;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  min-width: 0;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+  width: 100%;
+  max-width: 1210px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 28px clamp(18px, 3.8vw, 55px) 42px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-side {
+  display: none;
+}
+
+/* Each image can be framed and zoomed, without interfering with its delete or reorder controls. */
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-crop-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 34px;
+  margin: 7px 0 2px;
+  padding: 7px 8px;
+  border: 1px solid #ccded0;
+  border-radius: 9px;
+  background: #f7faf6;
+  color: #2c6746;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 710;
+  line-height: 1.25;
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-crop-open:hover:not(:disabled) {
+  border-color: #94b99b;
+  background: #eaf4eb;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-crop-open:focus-visible {
+  outline: 3px solid rgba(70, 146, 92, .22);
+  outline-offset: 2px;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-crop-open:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .image-editor-photo {
+  overflow: hidden;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .image-editor-photo > img {
+  transform-origin: center;
+  transition: none;
+}
+
+/* The 3D manager is preserved below Photos, but no longer requires a whole sidebar. */
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-model-inline {
+  grid-column: 1 / -1;
+  grid-row: auto;
+  width: 100%;
+  max-width: 1060px;
+  margin: 17px 0 0;
+  border: 1px solid #dae6dc;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fbfdfa;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-model-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 58px;
+  padding: 12px 17px;
+  border: 0;
+  background: transparent;
+  color: #3d694b;
+  text-align: left;
+  cursor: pointer;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-model-toggle > span {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-model-toggle strong {
+  color: #294d36;
+  font-size: 12.5px;
+  font-weight: 750;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-model-toggle small {
+  color: #819085;
+  font-size: 10.5px;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-model-toggle > svg:last-child {
+  color: #718b76;
+  transition: transform .18s ease;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-model-toggle[aria-expanded="true"] > svg:last-child {
+  transform: rotate(180deg);
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-model-toggle:hover {
+  background: #f1f7f1;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-model-content {
+  padding: 14px 18px 18px;
+  border-top: 1px solid #e2eae3;
+}
+.admin-app .product-editor-dialog--editing #product-editor-photos .catalog-photo-model-content > p {
+  margin: 0 0 13px;
+  color: #718373;
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+/* Cropping controls: a compact tool, not an oversized dashboard popup. */
+.admin-app .modal.catalog-photo-crop-dialog {
+  box-sizing: border-box;
+  width: min(620px, calc(100vw - 28px));
+  max-width: calc(100vw - 28px);
+  max-height: min(94dvh, 900px);
+  margin: auto;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid #d8e5d9;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 27px 85px rgba(13,42,25,.25);
+}
+.admin-app .modal.catalog-photo-crop-dialog::backdrop {
+  background: rgba(14,37,24,.56);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+.admin-app .catalog-photo-crop-dialog .modal-heading {
+  display: flex;
+  align-items: flex-start;
+  padding: 22px 25px 17px;
+  border-bottom: 1px solid #e8eee8;
+  background: #fff;
+}
+.admin-app .catalog-photo-crop-dialog .modal-heading h2 {
+  color: #244c34;
+  font-family: "Manrope", sans-serif;
+  font-size: 22px;
+  font-weight: 750;
+  line-height: 1.2;
+}
+.admin-app .catalog-photo-crop-dialog .modal-description {
+  margin: 7px 0 0;
+  color: #758477;
+  font-size: 12px;
+  line-height: 1.52;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-body {
+  padding: 18px 25px 23px;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-viewport-wrap {
+  max-width: 550px;
+  margin: 0 auto;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid #d7e3da;
+  border-radius: 13px;
+  background: #e9eee8;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-viewport:active {
+  cursor: grabbing;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-viewport > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform, object-position;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-guide {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255,255,255,.58);
+  background: linear-gradient(to right, transparent 33.2%, rgba(255,255,255,.35) 33.3%, transparent 33.45%, transparent 66.5%, rgba(255,255,255,.35) 66.65%, transparent 66.75%),
+              linear-gradient(to bottom, transparent 33.2%, rgba(255,255,255,.35) 33.3%, transparent 33.45%, transparent 66.5%, rgba(255,255,255,.35) 66.65%, transparent 66.75%);
+  pointer-events: none;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-hint {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  left: 12px;
+  bottom: 12px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255,255,255,.8);
+  border-radius: 8px;
+  background: rgba(255,255,255,.94);
+  color: #365d43;
+  font-size: 11px;
+  font-weight: 660;
+  pointer-events: none;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-viewport-wrap > p {
+  margin: 9px 0 0;
+  text-align: center;
+  color: #778779;
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-settings {
+  margin: 17px 0 0;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-settings > label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  color: #345b40;
+  font-size: 12px;
+  font-weight: 720;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-zoom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-zoom button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #dbe6dd;
+  border-radius: 9px;
+  background: #f8fbf8;
+  color: #3e694a;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-zoom input[type="range"] {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  accent-color: #285e40;
+  cursor: pointer;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-zoom output {
+  flex: 0 0 45px;
+  color: #496b51;
+  font-size: 12px;
+  font-weight: 720;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-settings > p {
+  margin: 10px 0 0;
+  color: #859387;
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 19px;
+  padding-top: 17px;
+  border-top: 1px solid #e4ebe4;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 39px;
+  padding: 9px 12px;
+  border-radius: 9px;
+  font-size: 11.5px;
+  font-weight: 690;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-footer .catalog-photo-crop-reset {
+  border: 1px solid #d6e4d9;
+  background: #f6faf6;
+  color: #46684d;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-footer .catalog-photo-crop-spacer {
+  flex: 1;
+}
+.admin-app .catalog-photo-crop-dialog .catalog-photo-crop-footer .button.primary {
+  background: #27593d;
+  color: #fff;
+  border: 1px solid #27593d;
+}
+.admin-app .catalog-photo-crop-dialog button:focus-visible {
+  outline: 3px solid rgba(85,148,102,.32);
+  outline-offset: 2px;
+}
+@media (max-width: 680px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+    padding: 18px 16px 27px;
+  }
+  .admin-app .modal.catalog-photo-crop-dialog {
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+    border-radius: 13px;
+  }
+  .admin-app .catalog-photo-crop-dialog .modal-heading {
+    padding: 17px 17px 14px;
+  }
+  .admin-app .catalog-photo-crop-dialog .catalog-photo-crop-body {
+    padding: 14px 17px 18px;
+  }
+  .admin-app .catalog-photo-crop-dialog .catalog-photo-crop-footer {
+    gap: 7px;
+  }
+  .admin-app .catalog-photo-crop-dialog .catalog-photo-crop-footer .catalog-photo-crop-spacer {
+    flex-basis: 100%;
+  }
+  .admin-app .catalog-photo-crop-dialog .catalog-photo-crop-footer .button {
+    flex: 1 1 auto;
+  }
+}
+/* Theme support. */
+.admin-app[data-theme="dark"] .modal.catalog-photo-crop-dialog,
+.admin-app[data-theme="dark"] .catalog-photo-crop-dialog .modal-heading {
+  background: #253b2c;
+  border-color: #496552;
+}
+.admin-app[data-theme="dark"] .catalog-photo-crop-dialog .modal-heading h2,
+.admin-app[data-theme="dark"] .catalog-photo-crop-dialog .catalog-photo-crop-settings > label {
+  color: #e7f2e9;
+}
+.admin-app[data-theme="dark"] .catalog-photo-crop-dialog .catalog-photo-crop-viewport {
+  border-color: #4c6a53;
+  background: #263d2d;
+}
+.admin-app[data-theme="dark"] .catalog-photo-crop-dialog .catalog-photo-crop-zoom output,
+.admin-app[data-theme="dark"] .catalog-photo-crop-dialog .catalog-photo-crop-settings > p,
+.admin-app[data-theme="dark"] .catalog-photo-crop-dialog .catalog-photo-crop-viewport-wrap > p {
+  color: #c2d6c5;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing #product-editor-photos .catalog-photo-model-inline {
+  background: #263b2d;
+  border-color: #4a6951;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing #product-editor-photos .catalog-photo-model-toggle strong {
+  color: #e0eee1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .catalog-photo-crop-dialog *,
+  .admin-app .product-editor-dialog--editing .catalog-photo-model-toggle > svg:last-child {
+    transition: none;
+  }
+}
