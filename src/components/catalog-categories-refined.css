@@ -1,0 +1,325 @@
+/* Brutti Catalog — Categories workspace refinement.
+   Scoped to Categories only; product, modal and public catalog views stay untouched. */
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .catalog-management-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 0;
+  margin: 8px 0 24px;
+  padding: 6px 2px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .catalog-management-heading .eyebrow {
+  display: block;
+  margin: 0 0 7px;
+  color: #577863;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 1.65px;
+  line-height: 1.4;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .catalog-management-heading h1 {
+  margin: 0;
+  color: #1d422f;
+  font-family: "Manrope", sans-serif;
+  font-size: clamp(30px, 2.8vw, 39px);
+  font-weight: 760;
+  line-height: 1.14;
+  letter-spacing: -1.4px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .catalog-management-heading p {
+  margin: 7px 0 0;
+  color: #758278;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .catalog-management-heading .button.primary {
+  flex: 0 0 auto;
+  min-height: 42px;
+  padding: 0 17px;
+  border: 1px solid #25523c;
+  border-radius: 11px;
+  background: #24533d;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(28, 68, 44, .09);
+  transition: background-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .catalog-management-heading .button.primary:hover:not(:disabled) {
+  background: #1a432f;
+  box-shadow: 0 6px 15px rgba(28, 68, 44, .14);
+  transform: translateY(-1px);
+}
+
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 17px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e1e8e1;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 2px 9px rgba(27, 58, 39, .025);
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card:hover {
+  transform: translateY(-2px);
+  border-color: #c8d6c9;
+  box-shadow: 0 10px 25px rgba(27, 58, 39, .08);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-cover {
+  position: relative;
+  flex: 0 0 170px;
+  height: 170px;
+  overflow: hidden;
+  background: #e8ede7;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s ease;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card:hover .category-cover img {
+  transform: scale(1.025);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-cover > span {
+  top: 13px;
+  bottom: auto;
+  left: 13px;
+  min-width: 32px;
+  padding: 6px 9px;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 8px;
+  background: rgba(23, 51, 37, .73);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.2;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  padding: 19px 19px 17px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card-body .section-title {
+  align-items: center;
+  gap: 10px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card-body h2 {
+  min-width: 0;
+  margin: 0;
+  color: #273c30;
+  font-family: "Manrope", sans-serif;
+  font-size: 16px;
+  font-weight: 730;
+  line-height: 1.35;
+  letter-spacing: -.4px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-count {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border: 1px solid #e4ede2;
+  border-radius: 99px;
+  background: #f0f5ed;
+  color: #55734f;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card-body > p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-height: 39px;
+  margin: 10px 0 14px;
+  color: #7a877d;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 13px;
+  border-top: 1px solid #edf0ec;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card .category-card-actions .text-button {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 37px;
+  padding: 0 12px;
+  border-radius: 9px;
+  font-size: 11.5px;
+  font-weight: 690;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card .category-card-actions .category-view-products {
+  border-color: #28523c;
+  background: #28523c;
+  color: #fff;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card:hover .category-card-actions .category-view-products,
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card .category-card-actions .category-view-products:hover {
+  border-color: #1c4430;
+  background: #1c4430;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card .category-card-actions .text-button:not(.category-view-products) {
+  border-color: #e4eae2;
+  background: #f7f9f5;
+  color: #315e47;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card .category-card-actions .text-button:not(.category-view-products):hover {
+  border-color: #c6d8c9;
+  background: #edf4ed;
+  color: #204b34;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card .category-card-actions .icon-button.danger-text {
+  display: inline-grid;
+  flex: 0 0 37px;
+  place-items: center;
+  width: 37px;
+  height: 37px;
+  min-width: 37px;
+  min-height: 37px;
+  margin-left: auto;
+  padding: 0;
+  border: 1px solid #efe4df;
+  border-radius: 9px;
+  background: #fff9f6;
+  color: #a46c5d;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card .category-card-actions .icon-button.danger-text:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card .category-card-actions :is(button):focus-visible,
+.admin-app.brutti-staff-redesign[data-active-tab="categories"] .catalog-management-heading button:focus-visible {
+  outline: 3px solid #8ba994;
+  outline-offset: 3px;
+}
+
+/* Tablet and phone layout: no clipped actions or oversized hero/card imagery. */
+@media (max-width: 1120px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 680px) {
+  .admin-app.brutti-staff-redesign[data-active-tab="categories"] .catalog-management-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+    margin: 7px 0 19px;
+    padding: 0;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="categories"] .catalog-management-heading h1 {
+    font-size: 31px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="categories"] .catalog-management-heading .button.primary {
+    align-self: flex-start;
+    min-height: 40px;
+    width: auto;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 13px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-cover {
+    flex-basis: 165px;
+    height: 165px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card-body {
+    padding: 16px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card .category-card-actions :is(.text-button, .icon-button.danger-text) {
+    min-height: 40px;
+  }
+  .admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card .category-card-actions .icon-button.danger-text {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+}
+
+/* Dark-mode contrast and clear accessible controls. */
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .catalog-management-heading {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .catalog-management-heading h1 {
+  color: #f2f6ed;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .catalog-management-heading p {
+  color: #b9cabc;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .catalog-management-heading .eyebrow {
+  color: #a5c5a8;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .category-card {
+  border-color: #455d4b;
+  background: #253c2d;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .category-card-body {
+  background: #253c2d;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .category-card-body h2 {
+  color: #f1f7ed;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .category-card-body > p {
+  color: #c4d3c5;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .category-card-actions {
+  border-top-color: #48634f;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .category-card .category-card-actions .category-view-products {
+  color: #fff;
+  background: #3e6e50;
+  border-color: #4a805e;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="categories"] .category-card .category-card-actions .text-button:not(.category-view-products) {
+  color: #dbe9db;
+  background: #304d38;
+  border-color: #506958;
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-card,
+  .admin-app.brutti-staff-redesign[data-active-tab="categories"] .category-cover img,
+  .admin-app.brutti-staff-redesign[data-active-tab="categories"] .catalog-management-heading .button.primary {
+    transition: none;
+    transform: none;
+  }
+}
