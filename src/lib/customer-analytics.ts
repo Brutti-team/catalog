@@ -1,0 +1,89 @@
+import { catalogClient } from "./catalog";
+
+export type CatalogEventKind = "catalog_open" | "product_view" | "product_click";
+export type InsightPeriod = 7 | 30 | 90;
+export type InsightPoint = { date: string; views: number };
+export type InsightCategory = { id: string; name: string; views: number };
+export interface CustomerInsightData {
+  totalViews: number;
+  visitorSessions: number;
+  productClicks: number;
+  productsViewed: number;
+  trend: InsightPoint[];
+  categories: InsightCategory[];
+  topProductId: string | null;
+  topProductViews: number;
+  topProductClicks: number;
+}
+
+const blank: CustomerInsightData = {
+  totalViews: 0, visitorSessions: 0, productClicks: 0, productsViewed: 0,
+  trend: [], categories: [], topProductId: null, topProductViews: 0, topProductClicks: 0,
+};
+
+export async function loadCustomerInsights(days: InsightPeriod): Promise<CustomerInsightData> {
+  const { data, error } = await catalogClient().rpc("catalog_customer_insights", { p_days: days });
+  if (error) throw new Error("Unable to load customer insights. " + error.message);
+  if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("Customer analytics returned an invalid response.");
+  const record = data as Record<string, unknown>;
+  const count = (value: unknown): number => typeof value === "number" && Number.isFinite(value) ? Math.max(0, value) : 0;
+  return {
+    ...blank,
+    totalViews: count(record.totalViews),
+    visitorSessions: count(record.visitorSessions),
+    productClicks: count(record.productClicks),
+    productsViewed: count(record.productsViewed),
+    topProductId: typeof record.topProductId === "string" ? record.topProductId : null,
+    topProductViews: count(record.topProductViews),
+    topProductClicks: count(record.topProductClicks),
+    trend: Array.isArray(record.trend) ? record.trend.flatMap(item =>
+      item && typeof item.date === "string" ? [{ date: item.date, views: count(item.views) }] : []) : [],
+    categories: Array.isArray(record.categories) ? record.categories.flatMap(item =>
+      item && typeof item.id === "string" && typeof item.name === "string"
+        ? [{ id: item.id, name: item.name, views: count(item.views) }] : []) : [],
+  };
+}
+
+let sessionToken: string | null = null;
+const recentEvents = new Map<string, number>();
+
+function activeSessionId(): string {
+  if (sessionToken) return sessionToken;
+  try {
+    const key = "brutti-catalog-visitor-session-v1";
+    const stored = window.sessionStorage.getItem(key);
+    if (stored && /^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(stored)) {
+      sessionToken = stored;
+      return stored;
+    }
+    sessionToken = crypto.randomUUID();
+    window.sessionStorage.setItem(key, sessionToken);
+  } catch {
+    sessionToken = crypto.randomUUID();
+  }
+  return sessionToken;
+}
+
+/** Best-effort anonymous collection; no customer profile, email, IP, or user-agent fields.
+ * Counts are per browser tab/session, NOT identifiable or guaranteed unique people. */
+export function recordCatalogEvent(kind: CatalogEventKind, productId: string | null = null): void {
+  if (typeof window === "undefined") return;
+  const now = Date.now();
+  const key = kind + ":" + (productId ?? "catalog");
+  // React StrictMode and fast repeated clicks do not inflate event counts.
+  if (now - (recentEvents.get(key) ?? 0) < 16_000) return;
+  recentEvents.set(key, now);
+  try {
+    void catalogClient().rpc("catalog_record_customer_event", {
+      p_event_type: kind,
+      p_product_id: productId,
+      p_session_id: activeSessionId(),
+    }).then(({ error }) => {
+      if (error && import.meta.env.DEV) console.warn("Customer analytics event not stored:", error.message);
+    }).catch((error: unknown) => {
+      if (import.meta.env.DEV) console.warn("Customer analytics tracking unavailable:", error);
+    });
+  } catch (error) {
+    if (import.meta.env.DEV) console.warn("Customer analytics tracking unavailable:", error);
+  }
+}
