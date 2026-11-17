@@ -482,7 +482,7 @@ export default function App() {
             onClick={() => navigate("/catalog")} aria-label="View public catalog">
             <SafeImage
               className="catalog-sidebar-product-photo"
-              src="/reference/cabinetry.jpg"
+              src="/reference/sofa.jpg"
               alt="" loading="lazy" aria-hidden="true"
             />
             <span className="sidebar-public-icon" aria-hidden="true"><Store size={19} strokeWidth={1.9} /></span>
