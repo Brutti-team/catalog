@@ -35,6 +35,8 @@ import {
   EyeOff,
   Moon,
   Sun,
+  Bell,
+  ChevronDown,
   UsersRound,
   History,
 } from "lucide-react";
@@ -138,6 +140,24 @@ export default function App() {
   const [toast, setToast] = useState("");
   const [menu, setMenu] = useState<string | null>(null);
   const [mobileNav, setMobileNav] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try { return window.localStorage.getItem("brutti-catalog-sidebar-collapsed") === "true"; }
+    catch { return false; }
+  });
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const headerSearchRef = useRef<HTMLInputElement>(null);
+  const toggleSidebar = () => {
+    if (window.matchMedia("(max-width: 800px)").matches) {
+      setMobileNav(false);
+      return;
+    }
+    setSidebarCollapsed(value => {
+      try { window.localStorage.setItem("brutti-catalog-sidebar-collapsed", String(!value)); }
+      catch { /* Keep the preference in this session. */ }
+      return !value;
+    });
+  };
   const [busy, setBusy] = useState(false);
   const catalogRequest = useRef(0);
   const authRequest = useRef(0);
@@ -222,6 +242,32 @@ export default function App() {
     const id = setTimeout(() => setToast(""), toast.startsWith("Upload completed") ? 7000 : 4000);
     return () => clearTimeout(id);
   }, [toast]);
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setNotificationOpen(false);
+        setAccountMenuOpen(false);
+      }
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        if (document.activeElement?.tagName !== "INPUT" || document.activeElement !== headerSearchRef.current) {
+          event.preventDefault();
+          headerSearchRef.current?.focus();
+        }
+      }
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.target instanceof Element && !event.target.closest(".catalog-header-popover-anchor")) {
+        setNotificationOpen(false);
+        setAccountMenuOpen(false);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, []);
   const navigate = (dest: string) => {
     window.location.hash = dest;
     setMobileNav(false);
@@ -233,6 +279,8 @@ export default function App() {
     setStatus("all");
     setCategory("all");
     setMenu(null);
+    setNotificationOpen(false);
+    setAccountMenuOpen(false);
     window.scrollTo(0, 0);
   };
   async function persist(p: Product, modelChange?: ProductModelChange) {
@@ -366,22 +414,25 @@ export default function App() {
             ? (a.displayOrder ?? 0) - (b.displayOrder ?? 0)
           : b.updatedAt.localeCompare(a.updatedAt),
     );
+  const recentUpdates = [...data.products]
+    .filter(product => product.updatedAt)
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    .slice(0, 5);
   return (
-    <div className="admin-app brutti-staff-redesign" data-theme={theme} data-active-tab={tab}>
-      <aside className={`sidebar ${mobileNav ? "sidebar-open" : ""}`}>
-        <a
-          href="#/admin"
-          className="brand"
-          onClick={() => switchTab("overview")}
-        >
-          <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="brutti-official-logo" />
-        </a>
-        <div className="workspace-label" aria-label="Current workspace: Brutti Catalog">
-          <span className="workspace-symbol" aria-hidden="true"><Layers size={19} strokeWidth={1.9} /></span>
-          <span className="workspace-meta">
-            <strong>Benua Brutti</strong>
-            <small>Collection studio</small>
-          </span>
+    <div className={"admin-app brutti-staff-redesign catalog-os-layout" + (sidebarCollapsed ? " catalog-sidebar-collapsed" : "")} data-theme={theme} data-active-tab={tab}>
+      <aside className={"sidebar" + (mobileNav ? " sidebar-open" : "")}>
+        <div className="catalog-sidebar-head">
+          <a href="#/admin" className="catalog-sidebar-identity" onClick={() => switchTab("overview")} aria-label="Brutti Catalog overview">
+            <span className="catalog-sidebar-logo">
+              <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="" />
+            </span>
+            <span className="catalog-sidebar-title"><strong>Brutti Catalog</strong><small>COLLECTION STUDIO</small></span>
+          </a>
+          <button type="button" className="catalog-sidebar-toggle" onClick={toggleSidebar}
+            aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}>
+            <Menu size={19} aria-hidden="true" />
+          </button>
         </div>
         <nav aria-label="Admin navigation">
           <span className="nav-group-label">WORKSPACE</span>
@@ -442,76 +493,85 @@ export default function App() {
         />
       )}
       <main className="admin-main">
-        <header className="topbar">
-          <div className="breadcrumbs">
-            <button
-              className="icon-button mobile-menu"
-              aria-label={mobileNav ? "Close navigation" : "Open navigation"}
-              onClick={() => setMobileNav(!mobileNav)}
-            >
-              {mobileNav ? <X size={20} /> : <Menu size={20} />}
-            </button>
-            <span>Brutti Studio</span>
-            <ChevronRight size={13} />
-            <strong>{label(tab)}</strong>
-          </div>
+        <header className="topbar catalog-os-topbar">
           <div className="topbar-actions">
+            <button type="button" className="catalog-mobile-menu" aria-label="Open navigation"
+              aria-expanded={mobileNav} onClick={() => setMobileNav(true)}>
+              <Menu size={21} aria-hidden="true" />
+            </button>
             <form className="catalog-header-search" role="search" onSubmit={(event) => {
               event.preventDefault();
               const term = search;
               switchTab("products");
               setSearch(term);
+              headerSearchRef.current?.blur();
             }}>
-              <Search size={16} aria-hidden="true" />
-              <input aria-label="Search catalog products" placeholder="Search catalog products..." value={search}
-                onChange={(event) => setSearch(event.target.value)} />
-              <button type="submit" aria-label="Submit product search"><ArrowRight size={15} /></button>
+              <Search size={18} aria-hidden="true" />
+              <input ref={headerSearchRef} aria-label="Search catalog products" placeholder="Search all Brutti Catalog..."
+                value={search} onChange={(event) => setSearch(event.target.value)} />
+              <span className="catalog-search-shortcut" aria-hidden="true">Ctrl K</span>
+              <button type="submit" className="catalog-search-submit" aria-label="Search products"><ArrowRight size={15} /></button>
             </form>
-            <span className="connection-pill">
-              <span />
+            <span className={"connection-pill" + (error ? " sync-error" : "")} role="status">
+              <span aria-hidden="true" />
               {error ? "Sync needs attention" : lastSyncedAt ? "Catalog synced" : "Catalog workspace"}
             </span>
-            <button
-              className="catalog-link"
-              onClick={() => navigate("/catalog")}
-            >
-              View catalog <ArrowUpRight size={15} />
-            </button>
-            <button
-              type="button"
-              className="theme-toggle"
+            <button type="button" className="theme-toggle" onClick={toggleTheme}
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-              aria-pressed={theme === "dark"}
-              title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-              onClick={toggleTheme}
-            >
-              {theme === "dark" ? <Moon size={17} aria-hidden="true" /> : <Sun size={17} aria-hidden="true" />}
-              <span className="theme-label">{theme === "dark" ? "Dark" : "Light"}</span>
+              aria-pressed={theme === "dark"} title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
+              {theme === "dark" ? <Sun size={19} aria-hidden="true" /> : <Moon size={19} aria-hidden="true" />}
             </button>
-            <button
-              type="button"
-              className={`header-profile ${tab === "profile" ? "active" : ""}`}
-              aria-label="Open my profile"
-              title="My profile"
-              onClick={() => switchTab("profile")}
-            >
-              <span className="profile-avatar" aria-hidden="true">{initials(accountName || auth.email.split("@")[0] || "BB")}</span>
-              <span className="profile-copy">
-                <strong>{accountName || auth.email.split("@")[0] || "Your profile"}</strong>
-                <small>{roleLabel(accountRole)}</small>
-              </span>
-            </button>
-            <button
-              type="button"
-              className="header-signout"
-              title="Sign out"
-              aria-label="Sign out"
-              onClick={() => {
-                void signOut().catch((e) => setActionError(e instanceof Error ? e.message : "Sign out failed."));
-              }}
-            >
-              <LogOut size={17} aria-hidden="true" />
-            </button>
+            <div className="catalog-header-popover-anchor">
+              <button type="button" className={"catalog-header-icon-button" + (notificationOpen ? " is-open" : "")}
+                aria-label="Recent catalog activity" aria-expanded={notificationOpen} aria-haspopup="dialog"
+                title="Catalog activity" onClick={() => { setNotificationOpen(open => !open); setAccountMenuOpen(false); }}>
+                <Bell size={19} aria-hidden="true" />
+                {error && <span className="catalog-bell-alert" aria-label="Sync needs attention" />}
+              </button>
+              {notificationOpen && (
+                <section className="catalog-header-popover catalog-notification-menu" role="dialog" aria-label="Recent catalog activity">
+                  <div className="catalog-popover-heading"><strong>Catalog updates</strong><span>Recent product changes</span></div>
+                  {error && <p className="catalog-sync-warning">Sync needs attention. Check your connection and retry.</p>}
+                  {recentUpdates.length ? recentUpdates.map(product => (
+                    <button type="button" className="catalog-notification-item" key={product.id}
+                      onClick={() => { switchTab("products"); setSearch(product.name); }}>
+                      <span className="catalog-notification-dot" aria-hidden="true" />
+                      <span><strong>{product.name || "Untitled product"}</strong>
+                        <small>Updated {new Date(product.updatedAt).toLocaleDateString("en-MY", { day: "numeric", month: "short", year: "numeric" })}</small>
+                      </span>
+                    </button>
+                  )) : <p className="catalog-empty-updates">No recent product updates.</p>}
+                  <button type="button" className="catalog-popover-footer" onClick={() => switchTab("activity")}>View activity log <ArrowRight size={15} aria-hidden="true" /></button>
+                </section>
+              )}
+            </div>
+            <div className="catalog-header-popover-anchor">
+              <button type="button" className={"header-profile" + (accountMenuOpen ? " active" : "")}
+                aria-label="Open account menu" aria-expanded={accountMenuOpen} aria-haspopup="menu"
+                title="My account" onClick={() => { setAccountMenuOpen(open => !open); setNotificationOpen(false); }}>
+                <span className="profile-avatar" aria-hidden="true">{initials(accountName || auth.email.split("@")[0] || "BB")}</span>
+                <span className="profile-copy"><strong>{accountName || auth.email.split("@")[0] || "Account"}</strong>
+                  <small>{roleLabel(accountRole)}</small></span>
+                <ChevronDown className="catalog-account-chevron" size={16} aria-hidden="true" />
+              </button>
+              {accountMenuOpen && (
+                <div className="catalog-header-popover catalog-account-menu" role="menu" aria-label="Account">
+                  <div className="catalog-account-menu-heading">
+                    <strong>{accountName || auth.email.split("@")[0] || "Account"}</strong>
+                    <small>{auth.email}</small>
+                  </div>
+                  <button type="button" role="menuitem" onClick={() => switchTab("profile")}>
+                    <UsersRound size={17} aria-hidden="true" /> My profile
+                  </button>
+                  <button type="button" role="menuitem" onClick={() => {
+                    setAccountMenuOpen(false);
+                    void signOut().catch((e) => setActionError(e instanceof Error ? e.message : "Sign out failed."));
+                  }}>
+                    <LogOut size={17} aria-hidden="true" /> Sign out
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </header>
         <div className="admin-content">
