@@ -49,7 +49,7 @@ import {
   type ProductModelChange,
   deleteProduct,
   saveCategory,
-  deleteCategory,
+  deleteCategoryWithProducts,
   signIn,
   signOut,
   getAuthState,
@@ -137,6 +137,9 @@ export default function App() {
   const [editor, setEditor] = useState<Product | null>(null);
   const [photoImportOpen, setPhotoImportOpen] = useState(false);
   const [catEditor, setCatEditor] = useState<Category | null>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+  const [categoryDeleteInput, setCategoryDeleteInput] = useState("");
+  const [categoryDeleteError, setCategoryDeleteError] = useState("");
   const [catName, setCatName] = useState("");
   const [catDescription, setCatDescription] = useState("");
   const [actionError, setActionError] = useState("");
@@ -309,6 +312,34 @@ export default function App() {
     } finally {
       setBusy(false);
       setMenu(null);
+    }
+  }
+  function requestCategoryDeletion(category: Category) {
+    setCategoryToDelete(category);
+    setCategoryDeleteInput("");
+    setCategoryDeleteError("");
+  }
+  const categoryDeleteCount = categoryToDelete
+    ? data.products.filter(product => product.categoryId === categoryToDelete.id).length
+    : 0;
+  async function confirmCategoryDeletion() {
+    const category = categoryToDelete;
+    if (!category || busy) return;
+    const count = data.products.filter(product => product.categoryId === category.id).length;
+    if (count > 0 && categoryDeleteInput.trim() !== category.name) return;
+    setBusy(true);
+    setCategoryDeleteError("");
+    try {
+      const result = await deleteCategoryWithProducts(category.id, category.name, count);
+      await refresh();
+      setCategoryToDelete(null);
+      setCategoryDeleteInput("");
+      setToast(result.cleanupWarning ||
+        `Category deleted${count ? ` with ${count} product${count === 1 ? "" : "s"}` : ""}`);
+    } catch (error) {
+      setCategoryDeleteError(error instanceof Error ? error.message : "Unable to delete category. Please try again.");
+    } finally {
+      setBusy(false);
     }
   }
   function editCategory(c: Category) {
@@ -1041,23 +1072,12 @@ export default function App() {
                             Edit category
                           </button>
                           <button
+                            type="button"
                             className="icon-button danger-text"
-                            disabled={busy || items.length > 0}
-                            title={
-                              items.length
-                                ? "Move all products before deleting this category"
-                                : "Delete category"
-                            }
-                            aria-label={`Delete ${c.name}`}
-                            onClick={() => {
-                              if (
-                                window.confirm(`Delete the ${c.name} category?`)
-                              )
-                                void action(
-                                  () => deleteCategory(c.id),
-                                  "Category deleted",
-                                );
-                            }}
+                            disabled={busy}
+                            title={`Delete ${c.name} category — confirmation required`}
+                            aria-label={`Delete ${c.name} category`}
+                            onClick={() => requestCategoryDeletion(c)}
                           >
                             <Trash2 size={16} />
                           </button>
@@ -1112,6 +1132,62 @@ export default function App() {
           onClose={(warning) => { setEditor(null); if (warning) setToast(warning); }}
         />
       )}{" "}
+      {categoryToDelete && (
+        <Modal
+          title={`Delete ${categoryToDelete.name}?`}
+          eyebrow="CONFIRM DELETION"
+          className="catalog-category-delete-dialog"
+          description="Review what will be removed before you continue."
+          onClose={() => {
+            if (!busy) {
+              setCategoryToDelete(null);
+              setCategoryDeleteInput("");
+              setCategoryDeleteError("");
+            }
+          }}
+        >
+          <div className="catalog-delete-confirmation" aria-busy={busy}>
+            <div className="catalog-delete-warning" role="alert">
+              <AlertCircle size={22} strokeWidth={1.8} aria-hidden="true" />
+              <div>
+                <strong>{categoryDeleteCount
+                  ? `${categoryDeleteCount} product${categoryDeleteCount === 1 ? "" : "s"} will also be deleted`
+                  : "This category has no products"}</strong>
+                <p>{categoryDeleteCount
+                  ? "Deleting this category will permanently remove ALL its products, product listings and related records. This cannot be undone."
+                  : "Only this empty category will be removed. This cannot be undone."}</p>
+              </div>
+            </div>
+            {categoryDeleteCount > 0 && (
+              <label className="catalog-delete-confirm-label">
+                To confirm, type <strong>{categoryToDelete.name}</strong>
+                <input
+                  value={categoryDeleteInput}
+                  onChange={event => setCategoryDeleteInput(event.target.value)}
+                  autoComplete="off"
+                  spellCheck={false}
+                  placeholder="Type the category name"
+                  disabled={busy}
+                  aria-label="Type category name to confirm deletion"
+                />
+              </label>
+            )}
+            {categoryDeleteError && <p className="notice error" role="alert">{categoryDeleteError}</p>}
+            <div className="catalog-delete-confirm-actions">
+              <button type="button" className="button secondary" disabled={busy}
+                onClick={() => { setCategoryToDelete(null); setCategoryDeleteInput(""); setCategoryDeleteError(""); }}>
+                Cancel
+              </button>
+              <button type="button" className="button catalog-delete-confirm-button"
+                disabled={busy || (categoryDeleteCount > 0 && categoryDeleteInput.trim() !== categoryToDelete.name)}
+                onClick={() => void confirmCategoryDeletion()}>
+                <Trash2 size={16} aria-hidden="true" />
+                {busy ? "Deleting…" : categoryDeleteCount ? `Delete category + ${categoryDeleteCount} products` : "Delete category"}
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
       {catEditor && (
         <Modal
           title={catEditor.name ? "Edit category" : "Add category"}
