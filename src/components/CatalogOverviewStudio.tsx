@@ -1,13 +1,12 @@
-import { useId, useMemo, useState } from "react";
 import {
-  Archive, ArrowRight, ArrowUpRight, CheckCircle2, ChevronDown, ChevronRight,
-  ChartNoAxesCombined, Images, Layers3, Package, Pencil, ShieldCheck
+  Archive, ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight,
+  Layers3, Package, Pencil
 } from "lucide-react";
+import CustomerInsights from "./CustomerInsights";
 import SafeImage from "./SafeImage";
 import type { Product, Category } from "../lib/types";
 
 type StatusFilter = "all" | "draft" | "published" | "archived";
-type Days = 7 | 30 | 90;
 
 interface Props {
   products: Product[];
@@ -15,6 +14,7 @@ interface Props {
   loading: boolean;
   asOfMs: number;
   canManageCategories: boolean;
+  enabled: boolean;
   onOpenProducts: (status: StatusFilter) => void;
   onOpenCategory: (categoryId: string) => void;
   onManageCategories: () => void;
@@ -50,106 +50,14 @@ export function getUpdateActivity(
   return { keys, cumulative, total: running };
 }
 
-const shortDate = (dateKey: string): string =>
-  new Intl.DateTimeFormat("en-MY", { month: "short", day: "numeric", timeZone: "UTC" })
-    .format(new Date(dateKey + "T12:00:00Z"));
-
-function ActivityChart({ products, days, asOfMs }: {
-  products: Product[]; days: Days; asOfMs: number
-}) {
-  const gradientId = useId().replace(/:/g, "");
-  const activity = useMemo(() => getUpdateActivity(products, days, asOfMs), [products, days, asOfMs]);
-
-  // Display real last-update counts, grouped to avoid 30/90 cramped daily columns.
-  // Unlike a cumulative line, this does not imply continuous growth or invented activity.
-  const binSize = days === 7 ? 1 : days === 30 ? 5 : 10;
-  const dailyCounts = activity.cumulative.map((count, index) =>
-    count - (activity.cumulative[index - 1] ?? 0));
-  const bins = Array.from({ length: Math.ceil(activity.keys.length / binSize) }, (_, index) => {
-    const start = index * binSize;
-    const end = Math.min(start + binSize, activity.keys.length);
-    const count = dailyCounts.slice(start, end).reduce((sum, value) => sum + value, 0);
-    const firstDate = shortDate(activity.keys[start]);
-    const lastDate = shortDate(activity.keys[end - 1]);
-    return {
-      count,
-      label: shortDate(activity.keys[Math.floor((start + end - 1) / 2)]),
-      range: firstDate === lastDate ? firstDate : firstDate + " – " + lastDate,
-    };
-  });
-  const max = Math.max(2, ...bins.map(bin => bin.count));
-  const xStart = 55, xEnd = 625, yTop = 28, yBase = 157;
-  const barSlot = (xEnd - xStart) / bins.length;
-  const barWidth = Math.min(45, barSlot * .54);
-  const yValue = (value: number) => yBase - (value / max) * (yBase - yTop);
-  const gridValues = [max, Math.round(max / 2), 0];
-  const granularity = days === 7 ? "daily" : days === 30 ? "5-day" : "10-day";
-
-  return (
-    <div className="brutti-activity-chart">
-      <div className="brutti-activity-chart-legend" aria-hidden="true">
-        <span className="brutti-activity-chart-key" />
-        Product updates
-        <span className="brutti-activity-chart-granularity">{granularity} groups</span>
-      </div>
-      <svg viewBox="0 0 640 197" role="img"
-        aria-label={"Products by latest update date over the last " + days + " days: " + activity.total + " products"}>
-        <defs>
-          <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#245c40" />
-            <stop offset="100%" stopColor="#83a68a" />
-          </linearGradient>
-        </defs>
-        {gridValues.map((value, index) => (
-          <g key={index} className="brutti-activity-gridline">
-            <line x1={xStart} x2={xEnd} y1={yValue(value)} y2={yValue(value)} />
-            <text x={xStart - 12} y={yValue(value) + 4} textAnchor="end">{value}</text>
-          </g>
-        ))}
-        {bins.map((bin, index) => {
-          const x = xStart + (index + .5) * barSlot;
-          const height = bin.count / max * (yBase - yTop);
-          return (
-            <g key={bin.range} className={bin.count ? "brutti-activity-bin is-active" : "brutti-activity-bin"}>
-              <title>{bin.range + ": " + bin.count + (bin.count === 1 ? " product" : " products")}</title>
-              <rect className="brutti-activity-bar-track" x={x - barWidth / 2}
-                y={yTop} width={barWidth} height={yBase - yTop} rx="7" />
-              {bin.count > 0 ? (
-                <>
-                  <rect className="brutti-activity-bar" x={x - barWidth / 2}
-                    y={yBase - height} width={barWidth} height={height}
-                    rx={Math.min(7, height / 2)} fill={"url(#" + gradientId + ")"} />
-                  <text className="brutti-activity-bar-value" x={x}
-                    y={Math.max(15, yBase - height - 8)} textAnchor="middle">{bin.count}</text>
-                </>
-              ) : (
-                <rect className="brutti-activity-bar-zero" x={x - barWidth / 2}
-                  y={yBase - 2} width={barWidth} height="2" rx="1" />
-              )}
-              <text className="brutti-activity-axis-date" x={x} y="188"
-                textAnchor="middle">{bin.label}</text>
-            </g>
-          );
-        })}
-      </svg>
-      {activity.total === 0 && (
-        <p className="brutti-activity-empty">No product updates recorded in this period.</p>
-      )}
-    </div>
-  );
-}
-
 export default function CatalogOverviewStudio({
-  products, categories, loading, asOfMs, canManageCategories,
+  products, categories, loading, canManageCategories, enabled,
   onOpenProducts, onOpenCategory, onManageCategories,
 }: Props) {
-  const [days, setDays] = useState<Days>(30);
   const total = products.length;
   const drafts = products.filter(product => product.status === "draft");
   const published = products.filter(product => product.status === "published").length;
   const archived = products.filter(product => product.status === "archived").length;
-  const withPhotos = products.filter(product => product.images.length > 0).length;
-  const activeInPeriod = getUpdateActivity(products, days, asOfMs).total;
   const categoryInsights = categories.map(category => ({
     ...category,
     count: products.filter(product => product.categoryId === category.id).length,
@@ -198,53 +106,9 @@ export default function CatalogOverviewStudio({
           ))}
         </div>
       </div>
-      <div className="brutti-glass-panels atelier-workbench">
-        <section className="brutti-activity-panel atelier-review" aria-labelledby="brutti-activity-title">
-          <div className="brutti-glass-panel-heading">
-            <div className="brutti-glass-panel-title">
-              <ChartNoAxesCombined size={21} aria-hidden="true" />
-              <div>
-                <h2 id="brutti-activity-title">Catalog activity</h2>
-                <p>Latest product changes from saved records.</p>
-              </div>
-            </div>
-            <label className="brutti-activity-range">
-              <span className="sr-only">Activity time range</span>
-              <select value={days} onChange={event => setDays(Number(event.target.value) as Days)}>
-                <option value={7}>Last 7 days</option>
-                <option value={30}>Last 30 days</option>
-                <option value={90}>Last 90 days</option>
-              </select>
-              <ChevronDown size={14} aria-hidden="true" />
-            </label>
-          </div>
-          <div className="brutti-activity-layout">
-            <ActivityChart products={products} days={days} asOfMs={asOfMs} />
-            <aside className="brutti-activity-summary" aria-label="Publishing overview">
-              <div className="brutti-activity-summary-item">
-                <span>Awaiting review</span>
-                <strong className="brutti-activity-big">{loading ? "—" : drafts.length}</strong>
-              </div>
-              <div className="brutti-activity-summary-item">
-                <span>Updated in {days} days</span>
-                <strong className="brutti-activity-updated">{activeInPeriod}</strong>
-              </div>
-              <button type="button" onClick={() => onOpenProducts("draft")}>
-                Review drafts <ArrowUpRight size={14} aria-hidden="true" />
-              </button>
-            </aside>
-          </div>
-          <div className="brutti-activity-readiness">
-            <div>
-              <span><Images size={14} aria-hidden="true" /> With photos <strong>{withPhotos} / {total}</strong></span>
-              <progress value={withPhotos} max={Math.max(1, total)} aria-label="Products with photos" />
-            </div>
-            <div>
-              <span><ShieldCheck size={14} aria-hidden="true" /> Published <strong>{published} / {total}</strong></span>
-              <progress value={published} max={Math.max(1, total)} aria-label="Published products" />
-            </div>
-          </div>
-        </section>
+      <div className="brutti-glass-panels atelier-workbench customer-insights-workbench">
+        <CustomerInsights products={products} categories={categories}
+          loading={loading} enabled={enabled} onOpenCategory={onOpenCategory} />
         <section className="brutti-category-panel atelier-categories" aria-labelledby="brutti-category-title">
           <div className="brutti-glass-panel-heading">
             <div className="brutti-glass-panel-title">
