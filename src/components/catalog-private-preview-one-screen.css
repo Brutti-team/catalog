@@ -1,0 +1,280 @@
+/* Brutti Catalog / private Product Preview — single-screen desktop studio.
+   All original product data and clickable WhatsApp link are preserved.
+   If exceptionally long product text/specs cannot fit, ONLY details scroll
+   internally so the photo, dialog close, and other controls stay accessible. */
+
+@media (min-width: 900px) {
+  .admin-app dialog.modal.catalog-private-preview-dialog[open] {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: min(1510px, calc(100vw - 28px));
+    max-width: calc(100vw - 28px);
+    height: min(94dvh, 900px);
+    max-height: calc(100dvh - 18px);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  /* Give the actual product two-column workspace more room. */
+  .admin-app .catalog-private-preview-dialog > .modal-heading {
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    min-height: 53px;
+    padding: 10px 22px;
+  }
+  .admin-app .catalog-private-preview-dialog > .modal-heading .eyebrow {
+    display: none;
+  }
+  .admin-app .catalog-private-preview-dialog > .modal-heading h2 {
+    font-size: 13.5px;
+    line-height: 1.4;
+    letter-spacing: -.012em;
+  }
+  .admin-app .catalog-private-preview-dialog > .modal-heading .icon-button {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    min-height: 34px;
+  }
+  .admin-app .catalog-private-preview-dialog > .catalog-private-preview-note {
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    min-height: 29px;
+    padding: 6px 18px;
+    font-size: 10.5px;
+    line-height: 1.35;
+  }
+
+  .admin-app .catalog-private-preview-dialog > .pub-private-preview {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    height: auto;
+    width: 100%;
+    overflow: hidden;
+  }
+  .admin-app .catalog-private-preview-dialog > .pub-private-preview > main,
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-section {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-product-detail {
+    display: grid;
+    grid-template-columns: minmax(0, 48%) minmax(0, 52%);
+    align-items: stretch;
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Keep the complete original photo visible instead of cropping to fit. */
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    padding: 13px;
+    overflow: hidden;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    aspect-ratio: auto;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-gallery-thumbnails {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    max-height: 65px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 0 0;
+    scrollbar-width: none;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-gallery-thumbnails::-webkit-scrollbar {
+    display: none;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-gallery-thumbnails button {
+    flex: 0 0 51px;
+    width: 51px;
+    height: 51px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs {
+    top: 23px;
+    right: 23px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-photo-caption {
+    bottom: 23px;
+    left: 23px;
+  }
+
+  /* Editorial styling stays, but with more balanced typography and spacing. */
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    box-sizing: border-box;
+    min-height: 0;
+    height: 100%;
+    padding: clamp(19px, 3dvh, 31px) clamp(26px, 3.2vw, 48px) 19px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy::-webkit-scrollbar {
+    display: none;
+    width: 0;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {
+    margin-bottom: 9px;
+    font-size: 10px;
+    line-height: 1.4;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    max-width: none;
+    margin-bottom: 15px;
+    font-size: clamp(30px, 2.8vw, 43px);
+    line-height: 1.12;
+    letter-spacing: -.025em;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+    max-width: 67ch;
+    margin-bottom: 15px;
+    font-size: clamp(12px, .95vw, 14px);
+    line-height: 1.58;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+    margin-bottom: 15px !important;
+    font-size: 23px;
+    line-height: 1.2;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-current {
+    font-size: clamp(23px, 1.7vw, 27px);
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price > small {
+    margin-top: 4px;
+    font-size: 9.5px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications {
+    margin-bottom: 17px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div {
+    grid-template-columns: minmax(106px, 31%) minmax(0, 1fr);
+    gap: 11px;
+    padding: 9px 0;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications :is(dt, dd) {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  /* Always preserve the existing working WhatsApp action below the specs. */
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry {
+    min-height: 42px;
+    margin: 0;
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-note {
+    max-width: none;
+    margin-top: 7px;
+    font-size: 9.5px;
+    line-height: 1.45;
+  }
+  /* The branding sign-off is redundant inside an admin-only preview and
+     otherwise pushes the active enquiry button out of the viewport. */
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-promise {
+    display: none;
+  }
+}
+
+/* On lower laptop viewports compress gracefully without removing fields. */
+@media (min-width: 900px) and (max-height: 730px) {
+  .admin-app dialog.modal.catalog-private-preview-dialog[open] {
+    height: calc(100dvh - 12px);
+    max-height: calc(100dvh - 12px);
+  }
+  .admin-app .catalog-private-preview-dialog > .modal-heading {
+    min-height: 46px;
+    padding: 7px 16px;
+  }
+  .admin-app .catalog-private-preview-dialog > .catalog-private-preview-note {
+    min-height: 23px;
+    padding: 4px 16px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    padding: 15px 28px 13px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    font-size: clamp(26px, 2.45vw, 36px);
+    margin-bottom: 10px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+    font-size: 12px;
+    line-height: 1.48;
+    margin-bottom: 10px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+    margin-bottom: 10px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications {
+    margin-bottom: 11px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div {
+    padding: 7px 0;
+  }
+}
+
+/* A stacked phone layout needs scroll when the photo plus copy genuinely
+   exceeds a small viewport. Never truncate product information or the CTA. */
+@media (max-width: 899px) {
+  .admin-app .modal.catalog-private-preview-dialog {
+    max-height: calc(100dvh - 14px);
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .admin-app .modal.catalog-private-preview-dialog::-webkit-scrollbar {
+    display: none;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image {
+    max-height: min(39dvh, 330px);
+    min-height: 210px;
+    height: min(39dvh, 330px);
+    aspect-ratio: auto;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    padding: 23px 20px 28px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    font-size: clamp(29px, 6.3vw, 39px);
+    margin-bottom: 14px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+    font-size: 13px;
+    line-height: 1.57;
+    margin-bottom: 16px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+    margin-bottom: 17px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div {
+    padding: 10px 0;
+  }
+}
