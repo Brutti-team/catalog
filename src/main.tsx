@@ -40,6 +40,7 @@ import "./components/catalog-latest-updates-refine.css";
 import "./components/product-editor-no-sidebar.css";
 import "./components/product-editor-category-premium.css";
 import "./components/catalog-categories-refined.css";
+import "./components/catalog-category-dialog-premium.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
