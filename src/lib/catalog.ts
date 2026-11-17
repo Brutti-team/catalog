@@ -3,6 +3,7 @@ import type { CatalogCapabilities, CatalogData, Category, Product, ProductImage,
 import { optimizeImageForUpload } from "./image-optimization";
 import { subscribeCatalogRefresh } from "./catalog-refresh";
 import { modelUploadBytes } from "./model-formats";
+import { categoryProductPrefix, nextProductId } from "./product-ids";
 
 const url = import.meta.env.VITE_SUPABASE_URL?.trim() ?? "";
 const key = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY)?.trim() ?? "";
@@ -335,8 +336,33 @@ export async function downloadProductModel(model: ProductModel, signal: AbortSig
   return new File([data], 'product-model.zip', { type: 'application/zip' });
 }
 
-export async function saveProduct(product: Product, modelChange?: ProductModelChange): Promise<ProductSaveResult> {
-  validateProduct(product);
+/**
+ * Reserve the next Product ID on the latest database state. The existing
+ * case-insensitive unique SKU index protects concurrent admins at insert time.
+ * Only newly created editor products opt into this; legacy IDs are never renamed.
+ */
+async function nextDatabaseProductId(db: SupabaseClient, categoryId: string): Promise<string> {
+  const { data: rawCategories, error: categoryError } = await db.from("categories").select("id,name,description");
+  if (categoryError) throw backendError(categoryError.message, "load categories for Product ID");
+  const categories = (rawCategories ?? []) as Category[];
+  const prefix = categoryProductPrefix(categoryId, categories);
+  if (!prefix) throw new Error("Select a valid category to generate a Product ID.");
+  const existing: Array<{ sku: string }> = [];
+  // Supabase/PostgREST commonly limits responses to 1,000 rows.
+  for (let start = 0; start < 100000; start += 1000) {
+    const { data, error } = await db.from("products").select("sku")
+      .ilike("sku", `${prefix}-%`).order("sku").range(start, start + 999);
+    if (error) throw backendError(error.message, "check existing Product IDs");
+    existing.push(...(data ?? []) as Array<{ sku: string }>);
+    if ((data?.length ?? 0) < 1000) break;
+  }
+  return nextProductId(categoryId, categories, existing);
+}
+
+export async function saveProduct(product: Product, modelChange?: ProductModelChange, autoProductId = false): Promise<ProductSaveResult> {
+  // New-product auto IDs are rechecked at save, so the preview may change if
+  // another admin saved first. Validation still applies to all other fields.
+  validateProduct(autoProductId ? { ...product, sku: product.sku || "AUTO" } : product);
   const saved = {
     ...product,
     name: product.name.trim(),
@@ -357,6 +383,7 @@ export async function saveProduct(product: Product, modelChange?: ProductModelCh
     if (error) throw backendError(error.message, 'check this product before saving');
     previous = data as ProductRow | null;
   }
+  if (autoProductId) saved.sku = await nextDatabaseProductId(db, saved.categoryId);
   const row = toRow(saved, capabilities);
   if (modelChange !== undefined) {
     row.model_path = null;
@@ -376,23 +403,38 @@ export async function saveProduct(product: Product, modelChange?: ProductModelCh
       throw error;
     }
   }
-  let result: Product;
+  let result: Product | null = null;
   try {
-    const table = db.from('products');
-    const update = previous && modelChange !== undefined ? table.update(row).eq('id', product.id) : null;
-    const query = update
-      ? previous?.model_path ? update.eq('model_path', previous.model_path) : update.is('model_path', null)
-      : table.upsert(row);
-    const response = query.select('*');
-    const { data, error } = await (update ? response.maybeSingle() : response.single());
-    if (error) throw backendError(error.message, 'save this product');
-    if (!data && update) throw new Error('The product model changed in another session. Reopen the product and try again.');
-    if (!data) throw new Error('This product was not saved. Please sign in again and retry.');
-    result = fromRow(data as ProductRow);
+    const maxAttempts = autoProductId ? 8 : 1;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      if (autoProductId && attempt > 0) {
+        // A concurrent admin claimed the previous candidate; recompute from DB.
+        row.sku = await nextDatabaseProductId(db, row.category_id);
+      }
+      const table = db.from('products');
+      const update = previous && modelChange !== undefined ? table.update(row).eq('id', product.id) : null;
+      const query = update
+        ? previous?.model_path ? update.eq('model_path', previous.model_path) : update.is('model_path', null)
+        : table.upsert(row);
+      const response = query.select('*');
+      const { data, error } = await (update ? response.maybeSingle() : response.single());
+      if (error) {
+        const duplicateProductId = autoProductId && error.code === '23505'
+          && /sku|products_sku_unique/i.test([error.message, error.details].join(' '));
+        if (duplicateProductId && attempt < maxAttempts - 1) continue;
+        if (duplicateProductId) throw new Error("Another admin saved this Product ID at the same time. Please try Save again.");
+        throw backendError(error.message, 'save this product');
+      }
+      if (!data && update) throw new Error('The product model changed in another session. Reopen the product and try again.');
+      if (!data) throw new Error('This product was not saved. Please sign in again and retry.');
+      result = fromRow(data as ProductRow);
+      break;
+    }
   } catch (error) {
     if (row.model_path) await removeUnusedModel(db, row.model_path);
     throw error;
   }
+  if (!result) throw new Error('Unable to reserve a unique Product ID. Try Save again.');
   const retained = new Set(result.images.map(storagePathForImage).filter(Boolean));
   const removed = (previous?.images ?? []).filter(image => {
     const path = storagePathForImage(image);
