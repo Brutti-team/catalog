@@ -364,9 +364,17 @@ export default function ProductEditor({
               >
                 <ArrowLeft size={19} aria-hidden="true" />
               </button>
-              <strong title={draft.name}>{draft.name || "Untitled product"}</strong>
+              <div className="catalog-editor-header-title">
+                <span className="catalog-editor-header-eyebrow">BRUTTI CATALOG / PRODUCT EDITOR</span>
+                <strong title={draft.name}>{draft.name || "Untitled product"}</strong>
+              </div>
             </div>
-
+            <div className="catalog-editor-header-meta" aria-label="Product information">
+              <span className="catalog-editor-header-sku">{draft.sku || "New product"}</span>
+              <span className={`catalog-editor-header-status catalog-editor-header-status--${draft.status}`}>
+                {draft.status === "published" ? "Published" : draft.status === "archived" ? "Archived" : "Draft"}
+              </span>
+            </div>
           </header>
         )}
         <div className="product-editor-intro">
