@@ -1109,11 +1109,14 @@ export default function App() {
       {catEditor && (
         <Modal
           title={catEditor.name ? "Edit category" : "Add category"}
+          eyebrow="COLLECTION MANAGEMENT"
+          description={catEditor.name ? "Update the details customers see in your catalog." : "Organise your products into a collection."}
+          className="category-editor-dialog"
           onClose={() => !busy && setCatEditor(null)}
         >
-          <form className="category-form" onSubmit={submitCategory}>
-            <label>
-              Category name
+          <form className="category-form" onSubmit={submitCategory} aria-busy={busy}>
+            <label className="category-editor-field">
+              <span className="category-editor-label">Category name <span className="category-required" aria-hidden="true">*</span></span>
               <input
                 required
                 maxLength={80}
@@ -1122,8 +1125,8 @@ export default function App() {
                 placeholder="e.g. Seating"
               />
             </label>
-            <label>
-              Description
+            <label className="category-editor-field">
+              <span className="category-editor-label">Description <span className="category-optional">Optional</span></span>
               <textarea
                 maxLength={500}
                 rows={3}
@@ -1137,7 +1140,7 @@ export default function App() {
                 {actionError}
               </div>
             )}
-            <div className="button-row justify-end">
+            <div className="button-row justify-end category-editor-actions">
               <button
                 type="button"
                 className="button secondary"
@@ -1146,7 +1149,7 @@ export default function App() {
               >
                 Cancel
               </button>
-              <button className="button primary" disabled={busy}>
+              <button type="submit" className="button primary" disabled={busy}>
                 {busy ? "Saving…" : "Save category"}
               </button>
             </div>
