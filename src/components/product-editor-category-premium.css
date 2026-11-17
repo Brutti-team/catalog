@@ -1,12 +1,12 @@
 /* Brutti Catalog — product details, Product ID, searchable category dropdown.
-   Edit Product only; preserves original category IDs and SKU database field. */
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-field {
+   Shared by Edit and Create Product; preserves category IDs and SKU database field. */
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-field {
   display: flex;
   flex-direction: column;
   min-width: 0;
   margin: 0 0 13px;
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-label {
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-label {
   display: block;
   margin: 0 0 8px;
   color: #697c6c;
@@ -14,15 +14,15 @@
   font-weight: 650;
   line-height: 1.3;
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-label > span {
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-label > span {
   color: #497a58;
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category {
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category {
   position: relative;
   min-width: 0;
   width: 100%;
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-trigger {
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-trigger {
   display: flex;
   align-items: center;
   width: 100%;
@@ -42,23 +42,23 @@
   cursor: pointer;
   transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease;
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-trigger:hover:not(:disabled) {
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-trigger:hover:not(:disabled) {
   background: #f9fcf9;
   border-color: #afcdb7;
   box-shadow: 0 3px 10px rgba(29,69,42,.07);
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-trigger:focus-visible,
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category.is-open .catalog-editor-category-trigger {
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-trigger:focus-visible,
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category.is-open .catalog-editor-category-trigger {
   outline: 2px solid rgba(59,123,79,.15);
   outline-offset: 1px;
   border-color: #679d77;
   background: rgba(253,255,253,.96);
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-trigger:disabled {
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-trigger:disabled {
   opacity: .57;
   cursor: not-allowed;
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-trigger-icon {
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-trigger-icon {
   display: grid;
   place-items: center;
   flex: 0 0 31px;
@@ -68,36 +68,36 @@
   background: #e7f1e9;
   color: #366b47;
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-value {
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-value {
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-value.is-placeholder {
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-value.is-placeholder {
   color: #879b8b;
   font-weight: 480;
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-chevron {
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-chevron {
   flex: 0 0 17px;
   color: #628471;
   transition: transform .16s ease;
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category.is-open .catalog-editor-category-chevron {
+.admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category.is-open .catalog-editor-category-chevron {
   transform: rotate(180deg);
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .field-pair > label > input {
+.admin-app .product-editor-dialog #product-editor-basics .field-pair > label > input {
   transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
 }
-.admin-app .product-editor-dialog--editing #product-editor-basics .field-pair > label > input:focus {
+.admin-app .product-editor-dialog #product-editor-basics .field-pair > label > input:focus {
   border-color: #75a785;
   background: rgba(255,255,255,.96);
   box-shadow: 0 0 0 3px rgba(67,134,86,.11);
   outline: none;
 }
 /* Popover is portaled into the product editor's native dialog to prevent clipping. */
-.admin-app .product-editor-dialog--editing .catalog-editor-category-popover {
+.admin-app .product-editor-dialog .catalog-editor-category-popover {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -113,7 +113,7 @@
   box-shadow: 0 18px 46px rgba(31,66,42,.20), 0 3px 10px rgba(31,66,42,.07), inset 0 1px rgba(255,255,255,.98);
   animation: brutti-editor-category-pop .16s ease-out both;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-menu-head {
+.admin-app .product-editor-dialog .catalog-editor-category-menu-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -125,12 +125,12 @@
   font-weight: 740;
   letter-spacing: .075em;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-menu-head > span:last-child {
+.admin-app .product-editor-dialog .catalog-editor-category-menu-head > span:last-child {
   letter-spacing: 0;
   font-weight: 550;
   text-transform: none;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-search {
+.admin-app .product-editor-dialog .catalog-editor-category-search {
   display: flex;
   flex: 0 0 37px;
   align-items: center;
@@ -142,11 +142,11 @@
   background: #f5f9f5;
   color: #6b8b77;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-search:focus-within {
+.admin-app .product-editor-dialog .catalog-editor-category-search:focus-within {
   border-color: #91bc9c;
   box-shadow: 0 0 0 2px rgba(79,153,100,.09);
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-search input {
+.admin-app .product-editor-dialog .catalog-editor-category-search input {
   flex: 1 1 auto;
   width: 100%;
   height: 33px;
@@ -161,15 +161,15 @@
   font-family: inherit;
   font-size: 12px;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-search input:focus {
+.admin-app .product-editor-dialog .catalog-editor-category-search input:focus {
   border: none;
   outline: none;
   box-shadow: none;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-search input::placeholder {
+.admin-app .product-editor-dialog .catalog-editor-category-search input::placeholder {
   color: #91a297;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-options {
+.admin-app .product-editor-dialog .catalog-editor-category-options {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
@@ -180,12 +180,12 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-options::-webkit-scrollbar {
+.admin-app .product-editor-dialog .catalog-editor-category-options::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-option {
+.admin-app .product-editor-dialog .catalog-editor-category-option {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
@@ -204,20 +204,20 @@
   text-align: left;
   cursor: pointer;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-option:hover,
-.admin-app .product-editor-dialog--editing .catalog-editor-category-option:focus-visible {
+.admin-app .product-editor-dialog .catalog-editor-category-option:hover,
+.admin-app .product-editor-dialog .catalog-editor-category-option:focus-visible {
   outline: none;
   border-color: #d7e7dc;
   background: #eef6ef;
   color: #23553a;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-option.is-selected {
+.admin-app .product-editor-dialog .catalog-editor-category-option.is-selected {
   background: #e4f0e7;
   border-color: #d6e7da;
   color: #224e34;
   font-weight: 720;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-option-icon {
+.admin-app .product-editor-dialog .catalog-editor-category-option-icon {
   display: grid;
   place-items: center;
   flex: 0 0 30px;
@@ -227,19 +227,19 @@
   background: #edf3ee;
   color: #64816b;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-option.is-selected .catalog-editor-category-option-icon {
+.admin-app .product-editor-dialog .catalog-editor-category-option.is-selected .catalog-editor-category-option-icon {
   background: #d1e6d6;
   color: #33724a;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-option-name {
+.admin-app .product-editor-dialog .catalog-editor-category-option-name {
   flex: 1 1 auto;
   min-width: 0;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-option-check {
+.admin-app .product-editor-dialog .catalog-editor-category-option-check {
   flex: 0 0 auto;
   color: #37784d;
 }
-.admin-app .product-editor-dialog--editing .catalog-editor-category-empty {
+.admin-app .product-editor-dialog .catalog-editor-category-empty {
   padding: 16px 10px;
   color: #829587;
   font-size: 12px;
@@ -248,83 +248,83 @@
   from { opacity: 0; transform: translateY(-5px) scale(.987); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-label {
+.admin-app[data-theme="dark"] .product-editor-dialog #product-editor-basics .catalog-editor-category-label {
   color: #b7ccba;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-trigger {
+.admin-app[data-theme="dark"] .product-editor-dialog #product-editor-basics .catalog-editor-category-trigger {
   border-color: #536f59;
   background: #294534;
   color: #e4f2e6;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-trigger:hover,
-.admin-app[data-theme="dark"] .product-editor-dialog--editing #product-editor-basics .catalog-editor-category.is-open .catalog-editor-category-trigger {
+.admin-app[data-theme="dark"] .product-editor-dialog #product-editor-basics .catalog-editor-category-trigger:hover,
+.admin-app[data-theme="dark"] .product-editor-dialog #product-editor-basics .catalog-editor-category.is-open .catalog-editor-category-trigger {
   background: #355841;
   border-color: #79a987;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-trigger-icon {
+.admin-app[data-theme="dark"] .product-editor-dialog #product-editor-basics .catalog-editor-category-trigger-icon {
   background: #375a42;
   color: #c2e5ca;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-chevron {
+.admin-app[data-theme="dark"] .product-editor-dialog #product-editor-basics .catalog-editor-category-chevron {
   color: #b3d0bc;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-editor-category-popover {
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-popover {
   background: rgba(30,53,39,.98);
   border-color: #577a60;
   box-shadow: 0 18px 46px rgba(0,0,0,.33);
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-editor-category-search {
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-search {
   background: #2d4936;
   border-color: #4d6d54;
   color: #c0d9c5;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-editor-category-search input {
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-search input {
   color: #ecf5ed;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-editor-category-menu-head {
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-menu-head {
   color: #b0c6b5;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-editor-category-option {
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-option {
   color: #d6e9d8;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-editor-category-option-icon {
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-option-icon {
   background: #355440;
   color: #bed7c3;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-editor-category-option:hover,
-.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-editor-category-option:focus-visible {
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-option:hover,
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-option:focus-visible {
   border-color: #51795e;
   background: #33583f;
   color: #fff;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-editor-category-option.is-selected {
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-option.is-selected {
   border-color: #568463;
   background: #365e43;
   color: #f5fff6;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-editor-category-option.is-selected .catalog-editor-category-option-icon {
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-option.is-selected .catalog-editor-category-option-icon {
   background: #46734f;
   color: #e1f9e5;
 }
-.admin-app[data-theme="dark"] .product-editor-dialog--editing .catalog-editor-category-option-check {
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-option-check {
   color: #a7dfb4;
 }
 @media (max-width: 760px) {
-  .admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-trigger {
+  .admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-trigger {
     height: 49px;
     min-height: 49px;
   }
-  .admin-app .product-editor-dialog--editing .catalog-editor-category-popover {
+  .admin-app .product-editor-dialog .catalog-editor-category-popover {
     border-radius: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .admin-app .product-editor-dialog--editing .catalog-editor-category-popover {
+  .admin-app .product-editor-dialog .catalog-editor-category-popover {
     animation: none;
   }
-  .admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-trigger,
-  .admin-app .product-editor-dialog--editing #product-editor-basics .catalog-editor-category-chevron,
-  .admin-app .product-editor-dialog--editing #product-editor-basics .field-pair > label > input {
+  .admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-trigger,
+  .admin-app .product-editor-dialog #product-editor-basics .catalog-editor-category-chevron,
+  .admin-app .product-editor-dialog #product-editor-basics .field-pair > label > input {
     transition: none;
   }
 }
