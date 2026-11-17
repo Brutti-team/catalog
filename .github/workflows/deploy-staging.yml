@@ -1,9 +1,8 @@
 name: Deploy approved Brutti Catalog staging
 
+# Staging is intentionally manual. An automatic push deploy also runs in
+# deploy-catalog-pages.yml and GitHub Pages rejects parallel deployments.
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 # Deploys the approved, reviewed main branch to the separate project Pages URL:
