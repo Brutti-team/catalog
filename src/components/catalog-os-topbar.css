@@ -656,3 +656,132 @@
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .catalog-popover-footer:hover {
   background: #335640;
 }
+
+
+/* 17 Nov: Soft raised / pop-up treatment for the OS-style header.
+   All changes are visual; preserve search, sync, theme, notifications and account behavior. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar {
+  position: sticky;
+  z-index: 45;
+  background: linear-gradient(135deg, rgb(247 252 248 / 98%), rgb(236 246 239 / 98%));
+  border-bottom-color: #d4e5d8;
+  box-shadow: 0 7px 24px rgb(32 69 43 / 9%), 0 1px 0 rgb(255 255 255 / 92%) inset;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-search {
+  border: 1px solid #cadfd0;
+  background: linear-gradient(145deg, #fff, #f7fcf8);
+  border-radius: 15px;
+  box-shadow: 0 5px 13px rgb(36 75 47 / 9%), 0 1px 3px rgb(36 75 47 / 5%), inset 0 1px 0 rgb(255 255 255 / 98%);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-search:hover {
+  border-color: #b6d3be;
+  box-shadow: 0 7px 18px rgb(33 68 43 / 12%), inset 0 1px 0 #fff;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-search:focus-within {
+  transform: translateY(-1px);
+  border-color: #78ab86;
+  background: #fff;
+  box-shadow: 0 9px 23px rgb(36 77 48 / 15%), 0 0 0 3px rgb(85 148 100 / 11%);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .theme-toggle,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-icon-button {
+  border: 1px solid rgb(195 218 201 / 80%);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 73%);
+  box-shadow: 0 3px 9px rgb(36 76 46 / 8%), inset 0 1px 0 rgb(255 255 255 / 95%);
+  transition: transform .18s ease, background-color .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .theme-toggle:hover,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-icon-button:hover,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-icon-button.is-open {
+  transform: translateY(-2px);
+  border-color: #9fc9ab;
+  background: #f8fdf9;
+  box-shadow: 0 6px 13px rgb(32 68 43 / 13%), inset 0 1px 0 #fff;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .theme-toggle:active,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-icon-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgb(32 68 43 / 8%);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .connection-pill {
+  padding: 7px 11px;
+  border: 1px solid rgb(203 225 207 / 85%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 56%);
+  box-shadow: 0 3px 10px rgb(32 68 43 / 5%), inset 0 1px 0 rgb(255 255 255 / 90%);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile {
+  border: 1px solid rgb(194 216 199 / 85%);
+  border-radius: 999px;
+  padding: 3px 10px 3px 3px;
+  background: linear-gradient(145deg, #fff, #f3faf5);
+  box-shadow: 0 4px 12px rgb(37 76 47 / 10%), inset 0 1px 0 rgb(255 255 255 / 94%);
+  transition: transform .18s ease, background .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile:hover,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile.active {
+  transform: translateY(-2px);
+  border-color: #a8cdb1;
+  background: #f9fefa;
+  box-shadow: 0 8px 18px rgb(37 76 47 / 14%), inset 0 1px 0 #fff;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .profile-avatar {
+  box-shadow: 0 3px 9px rgb(19 53 32 / 18%), inset 0 1px 0 rgb(255 255 255 / 13%);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .catalog-header-popover {
+  transform-origin: top right;
+  animation: catalog-os-pop-in .16s ease-out both;
+  border: 1px solid #c8ddce;
+  box-shadow: 0 22px 55px rgb(28 63 39 / 19%), 0 3px 10px rgb(28 63 39 / 8%);
+}
+@keyframes catalog-os-pop-in {
+  from { opacity: 0; transform: translateY(-6px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+/* Maintain contrast and the same pop-up depth in dark mode. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar.catalog-os-topbar {
+  background: linear-gradient(135deg, #233e2c, #1d3627);
+  border-bottom-color: #46614b;
+  box-shadow: 0 7px 22px rgb(0 0 0 / 17%), inset 0 1px 0 rgb(255 255 255 / 5%);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .catalog-header-search,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .header-profile,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .theme-toggle,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .catalog-header-icon-button,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .connection-pill {
+  border-color: #50735a;
+  background: #2c4b37;
+  box-shadow: 0 5px 13px rgb(0 0 0 / 14%), inset 0 1px 0 rgb(255 255 255 / 6%);
+  color: #ddefe0;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .catalog-header-search:focus-within,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .header-profile:hover,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .theme-toggle:hover,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .catalog-header-icon-button:hover {
+  background: #355c42;
+  border-color: #79a888;
+  box-shadow: 0 7px 17px rgb(0 0 0 / 21%);
+}
+@media (max-width: 800px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .connection-pill {
+    padding: 7px;
+  }
+}
+@media (max-width: 520px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .connection-pill {
+    display: none;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .header-profile {
+    padding: 1px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar :is(.catalog-header-search,.theme-toggle,.catalog-header-icon-button,.header-profile) {
+    transition: none;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .catalog-header-popover {
+    animation: none;
+  }
+}
