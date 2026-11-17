@@ -167,3 +167,59 @@ describe("catalog audit access", () => {
     expect(mock.from).not.toHaveBeenCalledWith("catalog_activity");
   });
 });
+
+
+describe("Malaysia-local activity date filtering", () => {
+  it("computes Today/Yesterday from the MYT calendar rather than UTC", async () => {
+    const { catalogActivityMYTRange } = await import("../src/lib/account-center");
+    // At 16:10 UTC on Nov 16, the Malaysia calendar has already reached Nov 17.
+    const now = new Date("2026-11-16T16:10:00Z");
+    expect(catalogActivityMYTRange("today", now)).toEqual({
+      start: "2026-11-17T00:00:00+08:00",
+      end: "2026-11-18T00:00:00+08:00",
+    });
+    expect(catalogActivityMYTRange("yesterday", now)).toEqual({
+      start: "2026-11-16T00:00:00+08:00",
+      end: "2026-11-17T00:00:00+08:00",
+    });
+  });
+
+  it("handles a year change without mixing UTC and Malaysia calendar dates", async () => {
+    const { catalogActivityMYTRange } = await import("../src/lib/account-center");
+    expect(catalogActivityMYTRange("yesterday", new Date("2026-12-31T16:30:00Z"))).toEqual({
+      start: "2026-12-31T00:00:00+08:00",
+      end: "2027-01-01T00:00:00+08:00",
+    });
+  });
+
+  it("queries date-specific audit rows on the server with a half-open time range", async () => {
+    const applied: unknown[][] = [];
+    const query = {
+      gte: (field: string, date: string) => {
+        applied.push(["gte", field, date]);
+        return query;
+      },
+      lt: (field: string, date: string) => {
+        applied.push(["lt", field, date]);
+        return query;
+      },
+      order: (field: string, direction: { ascending: boolean }) => {
+        applied.push(["order", field, direction.ascending]);
+        return query;
+      },
+      limit: async (limit: number) => {
+        applied.push(["limit", limit]);
+        return { data: [], error: null };
+      },
+    };
+    mock.from.mockReturnValue({ select: () => query });
+    const { listCatalogActivity } = await import("../src/lib/account-center");
+    await expect(listCatalogActivity("yesterday")).resolves.toEqual([]);
+    expect(applied).toEqual([
+      ["gte", "created_at", expect.stringMatching(/^\d{4}-\d{2}-\d{2}T00:00:00\+08:00$/)],
+      ["lt", "created_at", expect.stringMatching(/^\d{4}-\d{2}-\d{2}T00:00:00\+08:00$/)],
+      ["order", "created_at", false],
+      ["limit", 200],
+    ]);
+  });
+});
