@@ -66,7 +66,7 @@ import CataloguePhotoImport from "./components/CataloguePhotoImport";
 import LastChange from "./components/LastChange";
 import CategoryFilter from "./components/CategoryFilter";
 import SortFilter from "./components/SortFilter";
-import { getAccountSummary, initials, roleLabel, type StaffRole } from "./lib/account-center";
+import { getAccountSummary, initials, type StaffRole } from "./lib/account-center";
 import { useAdminTheme } from "./lib/admin-theme";
 
 type Tab = "overview" | "products" | "categories" | "profile" | "users" | "activity";
@@ -513,10 +513,6 @@ export default function App() {
               <span className="catalog-search-shortcut" aria-hidden="true">Ctrl K</span>
               <button type="submit" className="catalog-search-submit" aria-label="Search products"><ArrowRight size={15} /></button>
             </form>
-            <span className={"connection-pill" + (error ? " sync-error" : "")} role="status">
-              <span aria-hidden="true" />
-              {error ? "Sync needs attention" : lastSyncedAt ? "Catalog synced" : "Catalog workspace"}
-            </span>
             <button type="button" className="theme-toggle" onClick={toggleTheme}
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               aria-pressed={theme === "dark"} title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
@@ -551,8 +547,7 @@ export default function App() {
                 aria-label="Open account menu" aria-expanded={accountMenuOpen} aria-haspopup="menu"
                 title="My account" onClick={() => { setAccountMenuOpen(open => !open); setNotificationOpen(false); }}>
                 <span className="profile-avatar" aria-hidden="true">{initials(accountName || auth.email.split("@")[0] || "BB")}</span>
-                <span className="profile-copy"><strong>{accountName || auth.email.split("@")[0] || "Account"}</strong>
-                  <small>{roleLabel(accountRole)}</small></span>
+                <span className="profile-copy"><strong>{accountName || auth.email.split("@")[0] || "Account"}</strong></span>
                 <ChevronDown className="catalog-account-chevron" size={16} aria-hidden="true" />
               </button>
               {accountMenuOpen && (
