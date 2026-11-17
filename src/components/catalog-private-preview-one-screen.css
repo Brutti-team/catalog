@@ -278,3 +278,81 @@
     padding: 10px 0;
   }
 }
+
+
+/* Fill the visible preview height evenly, without exaggerating blank space
+   below the product details. The previous flex-start layout clustered the
+   whole content at the top and left a large blank cream panel at the bottom. */
+@media (min-width: 900px) and (min-height: 740px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    justify-content: space-evenly;
+    padding-block: clamp(20px, 3dvh, 32px);
+    overflow-y: auto;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {
+    flex: 0 0 auto;
+    margin-bottom: 6px;
+    font-size: 10.5px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    flex: 0 0 auto;
+    margin-bottom: 9px;
+    font-size: clamp(37px, 3.2vw, 51px);
+    line-height: 1.13;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+    flex: 0 0 auto;
+    max-width: 67ch;
+    margin-bottom: 9px;
+    font-size: clamp(14px, 1.08vw, 16px);
+    line-height: 1.62;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+    flex: 0 0 auto;
+    margin-bottom: 8px !important;
+    font-size: clamp(24px, 2vw, 30px);
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-current {
+    font-size: clamp(24px, 2vw, 30px);
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications {
+    flex: 0 0 auto;
+    margin-bottom: 8px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div {
+    padding-block: clamp(11px, 1.7dvh, 16px);
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications :is(dt, dd) {
+    font-size: clamp(12px, .97vw, 14px);
+    line-height: 1.5;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry {
+    flex: 0 0 auto;
+    min-height: 47px;
+    padding: 12px 21px;
+    font-size: 13px;
+  }
+  /* Keep the WhatsApp explanation visually attached to its button even while
+     the main editorial content is distributed across the available height. */
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-note {
+    flex: 0 0 auto;
+    margin-top: clamp(-20px, -1.8dvh, -9px);
+    margin-bottom: 0;
+    font-size: 10px;
+    line-height: 1.45;
+  }
+}
+
+/* Narrower laptop widths need smaller type so the full details remain visible;
+   preserve internal scrolling for long descriptions and custom specifications. */
+@media (min-width: 900px) and (max-width: 1180px) and (min-height: 740px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    padding-inline: 24px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    font-size: clamp(33px, 3.2vw, 40px);
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+    font-size: 13.5px;
+  }
+}
