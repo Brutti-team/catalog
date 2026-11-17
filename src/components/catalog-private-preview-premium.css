@@ -452,3 +452,186 @@
     transition: none;
   }
 }
+
+
+/* Editorial v2 — reference-aligned private preview, November 17 2026. */
+/* Keep edits and private-preview behavior unchanged. Styling is deliberately scoped
+   to .catalog-private-preview-dialog, never the live public catalog. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-section {
+  background: #fbf8f3;
+  color: #312b26;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-product-detail {
+  grid-template-columns: minmax(0, 49%) minmax(0, 51%);
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery {
+  background: #ede4d9;
+  border-right-color: #e4dcd2;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image > img {
+  background: #e9dfd3;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs button.is-active {
+  background: #332920;
+  color: #fff;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+  padding: clamp(34px, 4.2vw, 63px) clamp(27px, 4.2vw, 57px) 46px;
+  background: #fbf8f3;
+  color: #312b26;
+  font-family: "DM Sans", Arial, sans-serif;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {
+  margin: 0 0 14px;
+  color: #7b746b;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 640;
+  letter-spacing: .15em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+/* Restrained, reference-style editorial serif; title is never display-sized. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+  max-width: 100%;
+  margin: 0 0 23px;
+  color: #2c2520;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(35px, 3.35vw, 52px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -.026em;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+  max-width: 58ch;
+  margin: 0 0 29px;
+  color: #706c66;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: clamp(13px, 1.05vw, 14.5px);
+  font-weight: 420;
+  line-height: 1.68;
+  letter-spacing: 0;
+}
+/* Replace the rounded specification container with the reference's thin rules. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications {
+  width: 100%;
+  margin: 0 0 27px;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid #d9d2ca;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 29%) minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+  margin: 0;
+  padding: 14px 0;
+  border: 0;
+  border-bottom: 1px solid #d9d2ca;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.58;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dt {
+  margin: 0;
+  color: #7c7771;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 470;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dd {
+  margin: 0;
+  min-width: 0;
+  color: #3d3530;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 510;
+  line-height: 1.58;
+  overflow-wrap: anywhere;
+}
+/* Editorial CTA: dark espresso and quiet squared corners, like the reference. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button:disabled {
+  align-self: flex-start;
+  width: auto;
+  min-height: 46px;
+  margin: 0;
+  padding: 12px 21px;
+  border: 1px solid #30261f;
+  border-radius: 4px;
+  background: #30261f !important;
+  color: #fff !important;
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0;
+  box-shadow: none;
+  opacity: 1 !important;
+  cursor: default;
+  pointer-events: none;
+}
+@media (max-width: 1050px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-product-detail {
+    grid-template-columns: minmax(0, 46%) minmax(0, 54%);
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    padding: 32px 28px 36px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    font-size: clamp(31px, 3.95vw, 43px);
+    line-height: 1.16;
+    margin-bottom: 19px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+    font-size: 13px;
+    margin-bottom: 22px;
+  }
+}
+@media (max-width: 760px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-product-detail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    padding: 27px 21px 34px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {
+    font-size: 10px;
+    margin-bottom: 11px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    font-size: clamp(29px, 7.7vw, 39px);
+    line-height: 1.18;
+    margin-bottom: 17px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+    max-width: none;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 22px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div {
+    grid-template-columns: minmax(88px, 32%) minmax(0, 1fr);
+    gap: 12px;
+    padding: 13px 0;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button {
+    min-height: 44px;
+    padding: 12px 16px;
+  }
+}
