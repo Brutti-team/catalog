@@ -1080,3 +1080,208 @@
     transition: none;
   }
 }
+
+
+/* 17 Nov — Product inventory refinement: quieter table, stronger image hierarchy,
+   softly lifted selection and restrained Brutti green. Presentation only. */
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel.catalog-collection-v3 {
+  border: 1px solid #dae6dd;
+  border-radius: 17px;
+  background: #fdfefd;
+  box-shadow: 0 12px 36px rgba(28,64,42,.065), 0 2px 7px rgba(28,64,42,.025);
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll .catalog-inventory-table {
+  width: 100%;
+  border-spacing: 0;
+  background: #fdfefd;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll thead th {
+  height: 46px;
+  padding: 12px 15px;
+  border-top: 1px solid #e5eee7;
+  border-bottom: 1px solid #dfe9e1;
+  background: #f3f7f3;
+  color: #698074;
+  font-size: 10px;
+  font-weight: 740;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll thead th:first-child {
+  padding-left: 22px;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td,
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:nth-child(even) td {
+  height: 81px;
+  padding: 10px 15px;
+  border-bottom: 1px solid #e7eee8;
+  background: #fdfefd;
+  color: #334f3b;
+  transition: background-color .17s ease, box-shadow .17s ease, border-color .17s ease;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td:first-child,
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:nth-child(even) td:first-child {
+  padding-left: 22px;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:is(:hover,:focus-within) td,
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:nth-child(even):is(:hover,:focus-within) td {
+  background: #eef6ef;
+  border-bottom-color: #d4e5d8;
+  box-shadow: inset 0 1px rgba(255,255,255,.75), inset 0 -1px rgba(194,221,200,.34);
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:is(:hover,:focus-within) td:first-child::before {
+  width: 3px;
+  background: #2f6c46;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-products-panel .table-scroll .product-cell {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll .product-cell img {
+  flex: 0 0 55px;
+  width: 55px;
+  height: 58px;
+  padding: 2px;
+  border-radius: 11px;
+  border: 1px solid #d9e5dc;
+  background: #f3f7f3;
+  object-fit: cover;
+  box-shadow: 0 2px 7px rgba(36,66,43,.065);
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-products-panel .table-scroll .product-cell > span {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  gap: 2px;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll .product-cell strong {
+  color: #233d2e;
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 740;
+  letter-spacing: -.018em;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll .product-cell small {
+  margin: 0;
+  color: #778b7b;
+  font-size: 10.5px;
+  line-height: 1.3;
+  font-weight: 560;
+  letter-spacing: .01em;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll .catalog-product-updated {
+  margin: 0;
+  opacity: 1;
+  color: #96a59a;
+  font-size: 10px;
+  line-height: 1.3;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .catalog-table-category {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-height: 31px;
+  padding: 6px 10px;
+  border: 1px solid #dbe8dd;
+  border-radius: 9px;
+  background: #f6f9f6;
+  color: #3b5a44;
+  font-size: 10.5px;
+  line-height: 1.3;
+  font-weight: 640;
+  white-space: normal;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .status-badge {
+  min-height: 29px;
+  padding: 5px 9px;
+  border-radius: 9px;
+  font-size: 10.5px;
+  font-weight: 720;
+  letter-spacing: .005em;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .availability {
+  font-size: 11px;
+  line-height: 1.3;
+  font-weight: 620;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll td.price-cell {
+  color: #234b34;
+  font-size: 12px;
+  font-weight: 740;
+  letter-spacing: -.01em;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .row-actions {
+  gap: 5px;
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .row-actions > .icon-button,
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .row-actions .action-menu > .icon-button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  border: 1px solid #e0eae2;
+  border-radius: 10px;
+  background: rgba(247,251,247,.75);
+  color: #55735f;
+  box-shadow: inset 0 1px rgba(255,255,255,.9);
+}
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .row-actions > .icon-button:is(:hover,:focus-visible),
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .row-actions .action-menu > .icon-button:is(:hover,:focus-visible),
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="products"] .catalog-products-panel .row-actions .action-menu > .icon-button[aria-expanded="true"] {
+  border-color: #b6d4be;
+  background: #e3f0e6;
+  color: #275a3a;
+  box-shadow: 0 4px 10px rgba(29,66,41,.10);
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:nth-child(even) td {
+  height: 81px;
+  padding-block: 10px;
+  background: #1f3528;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:is(:hover,:focus-within) td,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:nth-child(even):is(:hover,:focus-within) td {
+  background: #2d4a37;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll .product-cell img {
+  flex: 0 0 55px;
+  width: 55px;
+  height: 58px;
+  padding: 2px;
+  object-fit: cover;
+  border-radius: 11px;
+  background: #304a37;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-table-category {
+  border-radius: 9px;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .row-actions > .icon-button,
+.admin-app.brutti-staff-redesign[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .row-actions .action-menu > .icon-button {
+  border: 1px solid #46614c;
+  border-radius: 10px;
+  background: #294633;
+}
+@media (max-width: 950px) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-products-panel .table-scroll .catalog-inventory-table {
+    min-width: 780px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td {
+    padding-inline: 10px;
+  }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td:first-child {
+    padding-left: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td {
+    transition: none;
+  }
+}
