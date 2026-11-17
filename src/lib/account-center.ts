@@ -135,15 +135,44 @@ export async function getLatestEditedOrAddedProduct(): Promise<ActivityEntry | n
   return (data?.[0] as ActivityEntry | undefined) ?? null;
 }
 
-export async function listCatalogActivity(): Promise<ActivityEntry[]> {
+export type ActivityPeriod = "all" | "today" | "yesterday";
+
+/** MYT is UTC+08:00 year-round. Calculate the query boundaries from the
+ * actual calendar date in Kuala Lumpur, never from a browser's local timezone.
+ * Use a half-open [start, end) range to avoid midnight double counting. */
+export function catalogActivityMYTRange(
+  period: Exclude<ActivityPeriod, "all">,
+  now: Date = new Date(),
+): { start: string; end: string } {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kuala_Lumpur", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(now);
+  const part = (type: string) => Number(parts.find(item => item.type === type)?.value);
+  const year = part("year"), month = part("month"), day = part("day");
+  const makeDate = (offset: number) =>
+    new Date(Date.UTC(year, month - 1, day + offset)).toISOString().slice(0, 10);
+  return {
+    start: `${makeDate(period === "yesterday" ? -1 : 0)}T00:00:00+08:00`,
+    end: `${makeDate(period === "yesterday" ? 0 : 1)}T00:00:00+08:00`,
+  };
+}
+
+/** Date-scoped filters are queried server-side, not filtered from the latest
+ * 50 audit rows, so yesterday remains findable even on a busy day. */
+export async function listCatalogActivity(period: ActivityPeriod = "all"): Promise<ActivityEntry[]> {
   const access = await getAuthState();
   if (!access.authenticated || !access.isAdmin)
     throw new Error("An approved catalog administrator is required to view activity.");
-  const { data, error } = await catalogClient()
+  let query = catalogClient()
     .from("catalog_activity")
-    .select("id,actor_id,actor_email,action,resource_type,resource_name,created_at")
+    .select("id,actor_id,actor_email,action,resource_type,resource_name,created_at");
+  if (period !== "all") {
+    const { start, end } = catalogActivityMYTRange(period);
+    query = query.gte("created_at", start).lt("created_at", end);
+  }
+  const { data, error } = await query
     .order("created_at", { ascending: false })
-    .limit(50);
+    .limit(period === "all" ? 50 : 200);
   if (error) throw new Error(error.message);
   return (data || []) as ActivityEntry[];
 }
