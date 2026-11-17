@@ -96,8 +96,13 @@
   max-height: min(378px, 52vh);
   overflow-y: auto;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: #c5d4c7 transparent;
+  scrollbar-width: none; /* Firefox: hide track, preserve scrolling */
+  -ms-overflow-style: none; /* legacy Edge */
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-options::-webkit-scrollbar {
+  display: none; /* Chrome/Safari: hide track, preserve scrolling */
+  width: 0;
+  height: 0;
 }
 .admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-category-filter-option {
   display: flex;
