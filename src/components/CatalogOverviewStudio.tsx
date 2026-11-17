@@ -108,7 +108,7 @@ export default function CatalogOverviewStudio({
       </div>
       <div className="brutti-glass-panels atelier-workbench customer-insights-workbench">
         <CustomerInsights products={products} categories={categories}
-          loading={loading} enabled={enabled} onOpenCategory={onOpenCategory} />
+          loading={loading} enabled={enabled} onOpenCategory={onOpenCategory} compact />
         <section className="brutti-category-panel atelier-categories" aria-labelledby="brutti-category-title">
           <div className="brutti-glass-panel-heading">
             <div className="brutti-glass-panel-title">
