@@ -82,6 +82,7 @@ type ProductRow = {
   depth: number;
   height: number;
   price: number | null;
+  original_price?: number | null;
   price_basis?: Product['priceBasis'];
   display_order?: number;
   status: Product["status"];
@@ -109,6 +110,7 @@ function fromRow(row: ProductRow): Product {
     depth: Number(row.depth),
     height: Number(row.height),
     price: row.price === null ? null : Number(row.price),
+    originalPrice: row.original_price == null ? null : Number(row.original_price),
     ...(row.price_basis ? { priceBasis: row.price_basis } : {}),
     ...(row.display_order !== undefined ? { displayOrder: row.display_order } : {}),
     status: row.status,
@@ -134,6 +136,7 @@ function toRow(product: Product, capabilities: CatalogCapabilities): ProductRow 
     depth: product.depth,
     height: product.height,
     price: product.price,
+    original_price: product.originalPrice ?? null,
     ...(capabilities.priceBasis && product.priceBasis ? { price_basis: product.priceBasis } : {}),
     ...(capabilities.ordering ? { display_order: product.displayOrder ?? 0 } : {}),
     status: product.status,
@@ -219,6 +222,14 @@ export function validateProduct(product: Product): void {
     throw new Error(
       "Price must be between RM 0 and RM 9,999,999,999.99, or left empty.",
     );
+  if (product.originalPrice != null && (
+    !Number.isFinite(product.originalPrice) ||
+    product.originalPrice <= 0 ||
+    product.originalPrice > 9999999999.99 ||
+    product.price === null ||
+    product.originalPrice <= product.price
+  ))
+    throw new Error("Original price must be greater than the current price. Clear it if there is no discount.");
   if (product.description.length > 10000)
     throw new Error("Description must contain at most 10,000 characters.");
   if (product.materials.length > 2000)
