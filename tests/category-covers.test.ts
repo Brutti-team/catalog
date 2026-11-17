@@ -15,17 +15,25 @@ describe("curated admin category covers", () => {
       photo("B&B-06", "room-bed.webp"),
     ]).src).toBe("room-bed.webp");
   });
-  it("uses the local category-themed interior for empty groups", () => {
-    expect(categoryCover("Built in Cabinet", []).src).toBe("/reference/cabinetry.jpg");
-    expect(categoryCover("Kiosks", []).src).toBe("/reference/kiosk.jpg");
+  it("does not show stock photos or placeholder images for empty groups", () => {
+    expect(categoryCover("Built in Cabinet", []).src).toBeUndefined();
+    expect(categoryCover("Kiosks", []).src).toBeUndefined();
+    expect(categoryCover("Panels", []).src).toBeUndefined();
   });
-  it("uses context-specific fallback photos when preferred product is missing", () => {
+  it("uses an existing product photo if none of the preferred ones exist", () => {
     expect(categoryCover("Reception Counters", [photo("RC-08", "counter-in-store.webp")]).src)
       .toBe("counter-in-store.webp");
-    expect(categoryCover("Panels", []).src).toBe("/reference/counter.jpg");
+    expect(categoryCover("Panels", [photo("PNL-02", "panel-in-room.webp")]).src)
+      .toBe("panel-in-room.webp");
   });
-  it("uses curated rentals reference rather than misleading small thumbnails", () => {
-    expect(categoryCover("Rentals", [photo("RNT-01", "small-event-chair.webp")]).src)
-      .toBe("/reference/chair.jpg");
+  it("uses the only product photograph when a category has one item", () => {
+    expect(categoryCover("Rentals", [photo("RNT-01", "event-chair.webp")]).src)
+      .toBe("event-chair.webp");
+    expect(categoryCover("Kiosks", [photo("KSK-01", "real-kiosk.webp")]).src)
+      .toBe("real-kiosk.webp");
+  });
+  it("shows no photo when the category has products without photographs", () => {
+    expect(categoryCover("Beds & Bunkbeds", [{ sku: "B&B-01", images: [] }]).src)
+      .toBeUndefined();
   });
 });
