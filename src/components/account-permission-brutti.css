@@ -245,3 +245,278 @@
   border-color: #78694d;
   color: #eddfc8;
 }
+
+/* Account Permission staff invitations and neutral workspace canvas. */
+.admin-app.catalog-os-layout[data-active-tab="users"]:not([data-theme="dark"]) {
+  background: #f5f8f4 !important;
+}
+.admin-app.catalog-os-layout[data-active-tab="users"]:not([data-theme="dark"]) .admin-main,
+.admin-app.catalog-os-layout[data-active-tab="users"]:not([data-theme="dark"]) .admin-content {
+  background: #f5f8f4 !important;
+  background-image: none !important;
+}
+.admin-app.catalog-os-layout[data-active-tab="users"]:not([data-theme="dark"]) .account-center--users {
+  --access-surface: #fff;
+  --access-ink: #213f2f;
+  --access-border: #d8e6da;
+  color: var(--access-ink);
+}
+.admin-app .account-center--users .account-heading-actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.admin-app .account-center--users .account-heading-actions > .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 41px;
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 720;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.admin-app .account-center--users .account-heading-actions > .account-add-user {
+  color: #fff;
+  border: 1px solid #24523a;
+  background: #24523a;
+  box-shadow: 0 3px 9px rgba(36,82,58,.12);
+}
+.admin-app .account-center--users .account-heading-actions > .account-add-user:hover:not(:disabled) {
+  color: #fff;
+  border-color: #193d2b;
+  background: #193d2b;
+}
+.admin-app .account-center--users .account-heading-actions > .button.secondary {
+  margin: 0;
+  background: #fff;
+}
+.admin-app .account-center--users .account-table td small.catalog-account-status {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  gap: 5px;
+  margin-top: 7px;
+  padding: 4px 8px;
+  border: 1px solid #d6e6d9;
+  border-radius: 7px;
+  background: #eef6ef;
+  color: #41724e;
+  font-size: 10px;
+  font-weight: 730;
+  line-height: 1.3;
+}
+.admin-app .account-center--users .account-table td small.catalog-account-status--invited {
+  background: #faf7ef;
+  color: #806945;
+  border-color: #eadfca;
+}
+.admin-app .modal.catalog-user-invite-dialog {
+  box-sizing: border-box;
+  width: min(510px, calc(100vw - 24px));
+  max-width: calc(100vw - 24px);
+  max-height: min(90dvh, 800px);
+  margin: auto;
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid #d7e4d8;
+  border-radius: 17px;
+  background: #fff;
+  color: #253f2e;
+  box-shadow: 0 28px 90px rgba(24,52,32,.23);
+  font-family: "DM Sans", "Manrope", sans-serif;
+}
+.admin-app .modal.catalog-user-invite-dialog::backdrop {
+  background: rgba(17,45,27,.49);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.admin-app .modal.catalog-user-invite-dialog .modal-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 22px 25px 17px;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid #e7eee6;
+  background: #fafdF9;
+}
+.admin-app .modal.catalog-user-invite-dialog .modal-heading h2 {
+  margin: 6px 0;
+  color: #274831;
+  font-family: "Manrope", sans-serif;
+  font-size: 22px;
+  font-weight: 760;
+  letter-spacing: -.035em;
+}
+.admin-app .modal.catalog-user-invite-dialog .modal-heading .eyebrow {
+  color: #6c886f;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .1em;
+}
+.admin-app .modal.catalog-user-invite-dialog .modal-description {
+  margin: 7px 0 0;
+  color: #728276;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.admin-app .modal.catalog-user-invite-dialog .modal-heading .icon-button {
+  margin-left: auto;
+  border-radius: 9px;
+  background: #f2f7f3;
+  border: 1px solid #d7e4d9;
+  color: #52765b;
+}
+.admin-app .catalog-user-invite-dialog .catalog-user-invite-form {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 22px 25px 25px;
+}
+.admin-app .catalog-user-invite-dialog .catalog-user-invite-form > label {
+  margin-top: 8px;
+  color: #425e4b;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 750;
+}
+.admin-app .catalog-user-invite-dialog .catalog-user-invite-form > label span {
+  color: #6e9e79;
+}
+.admin-app .catalog-user-invite-dialog .catalog-user-invite-form > :is(input,select),
+.admin-app .catalog-user-invite-dialog .catalog-invite-email-wrap {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 10px 13px;
+  border: 1px solid #d8e3d9;
+  border-radius: 10px;
+  background: #fff;
+  color: #284434;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  box-shadow: 0 1px 3px rgba(34,70,42,.025);
+}
+.admin-app .catalog-user-invite-dialog .catalog-invite-email-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 13px;
+}
+.admin-app .catalog-user-invite-dialog .catalog-invite-email-wrap > svg {
+  flex: 0 0 17px;
+  color: #749379;
+}
+.admin-app .catalog-user-invite-dialog .catalog-invite-email-wrap > input {
+  width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 10px 0;
+  border: 0 !important;
+  background: transparent;
+  color: #284434;
+  box-shadow: none;
+  outline: none;
+  font-size: 13px;
+}
+.admin-app .catalog-user-invite-dialog .catalog-user-invite-form > :is(input,select):focus-visible,
+.admin-app .catalog-user-invite-dialog .catalog-invite-email-wrap:focus-within {
+  outline: 0;
+  border-color: #8fb69a;
+  box-shadow: 0 0 0 3px rgba(61,125,79,.11);
+}
+.admin-app .catalog-user-invite-dialog .catalog-user-invite-note {
+  margin: 10px 0 0;
+  padding: 12px 13px;
+  border: 1px solid #dce9de;
+  border-radius: 9px;
+  background: #f3f8f3;
+  color: #617e68;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.admin-app .catalog-user-invite-dialog .catalog-user-invite-error {
+  margin: 0;
+  color: #8d4b38;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.admin-app .catalog-user-invite-dialog .catalog-user-invite-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 17px;
+}
+.admin-app .catalog-user-invite-dialog .catalog-user-invite-actions > .button {
+  min-height: 42px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 730;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.admin-app .catalog-user-invite-dialog .catalog-user-invite-actions > .button.primary {
+  border: 1px solid #24533a;
+  background: #24533a;
+  color: #fff;
+}
+.admin-app .catalog-user-invite-dialog .catalog-user-invite-actions > .button.primary:hover:not(:disabled) {
+  background: #183d29;
+}
+@media (max-width: 580px) {
+  .admin-app .account-center--users .account-heading {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .admin-app .account-center--users .account-heading-actions {
+    width: 100%;
+  }
+  .admin-app .account-center--users .account-heading-actions > .button {
+    flex: 1;
+  }
+  .admin-app .modal.catalog-user-invite-dialog .modal-heading,
+  .admin-app .catalog-user-invite-dialog .catalog-user-invite-form {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .admin-app .catalog-user-invite-dialog .catalog-user-invite-actions > .button {
+    flex: 1;
+    padding: 10px;
+  }
+}
+.admin-app[data-theme="dark"] .modal.catalog-user-invite-dialog,
+.admin-app[data-theme="dark"] .modal.catalog-user-invite-dialog .modal-heading {
+  background: #2d4334;
+  border-color: #4e6855;
+  color: #eaf5e9;
+}
+.admin-app[data-theme="dark"] .modal.catalog-user-invite-dialog .modal-heading h2,
+.admin-app[data-theme="dark"] .catalog-user-invite-dialog .catalog-user-invite-form > label {
+  color: #e7f1e6;
+}
+.admin-app[data-theme="dark"] .catalog-user-invite-dialog .catalog-user-invite-form > :is(input,select),
+.admin-app[data-theme="dark"] .catalog-user-invite-dialog .catalog-invite-email-wrap {
+  background: #344d39;
+  color: #e9f5e9;
+  border-color: #57745e;
+}
+.admin-app[data-theme="dark"] .catalog-user-invite-dialog .catalog-invite-email-wrap > input {
+  color: #e9f5e9;
+}
+.admin-app[data-theme="dark"] .catalog-user-invite-dialog .catalog-user-invite-note {
+  background: #304c38;
+  color: #d3e5d2;
+  border-color: #4f6d55;
+}
