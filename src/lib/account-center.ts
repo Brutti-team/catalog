@@ -86,8 +86,8 @@ export async function updateOwnDisplayName(name: string): Promise<string> {
 
 export async function listCatalogStaff(): Promise<StaffMember[]> {
   const account = await getAccountSummary();
-  if (!account.managementReady || account.role !== "super_admin")
-    throw new Error("Super Admin access is required.");
+  if (!account.managementReady || !["super_admin", "admin"].includes(account.role ?? ""))
+    throw new Error("Account Permission is available to Admin and Super Admin only.");
   const { data, error } = await catalogClient().rpc("catalog_list_staff");
   if (error) throw new Error(error.message);
   return (data || []) as StaffMember[];
