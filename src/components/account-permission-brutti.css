@@ -520,3 +520,160 @@
   color: #d3e5d2;
   border-color: #4f6d55;
 }
+
+/* OS staff pending access – invite list (no false "active" badges). */
+.admin-app .account-center--users .catalog-pending-staff {
+  border-top: 1px solid #e0e9e0;
+  background: #fafcf9;
+}
+.admin-app .account-center--users .catalog-pending-staff-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px 20px;
+  padding: 19px 23px 15px;
+  border-bottom: 1px solid #e7eee7;
+}
+.admin-app .account-center--users .catalog-pending-staff-heading > div {
+  flex: 1 1 250px;
+  min-width: 0;
+}
+.admin-app .account-center--users .catalog-pending-staff-heading h2 {
+  margin: 0 0 6px;
+  font-family: "Manrope", "DM Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 770;
+  color: #2a4b36;
+  letter-spacing: -.02em;
+}
+.admin-app .account-center--users .catalog-pending-staff-heading p {
+  max-width: 73ch;
+  margin: 0;
+  color: #7b8b7d;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.admin-app .account-center--users .catalog-pending-staff-count {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 6px 9px;
+  border: 1px solid #e4dfd0;
+  border-radius: 8px;
+  background: #faf6eb;
+  color: #8d764a;
+  font-size: 11px;
+  font-weight: 730;
+  white-space: nowrap;
+}
+.admin-app .account-center--users .catalog-pending-staff-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0 22px 11px;
+}
+.admin-app .account-center--users .catalog-pending-staff-item {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(88px, .7fr) minmax(95px, .7fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #e9efe9;
+}
+.admin-app .account-center--users .catalog-pending-staff-item:last-child {
+  border-bottom: 0;
+}
+.admin-app .account-center--users .catalog-pending-staff-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.admin-app .account-center--users .catalog-pending-staff-identity strong {
+  overflow-wrap: anywhere;
+  color: #304a37;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12.5px;
+  font-weight: 730;
+}
+.admin-app .account-center--users .catalog-pending-staff-identity small {
+  color: #829083;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.admin-app .account-center--users .catalog-pending-staff-role {
+  color: #506e58;
+  font-size: 11px;
+  font-weight: 690;
+}
+.admin-app .account-center--users .catalog-pending-staff-state {
+  justify-self: start;
+  padding: 5px 9px;
+  border: 1px solid #eadfca;
+  border-radius: 7px;
+  background: #faf6ed;
+  color: #8b744d;
+  font-size: 10px;
+  font-weight: 700;
+}
+.admin-app .account-center--users .catalog-pending-staff-invite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid #cbded0;
+  border-radius: 8px;
+  background: #eef5ed;
+  color: #316044;
+  font-size: 11px;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 730;
+  cursor: pointer;
+}
+.admin-app .account-center--users .catalog-pending-staff-invite:hover:not(:disabled) {
+  border-color: #8db39a;
+  background: #e1f0e4;
+}
+.admin-app .account-center--users .catalog-pending-staff-invite:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+@media (max-width: 760px) {
+  .admin-app .account-center--users .catalog-pending-staff-heading {
+    padding: 17px 16px;
+  }
+  .admin-app .account-center--users .catalog-pending-staff-list {
+    padding: 0 16px 12px;
+  }
+  .admin-app .account-center--users .catalog-pending-staff-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+  .admin-app .account-center--users .catalog-pending-staff-role,
+  .admin-app .account-center--users .catalog-pending-staff-state {
+    justify-self: start;
+  }
+  .admin-app .account-center--users .catalog-pending-staff-invite {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+}
+.admin-app[data-theme="dark"] .account-center--users .catalog-pending-staff {
+  background: #273c2e;
+  border-color: #47634c;
+}
+.admin-app[data-theme="dark"] .account-center--users .catalog-pending-staff-heading,
+.admin-app[data-theme="dark"] .account-center--users .catalog-pending-staff-item {
+  border-color: #425b48;
+}
+.admin-app[data-theme="dark"] .account-center--users .catalog-pending-staff-heading h2,
+.admin-app[data-theme="dark"] .account-center--users .catalog-pending-staff-identity strong {
+  color: #e0f0e1;
+}
+.admin-app[data-theme="dark"] .account-center--users .catalog-pending-staff-role {
+  color: #c9dbcb;
+}
