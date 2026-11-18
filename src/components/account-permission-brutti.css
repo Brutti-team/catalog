@@ -1,0 +1,247 @@
+/* Brutti Catalog / Account Permission — clean access management, not pink alert cards.
+   Scope: users view only. Roles and access are verified by server-side Supabase RPCs. */
+.admin-app .account-center--users {
+  --access-ink: #243d2d;
+  --access-muted: #718073;
+  --access-green: #29553b;
+  --access-border: #dce5dc;
+  --access-surface: #fff;
+  box-sizing: border-box;
+  max-width: 1080px;
+  padding-top: 4px;
+  font-family: "DM Sans", "Manrope", system-ui, sans-serif;
+  color: var(--access-ink);
+}
+.admin-app .account-center--users .account-heading {
+  align-items: flex-start;
+  justify-content: space-between;
+  margin: 0 0 24px;
+  gap: 15px 25px;
+}
+.admin-app .account-center--users .account-heading .eyebrow {
+  color: #6a816e;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .12em;
+}
+.admin-app .account-center--users .account-heading h1 {
+  margin: 12px 0 8px;
+  color: #223f2e;
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-size: clamp(29px, 2.7vw, 38px);
+  font-weight: 740;
+  letter-spacing: -.045em;
+  line-height: 1.17;
+}
+.admin-app .account-center--users .account-heading p {
+  max-width: 66ch;
+  color: #718173;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.admin-app .account-center--users .account-heading > .button {
+  min-height: 39px;
+  padding: 9px 15px;
+  margin-top: 2px;
+  border: 1px solid #d6e3d7;
+  border-radius: 10px;
+  background: rgba(255,255,255,.88);
+  color: #355b41;
+  font-size: 12px;
+  font-weight: 680;
+  box-shadow: 0 2px 5px rgba(36,73,47,.035);
+}
+.admin-app .account-center--users .account-heading > .button:hover:not(:disabled) {
+  background: #f3f9f3;
+  border-color: #a7c6b0;
+}
+/* Error states remain visible, but use an understated warm neutral rather than pink. */
+.admin-app .account-center--users .notice.error {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin: 0 0 19px;
+  padding: 12px 15px;
+  border: 1px solid #e6dfd2;
+  border-radius: 11px;
+  background: #faf7f1;
+  color: #735b42;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  box-shadow: none;
+}
+.admin-app .account-center--users .notice.error > svg {
+  color: #89704b;
+  flex: 0 0 18px;
+}
+.admin-app .account-center--users .account-empty,
+.admin-app .account-center--users .account-table-wrap {
+  border: 1px solid var(--access-border);
+  border-radius: 15px;
+  background: var(--access-surface);
+  box-shadow: 0 6px 22px rgba(27,62,38,.05);
+  overflow: hidden;
+}
+.admin-app .account-center--users .account-empty {
+  max-width: 630px;
+  margin: 0;
+  padding: 33px 26px;
+  text-align: left;
+}
+.admin-app .account-center--users .account-empty > svg {
+  padding: 10px;
+  width: 43px;
+  height: 43px;
+  border: 1px solid #d4e5d6;
+  border-radius: 12px;
+  background: #f0f6f0;
+  color: #477252;
+  box-sizing: border-box;
+}
+.admin-app .account-center--users .account-empty h2 {
+  margin: 15px 0 6px;
+  color: #294532;
+  font-family: "Manrope", sans-serif;
+  font-size: 19px;
+  font-weight: 710;
+  letter-spacing: -.025em;
+}
+.admin-app .account-center--users .account-empty p {
+  margin: 0;
+  max-width: 56ch;
+  color: #778579;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.admin-app .account-center--users .account-table-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 23px;
+  border-bottom: 1px solid #e5ece5;
+  background: linear-gradient(100deg, #f9fbf8, #fff);
+}
+.admin-app .account-center--users .account-table-title > svg {
+  color: #487454;
+}
+.admin-app .account-center--users .account-table-title strong {
+  color: #2d4a36;
+  font-family: "Manrope", sans-serif;
+  font-size: 16px;
+  font-weight: 730;
+}
+.admin-app .account-center--users .account-table-title > span {
+  margin-left: auto;
+  padding: 4px 9px;
+  border: 1px solid #d5e6d6;
+  border-radius: 8px;
+  background: #edf5ec;
+  color: #4c7354;
+  font-size: 11px;
+  font-weight: 750;
+}
+.admin-app .account-center--users .account-table-hint {
+  padding: 12px 23px;
+  border-bottom: 1px solid #e9eee8;
+  color: #738374;
+  background: #fff;
+  font-size: 11.5px;
+}
+.admin-app .account-center--users .account-table th {
+  padding: 12px 22px;
+  background: #f6f9f5;
+  color: #6e806f;
+  font-size: 11px;
+  font-weight: 710;
+  letter-spacing: .02em;
+}
+.admin-app .account-center--users .account-table td {
+  padding: 16px 22px;
+  border-top: 1px solid #ecf0ec;
+  color: #33483a;
+  font-size: 12px;
+}
+.admin-app .account-center--users .account-table td strong {
+  color: #2b4434;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.admin-app .account-center--users .account-table select {
+  min-height: 38px;
+  border: 1px solid #d8e4d9;
+  border-radius: 9px;
+  background: #fff;
+  color: #36523d;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 620;
+}
+.admin-app .account-center--users .account-table select:focus-visible {
+  outline: 3px solid rgba(71,132,88,.17);
+  border-color: #7ca98a;
+}
+.admin-app .account-center--users .catalog-access-role-readonly {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px solid #d5e4d7;
+  border-radius: 8px;
+  background: #f0f6f0;
+  color: #426749;
+  font-size: 11px;
+  font-weight: 750;
+}
+.admin-app .account-center--users .account-table .button.secondary {
+  min-height: 34px;
+  padding: 8px 13px;
+  border: 1px solid #c9ddcc;
+  border-radius: 9px;
+  background: #edf5ee;
+  color: #345b41;
+  font-size: 11px;
+  font-weight: 690;
+}
+.admin-app .account-center--users .account-table .button.secondary:hover:not(:disabled) {
+  background: #e0efe3;
+  border-color: #aac9af;
+}
+@media (max-width: 720px) {
+  .admin-app .account-center--users .account-heading {
+    flex-wrap: wrap;
+  }
+  .admin-app .account-center--users .account-heading h1 { font-size: 27px; }
+  .admin-app .account-center--users .account-heading > .button { margin-top: 0; }
+  .admin-app .account-center--users .account-table-title { padding: 16px 18px; }
+  .admin-app .account-center--users .account-table-hint { padding: 11px 18px; }
+}
+.admin-app[data-theme="dark"] .account-center--users {
+  --access-ink: #e6f0e6;
+  --access-muted: #bdcfc0;
+  --access-border: #4a624f;
+  --access-surface: #2a3e30;
+}
+.admin-app[data-theme="dark"] .account-center--users .account-heading h1,
+.admin-app[data-theme="dark"] .account-center--users .account-table-title strong,
+.admin-app[data-theme="dark"] .account-center--users .account-table td strong {
+  color: #e6f0e5;
+}
+.admin-app[data-theme="dark"] .account-center--users .account-table-title,
+.admin-app[data-theme="dark"] .account-center--users .account-table-hint,
+.admin-app[data-theme="dark"] .account-center--users .account-table th {
+  background: #304637;
+  border-color: #4c6652;
+  color: #c6d8c7;
+}
+.admin-app[data-theme="dark"] .account-center--users .account-table td {
+  border-color: #435e49;
+  color: #d8e8da;
+}
+.admin-app[data-theme="dark"] .account-center--users .notice.error {
+  background: #413e31;
+  border-color: #78694d;
+  color: #eddfc8;
+}
