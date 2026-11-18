@@ -229,7 +229,12 @@ export default function App() {
   useEffect(() => subscribeCatalog(() => refresh(true)), [refresh]);
   useEffect(() => {
     let active = true;
-    if (!auth.isAdmin) return;
+    if (!auth.isAdmin) {
+      setAccountRole(null);
+      setAccountsReady(false);
+      setAccountName("");
+      return;
+    }
     void getAccountSummary().then(info => {
       if (!active) return;
       setAccountRole(info.role);
@@ -501,7 +506,7 @@ export default function App() {
               <span className="nav-icon" aria-hidden="true"><History size={19} strokeWidth={1.9} /></span> Activity log
             </button>
           )}
-          {auth.isAdmin && (
+          {auth.isAdmin && accountsReady && (accountRole === "super_admin" || accountRole === "admin") && (
             <button className={`nav-item ${tab === "users" ? "active" : ""}`}
               aria-current={tab === "users" ? "page" : undefined}
               title="Account Permission"
