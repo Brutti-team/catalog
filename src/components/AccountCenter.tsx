@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
-import { AlertCircle, CalendarDays, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight } from "lucide-react";
+import { AlertCircle, CalendarDays, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight, UserPlus, Send, Mail } from "lucide-react";
 import {
   catalogActivityMYTRange, getAccountSummary, initials, listCatalogActivity, listCatalogStaff,
-  roleLabel, updateOwnDisplayName, updateStaffRole,
+  roleLabel, updateOwnDisplayName, updateStaffRole, inviteCatalogStaff,
   type AccountSummary, type ActivityEntry, type ActivityPeriod, type StaffMember, type StaffRole,
 } from "../lib/account-center";
 import { requestPasswordReset } from "../lib/catalog";
+import Modal from "./Modal";
 import "./account-center.css";
 import "./catalog-activity-history-premium.css";
 
@@ -69,6 +70,10 @@ export default function AccountCenter({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteName, setInviteName] = useState("");
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState<StaffRole>("editor");
 
   const load = useCallback(async () => {
     const request = ++activityLoadRequest.current;
@@ -148,6 +153,29 @@ export default function AccountCenter({
     } finally { setBusyId(null); }
   }
 
+  async function submitInvite(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (account?.role !== "super_admin" || busyId) return;
+    setBusyId("invite"); setError(""); setMessage("");
+    try {
+      const result = await inviteCatalogStaff({
+        email: inviteEmail,
+        displayName: inviteName,
+        role: inviteRole,
+      });
+      setInviteOpen(false);
+      setInviteName("");
+      setInviteEmail("");
+      setInviteRole("editor");
+      setMembers(await listCatalogStaff());
+      setMessage(result);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Invitation failed. Please try again.");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   const visibleEvents = activityFilter === "all"
     ? events : events.filter(item => item.resource_type === activityFilter);
   return (
@@ -162,9 +190,17 @@ export default function AccountCenter({
               ? "Catalog permissions are visible to Admin and Super Admin. Only Super Admin can change roles."
               : "A trustworthy record of changes made by your team."}</p>
         </div>
-        <button type="button" className="button secondary" disabled={pending || busyId !== null} onClick={() => void load()}>
-          <RefreshCw size={16} /> Refresh
-        </button>
+        <div className="account-heading-actions">
+          {view === "users" && account?.role === "super_admin" && (
+            <button type="button" className="button primary account-add-user" disabled={pending || busyId !== null}
+              onClick={() => { setError(""); setInviteOpen(true); }}>
+              <UserPlus size={17} aria-hidden="true" /> Add user
+            </button>
+          )}
+          <button type="button" className="button secondary" disabled={pending || busyId !== null} onClick={() => void load()}>
+            <RefreshCw size={16} /> Refresh
+          </button>
+        </div>
       </div>
       {error && <div className="notice error" role="alert"><AlertCircle size={18} /> {error}</div>}
       {message && <div className="account-success" role="status"><CheckCircle2 size={17} /> {message}</div>}
@@ -206,14 +242,19 @@ export default function AccountCenter({
                 : "Account permission management is not enabled on this workspace yet."}</p></div>
           : <div className="account-table-wrap">
               <div className="account-table-title"><UsersRound size={19} /><strong>Catalog users</strong><span>{members.length}</span></div>
-              <p className="account-hint account-table-hint">This page shows Catalog accounts only. OS single sign-on is not linked yet; Admin can view, and only Super Admin can change permissions.</p>
+              <p className="account-hint account-table-hint">Only invited Catalog users appear here. OS single sign-on is not connected yet. Super Admin can invite staff; Admin can view permissions.</p>
               <div className="account-scroll"><table className="account-table">
                 <thead><tr><th>Person</th><th>Last login</th><th>Access</th>{account.role === "super_admin" && <th />}</tr></thead>
                 <tbody>{members.map(user => {
                   const draft = draftRoles[user.user_id] ?? user.role ?? "none";
                   return <tr key={user.user_id}>
                     <td><strong>{user.display_name || user.email.split("@")[0]}</strong><span>{user.email}</span>
-                    {account.id === user.user_id && <small>Your account</small>}</td>
+                    {account.id === user.user_id && <small>Your account</small>}
+                    {account.id !== user.user_id && (
+                      <small className={user.last_sign_in_at ? "catalog-account-status catalog-account-status--active" : "catalog-account-status catalog-account-status--invited"}>
+                        {user.last_sign_in_at ? "Active" : "Invited · awaiting first login"}
+                      </small>
+                    )}</td>
                     <td>{dateText(user.last_sign_in_at)}</td>
                     <td>{account.role === "super_admin" ? (
                       <select aria-label={`Role for ${user.email}`} value={draft}
@@ -324,6 +365,48 @@ export default function AccountCenter({
             <p className="account-activity-limit">Displaying the latest {events.length} recorded changes {activityPeriod === "all" ? "overall" : `for ${activityPeriod}`}.</p>
           )}
         </div>
+      )}
+      {view === "users" && inviteOpen && account?.role === "super_admin" && (
+        <Modal title="Add catalog user" eyebrow="BRUTTI / TEAM ACCESS"
+          description="Invite a staff member securely. They receive an email to set up their Catalog access."
+          className="catalog-user-invite-dialog"
+          onClose={() => { if (busyId !== "invite") setInviteOpen(false); }}>
+          <form className="catalog-user-invite-form" onSubmit={event => { void submitInvite(event); }}>
+            <label htmlFor="catalog-invite-name">Full name <span>*</span></label>
+            <input id="catalog-invite-name" type="text" autoComplete="name"
+              minLength={2} maxLength={80} required placeholder="e.g. Arnie"
+              value={inviteName} onChange={e => setInviteName(e.target.value)}
+              disabled={busyId === "invite"}/>
+            <label htmlFor="catalog-invite-email">Email address <span>*</span></label>
+            <div className="catalog-invite-email-wrap">
+              <Mail size={17} aria-hidden="true" />
+              <input id="catalog-invite-email" type="email" autoComplete="off"
+                required placeholder="name@example.com" maxLength={254}
+                value={inviteEmail} onChange={e => setInviteEmail(e.target.value)}
+                disabled={busyId === "invite"}/>
+            </div>
+            <label htmlFor="catalog-invite-role">Catalog access <span>*</span></label>
+            <select id="catalog-invite-role" value={inviteRole}
+              onChange={e => setInviteRole(e.target.value as StaffRole)}
+              disabled={busyId === "invite"}>
+              <option value="editor">Editor · Products</option>
+              <option value="admin">Admin · View permissions</option>
+              <option value="super_admin">Super Admin · Manage access</option>
+            </select>
+            <p className="catalog-user-invite-note">
+              This sends a separate Catalog invitation. Brutti OS login is not linked yet.
+              Only grant access to the intended team member; no password is shared.
+            </p>
+            {error && <p className="catalog-user-invite-error" role="alert">{error}</p>}
+            <div className="catalog-user-invite-actions">
+              <button type="button" className="button secondary" disabled={busyId === "invite"}
+                onClick={() => setInviteOpen(false)}>Cancel</button>
+              <button className="button primary" type="submit" disabled={busyId === "invite"}>
+                <Send size={16} aria-hidden="true"/> {busyId === "invite" ? "Sending invitation…" : "Send invitation"}
+              </button>
+            </div>
+          </form>
+        </Modal>
       )}
       <div className="account-privacy"><UserRound size={15} /> Every session is connected to a unique Supabase user ID. Activity actors are written by database triggers, not by the browser.</div>
     </section>
