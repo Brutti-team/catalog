@@ -669,21 +669,22 @@
 }
 .pub-app .pub-empty-state h3 {
   margin: 2px 0 0;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(30px, 3.1vw, 39px);
-  font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: -.018em;
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-size: clamp(23px, 2.4vw, 29px);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.035em;
   color: #2c4232;
 }
 .pub-app .pub-empty-state p {
-  max-width: 510px;
+  max-width: 540px;
   margin: 0;
   color: #68796c;
-  font-family: "Karla", system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.7;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 13.5px;
+  font-weight: 450;
+  line-height: 1.75;
+  letter-spacing: 0;
 }
 .pub-app .pub-empty-state .pub-primary-button {
   min-height: 44px;
@@ -754,7 +755,10 @@
     padding: 35px 16px;
   }
   .pub-app .pub-empty-state h3 {
-    font-size: 33px;
+    font-size: clamp(21px, 5.5vw, 26px);
+  }
+  .pub-app .pub-empty-state p {
+    font-size: 13px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
