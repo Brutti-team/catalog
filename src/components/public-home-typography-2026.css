@@ -551,87 +551,46 @@
   }
 }
 
-
-/* 2026-11-18 · Elevated Brutti signature badge on public Catalog navbar */
-/* A gently raised glass signature plaque, not a separate bulky navigation tile. */
+/* 2026-11-18 · Clean Brutti wordmark; no logo card or container effect */
 .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark {
-  position: relative;
-  z-index: 1;
-  min-height: 52px;
-  min-width: 0;
-  padding: 4px 13px;
-  border: 1px solid rgba(242, 255, 245, .17);
-  border-radius: 14px;
-  background: linear-gradient(140deg, rgba(251, 255, 251, .115), rgba(251, 255, 251, .018) 72%);
-  box-shadow:
-    0 9px 19px -12px rgba(0, 17, 12, .50),
-    0 3px 7px -6px rgba(0, 17, 12, .35),
-    inset 0 1px rgba(255, 255, 255, .17);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  transform: translateY(-1px);
-  transition: transform .23s cubic-bezier(.2,.85,.3,1),
-    background .23s ease,
-    border-color .23s ease,
-    box-shadow .23s ease;
-  -webkit-tap-highlight-color: transparent;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  transform: none !important;
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {
-  width: 126px;
-  height: 42px;
   transform: none;
-  transition: transform .23s cubic-bezier(.2,.85,.3,1), opacity .23s ease;
+  filter: brightness(0) invert(1);
+  transition: transform .2s ease, filter .2s ease, opacity .2s ease;
 }
 @media (hover: hover) and (pointer: fine) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark:hover {
-    transform: translateY(-3px);
-    border-color: rgba(239, 255, 240, .33);
-    background: linear-gradient(145deg, rgba(250, 255, 250, .17), rgba(250, 255, 250, .045));
-    box-shadow:
-      0 15px 28px -13px rgba(0, 17, 12, .48),
-      0 5px 11px -7px rgba(0, 17, 12, .38),
-      0 0 0 1px rgba(235, 252, 238, .045),
-      inset 0 1px rgba(255, 255, 255, .25);
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark:hover .pub-official-logo {
-    transform: scale(1.045);
+    transform: translateY(-2px) scale(1.04);
+    filter: brightness(0) invert(1) drop-shadow(0 4px 5px rgba(0, 0, 0, .25));
   }
-}
-.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark:active {
-  transform: translateY(0) scale(.985);
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark:focus-visible {
   outline: 2px solid #e9f3e8;
   outline-offset: 4px;
-}
-@media (max-width: 800px) {
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark {
-    min-height: 45px;
-    padding: 4px 10px;
-    border-radius: 12px;
-  }
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {
-    width: 102px;
-    height: 35px;
-  }
-}
-@media (max-width: 580px) {
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark {
-    padding: 4px 8px;
-    min-height: 43px;
-  }
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {
-    width: 89px;
-    height: 34px;
-  }
+  border-radius: 3px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark,
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {
     transition: none;
   }
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark:hover,
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark:hover .pub-official-logo {
     transform: none;
+    filter: brightness(0) invert(1);
   }
 }
