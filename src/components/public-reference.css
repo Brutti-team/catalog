@@ -435,6 +435,21 @@
   position: relative;
   display: block;
 }
+
+/* Fix the real double border: older Brutti theme files put a border,
+   background and 48px minimum height on .pub-app.pub-refined .pub-sort.
+   Remove those only from the outer wrapper, retaining the one border
+   on .pub-sort-trigger and its keyboard focus indication. */
+.pub-app.pub-refined .pub-sort,
+.pub-app.pub-refined .pub-sort-control {
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+}
 .pub-app .pub-sort-trigger {
   display: inline-flex;
   align-items: center;
