@@ -57,6 +57,7 @@ import "./components/catalog-private-preview-one-screen.css";
 import "./components/product-editor-section-glass.css";
 import "./components/product-photo-crop.css";
 import "./components/account-permission-brutti.css";
+import "./components/public-home-typography-2026.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
