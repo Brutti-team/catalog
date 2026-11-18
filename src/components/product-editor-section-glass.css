@@ -145,3 +145,19 @@
     backdrop-filter: none;
   }
 }
+
+
+/* Create/Edit Product: hide only the dialog's native scrollbar.
+   The form must remain scrollable on mouse, trackpad, keyboard and touch. */
+.admin-app dialog.modal.product-editor-dialog {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-gutter: auto;
+}
+.admin-app dialog.modal.product-editor-dialog::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
