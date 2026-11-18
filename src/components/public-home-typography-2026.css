@@ -284,3 +284,93 @@
     transform: none;
   }
 }
+
+/* Brutti green public navbar · brand refresh */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header {
+  min-height: 84px;
+  background: #214f38;
+  border-bottom: 1px solid rgba(235, 250, 236, .17);
+  box-shadow: 0 4px 16px rgba(26, 54, 35, .10);
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {
+  display: block;
+  width: clamp(112px, 10.5vw, 138px);
+  height: auto;
+  filter: brightness(0) invert(1);
+  opacity: .98;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button {
+  color: rgba(255, 255, 255, .78);
+  font-size: 12.5px !important;
+  font-weight: 600;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button:hover,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav .pub-nav-active {
+  color: #fff;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav .pub-nav-active::after {
+  background: #d5e8d8;
+  height: 2px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-admin-link {
+  min-height: 42px;
+  padding: 10px 19px;
+  color: #f7fbf7;
+  background: rgba(255, 255, 255, .07);
+  border: 1px solid rgba(242, 251, 242, .38);
+  border-radius: 999px;
+  box-shadow: none;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-admin-link:hover {
+  color: #214f38;
+  background: #f2f8f0;
+  border-color: #f2f8f0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-menu-toggle {
+  color: #fff;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header :is(.pub-nav button,.pub-admin-link,.pub-menu-toggle):focus-visible {
+  outline: 2px solid #e9f3e8;
+  outline-offset: 4px;
+}
+@media (max-width: 800px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header {
+    min-height: 73px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {
+    width: 112px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav {
+    top: 100%;
+    border-top: 1px solid rgba(245,255,245,.18);
+    background: #214f38;
+    box-shadow: 0 13px 20px rgba(27, 52, 34, .22);
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button {
+    color: rgba(255,255,255,.84);
+    font-size: 13px !important;
+  }
+}
+@media (max-width: 580px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header {
+    min-height: 68px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {
+    width: 99px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-admin-link {
+    min-height: 36px;
+    padding: 8px 11px;
+    font-size: 9.5px !important;
+    gap: 7px;
+  }
+}
