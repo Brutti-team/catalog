@@ -103,6 +103,37 @@ export async function updateStaffRole(userId: string, role: StaffRole | null): P
   });
   if (error) throw new Error(error.message);
 }
+export type CatalogInvitationRole = "super_admin" | "admin" | "editor";
+
+/** Invite a separate Catalog Auth account without exposing service credentials. */
+export async function inviteCatalogStaff({
+  email, displayName, role,
+}: {
+  email: string;
+  displayName: string;
+  role: CatalogInvitationRole;
+}): Promise<string> {
+  const account = await getAccountSummary();
+  if (!account.managementReady || account.role !== "super_admin")
+    throw new Error("Only the Super Admin can invite catalog users.");
+  const { data, error } = await catalogClient().functions.invoke<{
+    ok?: boolean; message?: string; error?: string;
+  }>("catalog-invite-staff", {
+    body: { email: email.trim(), displayName: displayName.trim(), role },
+  });
+  if (error) {
+    const ctx = "context" in error ? error.context : null;
+    let readable = error.message;
+    if (ctx instanceof Response) {
+      const response = await ctx.clone().json().catch(() => null) as { error?: string } | null;
+      readable = response?.error || readable;
+    }
+    throw new Error(readable || "Could not send invitation.");
+  }
+  if (!data?.ok) throw new Error(data?.error || "Could not send invitation.");
+  return data.message || "Invitation sent. The account will activate when the user accepts and signs in.";
+}
+
 /** Latest persisted server audit record, not a guessed products.updated_at timestamp. */
 export async function getLatestCatalogActivity(): Promise<ActivityEntry | null> {
   const access = await getAuthState();
