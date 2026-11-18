@@ -133,6 +133,7 @@ export default function AccountCenter({
   }
 
   async function saveMember(user: StaffMember) {
+    if (account?.role !== "super_admin") { setError("Only a Super Admin can change account roles."); return; }
     const requested = draftRoles[user.user_id] ?? (user.role ?? "none");
     const role = requested === "none" ? null : requested as StaffRole;
     if (!window.confirm(`Change access for ${user.email} to ${role ? roleLabel(role) : "No access"}?`)) return;
@@ -150,7 +151,7 @@ export default function AccountCenter({
   const visibleEvents = activityFilter === "all"
     ? events : events.filter(item => item.resource_type === activityFilter);
   return (
-    <section className={`account-center${view === "activity" ? " account-center--activity" : ""}`}>
+    <section className={`account-center account-center--${view}`}>
       <div className="account-heading">
         <div>
           <span className="eyebrow">{view === "users" ? "CATALOG ACCESS CONTROL" : "YOUR BRUTTI WORKSPACE"}</span>
@@ -158,7 +159,7 @@ export default function AccountCenter({
           <p>{view === "profile"
             ? "Your name, account and access in one simple place."
             : view === "users"
-              ? "View and manage catalog access roles. Only Super Admins can update permissions."
+              ? "Catalog permissions are visible to Admin and Super Admin. Only Super Admin can change roles."
               : "A trustworthy record of changes made by your team."}</p>
         </div>
         <button type="button" className="button secondary" disabled={pending || busyId !== null} onClick={() => void load()}>
@@ -198,30 +199,36 @@ export default function AccountCenter({
         </div>
       )}
       {view === "users" && !pending && account && (
-        account.role !== "super_admin" || !account.managementReady
+        !["super_admin", "admin"].includes(account.role ?? "") || !account.managementReady
           ? <div className="account-empty"><ShieldCheck size={28} /><h2>Restricted access</h2>
-              <p>{account.role !== "super_admin"
-                ? "Only Super Admins can view or change account permissions."
+              <p>{!["super_admin", "admin"].includes(account.role ?? "")
+                ? "Only Admin and Super Admin can view account permissions."
                 : "Account permission management is not enabled on this workspace yet."}</p></div>
           : <div className="account-table-wrap">
               <div className="account-table-title"><UsersRound size={19} /><strong>Catalog users</strong><span>{members.length}</span></div>
-              <p className="account-hint account-table-hint">Invite new people through Supabase Authentication first. You can then assign their catalog role here. Never share passwords.</p>
+              <p className="account-hint account-table-hint">This page shows Catalog accounts only. OS single sign-on is not linked yet; Admin can view, and only Super Admin can change permissions.</p>
               <div className="account-scroll"><table className="account-table">
-                <thead><tr><th>Person</th><th>Last login</th><th>Access</th><th /></tr></thead>
+                <thead><tr><th>Person</th><th>Last login</th><th>Access</th>{account.role === "super_admin" && <th />}</tr></thead>
                 <tbody>{members.map(user => {
                   const draft = draftRoles[user.user_id] ?? user.role ?? "none";
                   return <tr key={user.user_id}>
                     <td><strong>{user.display_name || user.email.split("@")[0]}</strong><span>{user.email}</span>
                     {account.id === user.user_id && <small>Your account</small>}</td>
                     <td>{dateText(user.last_sign_in_at)}</td>
-                    <td><select aria-label={`Role for ${user.email}`} value={draft}
-                      disabled={account.id === user.user_id || busyId !== null}
-                      onChange={e => setDraftRoles(prev => ({ ...prev, [user.user_id]: e.target.value }))}>
-                      {roleOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.title}</option>)}
-                    </select></td>
-                    <td><button type="button" className="button secondary"
-                      disabled={account.id === user.user_id || busyId !== null || draft === (user.role || "none")}
-                      onClick={() => void saveMember(user)}>Save</button></td>
+                    <td>{account.role === "super_admin" ? (
+                      <select aria-label={`Role for ${user.email}`} value={draft}
+                        disabled={account.id === user.user_id || busyId !== null}
+                        onChange={e => setDraftRoles(prev => ({ ...prev, [user.user_id]: e.target.value }))}>
+                        {roleOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.title}</option>)}
+                      </select>
+                    ) : (
+                      <span className="catalog-access-role-readonly">{roleLabel(user.role)}</span>
+                    )}</td>
+                    {account.role === "super_admin" && (
+                      <td><button type="button" className="button secondary"
+                        disabled={account.id === user.user_id || busyId !== null || draft === (user.role || "none")}
+                        onClick={() => void saveMember(user)}>Save</button></td>
+                    )}
                   </tr>;
                 })}</tbody>
               </table></div>
