@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowLeft,
@@ -99,9 +99,31 @@ export default function PublicCatalog({
   const [category, setCategory] = useState("all");
   const [featuredOnly, setFeaturedOnly] = useState(false);
   const [sort, setSort] = useState("curated");
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
   const [imageIndex, setImageIndex] = useState(0);
   const [viewMode, setViewMode] = useState<"photos" | "3d">("photos");
   const [mobileMenu, setMobileMenu] = useState(false);
+  useEffect(() => {
+    if (!sortOpen) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (event.target instanceof Node && !sortRef.current?.contains(event.target)) {
+        setSortOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSortOpen(false);
+        sortRef.current?.querySelector<HTMLButtonElement>(".pub-sort-trigger")?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOutside);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [sortOpen]);
   useEffect(() => {
     if (previewProduct) {
       // A nested editor dialog may already be scrolled to its Save footer.
@@ -394,19 +416,42 @@ export default function PublicCatalog({
                     </button>
                   )}
                 </label>
-                <label className="pub-sort">
+                <div className="pub-sort" ref={sortRef}>
                   <span>Sort by</span>
-                  <select
-                    aria-label="Sort products"
-                    value={sort}
-                    onChange={(event) => setSort(event.target.value)}
-                  >
-                    <option value="curated">Curated selection</option>
-                    <option value="name">Name: A–Z</option>
-                    <option value="price">Price: low to high</option>
-                  </select>
-                  <ChevronDown size={15} />
-                </label>
+                  <div className="pub-sort-control">
+                    <button
+                      type="button"
+                      className="pub-sort-trigger"
+                      aria-label="Sort products"
+                      aria-expanded={sortOpen}
+                      aria-controls="pub-sort-options"
+                      onClick={() => setSortOpen((isOpen) => !isOpen)}
+                    >
+                      <span>{sort === "name" ? "Name: A–Z" : sort === "price" ? "Price: low to high" : "Curated selection"}</span>
+                      <ChevronDown size={15} aria-hidden="true" />
+                    </button>
+                    {sortOpen && (
+                      <div id="pub-sort-options" className="pub-sort-menu" role="group" aria-label="Sort order">
+                        {([
+                          { value: "curated", label: "Curated selection" },
+                          { value: "name", label: "Name: A–Z" },
+                          { value: "price", label: "Price: low to high" },
+                        ] as const).map(option => (
+                          <button
+                            type="button"
+                            key={option.value}
+                            className={"pub-sort-option" + (sort === option.value ? " is-selected" : "")}
+                            aria-pressed={sort === option.value}
+                            onClick={() => { setSort(option.value); setSortOpen(false); }}
+                          >
+                            {option.label}
+                            {sort === option.value && <Check size={15} aria-hidden="true" />}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
               <div className="pub-filter-row">
                 <div
@@ -477,12 +522,18 @@ export default function PublicCatalog({
                 <div className="pub-products-grid">{filtered.map(card)}</div>
               ) : (
                 <div className="pub-empty-state">
-                  <Search size={28} />
-                  <h3>No pieces found.</h3>
-                  <p>Try another search or explore a different category.</p>
-                  <button className="pub-primary-button" onClick={resetFilters}>
-                    View all projects <ArrowRight size={16} />
-                  </button>
+                  <span className="pub-empty-icon" aria-hidden="true"><Search size={23} /></span>
+                  <h3>{!published.length && !query && category === "all" && !featuredOnly
+                    ? "Our collection is taking shape."
+                    : "No matching projects."}</h3>
+                  <p>{!published.length && !query && category === "all" && !featuredOnly
+                    ? "A curated selection of Benua Brutti projects will appear here as they are published."
+                    : "Try another search or choose a different category to explore our work."}</p>
+                  {(query || category !== "all" || featuredOnly) && (
+                    <button className="pub-primary-button" onClick={resetFilters}>
+                      View all projects <ArrowRight size={16} />
+                    </button>
+                  )}
                 </div>
               )}
             </section>
