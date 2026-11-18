@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { AlertCircle, CalendarDays, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight } from "lucide-react";
 import {
-  getAccountSummary, initials, listCatalogActivity, listCatalogStaff,
+  catalogActivityMYTRange, getAccountSummary, initials, listCatalogActivity, listCatalogStaff,
   roleLabel, updateOwnDisplayName, updateStaffRole,
   type AccountSummary, type ActivityEntry, type ActivityPeriod, type StaffMember, type StaffRole,
 } from "../lib/account-center";
@@ -60,7 +60,8 @@ export default function AccountCenter({
   const [members, setMembers] = useState<StaffMember[]>([]);
   const [events, setEvents] = useState<ActivityEntry[]>([]);
   const [activityFilter, setActivityFilter] = useState<"all" | "products" | "categories">("all");
-  const [activityPeriod, setActivityPeriod] = useState<ActivityPeriod>("all");
+  const [activityPeriod, setActivityPeriod] = useState<ActivityPeriod>("today");
+  const [mytTodayStart, setMytTodayStart] = useState(() => catalogActivityMYTRange("today").start);
   const activityLoadRequest = useRef(0);
   const [draftRoles, setDraftRoles] = useState<Record<string, string>>({});
   const [displayName, setDisplayName] = useState("");
@@ -94,7 +95,17 @@ export default function AccountCenter({
       if (request === activityLoadRequest.current) setPending(false);
     }
   }, [view, activityPeriod]);
-  useEffect(() => { void load(); }, [load]);
+  // Keep the daily activity view current when a page is left open past midnight MYT.
+  useEffect(() => {
+    if (view !== "activity") return;
+    const checkMalaysiaDate = () => {
+      setMytTodayStart(catalogActivityMYTRange("today").start);
+    };
+    checkMalaysiaDate();
+    const timer = window.setInterval(checkMalaysiaDate, 30_000);
+    return () => window.clearInterval(timer);
+  }, [view]);
+  useEffect(() => { void load(); }, [load, mytTodayStart]);
 
   async function saveProfile(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
