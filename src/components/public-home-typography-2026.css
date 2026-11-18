@@ -594,3 +594,78 @@
     filter: brightness(0) invert(1);
   }
 }
+
+
+/* Fix original Brutti SVG ratio and thin signature strokes at 100% zoom */
+/* The source SVG has viewBox 250 × 164 (~1.52:1).
+   A 136 × 44 fixed img box made object-fit: contain render it at ~67 × 44,
+   creating tiny, uneven strokes at standard browser zoom.
+   Give the signature its real aspect ratio and enough vertical room. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header {
+  min-height: 86px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark {
+  box-sizing: border-box;
+  min-width: 112px;
+  min-height: 70px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  overflow: visible;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {
+  display: block;
+  flex: 0 0 auto;
+  width: 108px !important;
+  height: auto !important;
+  aspect-ratio: 250 / 164;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+  object-position: center;
+  overflow: visible;
+  filter: brightness(0) invert(1);
+}
+@media (max-width: 800px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header {
+    min-height: 78px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark {
+    min-width: 96px;
+    min-height: 63px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {
+    width: 94px !important;
+    height: auto !important;
+  }
+}
+@media (max-width: 580px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header {
+    min-height: 74px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark {
+    min-width: 91px;
+    min-height: 61px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {
+    width: 89px !important;
+    height: auto !important;
+  }
+}
+@media (max-width: 370px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header {
+    min-height: 69px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark {
+    min-width: 79px;
+    min-height: 53px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {
+    width: 77px !important;
+    height: auto !important;
+  }
+}
