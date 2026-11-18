@@ -417,7 +417,6 @@ export default function PublicCatalog({
                   )}
                 </label>
                 <div className="pub-sort" ref={sortRef}>
-                  <span>Sort by</span>
                   <div className="pub-sort-control">
                     <button
                       type="button"
@@ -427,8 +426,11 @@ export default function PublicCatalog({
                       aria-controls="pub-sort-options"
                       onClick={() => setSortOpen((isOpen) => !isOpen)}
                     >
-                      <span>{sort === "name" ? "Name: A–Z" : sort === "price" ? "Price: low to high" : "Curated selection"}</span>
-                      <ChevronDown size={15} aria-hidden="true" />
+                      <span className="pub-sort-caption">Sort:</span>
+                      <span className="pub-sort-current">
+                        {sort === "name" ? "Name A–Z" : sort === "price" ? "Price: low to high" : "Curated"}
+                      </span>
+                      <ChevronDown size={14} aria-hidden="true" />
                     </button>
                     {sortOpen && (
                       <div id="pub-sort-options" className="pub-sort-menu" role="group" aria-label="Sort order">
@@ -444,8 +446,8 @@ export default function PublicCatalog({
                             aria-pressed={sort === option.value}
                             onClick={() => { setSort(option.value); setSortOpen(false); }}
                           >
-                            {option.label}
-                            {sort === option.value && <Check size={15} aria-hidden="true" />}
+                            <span>{option.label}</span>
+                            {sort === option.value && <Check size={14} aria-hidden="true" />}
                           </button>
                         ))}
                       </div>
