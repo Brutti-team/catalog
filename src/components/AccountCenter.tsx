@@ -75,6 +75,7 @@ export default function AccountCenter({
   const [inviteName, setInviteName] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState<StaffRole>("editor");
+  const [inviteCandidateId, setInviteCandidateId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const request = ++activityLoadRequest.current;
@@ -164,11 +165,13 @@ export default function AccountCenter({
         email: inviteEmail,
         displayName: inviteName,
         role: inviteRole,
+        ...(inviteCandidateId ? { candidateId: inviteCandidateId } : {}),
       });
       setInviteOpen(false);
       setInviteName("");
       setInviteEmail("");
       setInviteRole("editor");
+      setInviteCandidateId(null);
       const [staff, waiting] = await Promise.all([listCatalogStaff(), listPendingCatalogStaff()]);
       setMembers(staff);
       setPendingStaff(waiting);
@@ -185,6 +188,7 @@ export default function AccountCenter({
     setInviteName(candidate?.display_name || "");
     setInviteEmail(candidate?.email || "");
     setInviteRole(candidate?.proposed_role || "editor");
+    setInviteCandidateId(candidate?.candidate_id || null);
     setInviteOpen(true);
   }
 
