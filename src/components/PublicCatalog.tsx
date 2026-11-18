@@ -56,12 +56,14 @@ function FurnitureImage({
   className = "",
   eager = false,
   image,
+  fallbackToPlaceholder = true,
 }: {
   src?: string;
   alt: string;
   className?: string;
   eager?: boolean;
   image?: ProductImage;
+  fallbackToPlaceholder?: boolean;
 }) {
   return (
     <img
@@ -71,8 +73,12 @@ function FurnitureImage({
       style={photoCropStyle(image)}
       loading={eager ? "eager" : "lazy"}
       onError={(event) => {
-        if (!event.currentTarget.src.endsWith("/images/placeholder.svg"))
+        if (!fallbackToPlaceholder) {
+          // The homepage hero should only show real catalog photography.
+          event.currentTarget.style.visibility = "hidden";
+        } else if (!event.currentTarget.src.endsWith("/images/placeholder.svg")) {
           event.currentTarget.src = publicAssetUrl("/images/placeholder.svg");
+        }
       }}
     />
   );
@@ -118,6 +124,13 @@ export default function PublicCatalog({
     () => products.filter((product) => product.status === "published"),
     [products],
   );
+  // Use a real, published Brutti product photograph instead of the stock hero reference.
+  // Featured products get priority; other published products provide a safe fallback.
+  const heroProduct = useMemo(() => {
+    const photographed = published.filter((item) => item.images.some((image) => image.url?.trim()));
+    return photographed.find((item) => item.featured) ?? photographed[0];
+  }, [published]);
+  const heroImage = heroProduct?.images.find((image) => image.url?.trim());
   const product = previewProduct ?? (
     productId === null ? undefined : published.find((item) => item.id === productId)
   );
@@ -314,11 +327,16 @@ export default function PublicCatalog({
                 </div>
               </div>
               <div className="pub-hero-visual">
-                <FurnitureImage
-                  src={import.meta.env.BASE_URL + "reference/hero.jpg"}
-                  alt="Warm interior with sculptural furniture, an editorial design reference for the Benua Brutti collection"
-                  eager
-                />
+                {heroImage && (
+                  <FurnitureImage
+                    key={heroImage.url}
+                    src={heroImage.url}
+                    alt={heroImage.alt || `Benua Brutti product: ${heroProduct?.name ?? "bespoke furniture"}`}
+                    image={heroImage}
+                    eager
+                    fallbackToPlaceholder={false}
+                  />
+                )}
                 <div className="pub-hero-image-label">
                   <span>FURNITURE · JOINERY · INTERIORS</span>
                   <ArrowUpRight size={23} />
