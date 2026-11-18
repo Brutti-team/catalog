@@ -246,7 +246,6 @@ export default function PublicCatalog({
           aria-label="Brutti catalog home"
         >
           <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="pub-official-logo" />
-          <small>CUSTOM FURNITURE · KIOSKS · FIT-OUT</small>
         </a>
         {!previewProduct && <nav
           id="pub-mobile-nav"
