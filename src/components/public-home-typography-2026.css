@@ -669,3 +669,64 @@
     height: auto !important;
   }
 }
+
+
+/* Brutti Catalog · Our Approach typography aligned to modern editorial system */
+/* Use the same confident Manrope/DM Sans family as the rest of the public catalog,
+   rather than the oversized Cormorant headings. Scope changes to Our Approach. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-reference-process h2 {
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-size: clamp(39px, 4.1vw, 66px);
+  font-weight: 650;
+  line-height: 1.11;
+  letter-spacing: -.052em;
+  text-wrap: balance;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-reference-process h2 em {
+  font-family: inherit;
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: inherit;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-reference-process-top > p {
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: clamp(13px, .95vw, 15px);
+  font-weight: 440;
+  line-height: 1.75;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-reference-process-grid h3 {
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-size: clamp(22px, 1.9vw, 29px);
+  font-weight: 630;
+  line-height: 1.25;
+  letter-spacing: -.037em;
+  text-wrap: balance;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-reference-process-grid p {
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 13.5px;
+  line-height: 1.72;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-reference-process-grid span {
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 680;
+  letter-spacing: .13em;
+}
+@media (max-width: 800px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-reference-process h2 {
+    font-size: clamp(35px, 6vw, 50px);
+    line-height: 1.15;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-reference-process-grid h3 {
+    font-size: clamp(21px, 3.2vw, 27px);
+  }
+}
+@media (max-width: 580px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-reference-process h2 {
+    font-size: clamp(34px, 9vw, 41px);
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-reference-process-grid h3 {
+    font-size: 23px;
+  }
+}
