@@ -124,11 +124,12 @@ export type CatalogInvitationRole = "super_admin" | "admin" | "editor";
 
 /** Invite a separate Catalog Auth account without exposing service credentials. */
 export async function inviteCatalogStaff({
-  email, displayName, role,
+  email, displayName, role, candidateId,
 }: {
   email: string;
   displayName: string;
   role: CatalogInvitationRole;
+  candidateId?: string;
 }): Promise<string> {
   const account = await getAccountSummary();
   if (!account.managementReady || account.role !== "super_admin")
@@ -136,7 +137,7 @@ export async function inviteCatalogStaff({
   const { data, error } = await catalogClient().functions.invoke<{
     ok?: boolean; message?: string; error?: string;
   }>("catalog-invite-staff", {
-    body: { email: email.trim(), displayName: displayName.trim(), role },
+    body: { email: email.trim(), displayName: displayName.trim(), role, ...(candidateId ? { candidateId } : {}) },
   });
   if (error) {
     const ctx = "context" in error ? error.context : null;
