@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import { AlertCircle, CalendarDays, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight, UserPlus, Send, Mail } from "lucide-react";
 import {
   catalogActivityMYTRange, getAccountSummary, initials, listCatalogActivity, listCatalogStaff,
-  roleLabel, updateOwnDisplayName, updateStaffRole, inviteCatalogStaff,
-  type AccountSummary, type ActivityEntry, type ActivityPeriod, type StaffMember, type StaffRole,
+  roleLabel, updateOwnDisplayName, updateStaffRole, inviteCatalogStaff, listPendingCatalogStaff,
+  type AccountSummary, type ActivityEntry, type ActivityPeriod, type StaffMember, type StaffRole, type PendingCatalogStaff,
 } from "../lib/account-center";
 import { requestPasswordReset } from "../lib/catalog";
 import Modal from "./Modal";
@@ -59,6 +59,7 @@ export default function AccountCenter({
 }) {
   const [account, setAccount] = useState<AccountSummary | null>(null);
   const [members, setMembers] = useState<StaffMember[]>([]);
+  const [pendingStaff, setPendingStaff] = useState<PendingCatalogStaff[]>([]);
   const [events, setEvents] = useState<ActivityEntry[]>([]);
   const [activityFilter, setActivityFilter] = useState<"all" | "products" | "categories">("all");
   const [activityPeriod, setActivityPeriod] = useState<ActivityPeriod>("today");
@@ -84,9 +85,10 @@ export default function AccountCenter({
       setAccount(current);
       setDisplayName(current.displayName);
       if (view === "users") {
-        const staff = await listCatalogStaff();
+        const [staff, waiting] = await Promise.all([listCatalogStaff(), listPendingCatalogStaff()]);
         if (request !== activityLoadRequest.current) return;
         setMembers(staff);
+        setPendingStaff(waiting);
         setDraftRoles({});
       } else if (view === "activity") {
         const entries = await listCatalogActivity(activityPeriod);
@@ -167,13 +169,23 @@ export default function AccountCenter({
       setInviteName("");
       setInviteEmail("");
       setInviteRole("editor");
-      setMembers(await listCatalogStaff());
+      const [staff, waiting] = await Promise.all([listCatalogStaff(), listPendingCatalogStaff()]);
+      setMembers(staff);
+      setPendingStaff(waiting);
       setMessage(result);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Invitation failed. Please try again.");
     } finally {
       setBusyId(null);
     }
+  }
+
+  function openInvitation(candidate?: PendingCatalogStaff) {
+    setError("");
+    setInviteName(candidate?.display_name || "");
+    setInviteEmail(candidate?.email || "");
+    setInviteRole(candidate?.proposed_role || "editor");
+    setInviteOpen(true);
   }
 
   const visibleEvents = activityFilter === "all"
@@ -193,7 +205,7 @@ export default function AccountCenter({
         <div className="account-heading-actions">
           {view === "users" && account?.role === "super_admin" && (
             <button type="button" className="button primary account-add-user" disabled={pending || busyId !== null}
-              onClick={() => { setError(""); setInviteOpen(true); }}>
+              onClick={() => openInvitation()}>
               <UserPlus size={17} aria-hidden="true" /> Add user
             </button>
           )}
@@ -274,6 +286,37 @@ export default function AccountCenter({
                 })}</tbody>
               </table></div>
               {!members.length && <p className="account-muted">No invited users found.</p>}
+              {pendingStaff.length > 0 && (
+                <section className="catalog-pending-staff" aria-labelledby="catalog-pending-staff-title">
+                  <header className="catalog-pending-staff-heading">
+                    <div>
+                      <h2 id="catalog-pending-staff-title">OS staff · pending catalog access</h2>
+                      <p>These people were matched from Brutti OS details where available. They cannot log in to Catalog until invited and verified. This does not activate OS single sign-on.</p>
+                    </div>
+                    <span className="catalog-pending-staff-count">{pendingStaff.length} pending</span>
+                  </header>
+                  <div className="catalog-pending-staff-list">
+                    {pendingStaff.map(candidate => (
+                      <div className="catalog-pending-staff-item" key={candidate.candidate_id}>
+                        <div className="catalog-pending-staff-identity">
+                          <strong>{candidate.display_name}</strong>
+                          <small>{candidate.email || "Email not confirmed in OS"}</small>
+                        </div>
+                        <span className="catalog-pending-staff-role">{roleLabel(candidate.proposed_role)}</span>
+                        <span className="catalog-pending-staff-state">Not invited</span>
+                        {account.role === "super_admin" && (
+                          <button type="button" className="catalog-pending-staff-invite"
+                            disabled={pending || busyId !== null}
+                            onClick={() => openInvitation(candidate)}>
+                            <UserPlus size={14} aria-hidden="true" />
+                            Invite
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
       )}
       {view === "activity" && !pending && account && (
