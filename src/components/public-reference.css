@@ -532,7 +532,21 @@
   flex: 0 0 auto;
   color: #3d7650;
 }
-.pub-app .pub-sort-trigger:focus-visible,
+/* One clean border only: prevent the browser's outer focus ring
+   from drawing a second rectangle around the Sort button. */
+.pub-app .pub-sort-trigger,
+.pub-app .pub-sort-trigger:hover,
+.pub-app .pub-sort-trigger[aria-expanded="true"] {
+  box-shadow: none;
+}
+.pub-app .pub-sort-trigger:focus,
+.pub-app .pub-sort-trigger:focus-visible {
+  outline: none !important;
+  outline-offset: 0;
+  box-shadow: none !important;
+  border-color: #507e60;
+  background: #f4f8f3;
+}
 .pub-app .pub-sort-option:focus-visible,
 .pub-app .pub-category-filters button:focus-visible,
 .pub-app .pub-featured-filter:focus-visible,
