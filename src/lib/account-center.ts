@@ -103,6 +103,23 @@ export async function updateStaffRole(userId: string, role: StaffRole | null): P
   });
   if (error) throw new Error(error.message);
 }
+export type PendingCatalogStaff = {
+  candidate_id: string;
+  display_name: string;
+  email: string | null;
+  proposed_role: "admin" | "editor";
+};
+
+/** Only Catalog Admin and Super Admin may view the small, staged OS staff shortlist. */
+export async function listPendingCatalogStaff(): Promise<PendingCatalogStaff[]> {
+  const account = await getAccountSummary();
+  if (!account.managementReady || !["admin", "super_admin"].includes(account.role ?? ""))
+    throw new Error("Account Permission is available to Admin and Super Admin only.");
+  const { data, error } = await catalogClient().rpc("catalog_list_pending_staff");
+  if (error) throw new Error(error.message);
+  return (data ?? []) as PendingCatalogStaff[];
+}
+
 export type CatalogInvitationRole = "super_admin" | "admin" | "editor";
 
 /** Invite a separate Catalog Auth account without exposing service credentials. */
