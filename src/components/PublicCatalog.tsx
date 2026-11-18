@@ -4,6 +4,13 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
+  ArrowUp,
+  Mail,
+  Music2,
+  Instagram,
+  Facebook,
+  AtSign,
+  MessageCircle,
   Check,
   ChevronDown,
   Image as ImageIcon,
@@ -734,50 +741,53 @@ export default function PublicCatalog({
           </section>
         )}
         {productId === null && <ShowroomSections onExplore={exploreShowroom} section="approach" />}
-        {!previewProduct && <section className="pub-story" id="pub-story">
-          <div>
-            <p className="pub-eyebrow">CUSTOM BY NATURE</p>
-            <h2>
-              Built around your brief.
-              <br />
-              <em>Made for daily use.</em>
-            </h2>
-          </div>
-          <div>
-            <p>
-              Every kiosk, custom counter and furnishing project begins with a purpose. We bring together practical design, material character and workshop craftsmanship.
-            </p>
-            <button onClick={() => browseCollection()}>
-              View our work <ArrowRight size={18} />
-            </button>
-          </div>
-        </section>}
       </main>
-      {!previewProduct && <footer className="pub-footer">
-        <div>
-          <a href="#/catalog" className="pub-wordmark">
-            <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="pub-official-logo" />
-          </a>
-          <p>
-            BENUA BRUTTI SDN. BHD.
-            <br />
-            Bespoke furniture, kiosks & commercial fit-out.
-          </p>
-        </div>
-        <div className="pub-footer-right">
-          {enquiryEmail ? (
-            <a href={`mailto:${enquiryEmail}`}>
-              Let’s make room. <ArrowUpRight size={15} />
+      {!previewProduct && <footer className="pub-footer pub-footer--reference" id="pub-contact">
+        <div className="pub-footer__layout">
+          <div className="pub-footer__contact">
+            <a href="#/catalog" className="pub-footer__brand pub-wordmark" aria-label="Brutti Catalog home">
+              <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="pub-official-logo" />
             </a>
-          ) : (
-            <a href={`https://wa.me/${BRUTTI_WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer">
-              Chat on WhatsApp <ArrowUpRight size={15} />
-            </a>
-          )}
-          <small>
-            © {new Date().getFullYear()} Benua Brutti Sdn. Bhd.
-          </small>
+            <div className="pub-footer__intro">
+              <p className="pub-footer__eyebrow">GET IN TOUCH</p>
+              <h2>For enquiries, collaborations and careers.</h2>
+            </div>
+            <div className="pub-footer__emails">
+              <a className="pub-footer__email" href={`mailto:${enquiryEmail ?? "hi@brutti.my"}`} aria-label="Email Benua Brutti general enquiries">
+                <span className="pub-footer__email-icon" aria-hidden="true"><Mail size={21} strokeWidth={1.8}/></span>
+                <span className="pub-footer__email-copy"><span>GENERAL ENQUIRIES</span><strong>{enquiryEmail ?? "hi@brutti.my"}</strong></span>
+                <ArrowUpRight className="pub-footer__email-arrow" size={17} aria-hidden="true" />
+              </a>
+              <a className="pub-footer__email" href="mailto:hr@brutti.my" aria-label="Email Benua Brutti HR">
+                <span className="pub-footer__email-icon" aria-hidden="true"><Mail size={21} strokeWidth={1.8}/></span>
+                <span className="pub-footer__email-copy"><span>CAREERS & HR</span><strong>hr@brutti.my</strong></span>
+                <ArrowUpRight className="pub-footer__email-arrow" size={17} aria-hidden="true" />
+              </a>
+            </div>
+          </div>
+
+          <div className="pub-footer__connect">
+            <div className="pub-footer__social" aria-label="Follow Benua Brutti">
+              <p className="pub-footer__eyebrow">FOLLOW BRUTTI</p>
+              <div className="pub-footer__social-links">
+                <a href="https://www.tiktok.com/@brutti.my?_r=1&_t=ZS-99FmWlcm2fQ" target="_blank" rel="noopener noreferrer" aria-label="Brutti TikTok" title="TikTok" className="pub-footer__social-link pub-footer__social-link--tiktok"><Music2 size={20} aria-hidden="true"/></a>
+                <a href="https://www.instagram.com/brutti.my?igsi=ZnU3dHVqOXRnZTJk" target="_blank" rel="noopener noreferrer" aria-label="Brutti Instagram" title="Instagram" className="pub-footer__social-link pub-footer__social-link--instagram"><Instagram size={21} aria-hidden="true"/></a>
+                <a href="https://www.facebook.com/share/1EfVN5HMJm/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Brutti Facebook" title="Facebook" className="pub-footer__social-link pub-footer__social-link--facebook"><Facebook size={21} aria-hidden="true"/></a>
+                <a href="https://www.threads.com/@brutti.my?igshid=NTc4MTIwNjQ2YQ==" target="_blank" rel="noopener noreferrer" aria-label="Brutti Threads" title="Threads" className="pub-footer__social-link pub-footer__social-link--threads"><AtSign size={21} aria-hidden="true"/></a>
+                <a href={`https://wa.me/${BRUTTI_WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" aria-label="Chat with Brutti on WhatsApp" title="WhatsApp" className="pub-footer__social-link pub-footer__social-link--whatsapp"><MessageCircle size={21} aria-hidden="true"/></a>
+              </div>
+            </div>
+            <div className="pub-footer__actions">
+              <button type="button" className="pub-footer__browse" onClick={() => browseCollection()}>
+                View our work <ArrowUpRight size={16} aria-hidden="true"/>
+              </button>
+              <button type="button" className="pub-footer__backtop" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+                Back to top <ArrowUp size={17} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
         </div>
+        <div className="pub-footer__bottom">© {new Date().getFullYear()} Benua Brutti. Crafted in Sabah.</div>
       </footer>}
     </div>
   );
