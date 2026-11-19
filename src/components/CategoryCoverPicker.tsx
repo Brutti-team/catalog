@@ -1,9 +1,11 @@
 import { Check, Images, RotateCcw } from "lucide-react";
 import type { Product } from "../lib/types";
 import { publicAssetUrl } from "../lib/assets";
+import { curatedCategoryCover } from "../lib/curated-category-covers";
 import "./category-cover-picker.css";
 
 type Props = {
+  categoryId: string;
   products: Product[];
   value: string | null;
   onChange: (value: string | null) => void;
@@ -11,7 +13,8 @@ type Props = {
 };
 
 /** Intentionally makes only a chosen picture public, without publishing its product. */
-export default function CategoryCoverPicker({ products, value, onChange, disabled = false }: Props) {
+export default function CategoryCoverPicker({ categoryId, products, value, onChange, disabled = false }: Props) {
+  const curated = curatedCategoryCover(categoryId);
   const photos = products.flatMap(product =>
     product.images.filter(photo => Boolean(photo.url?.trim())).map(photo => ({ product, photo }))
   );
@@ -24,9 +27,19 @@ export default function CategoryCoverPicker({ products, value, onChange, disable
       <button type="button" className={`category-cover-auto${value ? "" : " is-selected"}`} disabled={disabled}
         aria-pressed={!value} onClick={() => onChange(null)}>
         <RotateCcw size={17} aria-hidden="true" />
-        <span><strong>Automatic cover</strong><small>Featured published product or Brutti fallback</small></span>
+        <span><strong>{curated ? "Brutti curated cover" : "Automatic cover"}</strong><small>{curated ? "Pinned Product Library selection until you replace it" : "Featured published product or Brutti fallback"}</small></span>
         {!value && <Check size={16} aria-hidden="true" />}
       </button>
+      {!value && curated && (
+        <div className="category-cover-current-preview">
+          <img src={curated.imageUrl} alt={curated.productName} loading="lazy" />
+          <div>
+            <strong>Current public category cover</strong>
+            <span>{curated.productCode} · {curated.productName}</span>
+            <small>This stays selected until an Admin chooses another cover photo.</small>
+          </div>
+        </div>
+      )}
       {photos.length ? (
         <div className="category-cover-picker-grid">
           {photos.map(({ product, photo }, index) =>
