@@ -990,3 +990,70 @@
   .pub-app.pub-refined:not(.pub-private-preview) .pub-footer__email:hover,
   .pub-app.pub-refined:not(.pub-private-preview) .pub-footer__social-link:hover { transform: none; }
 }
+
+
+/* Public homepage hero: fixed compact viewport fit (2026-11-19). */
+/* Override older hero rules from the public theme without touching product detail layouts. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero {
+  height: clamp(390px, 49dvh, 440px) !important;
+  min-height: 390px !important;
+  max-height: 440px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero-copy {
+  padding: 24px clamp(26px, 6vw, 100px) 27px !important;
+  justify-content: center;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero h1 {
+  max-width: 750px;
+  font-size: clamp(43px, 4.45vw, 68px) !important;
+  line-height: .96;
+  margin: 10px 0 13px !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero-description {
+  font-size: 13px;
+  line-height: 1.65;
+  max-width: 470px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero .pub-primary-button {
+  margin-top: 16px !important;
+  padding: 11px 20px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero-image-label {
+  bottom: 19px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip {
+  min-height: 0;
+  padding-block: 12px !important;
+}
+@media (max-width: 800px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero {
+    height: 450px !important;
+    min-height: 430px !important;
+    max-height: none;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero-copy {
+    padding: 28px 7% 33px !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero h1 {
+    font-size: clamp(39px, 6vw, 55px) !important;
+  }
+}
+@media (max-width: 580px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero {
+    height: auto !important;
+    min-height: 430px !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero-copy {
+    min-height: 430px;
+    padding: 36px 7% 32px !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero h1 {
+    font-size: clamp(38px, 9vw, 49px) !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero .pub-primary-button {
+    margin-top: 17px !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip {
+    padding-block: 11px !important;
+  }
+}
