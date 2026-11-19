@@ -702,13 +702,14 @@ export default function App() {
             <div className="page-heading catalog-management-heading">
               <div>
                 <span className="eyebrow">BRUTTI CATALOG WORKSPACE</span>
-                <h1>Categories</h1>
-                <p>Manage how customers discover your collections.</p>
-                <div className="catalog-categories-total" aria-live="polite" aria-label={`Total categories: ${loading ? "loading" : data.categories.length}`}>
-                  <Layers size={16} aria-hidden="true" />
-                  <strong>{loading ? "—" : data.categories.length}</strong>
-                  <span>Total categories</span>
+                <div className="catalog-categories-title-line">
+                  <h1>Categories</h1>
+                  <div className="catalog-categories-total" aria-live="polite" aria-label={`Total categories: ${loading ? "loading" : data.categories.length}`}>
+                    <strong>{loading ? "—" : data.categories.length}</strong>
+                    <span>Collections</span>
+                  </div>
                 </div>
+                <p>Organise the collections your customers explore.</p>
               </div>
               <button className="button primary" disabled={loading || busy}
                 onClick={() => editCategory({ id: crypto.randomUUID(), name: "", description: "" })}>
