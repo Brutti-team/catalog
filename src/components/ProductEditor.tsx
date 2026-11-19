@@ -320,6 +320,17 @@ export default function ProductEditor({
                   <small>Give it a place in the spotlight.</small>
                 </span>
               </label>
+              <label className="checkbox-field" title="Only published products selected here appear in Best-Selling Furniture.">
+                <input
+                  type="checkbox"
+                  checked={draft.bestSelling === true}
+                  onChange={(e) => update("bestSelling", e.target.checked)}
+                />
+                <span>
+                  Best Selling
+                  <small>Display this product in the public Best-Selling Furniture gallery once Published. Separate from Featured.</small>
+                </span>
+              </label>
             </section>
             <section className="product-editor-readiness" aria-label="Publishing checklist">
               <div className="product-editor-readiness-top">
