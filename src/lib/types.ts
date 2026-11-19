@@ -4,6 +4,8 @@ export interface ProductSpecification {
   id: string;
   name: string;
   value: string;
+  /** Section markers group following rows under their title. Legacy rows omit this. */
+  kind?: "section";
 }
 
 export interface ProductImage {
