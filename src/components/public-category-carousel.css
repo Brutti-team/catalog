@@ -12,8 +12,11 @@
 .pub-app .pub-category-marquee-track{display:flex;align-items:stretch;width:max-content}
 .pub-app .pub-category-rail-group{display:flex;align-items:start;flex:0 0 auto;width:max-content;gap:clamp(14px,1.8vw,27px);padding-right:clamp(14px,1.8vw,27px)}
 .pub-app .pub-category-rail-item{display:flex;flex:0 0 clamp(120px,10.5vw,154px);flex-direction:column;align-items:center;gap:11px;min-width:0;padding:3px 0 9px;border:0;border-radius:12px;background:transparent;text-align:center;cursor:pointer}
-.pub-app .pub-category-rail-image{display:block;overflow:hidden;width:clamp(99px,8.6vw,130px);height:clamp(99px,8.6vw,130px);border-radius:50%;border:1px solid rgba(207,198,181,.3);background:#eae4da;box-shadow:inset 0 1px rgba(255,255,255,.5);transition:transform .25s,box-shadow .25s}
-.pub-app .pub-category-rail-image img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.pub-app .pub-category-rail-image{position:relative;isolation:isolate;display:block;overflow:hidden;width:clamp(99px,8.6vw,130px);height:clamp(99px,8.6vw,130px);border-radius:50%;border:1px solid rgba(207,198,181,.3);background:#eae4da;box-shadow:inset 0 1px rgba(255,255,255,.5);transition:transform .25s,box-shadow .25s}
+/* A single actual product is shown: published photo first, one object from an
+   official Brutti project board if the category has no published photography. */
+.pub-app .pub-category-rail-single-fallback{position:absolute;inset:0;display:block;background-repeat:no-repeat;background-color:#ebe4d9;filter:saturate(.95)}
+.pub-app .pub-category-rail-image img{position:absolute;inset:0;z-index:1;display:block;width:100%;height:100%;object-fit:cover;object-position:center;background:#ebe4d9}
 .pub-app .pub-category-rail-name{display:block;max-width:160px;color:#3b453d;font:600 12px/1.45 "DM Sans",system-ui,sans-serif;letter-spacing:0;overflow-wrap:anywhere}
 .pub-app .pub-category-marquee-empty{padding:35px 8px;color:#758175;font:400 13px/1.6 "DM Sans",system-ui,sans-serif}
 @media(hover:hover) and (pointer:fine){
