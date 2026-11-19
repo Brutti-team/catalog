@@ -343,14 +343,7 @@ export default function PublicCatalog({
           <button onClick={browseShowroom}>
             Categories
           </button>
-          <button
-            onClick={() => {
-              document
-                .getElementById("pub-best-selling")
-                ?.scrollIntoView({ behavior: "smooth" });
-              setMobileMenu(false);
-            }}
-          >
+          <button onClick={browseBestSellers}>
             Best sellers
           </button>
         </nav>}
