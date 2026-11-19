@@ -5,7 +5,6 @@ import {
   ArrowRight,
   ArrowUpRight,
   ArrowUp,
-  Mail,
   Music2,
   Instagram,
   Facebook,
@@ -42,6 +41,20 @@ interface Props {
   onAdmin: () => void;
   /** Private admin-only rendering of draft product data without publishing. */
   previewProduct?: Product;
+}
+
+/** Crisp, full-colour Gmail mark for the footer email actions. */
+function GmailLogo() {
+  return (
+    <svg width={24} height={24} viewBox="0 0 28 24" fill="none" aria-hidden="true" focusable="false">
+      <path d="M3 6.25v12.2A2.05 2.05 0 0 0 5.05 20.5H8V10.0L3 6.25Z" fill="#4285F4" />
+      <path d="M20 10.0v10.5h2.95A2.05 2.05 0 0 0 25 18.45V6.25L20 10.0Z" fill="#34A853" />
+      <path d="M8 6.25 14 10.75 20 6.25v5.15L14 15.9 8 11.4V6.25Z" fill="#EA4335" />
+      <path d="M3 6.25V5.35c0-1.85 2.1-2.9 3.6-1.77L8 4.63v6.77L3 7.65v-1.4Z" fill="#C5221F" />
+      <path d="M20 4.63 21.4 3.58c1.5-1.13 3.6-.08 3.6 1.77v2.3l-5 3.75V4.63Z" fill="#FBBC04" />
+      <path d="M8 4.63 14 9.13 20 4.63v5.15l-6 4.5-6-4.5V4.63Z" fill="#EA4335" />
+    </svg>
+  );
 }
 
 const configuredEmail = (import.meta.env.VITE_ENQUIRY_EMAIL || "").trim();
@@ -754,12 +767,12 @@ export default function PublicCatalog({
             </div>
             <div className="pub-footer__emails">
               <a className="pub-footer__email" href={`mailto:${enquiryEmail ?? "hi@brutti.my"}`} aria-label="Email Benua Brutti general enquiries">
-                <span className="pub-footer__email-icon" aria-hidden="true"><Mail size={21} strokeWidth={1.8}/></span>
+                <span className="pub-footer__email-icon" aria-hidden="true"><GmailLogo /></span>
                 <span className="pub-footer__email-copy"><span>GENERAL ENQUIRIES</span><strong>{enquiryEmail ?? "hi@brutti.my"}</strong></span>
                 <ArrowUpRight className="pub-footer__email-arrow" size={17} aria-hidden="true" />
               </a>
               <a className="pub-footer__email" href="mailto:hr@brutti.my" aria-label="Email Benua Brutti HR">
-                <span className="pub-footer__email-icon" aria-hidden="true"><Mail size={21} strokeWidth={1.8}/></span>
+                <span className="pub-footer__email-icon" aria-hidden="true"><GmailLogo /></span>
                 <span className="pub-footer__email-copy"><span>CAREERS & HR</span><strong>hr@brutti.my</strong></span>
                 <ArrowUpRight className="pub-footer__email-arrow" size={17} aria-hidden="true" />
               </a>
