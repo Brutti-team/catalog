@@ -30,6 +30,7 @@ import { cmToUnit, unitToCm, unitMax, type DimensionUnit } from "../lib/dimensio
 import DimensionUnitPicker from "./DimensionUnitPicker";
 import PhotoCropEditor from "./PhotoCropEditor";
 import { photoCropStyle } from "../lib/photo-crop";
+import { splitSpecifications } from "../lib/specification-groups";
 
 export type CatalogEditorNavigation = "overview" | "products" | "categories" | "users" | "activity" | "catalog";
 export default function ProductEditor({
@@ -114,13 +115,52 @@ export default function ProductEditor({
   }, []);
   const update = <K extends keyof Product>(key: K, value: Product[K]) =>
     setDraft((p) => ({ ...p, [key]: value }));
-  const addSpecificationRow = () =>
-    setDraft((current) => ({
+  const addSpecificationRow = (sectionId?: string) =>
+    setDraft((current) => {
+      const specifications = [...(current.specifications ?? [])];
+      if (specifications.length >= 24) return current;
+      const row = { id: crypto.randomUUID(), name: "", value: "" };
+      const startOfSection = sectionId
+        ? specifications.findIndex(item => item.id === sectionId && item.kind === "section")
+        : -1;
+      if (sectionId && startOfSection < 0) return current;
+      const nextSection = specifications.findIndex(
+        (item, index) => index > startOfSection && item.kind === "section",
+      );
+      const index = nextSection < 0 ? specifications.length : nextSection;
+      specifications.splice(index, 0, row);
+      return { ...current, specifications };
+    });
+  const addSpecificationSection = () =>
+    setDraft(current => {
+      if ((current.specifications ?? []).length > 22) return current;
+      return {
+        ...current,
+        specifications: [
+          ...(current.specifications ?? []),
+          { id: crypto.randomUUID(), name: "", value: "", kind: "section" },
+          { id: crypto.randomUUID(), name: "", value: "" },
+        ],
+      };
+    });
+  const removeSpecificationSection = (sectionId: string) => {
+    const specifications = draft.specifications ?? [];
+    const start = specifications.findIndex(item => item.id === sectionId && item.kind === "section");
+    if (start < 0) return;
+    const next = specifications.findIndex((item, index) => index > start && item.kind === "section");
+    const end = next < 0 ? specifications.length : next;
+    const members = specifications.slice(start, end);
+    if (members.some(item => item.value.trim() || (item.kind !== "section" && item.name.trim())) &&
+        !window.confirm("Remove this section and all its rows? This cannot be undone after saving.")) return;
+    setDraft(current => ({
       ...current,
-      specifications: [...(current.specifications ?? []), {
-        id: crypto.randomUUID(), name: "", value: "",
-      }],
+      specifications: (current.specifications ?? []).filter(
+        item => !members.some(member => member.id === item.id),
+      ),
     }));
+  };
+  const { primary: primarySpecificationRows, sections: specificationSections } =
+    splitSpecifications(draft.specifications);
   const changeSpecification = (id: string, field: "name" | "value", value: string) =>
     setDraft((current) => ({
       ...current,
@@ -727,17 +767,17 @@ export default function ProductEditor({
                 </div>
                 <span className="catalog-spec-extra-count">{(draft.specifications ?? []).length} / 24</span>
               </div>
-              {(draft.specifications ?? []).map((row, index) => (
+              {primarySpecificationRows.map((row, index) => (
                 <div className="catalog-reference-custom-row" key={row.id}>
                   <input
-                    aria-label={`Specification ${index + 1} name`}
+                    aria-label={`Additional detail ${index + 1} name`}
                     placeholder="e.g. Drawer dimensions"
                     maxLength={80}
                     value={row.name}
                     onChange={(event) => changeSpecification(row.id, "name", event.target.value)}
                   />
                   <input
-                    aria-label={`Specification ${index + 1} value`}
+                    aria-label={`Additional detail ${index + 1} value`}
                     placeholder="e.g. W 3ft × D 1.8ft × H 2ft"
                     maxLength={400}
                     value={row.value}
@@ -746,7 +786,7 @@ export default function ProductEditor({
                   <button
                     type="button"
                     className="catalog-reference-remove-row"
-                    aria-label={`Remove specification ${row.name || index + 1}`}
+                    aria-label={`Remove detail ${row.name || index + 1}`}
                     title="Remove row"
                     onClick={() => removeSpecification(row.id)}
                   ><X size={17} aria-hidden="true" /></button>
@@ -756,9 +796,78 @@ export default function ProductEditor({
                 type="button"
                 className="catalog-reference-add-row"
                 disabled={(draft.specifications ?? []).length >= 24 || busy}
-                onClick={addSpecificationRow}
+                onClick={() => addSpecificationRow()}
+              >
+                <Plus size={17} aria-hidden="true" /> Add row
+              </button>
+              {specificationSections.map((section, index) => (
+                <div className="catalog-spec-new-section" key={section.id}>
+                  <div className="catalog-spec-new-section-heading">
+                    <span className="catalog-spec-section-num">{String(index + 2).padStart(2, "0")}</span>
+                    <label>
+                      <span>Specification section title</span>
+                      <input
+                        aria-label={`Section ${index + 2} title`}
+                        type="text"
+                        maxLength={80}
+                        placeholder="e.g. Pipe Rack or Drawer × 2"
+                        value={section.title}
+                        onChange={event => changeSpecification(section.id, "name", event.target.value)}
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      className="catalog-spec-remove-section"
+                      aria-label={`Remove section ${section.title || index + 2} and all its rows`}
+                      title="Remove section"
+                      onClick={() => removeSpecificationSection(section.id)}
+                    ><X size={17} aria-hidden="true" /></button>
+                  </div>
+                  <div className="catalog-spec-new-section-rows">
+                    {section.rows.map((row, rowIndex) => (
+                      <div className="catalog-reference-custom-row" key={row.id}>
+                        <input
+                          aria-label={`Section ${index + 2} row ${rowIndex + 1} name`}
+                          placeholder="e.g. Finishing"
+                          maxLength={80}
+                          value={row.name}
+                          onChange={event => changeSpecification(row.id, "name", event.target.value)}
+                        />
+                        <input
+                          aria-label={`Section ${index + 2} row ${rowIndex + 1} value`}
+                          placeholder="e.g. Clear satin finishing"
+                          maxLength={400}
+                          value={row.value}
+                          onChange={event => changeSpecification(row.id, "value", event.target.value)}
+                        />
+                        <button
+                          type="button"
+                          className="catalog-reference-remove-row"
+                          aria-label={`Remove row ${row.name || rowIndex + 1}`}
+                          title="Remove row"
+                          onClick={() => removeSpecification(row.id)}
+                        ><X size={17} aria-hidden="true" /></button>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="catalog-reference-add-row"
+                    disabled={(draft.specifications ?? []).length >= 24 || busy}
+                    onClick={() => addSpecificationRow(section.id)}
+                  >
+                    <Plus size={17} aria-hidden="true" /> Add row
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="catalog-spec-add-section"
+                disabled={(draft.specifications ?? []).length > 22 || busy}
+                onClick={addSpecificationSection}
               >
                 <Plus size={17} aria-hidden="true" /> Add specification
+                <span>New section</span>
               </button>
             </section>
             ) : (
