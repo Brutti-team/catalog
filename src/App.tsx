@@ -3,6 +3,7 @@ import { photoCropStyle } from "./lib/photo-crop";
 import { formatProductPrice } from "./lib/price";
 import { publicAssetUrl } from "./lib/assets";
 import { categoryCover } from "./lib/category-covers";
+import { curatedCategoryCover } from "./lib/curated-category-covers";
 import { resolveAppRoute } from "./lib/routes";
 import { useState, useEffect, useCallback, useRef, type FormEvent } from "react";
 import {
@@ -1049,9 +1050,12 @@ export default function App() {
                   const items = data.products.filter(
                     (p) => p.categoryId === c.id,
                   );
+                  const curatedCover = curatedCategoryCover(c.id);
                   const cover = c.cover_image_url
                     ? { src: c.cover_image_url, position: "center" }
-                    : categoryCover(c.name, items);
+                    : curatedCover
+                      ? { src: curatedCover.imageUrl, position: "center" }
+                      : categoryCover(c.name, items);
                   return (
                     <article className={`category-card${cover.src ? "" : " category-card--without-cover"}`} key={c.id}>
                       {cover.src && (
@@ -1238,6 +1242,7 @@ export default function App() {
               />
             </label>
             <CategoryCoverPicker
+              categoryId={catEditor.id}
               products={data.products.filter(product => product.categoryId === catEditor.id)}
               value={catCoverImageUrl}
               onChange={setCatCoverImageUrl}
