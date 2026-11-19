@@ -22,6 +22,7 @@ import { productIdFromHash } from "../lib/routes";
 import { recordCatalogEvent } from "../lib/customer-analytics";
 import { BRUTTI_WHATSAPP_NUMBER, productWhatsAppUrl } from "../lib/whatsapp-enquiry";
 import ShowroomSections from "./ShowroomSections";
+import BestSellingSection from "./BestSellingSection";
 import "./public.css";
 import "./brutti-3d.css";
 import "./public-reference.css";
@@ -248,6 +249,18 @@ export default function PublicCatalog({
       document.getElementById("pub-showroom")?.scrollIntoView({ behavior: "smooth" });
     }
   };
+  const browseBestSellers = () => {
+    setMobileMenu(false);
+    if (productId !== null) {
+      window.location.hash = "/catalog";
+      window.setTimeout(
+        () => document.getElementById("pub-best-selling")?.scrollIntoView({ behavior: "smooth" }),
+        60,
+      );
+    } else {
+      document.getElementById("pub-best-selling")?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   const resetFilters = () => {
     setQuery("");
     setCategory("all");
@@ -328,17 +341,17 @@ export default function PublicCatalog({
             Collection
           </button>
           <button onClick={browseShowroom}>
-            Featured
+            Categories
           </button>
           <button
             onClick={() => {
               document
-                .getElementById("pub-process")
+                .getElementById("pub-best-selling")
                 ?.scrollIntoView({ behavior: "smooth" });
               setMobileMenu(false);
             }}
           >
-            Our approach
+            Best sellers
           </button>
         </nav>}
         {!previewProduct && <div className="pub-header-actions">
@@ -776,7 +789,7 @@ export default function PublicCatalog({
             )}
           </section>
         )}
-        {productId === null && <ShowroomSections onExplore={exploreShowroom} section="approach" />}
+        {productId === null && <BestSellingSection products={published} categories={categories} loading={loading} onBrowse={() => { resetFilters(); browseCollection(); }} />}
       </main>
       {!previewProduct && <footer className="pub-footer pub-footer--reference" id="pub-contact">
         <div className="pub-footer__layout">
