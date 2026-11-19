@@ -55,8 +55,8 @@
 .pub-app .pub-hero {
   max-width:none;
   display:block;
-  min-height:670px;
-  height:min(810px,83vh);
+  min-height:480px;
+  height:clamp(480px,60vh,570px);
   position:relative;
   overflow:hidden;
   background:#383026;
@@ -76,7 +76,7 @@
   height:100%;
   min-height:0;
   margin:0 auto;
-  padding:clamp(54px,8vw,125px) clamp(26px,7vw,114px) clamp(56px,6vw,96px);
+  padding:clamp(36px,4vw,68px) clamp(26px,6vw,100px) clamp(42px,4vw,68px);
   display:flex;
   flex-direction:column;
   align-items:flex-start;
@@ -84,23 +84,23 @@
 }
 .pub-app .pub-hero h1 {
   color:#fff8ee;
-  max-width:1000px;
-  font-size:clamp(62px,8vw,128px);
+  max-width:850px;
+  font-size:clamp(58px,6.2vw,94px);
   line-height:.93;
   letter-spacing:-.04em;
-  margin:18px 0 29px;
+  margin:12px 0 20px;
 }
 .pub-app .pub-hero h1 em {color:#f2d6bd;font-weight:400;}
 .pub-app .pub-hero .pub-eyebrow {font-size:11px;color:#f5e7d4;letter-spacing:3px;}
 .pub-app .pub-hero .pub-eyebrow > span {background:#e5c7a4;}
 .pub-app .pub-hero-description {
   color:#f7eee3;
-  font-size:15px;
-  max-width:550px;
+  font-size:14px;
+  max-width:520px;
   line-height:1.85;
 }
 .pub-app .pub-hero .pub-primary-button {
-  margin-top:34px;
+  margin-top:23px;
   color:#332c25 !important;
   background:#f9f4eb;
   border:1px solid #f9f4eb;
@@ -113,7 +113,7 @@
 .pub-app .pub-hero .pub-primary-button:hover {background:#e6d5bf;border-color:#e6d5bf;}
 .pub-app .pub-hero-footnote {margin-top:25px;color:#e6d5c5;font-size:10px;letter-spacing:1.1px;padding-top:0;}
 .pub-app .pub-hero-line {background:#f7e8d5;}
-.pub-app .pub-hero-image-label {left:auto;right:clamp(20px,5vw,82px);bottom:48px;min-width:170px;z-index:2;}
+.pub-app .pub-hero-image-label {left:auto;right:clamp(20px,5vw,82px);bottom:30px;min-width:170px;z-index:2;}
 .pub-app .pub-hero-number {right:clamp(20px,5vw,82px);top:38px;z-index:2;}
 .pub-app .pub-values-strip {
   max-width:none;
@@ -311,14 +311,14 @@
 @media(max-width:1000px) {
   .pub-app .pub-values-strip {flex-wrap:wrap;gap:16px 35px;}
   .pub-reference-intro,.pub-reference-process-top {gap:35px;}
-  .pub-app .pub-hero h1 {font-size:clamp(60px,9vw,96px);}
+  .pub-app .pub-hero h1 {font-size:clamp(55px,7vw,82px);}
   .pub-reference-category-grid {grid-template-rows:repeat(2,225px);}
 }
 @media(max-width:800px) {
   .pub-app .pub-header {min-height:70px;}
-  .pub-app .pub-hero {height:730px;min-height:590px;}
-  .pub-app .pub-hero-copy {padding:45px 7% 75px;justify-content:end;}
-  .pub-app .pub-hero h1 {font-size:clamp(55px,10vw,85px);}
+  .pub-app .pub-hero {height:600px;min-height:520px;}
+  .pub-app .pub-hero-copy {padding:35px 7% 55px;justify-content:end;}
+  .pub-app .pub-hero h1 {font-size:clamp(49px,8vw,68px);}
   .pub-app .pub-hero-image-label {display:none;}
   .pub-app .pub-hero-number {top:25px;}
   .pub-reference-intro,.pub-reference-process-top {grid-template-columns:1fr;gap:20px;}
@@ -331,9 +331,9 @@
 }
 @media(max-width:580px) {
   .pub-app .pub-header {padding:0 6%;}
-  .pub-app .pub-hero {height:650px;min-height:590px;}
-  .pub-app .pub-hero-copy {padding:40px 7% 53px;}
-  .pub-app .pub-hero h1 {font-size:clamp(49px,14vw,73px);}
+  .pub-app .pub-hero {height:560px;min-height:520px;}
+  .pub-app .pub-hero-copy {padding:34px 7% 42px;}
+  .pub-app .pub-hero h1 {font-size:clamp(43px,10vw,58px);}
   .pub-app .pub-hero-description {font-size:13px;line-height:1.7;}
   .pub-app .pub-hero .pub-eyebrow {font-size:9px;letter-spacing:1.6px;}
   .pub-app .pub-hero-number {font-size:8px;right:7%;}
