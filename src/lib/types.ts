@@ -40,6 +40,8 @@ export interface Product {
   status: ProductStatus;
   availability: Availability;
   featured: boolean;
+  /** Admin-curated best-selling shelf; independent of the Featured flag. */
+  bestSelling?: boolean;
   images: ProductImage[];
   model?: ProductModel | null;
   createdAt: string;
