@@ -93,6 +93,7 @@ function newProduct(categoryId = ""): Product {
     status: "draft",
     availability: "available",
     featured: false,
+    bestSelling: false,
     images: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
