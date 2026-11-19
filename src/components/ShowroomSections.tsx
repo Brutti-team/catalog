@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, DraftingCompass, Hammer, Layers3 } from "lucide-
 import type { Category, Product } from "../lib/types";
 import { publicAssetUrl } from "../lib/assets";
 import { photoCropStyle } from "../lib/photo-crop";
+import { curatedCategoryCover } from "../lib/curated-category-covers";
 import "./public-category-carousel.css";
 
 const referenceImage = (name: string) =>
@@ -149,11 +150,14 @@ export default function ShowroomSections({
       // A Staff Portal-selected cover takes priority even when its original product
       // stays Draft. Selecting the photo intentionally publishes only that image.
       const chosenCover = category.cover_image_url?.trim();
+      const curatedCover = curatedCategoryCover(category.id);
+      const selectedPhoto = chosenCover || curatedCover?.imageUrl;
       return {
         id: category.id,
         name: category.name,
-        image: chosenCover ? publicAssetUrl(chosenCover) : photo ? publicAssetUrl(photo.url) : null,
-        photo: chosenCover ? undefined : photo,
+        // Pinned Brutti Library photos do not change when new products are uploaded.
+        image: selectedPhoto ? publicAssetUrl(selectedPhoto) : photo ? publicAssetUrl(photo.url) : null,
+        photo: selectedPhoto ? undefined : photo,
         fallback: officialCategoryCover(category.name),
       };
     });
