@@ -60,6 +60,7 @@ import "./components/account-permission-brutti.css";
 import "./components/public-home-typography-2026.css";
 import "./components/public-curated-showroom.css";
 import "./components/product-editor-specifications-refresh.css";
+import "./components/product-editor-specification-groups.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
