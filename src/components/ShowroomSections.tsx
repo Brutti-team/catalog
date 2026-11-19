@@ -146,11 +146,14 @@ export default function ShowroomSections({
           a.name.localeCompare(b.name)
         );
       const photo = categoryProducts[0]?.images.find(image => image.url?.trim());
+      // A Staff Portal-selected cover takes priority even when its original product
+      // stays Draft. Selecting the photo intentionally publishes only that image.
+      const chosenCover = category.cover_image_url?.trim();
       return {
         id: category.id,
         name: category.name,
-        image: photo ? publicAssetUrl(photo.url) : null,
-        photo,
+        image: chosenCover ? publicAssetUrl(chosenCover) : photo ? publicAssetUrl(photo.url) : null,
+        photo: chosenCover ? undefined : photo,
         fallback: officialCategoryCover(category.name),
       };
     });
