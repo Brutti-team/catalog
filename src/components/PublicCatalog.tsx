@@ -236,6 +236,12 @@ export default function PublicCatalog({
     setFeaturedOnly(false);
     browseCollection(false);
   };
+  // Category tiles use the stable Admin category ID, never a fuzzy keyword match.
+  const exploreCategory = (categoryId: string) => {
+    setQuery("");
+    setCategory(categoryId);
+    browseCollection(false);
+  };
   const resetFilters = () => {
     setQuery("");
     setCategory("all");
@@ -413,7 +419,7 @@ export default function PublicCatalog({
                 BENUA BRUTTI SDN. BHD. <ArrowDown size={14} />
               </span>
             </div>
-            <ShowroomSections onExplore={exploreShowroom} />
+            <ShowroomSections onExplore={exploreShowroom} onSelectCategory={exploreCategory} categories={categories} publishedProducts={published} />
             <section id="pub-collection" className="pub-collection">
               <div className="pub-section-heading">
                 <div>
