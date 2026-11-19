@@ -15,18 +15,20 @@ type Props = {
 };
 
 /**
- * The catalog has a Featured flag, but no verified sales totals.
- * The "Best Selling" editorial shelf is therefore deliberately curated from
- * published Featured products and then other published pieces as a fallback.
- * Never assert a numeric sales ranking or generate discount/sale labels.
+ * The Best Selling gallery is explicitly curated by Admin, independently of
+ * Featured. It only displays Published products with an uploaded photograph.
+ * These are editorial picks: no fabricated sales counts or discounts.
  */
 export default function BestSellingSection({ products, categories, loading, onBrowse }: Props) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const curated = useMemo(() => (
     products
-      .filter(product => product.status === "published" && product.images.some(image => Boolean(image.url?.trim())))
+      .filter(product =>
+        product.status === "published" &&
+        product.bestSelling === true &&
+        product.images.some(image => Boolean(image.url?.trim()))
+      )
       .sort((a, b) =>
-        Number(b.featured) - Number(a.featured) ||
         (a.displayOrder ?? 0) - (b.displayOrder ?? 0) ||
         a.name.localeCompare(b.name)
       )
@@ -96,7 +98,7 @@ export default function BestSellingSection({ products, categories, loading, onBr
                       decoding="async"
                       style={photoCropStyle(photo)}
                     />
-                    {product.featured && <span className="brutti-best-selling__flag">BRUTTI PICK</span>}
+                    <span className="brutti-best-selling__flag">BEST SELLING</span>
                   </span>
                   <span className="brutti-best-selling__product-copy">
                     <span className="brutti-best-selling__category">{categoryName(product.categoryId)}</span>
@@ -113,28 +115,10 @@ export default function BestSellingSection({ products, categories, loading, onBr
           </div>
         </>
       ) : (
-        <div className="brutti-best-selling__preview">
-          <div className="brutti-best-selling__preview-image">
-            <img
-              src="https://brutti.my/assets/showroom-web.jpg"
-              loading="lazy"
-              alt="Benua Brutti furniture and interiors showroom"
-              onError={event => {
-                const img = event.currentTarget;
-                if (!img.src.includes("built%20in%20cabinet.webp")) {
-                  img.src = "https://brutti.my/assets/what-we-build/built%20in%20cabinet.webp";
-                } else {
-                  img.style.opacity = "0";
-                }
-              }}
-            />
-          </div>
-          <div className="brutti-best-selling__preview-copy">
-            <p className="brutti-best-selling__eyebrow">THE COLLECTION IS TAKING SHAPE</p>
-            <h3>Beautiful pieces are on their way.</h3>
-            <p>Our selected furniture will appear here when products are published in the Brutti Catalog.</p>
-            <button type="button" onClick={onBrowse}>Browse the collection <ArrowRight size={17} aria-hidden="true" /></button>
-          </div>
+        <div className="brutti-best-selling__empty" role="status">
+          <span className="brutti-best-selling__empty-heading">Our selected collection is coming together.</span>
+          <p>Products marked Best Selling and Published in Admin will appear here with their real photos, names and prices.</p>
+          <button type="button" onClick={onBrowse}>Browse the collection <ArrowRight size={17} aria-hidden="true" /></button>
         </div>
       )}
     </section>
