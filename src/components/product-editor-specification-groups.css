@@ -1,0 +1,250 @@
+/* Brutti Catalog / specifications groups. A new specification is a new titled
+   section; Add row only adds to its own group. No new database table needed. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-extra-heading {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs > .catalog-reference-add-row {
+  margin: 12px 0 4px !important;
+  background: rgba(240,248,242,.9);
+  border-color: #c9decf;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-new-section {
+  margin-top: 28px;
+  padding: 24px 19px 21px;
+  border-top: 1px solid #c7d8cb;
+  border-radius: 0 0 12px 12px;
+  background: linear-gradient(180deg, rgba(230,241,233,.6) 0%, rgba(248,251,248,.44) 100%);
+  box-shadow: inset 0 1px rgba(255,255,255,.9);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-new-section-heading {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 13px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-section-num {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #c9ddcf;
+  border-radius: 10px;
+  background: rgba(255,255,255,.85);
+  color: #36704c;
+  font: 750 11px "DM Sans", sans-serif;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-new-section-heading label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-new-section-heading label > span {
+  color: #6c806f;
+  font: 650 10px/1.3 "DM Sans", sans-serif;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-new-section-heading input {
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  height: 43px;
+  margin: 0;
+  padding: 0 13px;
+  border: 1px solid #d1dfd4;
+  border-radius: 10px;
+  background: rgba(255,255,255,.87);
+  color: #264b34;
+  font: 660 13px "DM Sans", sans-serif;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-new-section-heading input:focus {
+  outline: none;
+  border-color: #6e9f7a;
+  box-shadow: 0 0 0 3px rgba(72,135,88,.14);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-remove-section {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  border: 1px solid #e9d5d0;
+  border-radius: 9px;
+  color: #9b625c;
+  background: rgba(255,255,255,.72);
+  cursor: pointer;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-remove-section:hover {
+  background: #fff2f0;
+  border-color: #dcb9b4;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-new-section-rows {
+  display: grid;
+  gap: 9px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-new-section-rows .catalog-reference-custom-row {
+  display: grid;
+  grid-template-columns: var(--spec-label-width) minmax(0,1fr) 35px;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-new-section .catalog-reference-add-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  margin: 14px 0 0 !important;
+  padding: 7px 13px;
+  border: 1px solid #cde1d1;
+  border-radius: 10px;
+  background: rgba(255,255,255,.82);
+  color: #3b6949;
+  font: 680 12px "DM Sans",sans-serif;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-add-section {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  column-gap: 8px;
+  row-gap: 3px;
+  min-height: 41px;
+  margin: 25px 0 3px;
+  padding: 9px 17px;
+  border: 1px solid #315f42;
+  border-radius: 11px;
+  background: #315f42;
+  color: #fff;
+  font: 700 12px "DM Sans",sans-serif;
+  cursor: pointer;
+  transition: background .16s ease, border-color .16s ease;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-add-section span {
+  font-size: 10px;
+  font-weight: 450;
+  opacity: .84;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-add-section:hover:not(:disabled) {
+  background: #234e34;
+  border-color: #234e34;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs :is(.catalog-spec-add-section,.catalog-spec-remove-section,.catalog-reference-add-row):focus-visible {
+  outline: 2px solid #65a278;
+  outline-offset: 3px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs :is(.catalog-spec-add-section,.catalog-reference-add-row):disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+@media (max-width: 760px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-spec-new-section {
+    margin-top: 24px;
+    padding: 17px 12px 18px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-spec-new-section-heading {
+    grid-template-columns: 28px minmax(0,1fr) 30px;
+    gap: 9px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-spec-section-num {
+    width: 28px; height: 28px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-spec-new-section-rows .catalog-reference-custom-row {
+    grid-template-columns: minmax(0,1fr) minmax(0,1.2fr) 32px;
+    gap: 7px;
+  }
+}
+@media (max-width: 540px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-spec-new-section-rows .catalog-reference-custom-row {
+    grid-template-columns: minmax(0,1fr) 32px;
+    grid-template-rows: auto auto;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-spec-new-section-rows .catalog-reference-custom-row > input:first-child {
+    grid-column: 1; grid-row: 1;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-spec-new-section-rows .catalog-reference-custom-row > input:nth-child(2) {
+    grid-column: 1; grid-row: 2;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-spec-new-section-rows .catalog-reference-custom-row > button {
+    grid-column: 2; grid-row: 1 / 3; align-self: center;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-spec-add-section {
+    width: 100%;
+  }
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-new-section {
+  border-top-color: #597563;
+  background: linear-gradient(180deg,rgba(57,85,64,.7),rgba(39,59,45,.24));
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-new-section-heading input {
+  background: #2c4836;
+  color: #e9f2e8;
+  border-color: #5b7861;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-new-section-heading label > span {
+  color: #b2c5b8;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-section-num {
+  color: #d3e6d5;
+  background: #35533f;
+  border-color: #5f7c66;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-add-section {
+  background: #3e7952;
+  border-color: #559368;
+}
+.pub-app .pub-specifications .pub-spec-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(67,94,71,.18);
+}
+.pub-app .pub-specifications .pub-spec-section > h3 {
+  margin: 0 0 13px;
+  color: #33583f;
+  font: 680 18px/1.4 "Manrope","DM Sans",sans-serif;
+  letter-spacing: -.025em;
+}
+.pub-app .pub-specifications .pub-spec-section > dl {
+  margin: 0;
+}
+.pub-app .pub-specifications .pub-spec-section dl > div {
+  border-color: rgba(67,94,71,.12);
+}
