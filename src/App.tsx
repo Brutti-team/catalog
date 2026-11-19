@@ -700,23 +700,28 @@ export default function App() {
               </div>
             </section>
           ) : (
-            <div className="page-heading catalog-management-heading">
-              <div>
+            <section className="page-heading catalog-management-heading" aria-labelledby="catalog-categories-heading">
+              <div className="catalog-categories-heading-copy">
                 <span className="eyebrow">BRUTTI CATALOG WORKSPACE</span>
-                <div className="catalog-categories-title-line">
-                  <h1>Categories</h1>
-                  <div className="catalog-categories-total" aria-live="polite" aria-label={`Total categories: ${loading ? "loading" : data.categories.length}`}>
+                <h1 id="catalog-categories-heading">Categories</h1>
+                <p>Manage how customers discover your collections.</p>
+              </div>
+              <div className="catalog-categories-heading-actions">
+                <div className="catalog-categories-total" aria-live="polite" aria-label={`Total categories: ${loading ? "loading" : data.categories.length}`}>
+                  <span className="catalog-categories-total-icon" aria-hidden="true">
+                    <Layers size={19} strokeWidth={1.8} />
+                  </span>
+                  <div className="catalog-categories-total-detail">
                     <strong>{loading ? "—" : data.categories.length}</strong>
-                    <span>Collections</span>
+                    <span>Total categories</span>
                   </div>
                 </div>
-                <p>Organise the collections your customers explore.</p>
+                <button type="button" className="button primary" disabled={loading || busy}
+                  onClick={() => editCategory({ id: crypto.randomUUID(), name: "", description: "" })}>
+                  <Plus size={17} aria-hidden="true" /> Add category
+                </button>
               </div>
-              <button className="button primary" disabled={loading || busy}
-                onClick={() => editCategory({ id: crypto.randomUUID(), name: "", description: "" })}>
-                <Plus size={17} /> Add category
-              </button>
-            </div>
+            </section>
           )}
           {(error || actionError) && !catEditor && (
             <div className="notice error" role="alert">
