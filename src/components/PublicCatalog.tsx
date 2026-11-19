@@ -18,6 +18,7 @@ import type { Category, Product, ProductImage } from "../lib/types";
 import { photoCropStyle } from "../lib/photo-crop";
 import { publicAssetUrl } from "../lib/assets";
 import ProductPrice from "./ProductPrice";
+import { splitSpecifications } from "../lib/specification-groups";
 import { productIdFromHash } from "../lib/routes";
 import { recordCatalogEvent } from "../lib/customer-analytics";
 import { BRUTTI_WHATSAPP_NUMBER, productWhatsAppUrl } from "../lib/whatsapp-enquiry";
@@ -182,6 +183,7 @@ export default function PublicCatalog({
   const product = previewProduct ?? (
     productId === null ? undefined : published.find((item) => item.id === productId)
   );
+  const specificationGroups = splitSpecifications(product?.specifications);
   // Track only the public catalog, never the admin's private product preview.
   useEffect(() => {
     if (!previewProduct && !loading && !error) recordCatalogEvent("catalog_open");
@@ -742,7 +744,7 @@ export default function PublicCatalog({
                           <dt>Category</dt>
                           <dd>{categoryName(product.categoryId)}</dd>
                         </div>
-                        {(product.specifications ?? []).map((item) => (
+                        {specificationGroups.primary.map((item) => (
                           <div key={item.id}>
                             <dt>{item.name}</dt>
                             <dd>{item.value}</dd>
@@ -753,6 +755,19 @@ export default function PublicCatalog({
                           <dd>{product.sku}</dd>
                         </div>
                       </dl>
+                      {specificationGroups.sections.map(section => (
+                        <div className="pub-spec-section" key={section.id}>
+                          <h3>{section.title}</h3>
+                          <dl>
+                            {section.rows.map(item => (
+                              <div key={item.id}>
+                                <dt>{item.name}</dt>
+                                <dd>{item.value}</dd>
+                              </div>
+                            ))}
+                          </dl>
+                        </div>
+                      ))}
                     </div>
                     <div className="pub-detail-promise">
                       <span className="pub-promise-symbol">b.</span>
