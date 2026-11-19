@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { ArrowLeft, ArrowRight, DraftingCompass, Hammer, Layers3 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import { publicAssetUrl } from "../lib/assets";
+import { photoCropStyle } from "../lib/photo-crop";
 import "./public-category-carousel.css";
 
 const referenceImage = (name: string) =>
@@ -16,20 +17,59 @@ type ShowroomSectionsProps = {
   section?: "categories" | "approach";
 };
 
-/** Fallbacks are real Brutti images from its official What We Build website. */
-function officialCategoryPhoto(name: string) {
+/** Official Brutti project boards are collages, so crop a single photographed object only.
+ * These covers are used solely when a category has no published product photo.
+ * An Admin-published Featured / Best Selling product takes precedence automatically.
+ */
+function officialCategoryCover(name: string): { url: string; position: string; zoom: string } {
   const title = name.toLowerCase();
-  const file =
-    /bed|bunk/.test(title) ? "bed & bunkbed.webp" :
-    /cabinet|wardrobe/.test(title) ? "built in cabinet.webp" :
-    /kiosk/.test(title) ? "kiosk.webp" :
-    /rack|shel/.test(title) ? "racks & shelves.webp" :
-    /table|counter|reception/.test(title) ? "table & counters.webp" :
-    /memento|souvenir/.test(title) ? "memento.webp" :
-    /sign|panel|display/.test(title) ? "Signages.webp" :
-    /camper/.test(title) ? "our camper.webp" :
-    "others.webp";
-  return "https://brutti.my/assets/what-we-build/" + encodeURIComponent(file);
+  let file = "others.webp";
+  let position = "0% 9%";
+  let zoom = "215% auto";
+
+  if (/bed|bunk/.test(title)) {
+    file = "bed & bunkbed.webp";
+    position = "100% 12%"; // Timber bunk bed (top-right of the original project board).
+    zoom = "225% auto";
+  } else if (/cabinet|wardrobe/.test(title)) {
+    file = "built in cabinet.webp";
+    position = "0% 5%"; // Built-in wood cabinet, not the full montage.
+    zoom = "210% auto";
+  } else if (/kiosk/.test(title)) {
+    file = "kiosk.webp";
+    position = "0% 12%"; // Single curved timber kiosk.
+    zoom = "215% auto";
+  } else if (/rack|shel/.test(title)) {
+    file = "racks & shelves.webp";
+    position = "100% 12%"; // Tall timber display rack.
+    zoom = "225% auto";
+  } else if (/table|kitchen/.test(title)) {
+    file = "table & counters.webp";
+    position = "100% 10%"; // Timber counter with shelves.
+    zoom = "215% auto";
+  } else if (/reception|counter/.test(title)) {
+    file = "table & counters.webp";
+    position = "100% 12%"; // One counter, rather than the montage.
+    zoom = "215% auto";
+  } else if (/memento|souvenir|memorabil/.test(title)) {
+    file = "memento.webp";
+    position = "100% 9%"; // Wooden commemorative display box.
+    zoom = "220% auto";
+  } else if (/panel|sign|display/.test(title)) {
+    file = "Signages.webp";
+    position = "0% 3%"; // One Brutti timber sign.
+    zoom = "208% auto";
+  } else if (/rental/.test(title)) {
+    file = "kiosk.webp";
+    position = "0% 12%"; // Event kiosk suitable for temporary rental.
+    zoom = "215% auto";
+  }
+
+  return {
+    url: "https://brutti.my/assets/what-we-build/" + encodeURIComponent(file),
+    position,
+    zoom,
+  };
 }
 
 /**
@@ -95,16 +135,23 @@ export default function ShowroomSections({
 
   if (section === "categories") {
     const categoryCards = categories.map(category => {
-      const categoryProducts = publishedProducts.filter(
-        product => product.categoryId === category.id && product.images.some(image => image.url?.trim())
-      );
-      const selected = categoryProducts.find(product => product.featured) ?? categoryProducts[0];
-      const photo = selected?.images.find(image => image.url?.trim());
+      // Staff choose the showcase item by marking a published product Featured
+      // (or Best Selling). Never reveal private Draft/Archived product photos.
+      const categoryProducts = publishedProducts
+        .filter(product => product.categoryId === category.id && product.images.some(image => image.url?.trim()))
+        .sort((a, b) =>
+          Number(Boolean(b.featured)) - Number(Boolean(a.featured)) ||
+          Number(Boolean(b.bestSelling)) - Number(Boolean(a.bestSelling)) ||
+          (a.displayOrder ?? 0) - (b.displayOrder ?? 0) ||
+          a.name.localeCompare(b.name)
+        );
+      const photo = categoryProducts[0]?.images.find(image => image.url?.trim());
       return {
         id: category.id,
         name: category.name,
-        image: photo ? publicAssetUrl(photo.url) : officialCategoryPhoto(category.name),
-        fallback: officialCategoryPhoto(category.name),
+        image: photo ? publicAssetUrl(photo.url) : null,
+        photo,
+        fallback: officialCategoryCover(category.name),
       };
     });
 
@@ -125,20 +172,28 @@ export default function ShowroomSections({
             title={card.name}
           >
             <span className="pub-category-rail-image">
-              <img
-                src={card.image}
-                alt=""
-                loading="lazy"
-                decoding="async"
-                onError={event => {
-                  const img = event.currentTarget;
-                  if (img.src !== card.fallback) {
-                    img.src = card.fallback;
-                  } else {
-                    img.style.opacity = "0";
-                  }
+              <span
+                className="pub-category-rail-single-fallback"
+                aria-hidden="true"
+                style={{
+                  backgroundImage: `url("${card.fallback.url}")`,
+                  backgroundPosition: card.fallback.position,
+                  backgroundSize: card.fallback.zoom,
                 }}
               />
+              {card.image && (
+                <img
+                  src={card.image}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  style={photoCropStyle(card.photo)}
+                  onError={event => {
+                    // Leave the single-object branded photo underneath as fallback.
+                    event.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
             </span>
             <span className="pub-category-rail-name">{card.name}</span>
           </button>
