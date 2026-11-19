@@ -61,6 +61,7 @@ import "./components/public-home-typography-2026.css";
 import "./components/public-curated-showroom.css";
 import "./components/product-editor-specifications-refresh.css";
 import "./components/product-editor-specification-groups.css";
+import "./components/catalog-categories-background-totals.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
