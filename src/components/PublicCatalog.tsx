@@ -236,11 +236,17 @@ export default function PublicCatalog({
     setFeaturedOnly(false);
     browseCollection(false);
   };
-  // Category tiles use the stable Admin category ID, never a fuzzy keyword match.
-  const exploreCategory = (categoryId: string) => {
-    setQuery("");
-    setCategory(categoryId);
-    browseCollection(false);
+  const browseShowroom = () => {
+    setMobileMenu(false);
+    if (productId !== null) {
+      window.location.hash = "/catalog";
+      window.setTimeout(
+        () => document.getElementById("pub-showroom")?.scrollIntoView({ behavior: "smooth" }),
+        50,
+      );
+    } else {
+      document.getElementById("pub-showroom")?.scrollIntoView({ behavior: "smooth" });
+    }
   };
   const resetFilters = () => {
     setQuery("");
@@ -321,7 +327,7 @@ export default function PublicCatalog({
           <button className="pub-nav-active" onClick={() => browseCollection()}>
             Collection
           </button>
-          <button onClick={() => browseCollection(true)}>
+          <button onClick={browseShowroom}>
             Featured
           </button>
           <button
@@ -419,19 +425,19 @@ export default function PublicCatalog({
                 BENUA BRUTTI SDN. BHD. <ArrowDown size={14} />
               </span>
             </div>
-            <ShowroomSections onExplore={exploreShowroom} onSelectCategory={exploreCategory} categories={categories} publishedProducts={published} />
+            <ShowroomSections onExplore={exploreShowroom} categories={categories} publishedProducts={published} loading={loading} />
             <section id="pub-collection" className="pub-collection">
               <div className="pub-section-heading">
                 <div>
-                  <p className="pub-eyebrow">EXPLORE OUR WORK</p>
+                  <p className="pub-eyebrow">EXPLORE THE COLLECTION</p>
                   <h2>
-                    The collection
+                    Browse by category
                   </h2>
                 </div>
                 <p>
-                  Kiosks, counters, cabinetry and furniture.
+                  Discover our published pieces by category.
                   <br />
-                  Explore the details behind every piece.
+                  Search, filter and explore the details.
                 </p>
               </div>
               <div className="pub-collection-tools">
@@ -560,13 +566,13 @@ export default function PublicCatalog({
               ) : filtered.length ? (
                 <div className="pub-products-grid">{filtered.map(card)}</div>
               ) : (
-                <div className="pub-empty-state">
+                <div className="pub-empty-state pub-empty-state--compact">
                   <span className="pub-empty-icon" aria-hidden="true"><Search size={23} /></span>
                   <h3>{!published.length && !query && category === "all" && !featuredOnly
                     ? "Our collection is taking shape."
                     : "No matching projects."}</h3>
                   <p>{!published.length && !query && category === "all" && !featuredOnly
-                    ? "A curated selection of Benua Brutti projects will appear here as they are published."
+                    ? "Published Brutti products will appear here by category."
                     : "Try another search or choose a different category to explore our work."}</p>
                   {(query || category !== "all" || featuredOnly) && (
                     <button className="pub-primary-button" onClick={resetFilters}>
