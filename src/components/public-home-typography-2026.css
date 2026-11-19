@@ -100,13 +100,14 @@
   max-width: 450px;
 }
 
-/* Four category tiles remain the visual focus: images unchanged, text made readable. */
+/* Live Admin categories may contain more than four cards: all rows stay equal. */
 .pub-app.pub-refined:not(.pub-private-preview) .pub-reference-category-grid {
   max-width: 1520px;
   gap: clamp(12px, 1.05vw, 18px);
   padding-inline: clamp(24px, 5.2vw, 80px);
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-template-rows: minmax(285px, 345px);
+  grid-template-rows: none;
+  grid-auto-rows: minmax(285px, 345px);
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-reference-category-tile,
 .pub-app.pub-refined:not(.pub-private-preview) .pub-reference-category-tile:first-child {
@@ -165,6 +166,12 @@
   line-height: 1.58;
   font-weight: 470;
   letter-spacing: 0;
+  /* Category descriptions are editable in Admin; keep long copy inside tiles. */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-reference-category-caption > svg {
   width: 19px;
