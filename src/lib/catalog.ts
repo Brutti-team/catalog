@@ -88,6 +88,7 @@ type ProductRow = {
   status: Product["status"];
   availability: Product["availability"];
   featured: boolean;
+  best_selling: boolean;
   images: ProductImage[];
   model_path?: string | null;
   model_name?: string | null;
@@ -116,6 +117,7 @@ function fromRow(row: ProductRow): Product {
     status: row.status,
     availability: row.availability,
     featured: row.featured,
+    bestSelling: row.best_selling === true,
     images: row.images ?? [],
     ...(row.model_path && row.model_name ? { model: { path: row.model_path, name: row.model_name } } : {}),
     createdAt: row.created_at,
@@ -142,6 +144,7 @@ function toRow(product: Product, capabilities: CatalogCapabilities): ProductRow 
     status: product.status,
     availability: product.availability,
     featured: product.featured,
+    best_selling: product.bestSelling === true,
     images: product.images,
     created_at: product.createdAt,
     updated_at: product.updatedAt,
