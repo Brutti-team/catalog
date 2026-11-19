@@ -1,0 +1,293 @@
+/* Brutti Catalog — scoped editorial polish for Edit Product > Specifications.
+   UI-only: existing values, unit conversion, validation and saves remain unchanged. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs.catalog-reference-specifications {
+  --spec-label-width: 166px;
+  --spec-row-gap: 0px;
+  --spec-field-height: 48px;
+  max-width: none;
+  padding-bottom: 32px;
+  color: #294733;
+  background: transparent;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs > .product-editor-section-heading {
+  margin-bottom: 9px;
+  padding-bottom: 16px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs > .catalog-reference-spec-rows {
+  gap: 0;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-row {
+  display: grid;
+  grid-template-columns: var(--spec-label-width) minmax(0, 1fr);
+  gap: 18px;
+  min-height: 72px;
+  align-items: center;
+  padding: 11px 0;
+  margin: 0;
+  border-bottom: 1px solid rgba(55, 89, 65, .085);
+  background: transparent;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-row:last-child {
+  border-bottom: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-key {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+  color: #365b43 !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-key small {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  line-height: 1.35;
+  letter-spacing: 0;
+  font-weight: 500;
+  color: #859588;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-row > input,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-price-field,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-availability-trigger,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-custom-row > input {
+  border-radius: 11px;
+  border: 1px solid #d5e1d7;
+  background: rgba(255,255,255,.83);
+  box-shadow: inset 0 1px rgba(255,255,255,.75);
+  color: #294733;
+  transition: border-color .16s ease, box-shadow .16s ease;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-row > input:focus,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-custom-row > input:focus,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-price-field:focus-within {
+  outline: none;
+  border-color: #6c9b7b;
+  box-shadow: 0 0 0 3px rgba(75,132,91,.13);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(94px, 110px) !important;
+  gap: 10px;
+  max-width: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions > label > input {
+  background: rgba(255,255,255,.88);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-pricing-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: end;
+  min-width: 0;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-pricing-field {
+  min-width: 0;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-pricing-field > span {
+  font-size: 11px;
+  font-weight: 680;
+  line-height: 1.45;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-price-field > span {
+  flex-basis: 49px;
+  width: 49px;
+  min-width: 49px;
+  background: #f1f6f1;
+  color: #3d6749;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-extra-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0 6px;
+  padding: 0 0 13px;
+  border-bottom: 1px solid rgba(66, 100, 77, .16);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-extra-heading h4 {
+  margin: 0 0 4px;
+  color: #2b5439;
+  font: 700 14px/1.4 "Manrope", "DM Sans", sans-serif;
+  letter-spacing: -.025em;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-extra-heading p {
+  margin: 0;
+  max-width: 630px;
+  color: #7c8d7f;
+  font: 475 11px/1.6 "DM Sans", sans-serif;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-extra-count {
+  flex: none;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #52775b;
+  background: rgba(225,239,226,.68);
+  border: 1px solid #d8e6da;
+  font: 690 10px/1.1 "DM Sans", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-custom-row {
+  grid-template-columns: var(--spec-label-width) minmax(0, 1fr) 35px;
+  gap: 15px;
+  align-items: center;
+  margin-top: 10px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-custom-row > input {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 46px;
+  padding-inline: 13px;
+  font-size: 12.5px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-custom-row > input::placeholder,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-row > input::placeholder {
+  color: #98a69b;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-custom-row > .catalog-reference-remove-row {
+  width: 35px;
+  min-width: 35px;
+  height: 35px;
+  min-height: 35px;
+  color: #9a6259;
+  border-radius: 9px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs > .catalog-reference-add-row {
+  min-height: 39px;
+  margin: 15px 0 0 0;
+  padding: 8px 15px;
+  border: 1px solid #c9ddcf;
+  border-radius: 10px;
+  background: rgba(234,245,236,.86);
+  color: #315e40;
+  font: 710 12px/1.3 "DM Sans", sans-serif;
+  gap: 8px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs > .catalog-reference-add-row:hover:not(:disabled) {
+  background: #dff0e3;
+  border-color: #a7c6b0;
+}
+@media (max-width: 760px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs.catalog-reference-specifications {
+    --spec-label-width: 100%;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-spec-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding-block: 13px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-spec-key {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions {
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-pricing-fields {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 10px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-custom-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.22fr) 35px;
+    gap: 8px;
+  }
+}
+@media (max-width: 540px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-pricing-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-custom-row {
+    grid-template-columns: minmax(0,1fr) 35px;
+    grid-template-rows: 45px 45px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-custom-row > input:first-child {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-custom-row > input:nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-reference-custom-row > button {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-spec-extra-heading {
+    align-items: flex-start;
+  }
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-key,
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-extra-heading h4 {
+  color: #dbebdf !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-spec-key small,
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-extra-heading p {
+  color: #a5bbab;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-extra-count,
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs > .catalog-reference-add-row {
+  color: #d5ead9;
+  background: #304d39;
+  border-color: #54735c;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-reference-custom-row > input {
+  background: #294434;
+  color: #e3f0e6;
+  border-color: #53705b;
+}
