@@ -1,16 +1,29 @@
 import { ArrowRight, DraftingCompass, Hammer, Layers3 } from "lucide-react";
+import type { Category, Product } from "../lib/types";
+import { categoryCover } from "../lib/category-covers";
+import { publicAssetUrl } from "../lib/assets";
 
 const referenceImage = (name: string) =>
   import.meta.env.BASE_URL + "reference/" + name + ".jpg";
 
-const collectionTypes = [
-  { title: "Retail kiosks", image: "kiosk", keyword: "kiosk", text: "Destinations designed around the customer experience.", category: "01" },
-  { title: "Cabinetry & joinery", image: "cabinetry", keyword: "cabinet", text: "Considered storage, made to work beautifully.", category: "02" },
-  { title: "Display & counters", image: "counter", keyword: "counter", text: "Signature details for expressive commercial spaces.", category: "03" },
-  { title: "Custom furniture", image: "sofa", keyword: "furniture", text: "Furniture designed for the room, not just the floor plan.", category: "04" },
-] as const;
+type ShowroomSectionsProps = {
+  onExplore: (keyword: string) => void;
+  onSelectCategory?: (categoryId: string) => void;
+  categories?: Category[];
+  publishedProducts?: Product[];
+  section?: "categories" | "approach";
+};
 
-export default function ShowroomSections({ onExplore, section = "categories" }: { onExplore: (keyword: string) => void; section?: "categories" | "approach" }) {
+/** Use the same live category records and category-cover logic as Admin.
+ * Only published product photos may appear on the public landing page.
+ */
+export default function ShowroomSections({
+  onExplore,
+  onSelectCategory,
+  categories = [],
+  publishedProducts = [],
+  section = "categories",
+}: ShowroomSectionsProps) {
   if (section === "categories") return (
     <>
       <section className="pub-reference-intro" id="pub-expertise">
@@ -21,27 +34,52 @@ export default function ShowroomSections({ onExplore, section = "categories" }: 
         <p>Benua Brutti builds custom furniture, retail kiosks, cabinetry and commercial fit-outs in Sabah.</p>
       </section>
 
-      <section className="pub-reference-category-grid" aria-label="Explore furniture and fabrication categories">
-        {collectionTypes.map((type) => (
-          <button
-            type="button"
-            key={type.title}
-            className="pub-reference-category-tile"
-            onClick={() => onExplore(type.keyword)}
-            aria-label={"Explore " + type.title}
-          >
-            <img src={referenceImage(type.image)} loading="lazy" alt={type.title + " design inspiration"} />
-            <span className="pub-reference-category-shade" />
-            <span className="pub-reference-category-index">{type.category} / CUSTOM MADE</span>
-            <span className="pub-reference-category-caption">
-              <span><strong>{type.title}</strong><small>{type.text}</small></span>
-              <ArrowRight size={23} />
-            </span>
-          </button>
-        ))}
-      </section>
-      <p className="pub-reference-image-note">Editorial inspiration images · Actual Brutti product records and photos appear in the collection below.</p>
-
+      {categories.length > 0 && (
+        <section className="pub-reference-category-grid" aria-label="Explore Brutti catalog categories">
+          {categories.map((category, index) => {
+            const items = publishedProducts.filter(product => product.categoryId === category.id);
+            const cover = categoryCover(category.name, items);
+            return (
+              <button
+                type="button"
+                key={category.id}
+                className="pub-reference-category-tile"
+                onClick={() => onSelectCategory?.(category.id)}
+                aria-label={`Browse ${category.name} category`}
+              >
+                <img
+                  src={publicAssetUrl(cover.src)}
+                  loading="lazy"
+                  decoding="async"
+                  alt={items.length ? `${category.name} product photograph` : "Category cover coming soon"}
+                  style={{ objectPosition: cover.position }}
+                  onError={event => {
+                    const fallback = publicAssetUrl("/images/placeholder.svg");
+                    if (!event.currentTarget.src.endsWith("/images/placeholder.svg"))
+                      event.currentTarget.src = fallback;
+                  }}
+                />
+                <span className="pub-reference-category-shade" />
+                <span className="pub-reference-category-index">
+                  {String(index + 1).padStart(2, "0")} / CATEGORY
+                </span>
+                <span className="pub-reference-category-caption">
+                  <span>
+                    <strong>{category.name}</strong>
+                    <small>{category.description?.trim() || "Explore furniture and projects in this collection."}</small>
+                  </span>
+                  <ArrowRight size={23} />
+                </span>
+              </button>
+            );
+          })}
+        </section>
+      )}
+      <p className="pub-reference-image-note">
+        {categories.length
+          ? "Explore categories from the Brutti collection. Images feature published products."
+          : "Explore our available projects in the collection below."}
+      </p>
     </>
   );
   return (
