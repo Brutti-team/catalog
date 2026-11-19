@@ -5,11 +5,51 @@
   margin-top: 20px;
   margin-bottom: 10px;
 }
+/* The default Add row belongs immediately below Availability, before
+   Additional details. Align it with the input column on desktop. */
 .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
-#product-editor-specs > .catalog-reference-add-row {
-  margin: 12px 0 4px !important;
+#product-editor-specs .catalog-spec-base-rows {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  padding-top: 8px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-base-rows > .catalog-reference-custom-row {
+  flex: none;
+  margin-top: 9px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-base-rows > .catalog-reference-add-row {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  min-height: 39px;
+  margin: 9px 0 0 calc(var(--spec-label-width) + 18px) !important;
+  padding: 8px 14px;
+  border: 1px solid #c9decf;
+  border-radius: 10px;
   background: rgba(240,248,242,.9);
-  border-color: #c9decf;
+  color: #315e40;
+  font: 690 12px/1.3 "DM Sans", sans-serif;
+  cursor: pointer;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-base-rows > .catalog-reference-add-row:hover:not(:disabled) {
+  background: #e2f1e5;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs .catalog-spec-extra-heading {
+  margin-top: 25px;
+}
+@media (max-width: 760px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-specs .catalog-spec-base-rows > .catalog-reference-add-row {
+    margin-left: 0 !important;
+  }
 }
 .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
 #product-editor-specs .catalog-spec-new-section {
