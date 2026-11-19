@@ -76,3 +76,26 @@
   .admin-app .category-cover-picker-grid {gap:7px}
   .admin-app .category-cover-option {padding:4px}
 }
+
+/* Staff preview of the pinned Brutti Product Library cover. */
+.admin-app .category-cover-current-preview {
+  display:flex;align-items:center;gap:12px;padding:9px;
+  border:1px solid #d6e3d5;border-radius:11px;
+  background:rgba(255,255,255,.88);
+}
+.admin-app .category-cover-current-preview img {
+  display:block;flex:0 0 82px;width:82px;height:78px;
+  border-radius:8px;object-fit:cover;background:#e9e8e1;
+}
+.admin-app .category-cover-current-preview > div {
+  display:flex;flex-direction:column;min-width:0;gap:4px;
+}
+.admin-app .category-cover-current-preview strong {
+  color:#2b4a36;font:700 11px/1.35 "Manrope",sans-serif;
+}
+.admin-app .category-cover-current-preview span {
+  color:#314e3c;font:600 11px/1.4 "DM Sans",sans-serif;
+}
+.admin-app .category-cover-current-preview small {
+  color:#859187;font:450 10px/1.5 "DM Sans",sans-serif;
+}
