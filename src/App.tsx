@@ -68,6 +68,7 @@ import AccountCenter from "./components/AccountCenter";
 import CataloguePhotoImport from "./components/CataloguePhotoImport";
 import LastChange from "./components/LastChange";
 import CategoryFilter from "./components/CategoryFilter";
+import CategoryCoverPicker from "./components/CategoryCoverPicker";
 import SortFilter from "./components/SortFilter";
 import { getAccountSummary, initials, type StaffRole } from "./lib/account-center";
 import { useAdminTheme } from "./lib/admin-theme";
@@ -144,6 +145,7 @@ export default function App() {
   const [categoryDeleteError, setCategoryDeleteError] = useState("");
   const [catName, setCatName] = useState("");
   const [catDescription, setCatDescription] = useState("");
+  const [catCoverImageUrl, setCatCoverImageUrl] = useState<string | null>(null);
   const [actionError, setActionError] = useState("");
   const [toast, setToast] = useState("");
   const [menu, setMenu] = useState<string | null>(null);
@@ -353,6 +355,7 @@ export default function App() {
     setCatEditor(c);
     setCatName(c.name);
     setCatDescription(c.description);
+    setCatCoverImageUrl(c.cover_image_url ?? null);
     setActionError("");
   }
   async function submitCategory(e: FormEvent) {
@@ -365,6 +368,7 @@ export default function App() {
         ...catEditor,
         name: catName.trim(),
         description: catDescription.trim(),
+        cover_image_url: catCoverImageUrl,
       });
       await refresh();
       setCatEditor(null);
@@ -1039,7 +1043,9 @@ export default function App() {
                   const items = data.products.filter(
                     (p) => p.categoryId === c.id,
                   );
-                  const cover = categoryCover(c.name, items);
+                  const cover = c.cover_image_url
+                    ? { src: c.cover_image_url, position: "center" }
+                    : categoryCover(c.name, items);
                   return (
                     <article className={`category-card${cover.src ? "" : " category-card--without-cover"}`} key={c.id}>
                       {cover.src && (
@@ -1225,6 +1231,12 @@ export default function App() {
                 placeholder="What belongs in this collection?"
               />
             </label>
+            <CategoryCoverPicker
+              products={data.products.filter(product => product.categoryId === catEditor.id)}
+              value={catCoverImageUrl}
+              onChange={setCatCoverImageUrl}
+              disabled={busy}
+            />
             {actionError && (
               <div className="notice error" role="alert">
                 {actionError}
