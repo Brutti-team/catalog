@@ -1,0 +1,257 @@
+/* Brutti's best-selling inspired selection: editorial, product-led and mobile-first. */
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling {
+  width: min(100%, 1520px);
+  margin: 0 auto;
+  padding: clamp(58px, 6vw, 96px) clamp(24px, 5.2vw, 80px) clamp(56px, 5.8vw, 90px);
+  box-sizing: border-box;
+  scroll-margin-top: 90px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__head {
+  max-width: 940px;
+  margin-bottom: 21px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__eyebrow {
+  margin: 0 0 12px;
+  font: 750 10px/1.5 "DM Sans", sans-serif;
+  letter-spacing: .15em;
+  color: #947458;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__head h2 {
+  margin: 0 0 12px;
+  color: #263e30;
+  font: 650 clamp(33px, 4.15vw, 58px)/1.09 "Manrope", "DM Sans", sans-serif;
+  letter-spacing: -.055em;
+  text-wrap: balance;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__head h2 em {
+  font-weight: 620;
+  font-style: normal;
+  color: #54745d;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__lede {
+  margin: 0;
+  max-width: 810px;
+  color: #777e75;
+  font: 450 13px/1.8 "DM Sans", sans-serif;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 20px 0 24px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__filters button {
+  min-height: 37px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid #dcded5;
+  background: transparent;
+  color: #536256;
+  font: 600 12px/1.2 "DM Sans", sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__filters button.is-selected {
+  border-color: #243c2e;
+  color: #fff;
+  background: #243c2e;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(12px, 1.3vw, 20px);
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__item {
+  display: block;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__photo {
+  display: block;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 4.5;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #e9ede6;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__photo > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale .24s ease;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__item:hover .brutti-best-selling__photo > img {
+  scale: 1.035;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__flag {
+  position: absolute;
+  top: 13px;
+  right: 12px;
+  z-index: 1;
+  padding: 6px 9px;
+  border-radius: 4px;
+  color: #285038;
+  background: rgba(248, 250, 246, .94);
+  font: 750 9px/1.2 "DM Sans", sans-serif;
+  letter-spacing: .07em;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__product-copy {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 2px 0;
+  min-width: 0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__category {
+  color: #799080;
+  font: 690 10px/1.4 "DM Sans", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__product-copy > strong {
+  display: block;
+  margin: 5px 0 7px;
+  color: #2c4033;
+  font: 670 16px/1.4 "Manrope", "DM Sans", sans-serif;
+  letter-spacing: -.025em;
+  overflow-wrap: anywhere;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__price {
+  color: #4a624e;
+  font: 670 13px/1.4 "DM Sans", sans-serif;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__price .catalog-price-line {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__footer {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  color: #798779;
+  font: 500 12px "DM Sans", sans-serif;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__footer button,
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__preview-copy button {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  border: 0;
+  border-bottom: 1px solid #59735e;
+  background: transparent;
+  color: #254631;
+  font: 700 12px/1.6 "DM Sans", sans-serif;
+  padding: 6px 0;
+  cursor: pointer;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__notice {
+  padding: 26px 0;
+  color: #66806b;
+  font: 500 13px "DM Sans", sans-serif;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__preview {
+  display: grid;
+  grid-template-columns: 1fr .78fr;
+  min-height: 305px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #e6ebe2;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__preview-image {
+  min-height: 305px;
+  background: #bec9bc;
+  overflow: hidden;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__preview-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__preview-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  padding: clamp(22px, 4vw, 57px);
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__preview-copy h3 {
+  margin: 0 0 14px;
+  color: #264332;
+  font: 640 clamp(23px, 2.6vw, 37px)/1.2 "Manrope", "DM Sans", sans-serif;
+  letter-spacing: -.045em;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__preview-copy p:not(.brutti-best-selling__eyebrow) {
+  color: #657a6b;
+  font: 450 13px/1.75 "DM Sans", sans-serif;
+  margin: 0 0 20px;
+  max-width: 420px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__item:focus-visible,
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling button:focus-visible {
+  outline: 2px solid #275a3c;
+  outline-offset: 4px;
+}
+@media (max-width: 950px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 26px;
+  }
+}
+@media (max-width: 600px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling {
+    padding: 45px 18px 55px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__head h2 {
+    font-size: clamp(31px, 8vw, 41px);
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__filters {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    margin: 14px -18px 18px;
+    padding: 0 18px 6px;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__filters::-webkit-scrollbar { display: none; }
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__filters button { scroll-snap-align: start; }
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    margin-right: -18px;
+    padding-right: 18px;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__grid::-webkit-scrollbar { display: none; }
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__item {
+    flex: 0 0 min(70vw, 255px);
+    scroll-snap-align: start;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__footer {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__preview {
+    grid-template-columns: 1fr;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__preview-image {
+    min-height: 200px;
+    max-height: 240px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__preview-copy {
+    padding: 25px 23px 28px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__photo > img { transition: none; }
+}
