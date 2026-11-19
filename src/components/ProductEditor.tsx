@@ -638,11 +638,14 @@ export default function ProductEditor({
             <section className="form-section product-editor-section catalog-reference-specifications" id="product-editor-specs">
               <div className="product-editor-section-heading">
                 <span className="product-editor-step">03</span>
-                <div><h3>Specifications</h3></div>
+                <div>
+                  <h3>Specifications</h3>
+                  <p>Measurements, materials and finishing details.</p>
+                </div>
               </div>
               <div className="catalog-reference-spec-rows">
                 <div className="catalog-reference-spec-row">
-                  <span className="catalog-reference-spec-key">Dimensions</span>
+                  <span className="catalog-reference-spec-key">Dimensions <small>Overall size</small></span>
                   <div className="catalog-reference-dimension-inputs catalog-unified-dimensions" role="group" aria-label="Product dimensions">
                     {(["width", "depth", "height"] as const).map((key) => (
                       <label key={key}>
@@ -662,7 +665,7 @@ export default function ProductEditor({
                   </div>
                 </div>
                 <label className="catalog-reference-spec-row">
-                  <span className="catalog-reference-spec-key">Materials</span>
+                  <span className="catalog-reference-spec-key">Materials <small>Primary materials</small></span>
                   <input
                     aria-label="Materials"
                     maxLength={2000}
@@ -672,7 +675,7 @@ export default function ProductEditor({
                   />
                 </label>
                 <div className="catalog-reference-spec-row catalog-reference-pricing-row">
-                  <span className="catalog-reference-spec-key">Pricing</span>
+                  <span className="catalog-reference-spec-key">Pricing <small>In Malaysian Ringgit</small></span>
                   <div className="catalog-pricing-fields">
                     <label className="catalog-pricing-field">
                       <span>{draft.priceBasis === "starting-from" ? "Starting price (RM)" : "Current price (RM)"}</span>
@@ -709,7 +712,7 @@ export default function ProductEditor({
                   </div>
                 </div>
                 <div className="catalog-reference-spec-row">
-                  <span className="catalog-reference-spec-key" id="catalog-spec-availability-label">Availability</span>
+                  <span className="catalog-reference-spec-key" id="catalog-spec-availability-label">Availability <small>Customer-facing status</small></span>
                   <AvailabilityPicker
                     value={draft.availability}
                     onChange={(next) => update("availability", next)}
@@ -717,18 +720,25 @@ export default function ProductEditor({
                   />
                 </div>
               </div>
+              <div className="catalog-spec-extra-heading">
+                <div>
+                  <h4>Additional details</h4>
+                  <p>Add separate rows for components, drawer dimensions, finishes or mechanisms.</p>
+                </div>
+                <span className="catalog-spec-extra-count">{(draft.specifications ?? []).length} / 24</span>
+              </div>
               {(draft.specifications ?? []).map((row, index) => (
                 <div className="catalog-reference-custom-row" key={row.id}>
                   <input
                     aria-label={`Specification ${index + 1} name`}
-                    placeholder="Specification name"
+                    placeholder="e.g. Drawer dimensions"
                     maxLength={80}
                     value={row.name}
                     onChange={(event) => changeSpecification(row.id, "name", event.target.value)}
                   />
                   <input
                     aria-label={`Specification ${index + 1} value`}
-                    placeholder="Enter value"
+                    placeholder="e.g. W 3ft × D 1.8ft × H 2ft"
                     maxLength={400}
                     value={row.value}
                     onChange={(event) => changeSpecification(row.id, "value", event.target.value)}
@@ -748,7 +758,7 @@ export default function ProductEditor({
                 disabled={(draft.specifications ?? []).length >= 24 || busy}
                 onClick={addSpecificationRow}
               >
-                <Plus size={17} aria-hidden="true" /> Add row
+                <Plus size={17} aria-hidden="true" /> Add specification
               </button>
             </section>
             ) : (
