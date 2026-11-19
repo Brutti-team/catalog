@@ -760,13 +760,7 @@ export default function ProductEditor({
                   />
                 </div>
               </div>
-              <div className="catalog-spec-extra-heading">
-                <div>
-                  <h4>Additional details</h4>
-                  <p>Add separate rows for components, drawer dimensions, finishes or mechanisms.</p>
-                </div>
-                <span className="catalog-spec-extra-count">{(draft.specifications ?? []).length} / 24</span>
-              </div>
+              <div className="catalog-spec-base-rows">
               {primarySpecificationRows.map((row, index) => (
                 <div className="catalog-reference-custom-row" key={row.id}>
                   <input
@@ -800,6 +794,14 @@ export default function ProductEditor({
               >
                 <Plus size={17} aria-hidden="true" /> Add row
               </button>
+              </div>
+              <div className="catalog-spec-extra-heading">
+                <div>
+                  <h4>Additional details</h4>
+                  <p>Organise components, drawer dimensions and finishes in separate specification sections.</p>
+                </div>
+                <span className="catalog-spec-extra-count">{(draft.specifications ?? []).length} / 24</span>
+              </div>
               {specificationSections.map((section, index) => (
                 <div className="catalog-spec-new-section" key={section.id}>
                   <div className="catalog-spec-new-section-heading">
