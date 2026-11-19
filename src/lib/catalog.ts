@@ -243,9 +243,12 @@ export function validateProduct(product: Product): void {
   if (specifications.some((row) =>
     !row || typeof row.id !== "string" || !row.id ||
     typeof row.name !== "string" || !row.name.trim() || row.name.length > 80 ||
-    typeof row.value !== "string" || !row.value.trim() || row.value.length > 400
+    typeof row.value !== "string" || row.value.length > 400 ||
+    (row.kind !== undefined && row.kind !== "section") ||
+    (row.kind !== "section" && !row.value.trim()) ||
+    (row.kind === "section" && Boolean(row.value.trim()))
   ))
-    throw new Error("Complete the name and value for every specification row, or remove the empty row.");
+    throw new Error("Add a title for each new specification section, and complete the name and value of every row.");
   if (new Set(specifications.map(row => row.id)).size !== specifications.length)
     throw new Error("Each specification row needs a unique ID.");
   if (!["draft", "published", "archived"].includes(product.status))
@@ -383,8 +386,9 @@ export async function saveProduct(product: Product, modelChange?: ProductModelCh
     sku: product.sku.trim().toUpperCase(),
     description: product.description.trim(),
     materials: product.materials.trim(),
-    specifications: (product.specifications ?? []).map(({ id, name, value }) => ({
+    specifications: (product.specifications ?? []).map(({ id, name, value, kind }) => ({
       id, name: name.trim(), value: value.trim(),
+      ...(kind === "section" ? { kind: "section" as const } : {}),
     })),
     updatedAt: new Date().toISOString(),
   };
