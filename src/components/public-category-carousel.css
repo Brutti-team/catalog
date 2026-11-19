@@ -2,7 +2,7 @@
 .pub-app .pub-category-marquee{max-width:1540px;margin:0 auto;padding:clamp(38px,4.4vw,66px) clamp(18px,4vw,64px) clamp(42px,4.2vw,64px);color:#293f32;background:transparent}
 .pub-app .pub-category-marquee-heading{display:flex;align-items:end;justify-content:space-between;gap:18px 30px;margin-bottom:clamp(24px,2.5vw,36px)}
 .pub-app .pub-category-marquee-eyebrow{margin:0 0 10px;color:#aa7d5c;font-family:"DM Sans",system-ui,sans-serif;font-size:10px;letter-spacing:.16em;font-weight:700}
-.pub-app .pub-category-marquee-heading h2{margin:0;font:600 clamp(38px,4.3vw,58px)/1.08 "Cormorant Garamond",Georgia,serif;letter-spacing:-.025em;color:#294333}
+.pub-app .pub-category-marquee-heading h2{margin:0;font-family:"Manrope","DM Sans",system-ui,sans-serif;font-size:clamp(32px,3.15vw,48px);font-weight:650;line-height:1.16;letter-spacing:-.055em;color:#294333;text-wrap:balance}
 .pub-app .pub-category-marquee-all{display:inline-flex;align-items:center;gap:10px;flex-shrink:0;min-height:40px;padding:5px 0 5px 12px;background:none;border:0;color:#315a42;font:700 12px "DM Sans",system-ui,sans-serif;letter-spacing:.04em}
 .pub-app .pub-category-marquee-all svg{transition:transform .2s ease}
 .pub-app .pub-category-marquee-controls{display:grid;grid-template-columns:40px minmax(0,1fr) 40px;align-items:center;gap:clamp(8px,1.1vw,18px)}
@@ -27,14 +27,14 @@
 }
 @media(max-width:800px){
 .pub-app .pub-category-marquee{padding:35px 20px 38px}
-.pub-app .pub-category-marquee-heading h2{font-size:clamp(34px,5.5vw,44px)}
+.pub-app .pub-category-marquee-heading h2{font-size:clamp(30px,4.5vw,39px)}
 .pub-app .pub-category-rail-item{flex-basis:124px}
 .pub-app .pub-category-rail-image{width:96px;height:96px}
 }
 @media(max-width:580px){
 .pub-app .pub-category-marquee{padding:30px 14px 34px}
 .pub-app .pub-category-marquee-heading{align-items:start;gap:10px;margin-bottom:22px}
-.pub-app .pub-category-marquee-heading h2{font-size:clamp(30px,7.8vw,38px);max-width:248px}
+.pub-app .pub-category-marquee-heading h2{font-size:clamp(27px,6.7vw,34px);max-width:270px}
 .pub-app .pub-category-marquee-all{font-size:10px;min-height:33px;gap:5px;padding:5px 0}
 .pub-app .pub-category-marquee-controls{grid-template-columns:30px minmax(0,1fr) 30px;gap:7px}
 .pub-app .pub-category-marquee-arrow{width:30px;height:34px;border-radius:9px}
