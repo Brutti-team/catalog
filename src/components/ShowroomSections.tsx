@@ -1,110 +1,196 @@
-import { ArrowRight, DraftingCompass, Hammer, Layers3 } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { ArrowLeft, ArrowRight, DraftingCompass, Hammer, Layers3 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import { publicAssetUrl } from "../lib/assets";
-import { photoCropStyle } from "../lib/photo-crop";
-import { recordCatalogEvent } from "../lib/customer-analytics";
+import "./public-category-carousel.css";
 
 const referenceImage = (name: string) =>
   import.meta.env.BASE_URL + "reference/" + name + ".jpg";
 
 type ShowroomSectionsProps = {
   onExplore: (keyword: string) => void;
+  onCategorySelect?: (categoryId: string) => void;
   categories?: Category[];
   publishedProducts?: Product[];
   loading?: boolean;
   section?: "categories" | "approach";
 };
 
-/** Featured-only editorial showroom; category browsing lives exclusively below. */
+/** Fallbacks are real Brutti images from its official What We Build website. */
+function officialCategoryPhoto(name: string) {
+  const title = name.toLowerCase();
+  const file =
+    /bed|bunk/.test(title) ? "bed & bunkbed.webp" :
+    /cabinet|wardrobe/.test(title) ? "built in cabinet.webp" :
+    /kiosk/.test(title) ? "kiosk.webp" :
+    /rack|shel/.test(title) ? "racks & shelves.webp" :
+    /table|counter|reception/.test(title) ? "table & counters.webp" :
+    /memento|souvenir/.test(title) ? "memento.webp" :
+    /sign|panel|display/.test(title) ? "Signages.webp" :
+    /camper/.test(title) ? "our camper.webp" :
+    "others.webp";
+  return "https://brutti.my/assets/what-we-build/" + encodeURIComponent(file);
+}
+
+/**
+ * Categories and names come from the live Admin category records.
+ * The carousel never reveals an unpublished product's private photos.
+ */
 export default function ShowroomSections({
   onExplore,
+  onCategorySelect,
   categories = [],
   publishedProducts = [],
   loading = false,
   section = "categories",
 }: ShowroomSectionsProps) {
-  const featured = publishedProducts
-    .filter(product => product.featured && Boolean(product.images?.[0]?.url))
-    .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0) || a.name.localeCompare(b.name))
-    .slice(0, 4);
-  const categoryName = (id: string) =>
-    categories.find(category => category.id === id)?.name || "Bespoke furniture";
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const pointerPaused = useRef(false);
+  const manualUntil = useRef(0);
 
-  if (section === "categories") return (
-    <section id="pub-showroom" className="pub-curated-showroom" aria-label="Curated showroom">
-      <div className="pub-curated-intro">
-        <div>
-          <p className="pub-reference-eyebrow">SELECTED WORK / BENUA BRUTTI</p>
-          <h2>Curated <em>showroom.</em></h2>
-        </div>
-        <div className="pub-curated-intro-side">
-          <p>A closer look at our featured furniture, cabinetry and crafted spaces.</p>
-          <button type="button" onClick={() => onExplore("")}>
-            Browse by category <ArrowRight size={17} aria-hidden="true" />
-          </button>
-        </div>
-      </div>
+  useEffect(() => {
+    if (section !== "categories" || categories.length === 0) return;
+    const viewport = viewportRef.current;
+    if (!viewport) return;
 
-      {loading ? (
-        <div className="pub-curated-loading" role="status">Preparing the showroom…</div>
-      ) : featured.length ? (
-        <div className="pub-curated-grid" data-count={featured.length}>
-          {featured.map((product, index) => (
-            <a
-              key={product.id}
-              className="pub-curated-piece"
-              href={`#/product/${encodeURIComponent(product.id)}`}
-              onClick={() => recordCatalogEvent("product_click", product.id)}
-              aria-label={`View ${product.name}`}
-            >
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let frame = 0;
+    let lastTime = 0;
+    let loopWidth = 0;
+    const measure = () => {
+      loopWidth = viewport.querySelector<HTMLElement>(".pub-category-rail-group")?.offsetWidth ?? 0;
+    };
+    measure();
+    const animate = (now: number) => {
+      if (lastTime === 0) lastTime = now;
+      const delta = Math.min(now - lastTime, 60);
+      lastTime = now;
+      if (!document.hidden && !reducedMotion.matches && !pointerPaused.current && now > manualUntil.current && loopWidth > 0) {
+        const next = viewport.scrollLeft + delta * 0.027;
+        viewport.scrollLeft = next >= loopWidth ? next - loopWidth : next;
+      }
+      frame = window.requestAnimationFrame(animate);
+    };
+    frame = window.requestAnimationFrame(animate);
+    window.addEventListener("resize", measure);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", measure);
+    };
+  }, [categories.length, section]);
+
+  const moveCategories = (direction: -1 | 1) => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    manualUntil.current = performance.now() + 1400;
+    const cycleWidth = viewport.querySelector<HTMLElement>(".pub-category-rail-group")?.offsetWidth ?? 0;
+    const step = Math.min(260, Math.max(145, viewport.clientWidth * 0.28));
+    if (cycleWidth > 0 && direction < 0 && viewport.scrollLeft < step) {
+      viewport.scrollLeft += cycleWidth;
+    } else if (cycleWidth > 0 && direction > 0 && viewport.scrollLeft + step > cycleWidth) {
+      viewport.scrollLeft -= cycleWidth;
+    }
+    viewport.scrollBy({ left: direction * step, behavior: "smooth" });
+  };
+
+  if (section === "categories") {
+    const categoryCards = categories.map(category => {
+      const categoryProducts = publishedProducts.filter(
+        product => product.categoryId === category.id && product.images.some(image => image.url?.trim())
+      );
+      const selected = categoryProducts.find(product => product.featured) ?? categoryProducts[0];
+      const photo = selected?.images.find(image => image.url?.trim());
+      return {
+        id: category.id,
+        name: category.name,
+        image: photo ? publicAssetUrl(photo.url) : officialCategoryPhoto(category.name),
+        fallback: officialCategoryPhoto(category.name),
+      };
+    });
+
+    const chooseCategory = (id: string, name: string) => {
+      if (onCategorySelect) onCategorySelect(id);
+      else onExplore(name);
+    };
+
+    const group = (duplicate: boolean) => (
+      <div className="pub-category-rail-group" aria-hidden={duplicate ? "true" : undefined} key={duplicate ? "repeat" : "original"}>
+        {categoryCards.map(card => (
+          <button
+            className="pub-category-rail-item"
+            type="button"
+            key={card.id}
+            tabIndex={duplicate ? -1 : 0}
+            onClick={() => chooseCategory(card.id, card.name)}
+            title={card.name}
+          >
+            <span className="pub-category-rail-image">
               <img
-                src={publicAssetUrl(product.images[0].url)}
-                alt={product.images[0].alt || product.name}
-                loading={index === 0 ? "eager" : "lazy"}
+                src={card.image}
+                alt=""
+                loading="lazy"
                 decoding="async"
-                style={photoCropStyle(product.images[0])}
                 onError={event => {
-                  event.currentTarget.style.opacity = "0";
+                  const img = event.currentTarget;
+                  if (img.src !== card.fallback) {
+                    img.src = card.fallback;
+                  } else {
+                    img.style.opacity = "0";
+                  }
                 }}
               />
-              <span className="pub-curated-piece-shade" aria-hidden="true" />
-              <span className="pub-curated-piece-top">
-                <span>{String(index + 1).padStart(2, "0")} / FEATURED</span>
-                <span>{categoryName(product.categoryId)}</span>
-              </span>
-              <span className="pub-curated-piece-caption">
-                <span>
-                  <strong>{product.name}</strong>
-                  <small>{categoryName(product.categoryId)}</small>
-                </span>
-                <ArrowRight size={22} aria-hidden="true" />
-              </span>
-            </a>
-          ))}
+            </span>
+            <span className="pub-category-rail-name">{card.name}</span>
+          </button>
+        ))}
+      </div>
+    );
+
+    return (
+      <section id="pub-showroom" className="pub-category-marquee" aria-label="Browse product categories">
+        <div className="pub-category-marquee-heading">
+          <div>
+            <p className="pub-category-marquee-eyebrow">THE BENUA BRUTTI COLLECTION</p>
+            <h2>Shop Furniture by Category</h2>
+          </div>
+          <button type="button" className="pub-category-marquee-all" onClick={() => onExplore("")}>
+            Explore all <ArrowRight size={19} aria-hidden="true" />
+          </button>
         </div>
-      ) : (
-        <div className="pub-curated-editorial">
-          <img
-            src="https://brutti.my/assets/what-we-build/built%20in%20cabinet.webp"
-            alt="Benua Brutti bespoke cabinetry"
-            loading="lazy"
-            onError={event => {
-              event.currentTarget.src = referenceImage("cabinetry");
-              event.currentTarget.onerror = null;
-            }}
-          />
-          <div className="pub-curated-editorial-copy">
-            <p className="pub-reference-eyebrow">CRAFTED IN SABAH</p>
-            <h3>Made for the spaces that matter.</h3>
-            <p>Our featured projects will appear here as they are published. Explore the collection by category below.</p>
-            <button type="button" onClick={() => onExplore("")}>
-              Browse categories <ArrowRight size={18} aria-hidden="true" />
+        {loading && categories.length === 0 ? (
+          <p className="pub-category-marquee-empty" role="status">Loading categories…</p>
+        ) : categoryCards.length === 0 ? (
+          <p className="pub-category-marquee-empty">Categories will appear here when added in Admin.</p>
+        ) : (
+          <div className="pub-category-marquee-controls">
+            <button type="button" className="pub-category-marquee-arrow" aria-label="Previous categories" onClick={() => moveCategories(-1)}>
+              <ArrowLeft size={20} aria-hidden="true" />
+            </button>
+            <div
+              className="pub-category-marquee-viewport"
+              ref={viewportRef}
+              onMouseEnter={() => { pointerPaused.current = true; }}
+              onMouseLeave={() => { pointerPaused.current = false; }}
+              onFocusCapture={() => { pointerPaused.current = true; }}
+              onBlurCapture={() => { pointerPaused.current = false; }}
+              onTouchStart={() => { pointerPaused.current = true; }}
+              onTouchEnd={() => { pointerPaused.current = false; manualUntil.current = performance.now() + 1800; }}
+              aria-label="Furniture and project categories"
+            >
+              <div className="pub-category-marquee-track">
+                {group(false)}
+                {group(true)}
+              </div>
+            </div>
+            <button type="button" className="pub-category-marquee-arrow" aria-label="Next categories" onClick={() => moveCategories(1)}>
+              <ArrowRight size={20} aria-hidden="true" />
             </button>
           </div>
-        </div>
-      )}
-    </section>
-  );
+        )}
+      </section>
+    );
+  }
+
   return (
     <>
       <section className="pub-reference-process" id="pub-process">
