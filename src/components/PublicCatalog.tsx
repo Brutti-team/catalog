@@ -425,7 +425,7 @@ export default function PublicCatalog({
                 BENUA BRUTTI SDN. BHD. <ArrowDown size={14} />
               </span>
             </div>
-            <ShowroomSections onExplore={exploreShowroom} categories={categories} publishedProducts={published} loading={loading} />
+            <ShowroomSections onExplore={exploreShowroom} onCategorySelect={(categoryId) => { setQuery(""); setCategory(categoryId); browseCollection(false); }} categories={categories} publishedProducts={published} loading={loading} />
             <section id="pub-collection" className="pub-collection">
               <div className="pub-section-heading">
                 <div>
