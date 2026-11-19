@@ -53,6 +53,8 @@ export interface Category {
   id: string;
   name: string;
   description: string;
+  /** Public category slider cover deliberately selected by a staff administrator. */
+  cover_image_url?: string | null;
 }
 export interface CatalogData {
   products: Product[];
