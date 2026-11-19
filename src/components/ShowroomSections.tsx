@@ -113,14 +113,14 @@ export default function ShowroomSections({
       else onExplore(name);
     };
 
-    const group = (duplicate: boolean) => (
-      <div className="pub-category-rail-group" aria-hidden={duplicate ? "true" : undefined} key={duplicate ? "repeat" : "original"}>
+    const group = (copyIndex: number) => (
+      <div className="pub-category-rail-group" aria-hidden={copyIndex ? "true" : undefined} key={`group-${copyIndex}`}>
         {categoryCards.map(card => (
           <button
             className="pub-category-rail-item"
             type="button"
             key={card.id}
-            tabIndex={duplicate ? -1 : 0}
+            tabIndex={copyIndex ? -1 : 0}
             onClick={() => chooseCategory(card.id, card.name)}
             title={card.name}
           >
@@ -178,8 +178,7 @@ export default function ShowroomSections({
               aria-label="Furniture and project categories"
             >
               <div className="pub-category-marquee-track">
-                {group(false)}
-                {group(true)}
+                {[0, 1, 2, 3].map(group)}
               </div>
             </div>
             <button type="button" className="pub-category-marquee-arrow" aria-label="Next categories" onClick={() => moveCategories(1)}>
