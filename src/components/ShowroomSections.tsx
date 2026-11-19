@@ -1,86 +1,109 @@
 import { ArrowRight, DraftingCompass, Hammer, Layers3 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
-import { categoryCover } from "../lib/category-covers";
 import { publicAssetUrl } from "../lib/assets";
+import { photoCropStyle } from "../lib/photo-crop";
+import { recordCatalogEvent } from "../lib/customer-analytics";
 
 const referenceImage = (name: string) =>
   import.meta.env.BASE_URL + "reference/" + name + ".jpg";
 
 type ShowroomSectionsProps = {
   onExplore: (keyword: string) => void;
-  onSelectCategory?: (categoryId: string) => void;
   categories?: Category[];
   publishedProducts?: Product[];
+  loading?: boolean;
   section?: "categories" | "approach";
 };
 
-/** Use the same live category records and category-cover logic as Admin.
- * Only published product photos may appear on the public landing page.
- */
+/** Featured-only editorial showroom; category browsing lives exclusively below. */
 export default function ShowroomSections({
   onExplore,
-  onSelectCategory,
   categories = [],
   publishedProducts = [],
+  loading = false,
   section = "categories",
 }: ShowroomSectionsProps) {
-  if (section === "categories") return (
-    <>
-      <section className="pub-reference-intro" id="pub-expertise">
-        <div className="pub-reference-intro-head">
-          <p className="pub-reference-eyebrow">WHAT WE CREATE / BENUA BRUTTI</p>
-          <h2>Furniture, kiosks<br /><em>and joinery.</em></h2>
-        </div>
-        <p>Benua Brutti builds custom furniture, retail kiosks, cabinetry and commercial fit-outs in Sabah.</p>
-      </section>
+  const featured = publishedProducts
+    .filter(product => product.featured && Boolean(product.images?.[0]?.url))
+    .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0) || a.name.localeCompare(b.name))
+    .slice(0, 4);
+  const categoryName = (id: string) =>
+    categories.find(category => category.id === id)?.name || "Bespoke furniture";
 
-      {categories.length > 0 && (
-        <section className="pub-reference-category-grid" aria-label="Explore Brutti catalog categories">
-          {categories.map((category, index) => {
-            const items = publishedProducts.filter(product => product.categoryId === category.id);
-            const cover = categoryCover(category.name, items);
-            return (
-              <button
-                type="button"
-                key={category.id}
-                className="pub-reference-category-tile"
-                onClick={() => onSelectCategory?.(category.id)}
-                aria-label={`Browse ${category.name} category`}
-              >
-                <img
-                  src={publicAssetUrl(cover.src)}
-                  loading="lazy"
-                  decoding="async"
-                  alt={items.length ? `${category.name} product photograph` : "Category cover coming soon"}
-                  style={{ objectPosition: cover.position }}
-                  onError={event => {
-                    const fallback = publicAssetUrl("/images/placeholder.svg");
-                    if (!event.currentTarget.src.endsWith("/images/placeholder.svg"))
-                      event.currentTarget.src = fallback;
-                  }}
-                />
-                <span className="pub-reference-category-shade" />
-                <span className="pub-reference-category-index">
-                  {String(index + 1).padStart(2, "0")} / CATEGORY
+  if (section === "categories") return (
+    <section id="pub-showroom" className="pub-curated-showroom" aria-label="Curated showroom">
+      <div className="pub-curated-intro">
+        <div>
+          <p className="pub-reference-eyebrow">SELECTED WORK / BENUA BRUTTI</p>
+          <h2>Curated <em>showroom.</em></h2>
+        </div>
+        <div className="pub-curated-intro-side">
+          <p>A closer look at our featured furniture, cabinetry and crafted spaces.</p>
+          <button type="button" onClick={() => onExplore("")}>
+            Browse by category <ArrowRight size={17} aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="pub-curated-loading" role="status">Preparing the showroom…</div>
+      ) : featured.length ? (
+        <div className="pub-curated-grid" data-count={featured.length}>
+          {featured.map((product, index) => (
+            <a
+              key={product.id}
+              className="pub-curated-piece"
+              href={`#/product/${encodeURIComponent(product.id)}`}
+              onClick={() => recordCatalogEvent("product_click", product.id)}
+              aria-label={`View ${product.name}`}
+            >
+              <img
+                src={publicAssetUrl(product.images[0].url)}
+                alt={product.images[0].alt || product.name}
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding="async"
+                style={photoCropStyle(product.images[0])}
+                onError={event => {
+                  event.currentTarget.style.opacity = "0";
+                }}
+              />
+              <span className="pub-curated-piece-shade" aria-hidden="true" />
+              <span className="pub-curated-piece-top">
+                <span>{String(index + 1).padStart(2, "0")} / FEATURED</span>
+                <span>{categoryName(product.categoryId)}</span>
+              </span>
+              <span className="pub-curated-piece-caption">
+                <span>
+                  <strong>{product.name}</strong>
+                  <small>{categoryName(product.categoryId)}</small>
                 </span>
-                <span className="pub-reference-category-caption">
-                  <span>
-                    <strong>{category.name}</strong>
-                    <small>{category.description?.trim() || "Explore furniture and projects in this collection."}</small>
-                  </span>
-                  <ArrowRight size={23} />
-                </span>
-              </button>
-            );
-          })}
-        </section>
+                <ArrowRight size={22} aria-hidden="true" />
+              </span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div className="pub-curated-editorial">
+          <img
+            src="https://brutti.my/assets/what-we-build/built%20in%20cabinet.webp"
+            alt="Benua Brutti bespoke cabinetry"
+            loading="lazy"
+            onError={event => {
+              event.currentTarget.src = referenceImage("cabinetry");
+              event.currentTarget.onerror = null;
+            }}
+          />
+          <div className="pub-curated-editorial-copy">
+            <p className="pub-reference-eyebrow">CRAFTED IN SABAH</p>
+            <h3>Made for the spaces that matter.</h3>
+            <p>Our featured projects will appear here as they are published. Explore the collection by category below.</p>
+            <button type="button" onClick={() => onExplore("")}>
+              Browse categories <ArrowRight size={18} aria-hidden="true" />
+            </button>
+          </div>
+        </div>
       )}
-      <p className="pub-reference-image-note">
-        {categories.length
-          ? "Explore categories from the Brutti collection. Images feature published products."
-          : "Explore our available projects in the collection below."}
-      </p>
-    </>
+    </section>
   );
   return (
     <>
