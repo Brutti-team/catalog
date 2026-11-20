@@ -67,6 +67,7 @@ import PublicCatalog from "./components/PublicCatalog";
 import Modal from "./components/Modal";
 import AccountCenter from "./components/AccountCenter";
 import CataloguePhotoImport from "./components/CataloguePhotoImport";
+import AlbumLibrary from "./components/AlbumLibrary";
 import LastChange from "./components/LastChange";
 import CategoryFilter from "./components/CategoryFilter";
 import CategoryCoverPicker from "./components/CategoryCoverPicker";
@@ -74,7 +75,7 @@ import SortFilter from "./components/SortFilter";
 import { getAccountSummary, initials, type StaffRole } from "./lib/account-center";
 import { useAdminTheme } from "./lib/admin-theme";
 
-type Tab = "overview" | "products" | "categories" | "profile" | "users" | "activity";
+type Tab = "overview" | "products" | "album" | "categories" | "profile" | "users" | "activity";
 const label = (s: string) =>
   s
     .split("-")
@@ -486,6 +487,7 @@ export default function App() {
             [
               { id: "overview", text: "Overview", icon: LayoutDashboard },
               { id: "products", text: "Products", icon: Package },
+              { id: "album", text: "Album", icon: Images },
               { id: "categories", text: "Categories", icon: Layers },
             ] as const
           ).filter((n) => accountRole !== "editor" || n.id !== "categories").map((n) => (
@@ -699,7 +701,7 @@ export default function App() {
                 </div>
               </div>
             </section>
-          ) : (
+          ) : tab === "categories" ? (
             <section className="page-heading catalog-management-heading" aria-labelledby="catalog-categories-heading">
               <div className="catalog-categories-heading-copy">
                 <span className="eyebrow">BRUTTI CATALOG WORKSPACE</span>
@@ -731,6 +733,13 @@ export default function App() {
                 <button onClick={() => void refresh()}>Try again</button>
               )}
             </div>
+          )}
+          {tab === "album" && (
+            <AlbumLibrary products={data.products} categories={data.categories}
+              onEditProduct={(id) => {
+                const product = data.products.find(item => item.id === id);
+                if (product) setEditor(product);
+              }} />
           )}
           {tab === "overview" && (
             <>
