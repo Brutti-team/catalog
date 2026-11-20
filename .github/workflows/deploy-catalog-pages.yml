@@ -45,6 +45,10 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: ./dist
+      # GitHub Actions can finalize the artifact before Pages metadata is queryable.
+      # Avoid intermittent deploy-pages "No artifacts named github-pages" failures.
+      - name: Let Pages artifact become available
+        run: sleep 20
       - name: Deploy site
         id: deployment
         uses: actions/deploy-pages@v4
