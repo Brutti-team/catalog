@@ -646,18 +646,7 @@ export default function AlbumLibrary({
         <div className="brutti-album__detail-layout">
           <div className="brutti-album__detail-visual">
             <div className="brutti-album__preview-image">
-              <SafeImage
-                src={preview.url}
-                alt={preview.name}
-                onLoad={event => {
-                  const image = event.currentTarget;
-                  // Match the photo frame to its real proportions, without cropping.
-                  const ratio = image.naturalWidth / image.naturalHeight;
-                  if (Number.isFinite(ratio) && ratio > 0) {
-                    image.parentElement?.style.setProperty("--album-photo-ratio", String(ratio));
-                  }
-                }}
-              />
+              <SafeImage src={preview.url} alt={preview.name} />
             </div>
             <div className="brutti-album__visual-caption">
               <Images size={15} aria-hidden="true"/>
