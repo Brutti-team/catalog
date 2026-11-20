@@ -388,32 +388,41 @@ export default function AlbumLibrary({
     }catch(e){setError(e instanceof Error?e.message:"Could not remove the photo.");void reload();}
   }
   const selectedPhotos=photos.filter(p=>selected.includes(p.key));
+  const albumStats=(
+    <div className="brutti-album__stats" aria-label="Album counts">
+      <span><strong>{photos.length}</strong> All photos</span>
+      <span><strong>{assigned}</strong> In use</span>
+      <span><strong>{publishedCount}</strong> Published</span>
+    </div>
+  );
   return (
     <section className={`brutti-album ${picker?"brutti-album--picker":""}`} aria-label={picker?"Choose photos from Album":"Brutti media Album"}>
       {!picker && (
         <div className="brutti-album__heading">
-          <div>
-            <p className="brutti-album__eyebrow">BRUTTI CATALOG / MEDIA LIBRARY</p>
-            <h1>Album</h1>
-            <p>One place for your furniture photos. Upload once, reuse across products.</p>
+          <div className="brutti-album__heading-main">
+            <div className="brutti-album__heading-copy">
+              <p className="brutti-album__eyebrow">BRUTTI CATALOG / MEDIA LIBRARY</p>
+              <h1>Album</h1>
+              <p>One place for your furniture photos. Upload once, reuse across products.</p>
+            </div>
+            <div className="brutti-album__heading-actions">
+              {onAddCategory && <button type="button" className="brutti-album__secondary" onClick={onAddCategory}>
+                <Plus size={16} aria-hidden="true"/> Add category
+              </button>}
+              <label className="brutti-album__destination">
+                <span>Upload to</span>
+                <select aria-label="Category for new uploads" value={uploadCategory}
+                  onChange={event=>setUploadCategory(event.target.value)} disabled={busy}>
+                  <option value="none">Uncategorised</option>
+                  {categories.map(item=><option value={item.id} key={item.id}>{item.name}</option>)}
+                </select>
+              </label>
+              <button type="button" className="brutti-album__primary" onClick={()=>fileRef.current?.click()} disabled={busy}>
+                <Upload size={17} aria-hidden="true"/> Add photos
+              </button>
+            </div>
           </div>
-          <div className="brutti-album__heading-actions">
-            <span className="brutti-album__total"><Images size={17}/><strong>{photos.length}</strong> photos</span>
-            {onAddCategory && <button type="button" className="brutti-album__secondary" onClick={onAddCategory}>
-              <Plus size={16}/> Add category
-            </button>}
-            <label className="brutti-album__destination">
-              Add photos to
-              <select aria-label="Category for new uploads" value={uploadCategory}
-                onChange={event=>setUploadCategory(event.target.value)} disabled={busy}>
-                <option value="none">Uncategorised</option>
-                {categories.map(item=><option value={item.id} key={item.id}>{item.name}</option>)}
-              </select>
-            </label>
-            <button type="button" className="brutti-album__primary" onClick={()=>fileRef.current?.click()} disabled={busy}>
-              <Upload size={17}/> Add photos
-            </button>
-          </div>
+          {albumStats}
         </div>
       )}
       {picker && <div className="brutti-album__picker-intro">
@@ -421,11 +430,7 @@ export default function AlbumLibrary({
       </div>}
       <input type="file" ref={fileRef} hidden multiple accept="image/jpeg,image/png,image/webp"
         onChange={e=>void upload(e.target.files)} disabled={busy}/>
-      <div className="brutti-album__stats" aria-label="Album counts">
-        <span><strong>{photos.length}</strong> All photos</span>
-        <span><strong>{assigned}</strong> In use</span>
-        <span><strong>{publishedCount}</strong> Published</span>
-      </div>
+      {picker && albumStats}
       <div className="brutti-album__toolbar">
         <div className="brutti-album__tabs" aria-label="Album views">
           <button type="button" className={filter==="all"?"is-current":""} aria-pressed={filter==="all"} onClick={()=>selectFilter("all")}>All photos</button>
