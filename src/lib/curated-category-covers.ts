@@ -1,9 +1,9 @@
-/** Stable, hand-curated showcase selection from Brutti Product Library (13 Nov 2026).
+/** Stable, hand-curated showcase from verified Brutti Catalog assets and Brutti Product Library.
  *
  * These are deliberate editorial choices, NOT Featured / Best Selling auto-selection.
  * They remain unchanged when products are added or their status changes.
  * A staff-selected categories.cover_image_url can override the pinned default.
- * Photos are served by the Brutti-owned AI Marketing Hub product-photo library.
+ * Some photos are served from Brutti's Product Library, and selected product-only covers from the Brutti Catalog public Storage bucket.
  */
 export type CuratedCategoryCover = { productCode: string; productName: string; imageUrl: string };
 
@@ -28,15 +28,15 @@ export const CURATED_CATEGORY_COVERS: Readonly<Record<string, CuratedCategoryCov
   },
   // Kiosks
   "9f5e62fb-d336-4fd0-a291-17ead43f9687": {
-    productCode: "BR-170",
-    productName: "Dumowongi Kiosk With Wavy Roof",
-    imageUrl: "https://brutti-team.github.io/brutti-ai-marketing-hub/product-photos/BR-170-photo.jpg",
+    productCode: "RC-06",
+    productName: "Small Canopy Frame Stall",
+    imageUrl: "https://lgdjoxafleqnbomtfzqt.supabase.co/storage/v1/object/public/product-images/b38404cc-fb0a-4877-af13-8b63a765f2cf/brutti2025/BRT25-P067/650044c6087d7fbdfa8d41c4fdd6f5136f0e5c9b2637b549708dc6ec3094dadd.webp",
   },
   // Panels
   "30000000-0000-4000-8000-000000000003": {
-    productCode: "BR-130",
-    productName: "Pocket-Style Wall Panel",
-    imageUrl: "https://brutti-team.github.io/brutti-ai-marketing-hub/product-photos/fb-pocket-style-wall-panel.jpg",
+    productCode: "PNL-16",
+    productName: "White Base Cabinet With Timber Display Shelves",
+    imageUrl: "https://lgdjoxafleqnbomtfzqt.supabase.co/storage/v1/object/public/product-images/b38404cc-fb0a-4877-af13-8b63a765f2cf/brutti2025/BRT25-P086/aa6fe1fc6d3903da93b27601725cbb64014207a9dbb29d33dae47cfac07e0352.webp",
   },
   // Racks & Shelves
   "30000000-0000-4000-8000-000000000001": {
@@ -52,9 +52,9 @@ export const CURATED_CATEGORY_COVERS: Readonly<Record<string, CuratedCategoryCov
   },
   // Rentals — representative single chair; no automatic product switching
   "30000000-0000-4000-8000-000000000007": {
-    productCode: "BR-148",
-    productName: "Classic Chair",
-    imageUrl: "https://brutti-team.github.io/brutti-ai-marketing-hub/product-photos/fb-classic-chair.jpg",
+    productCode: "RNT-01",
+    productName: "Stackable Event Chair Rental Selection",
+    imageUrl: "https://lgdjoxafleqnbomtfzqt.supabase.co/storage/v1/object/public/product-images/b38404cc-fb0a-4877-af13-8b63a765f2cf/brutti2025/BRT25-P088/bbbd79ac5fc193c3c1ac65337e3a9d173254da166ca9261e35402034007599be.webp",
   },
   // Tables & Kitchen Counters
   "30000000-0000-4000-8000-000000000002": {
