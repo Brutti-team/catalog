@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Images, Upload, Search, Check, X, Trash2, LoaderCircle, Eye,
+  Images, Upload, Search, Check, Trash2, LoaderCircle, Eye,
   Package, Layers, RefreshCw, ImageOff, ArrowUpRight,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import {
-  albumPhotoToProductImage, combineAlbumPhotos, listAlbumRecords,
+  combineAlbumPhotos, listAlbumRecords,
   removeUnassignedAlbumPhoto, uploadAlbumPhotos,
   type AlbumPhoto, type AlbumRecord,
 } from "../lib/album";
@@ -65,7 +65,6 @@ export default function AlbumLibrary({
       (category==="all" || photo.usedBy.some(product=>product.categoryId===category)) &&
       (!search.trim() || text.includes(search.trim().toLowerCase()));
   }),[photos,filter,category,search]);
-  const chosen = visible.filter(photo=>selected.includes(photo.key));
   const busy = progress!==null;
   async function upload(files: FileList|null) {
     if (!files?.length || busy) return;
