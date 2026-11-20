@@ -575,6 +575,7 @@ export default function AlbumLibrary({
             excludedUrls={excludedUrls}
             onView={setPreview}
             onSelect={toggle}
+            onEditCover={setEditingAlbumPhoto}
           />
         ) : (
           <div className="brutti-album__grid">
