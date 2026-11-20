@@ -144,20 +144,32 @@ export async function setAlbumPhotoCategory(id: string, categoryId: string | nul
   return data.category_id as string | null;
 }
 
-/** Delete is supported only for unassigned Album uploads. The database's
- * RLS and Storage DELETE policy independently guard product and category links.
+/** Delete an unlinked Album record. Imported Product Library images are
+ * external URL references, not objects inside the product-images bucket.
+ * Product/category references are protected independently by database RLS.
  */
 export async function removeUnassignedAlbumPhoto(photo: AlbumPhoto): Promise<void> {
-  if (!photo.id || !photo.storagePath || photo.usedBy.length || photo.categoryCovers.length)
-    throw new Error("This photo is still linked to a product or category. Unlink it first.");
-  const db=catalogClient();
-  const {data,error}=await db.from("catalog_media_assets").delete().eq("id",photo.id).select("id").maybeSingle();
-  if (error) throw new Error("Could not remove Album entry: "+error.message);
-  if (!data) throw new Error("Photo is in use, or your Album changed. Refresh before deleting.");
-  // Product Library source links are not stored in the product-images bucket.
+  if (photo.usedBy.length || photo.categoryCovers.length)
+    throw new Error("This photo is still used by a product or category cover. Unlink it first.");
+  if (!photo.id)
+    throw new Error("This photo has no Album record. Refresh and try again.");
+  if (photo.sourceKind !== "external" && !photo.storagePath)
+    throw new Error("This uploaded photo has no storage path. Refresh and try again.");
+
+  const db = catalogClient();
+  const {data,error} = await db.from("catalog_media_assets")
+    .delete().eq("id", photo.id).select("id").maybeSingle();
+  if (error) throw new Error("Could not delete Album photo: " + error.message);
+  if (!data) throw new Error("Photo could not be deleted. Check your Admin access and ensure it is not linked to a product or category.");
+
+  // External Product Library photos only have an Album reference to delete.
+  // NEVER call storage.remove with their synthetic external/brutti-library path.
   if (photo.sourceKind === "external") return;
-  const {error:storageError}=await db.storage.from("product-images").remove([photo.storagePath]);
-  if (storageError) throw new Error("Album entry removed, but storage cleanup failed: "+storageError.message);
+
+  const {error:storageError} = await db.storage.from("product-images").remove([photo.storagePath!]);
+  if (storageError) throw new Error(
+    "Album entry deleted, but stored file cleanup failed: " + storageError.message
+  );
 }
 
 export function albumPhotoToProductImage(photo: AlbumPhoto): ProductImage {
