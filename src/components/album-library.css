@@ -402,3 +402,206 @@
 @media(prefers-reduced-motion:reduce) {
   .admin-app .brutti-album__folder {transition:none;transform:none!important;}
 }
+
+
+/* Album category filter — custom premium dropdown (no native blue browser
+   option list). Scoped to Album toolbar; upload/category edit selects untouched. */
+.admin-app .brutti-album__toolbar {
+  position: relative;
+  z-index: 12;
+  overflow: visible;
+}
+.admin-app .brutti-album__category-picker {
+  position: relative;
+  flex: 0 1 210px;
+  min-width: 180px;
+  z-index: 14;
+}
+.admin-app .brutti-album__category-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 43px;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0 13px;
+  border: 1px solid #d6e5da;
+  border-radius: 12px;
+  background: #fff;
+  color: #315d40;
+  text-align: left;
+  font: 580 12px/1.3 "DM Sans", sans-serif;
+  box-shadow: 0 1px 3px rgba(27, 71, 39, .025);
+  cursor: pointer;
+  transition: border-color .17s ease, background .17s ease, box-shadow .17s ease;
+}
+.admin-app .brutti-album__category-trigger > svg:first-child {
+  flex: 0 0 auto;
+  color: #648e6e;
+}
+.admin-app .brutti-album__category-trigger > span {
+  flex: 1 1 auto;
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-app .brutti-album__category-chevron {
+  flex: 0 0 auto;
+  color: #52735a;
+  transition: transform .18s ease;
+}
+.admin-app .brutti-album__category-picker.is-open .brutti-album__category-chevron {
+  transform: rotate(180deg);
+}
+.admin-app .brutti-album__category-trigger:hover,
+.admin-app .brutti-album__category-picker.is-open .brutti-album__category-trigger {
+  background: #fcfefc;
+  border-color: #9fc4a9;
+  box-shadow: 0 0 0 3px rgba(91, 155, 110, .09);
+}
+.admin-app .brutti-album__category-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(292px, calc(100vw - 38px));
+  box-sizing: border-box;
+  padding: 7px;
+  border: 1px solid #dce8dd;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 17px 48px rgba(23, 55, 35, .16), 0 3px 12px rgba(23, 55, 35, .045);
+  z-index: 120;
+  overflow: hidden;
+}
+.admin-app .brutti-album__category-picker.is-above .brutti-album__category-menu {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+.admin-app .brutti-album__category-menu-title {
+  padding: 11px 12px 9px;
+  color: #83988a;
+  font: 740 9px/1.4 "DM Sans", sans-serif;
+  letter-spacing: .13em;
+}
+.admin-app .brutti-album__category-options {
+  display: flex;
+  flex-direction: column;
+  max-height: min(300px, 54dvh);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c5d8c9 transparent;
+  gap: 2px;
+}
+.admin-app .brutti-album__category-options button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  min-height: 39px;
+  padding: 9px 11px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: #506b58;
+  text-align: left;
+  font: 560 11.5px/1.4 "DM Sans", sans-serif;
+  cursor: pointer;
+}
+.admin-app .brutti-album__category-options button > span:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.admin-app .brutti-album__category-options button .brutti-album__category-count {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 23px;
+  padding: 3px 6px;
+  background: #edf4ee;
+  color: #6a8a73;
+  border-radius: 6px;
+  font: 660 10px/1.25 "DM Sans", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.admin-app .brutti-album__category-options button > svg {
+  flex: 0 0 auto;
+  color: #367c4a;
+}
+.admin-app .brutti-album__category-options button:hover {
+  color: #2c5a3b;
+  background: #f1f7f2;
+}
+.admin-app .brutti-album__category-options button.is-active {
+  color: #255639;
+  background: #eaf4ec;
+  border-color: #e1ede3;
+  font-weight: 720;
+}
+.admin-app .brutti-album__category-options button.is-active .brutti-album__category-count {
+  background: #daeade;
+  color: #356b45;
+}
+.admin-app .brutti-album__category-trigger:focus-visible,
+.admin-app .brutti-album__category-options button:focus-visible {
+  outline: 2px solid #5e9d70;
+  outline-offset: 2px;
+}
+.admin-app[data-theme="dark"] .brutti-album__category-trigger,
+.admin-app[data-theme="dark"] .brutti-album__category-menu {
+  background: #294734;
+  color: #e2f0e5;
+  border-color: #56705b;
+}
+.admin-app[data-theme="dark"] .brutti-album__category-trigger:hover,
+.admin-app[data-theme="dark"] .brutti-album__category-picker.is-open .brutti-album__category-trigger {
+  background: #31513c;
+}
+.admin-app[data-theme="dark"] .brutti-album__category-menu-title {
+  color: #aac3af;
+}
+.admin-app[data-theme="dark"] .brutti-album__category-options button {
+  color: #d5e6d8;
+}
+.admin-app[data-theme="dark"] .brutti-album__category-options button:hover,
+.admin-app[data-theme="dark"] .brutti-album__category-options button.is-active {
+  color: #fff;
+  background: #3b6047;
+  border-color: #466d52;
+}
+.admin-app[data-theme="dark"] .brutti-album__category-options button .brutti-album__category-count {
+  background: #31533b;
+  color: #c8decf;
+}
+.admin-app[data-theme="dark"] .brutti-album__category-options button > svg {
+  color: #a9dab4;
+}
+@media (max-width: 830px) {
+  .admin-app .brutti-album__category-picker {
+    flex: 1 1 190px;
+  }
+}
+@media (max-width: 600px) {
+  .admin-app .brutti-album__category-picker {
+    flex: 1 1 180px;
+    min-width: 0;
+  }
+  .admin-app .brutti-album__category-menu {
+    width: min(292px, calc(100vw - 28px));
+  }
+  .admin-app .brutti-album__category-options {
+    max-height: min(270px, 47dvh);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .brutti-album__category-trigger,
+  .admin-app .brutti-album__category-chevron {
+    transition: none;
+  }
+}
