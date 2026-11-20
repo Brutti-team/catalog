@@ -64,6 +64,7 @@ import "./components/product-editor-specification-groups.css";
 import "./components/catalog-categories-background-totals.css";
 import "./components/catalog-products-background.css";
 import "./components/album-photo-details-redesign.css";
+import "./components/product-editor-clean-canvas.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
