@@ -30,6 +30,7 @@ import { nextProductId } from "../lib/product-ids";
 import { cmToUnit, unitToCm, unitMax, type DimensionUnit } from "../lib/dimensions";
 import DimensionUnitPicker from "./DimensionUnitPicker";
 import PhotoCropEditor from "./PhotoCropEditor";
+import PhotoCoverStudio from "./PhotoCoverStudio";
 import AlbumLibrary from "./AlbumLibrary";
 import { albumPhotoToProductImage, type AlbumPhoto } from "../lib/album";
 import { photoCropStyle } from "../lib/photo-crop";
@@ -84,6 +85,7 @@ export default function ProductEditor({
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [showAlbumPicker, setShowAlbumPicker] = useState(false);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
+  const [editingCoverId, setEditingCoverId] = useState<string | null>(null);
   const [show3DTools, setShow3DTools] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [modelPending, setModelPending] = useState(false);
@@ -613,6 +615,21 @@ export default function ProductEditor({
                     </button>
                     <button
                       type="button"
+                      className="catalog-photo-crop-open brutti-cover-studio-open"
+                      aria-label={"Edit cover, cutout, background and size for photo " + (index + 1)}
+                      disabled={busy || uploading}
+                      onClick={() => {
+                        if (draft.images.length >= 8) {
+                          setError("To keep the original photo safe, first free one photo slot (maximum 8), then create an edited cover.");
+                          return;
+                        }
+                        setEditingCoverId(img.id);
+                      }}
+                    >
+                      <Crop size={14} aria-hidden="true" /> Cover Studio
+                    </button>
+                    <button
+                      type="button"
                       className="catalog-photo-download"
                       aria-label={`Download photo ${index + 1} as JPG`}
                       title="Download actual JPG image, not an HTML file"
@@ -1055,6 +1072,35 @@ export default function ProductEditor({
           </div>
         </footer>
       </form>
+      {editingCoverId && draft.images.some(image => image.id === editingCoverId) && (
+        <PhotoCoverStudio
+          key={editingCoverId}
+          imageUrl={draft.images.find(image => image.id === editingCoverId)!.url}
+          imageName={draft.images.find(image => image.id === editingCoverId)!.alt || draft.name}
+          saveLabel="Use as product cover"
+          onClose={() => setEditingCoverId(null)}
+          onSave={async file => {
+            if (draft.images.length >= 8) throw new Error("The product already has 8 photos. Free one slot to keep the original.");
+            uploadLock.current = true;
+            setUploading(true);
+            try {
+              const edited = await uploadImage(file);
+              uploadedImages.current.set(edited.id, edited);
+              if (!mounted.current) { await cleanupAbandonedImages([edited]); return; }
+              // Add as first cover without removing or overwriting the source.
+              setDraft(current => ({
+                ...current,
+                images: [{ ...edited, alt: "Edited furniture cover" }, ...current.images].slice(0, 8),
+              }));
+              setEditingCoverId(null);
+              setError("");
+            } finally {
+              uploadLock.current = false;
+              if (mounted.current) setUploading(false);
+            }
+          }}
+        />
+      )}
       {editingPhotoId && draft.images.some(image => image.id === editingPhotoId) && (
         <PhotoCropEditor
           key={editingPhotoId}
