@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Images, Upload, Download, Search, Check, Trash2, LoaderCircle, Eye,
-  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft,
+  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import {
@@ -35,6 +35,10 @@ export default function AlbumLibrary({
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "by-category" | "unassigned">("all");
   const [category, setCategory] = useState("all");
+  const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
+  const [categoryMenuAbove, setCategoryMenuAbove] = useState(false);
+  const categoryMenuRef = useRef<HTMLDivElement>(null);
+  const categoryTriggerRef = useRef<HTMLButtonElement>(null);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [uploadCategory, setUploadCategory] = useState("none");
   const [categorising, setCategorising] = useState(false);
@@ -64,6 +68,48 @@ export default function AlbumLibrary({
       if (mounted.current) setLoading(false);
     }
   }
+  useEffect(() => {
+    if (!categoryMenuOpen) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (!categoryMenuRef.current?.contains(event.target as Node)) {
+        setCategoryMenuOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setCategoryMenuOpen(false);
+        categoryTriggerRef.current?.focus();
+      }
+    };
+    const closeOnScroll = (event: Event) => {
+      if (categoryMenuRef.current?.contains(event.target as Node)) return;
+      setCategoryMenuOpen(false);
+    };
+    window.addEventListener("pointerdown", closeOutside);
+    window.addEventListener("keydown", closeOnEscape);
+    window.addEventListener("resize", closeOnScroll);
+    window.addEventListener("scroll", closeOnScroll, true);
+    return () => {
+      window.removeEventListener("pointerdown", closeOutside);
+      window.removeEventListener("keydown", closeOnEscape);
+      window.removeEventListener("resize", closeOnScroll);
+      window.removeEventListener("scroll", closeOnScroll, true);
+    };
+  }, [categoryMenuOpen]);
+  const toggleCategoryMenu = () => {
+    if (!categoryMenuOpen && categoryTriggerRef.current) {
+      const rect = categoryTriggerRef.current.getBoundingClientRect();
+      setCategoryMenuAbove(window.innerHeight - rect.bottom < Math.min(330, (categories.length + 1) * 42 + 58)
+        && rect.top > window.innerHeight - rect.bottom);
+    }
+    setCategoryMenuOpen(open => !open);
+  };
+  const selectAlbumCategory = (value: string) => {
+    setCategory(value);
+    setCategoryMenuOpen(false);
+    categoryTriggerRef.current?.focus();
+  };
   const photos = useMemo(()=>combineAlbumPhotos(records,products,categories),[records,products,categories]);
   const uncategorised = (photo: AlbumPhoto) => albumPhotoCategoryIds(photo).length === 0;
   const assigned = photos.filter(photo => !uncategorised(photo)).length;
@@ -92,6 +138,7 @@ export default function AlbumLibrary({
     setFilter(next);
     setSelectedFolder(null);
     setCategory("all");
+    setCategoryMenuOpen(false);
     if (next !== "by-category") setUploadCategory("none");
   }
   function openFolder(id: string) {
@@ -238,13 +285,59 @@ export default function AlbumLibrary({
           <button type="button" className={filter==="unassigned"?"is-current":""} aria-pressed={filter==="unassigned"} onClick={()=>selectFilter("unassigned")}>Unassigned</button>
         </div>
         <label className="brutti-album__search"><Search size={17}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search photos or product names…" aria-label="Search Album"/></label>
-        {filter !== "by-category" && <label className="brutti-album__category">
-          <Layers size={17}/>
-          <select value={category} onChange={e=>setCategory(e.target.value)} aria-label="Filter album by category">
-            <option value="all">All categories</option>
-            {categories.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}
-          </select>
-        </label>}
+        {filter !== "by-category" && <div ref={categoryMenuRef}
+          className={`brutti-album__category-picker${categoryMenuOpen ? " is-open" : ""}${categoryMenuAbove ? " is-above" : ""}`}>
+          <button ref={categoryTriggerRef} type="button" className="brutti-album__category-trigger"
+            aria-label="Filter album photos by category"
+            aria-expanded={categoryMenuOpen}
+            aria-haspopup="true"
+            onClick={toggleCategoryMenu}
+            onKeyDown={event => {
+              if ((event.key === "ArrowDown" || event.key === "ArrowUp") && !categoryMenuOpen) {
+                event.preventDefault();
+                toggleCategoryMenu();
+              }
+            }}>
+            <Layers size={17} aria-hidden="true"/>
+            <span>{category === "all" ? "All categories" : categories.find(item => item.id === category)?.name || "All categories"}</span>
+            <ChevronDown size={16} aria-hidden="true" className="brutti-album__category-chevron"/>
+          </button>
+          {categoryMenuOpen && <div className="brutti-album__category-menu"
+            role="group" aria-label="Choose a category"
+            onKeyDown={event => {
+              if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+              event.preventDefault();
+              const buttons = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>("button"));
+              if (!buttons.length) return;
+              const current = buttons.indexOf(document.activeElement as HTMLButtonElement);
+              const next = event.key === "Home" ? 0 :
+                event.key === "End" ? buttons.length - 1 :
+                event.key === "ArrowDown" ? (current + 1) % buttons.length :
+                (current + buttons.length - 1) % buttons.length;
+              buttons[next].focus();
+            }}>
+            <div className="brutti-album__category-menu-title">BROWSE COLLECTIONS</div>
+            <div className="brutti-album__category-options">
+              <button type="button" className={category === "all" ? "is-active" : ""}
+                aria-pressed={category === "all"}
+                onClick={() => selectAlbumCategory("all")}>
+                <span>All categories</span>
+                <span className="brutti-album__category-count">{photos.length}</span>
+                {category === "all" && <Check size={15} aria-hidden="true"/>}
+              </button>
+              {categories.map(item => (
+                <button type="button" key={item.id}
+                  className={category === item.id ? "is-active" : ""}
+                  aria-pressed={category === item.id}
+                  onClick={() => selectAlbumCategory(item.id)}>
+                  <span>{item.name}</span>
+                  <span className="brutti-album__category-count">{groups.find(group => group.category.id === item.id)?.items.length ?? 0}</span>
+                  {category === item.id && <Check size={15} aria-hidden="true"/>}
+                </button>
+              ))}
+            </div>
+          </div>}
+        </div>}
         <button type="button" className="brutti-album__refresh" disabled={busy||loading} onClick={()=>void reload()} title="Refresh Album" aria-label="Refresh Album"><RefreshCw size={17}/></button>
       </div>
       {picker && <div className="brutti-album__picker-add">
