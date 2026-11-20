@@ -172,7 +172,7 @@ export default function AlbumLibrary({
   const [records, setRecords] = useState<AlbumRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | "by-category" | "unassigned">("all");
+  const [filter, setFilter] = useState<"all" | "by-category" | "published">("all");
   const [category, setCategory] = useState("all");
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
   const [categoryMenuAbove, setCategoryMenuAbove] = useState(false);
@@ -251,8 +251,13 @@ export default function AlbumLibrary({
   };
   const photos = useMemo(()=>combineAlbumPhotos(records,products,categories),[records,products,categories]);
   const uncategorised = (photo: AlbumPhoto) => albumPhotoCategoryIds(photo).length === 0;
-  const assigned = photos.filter(photo => !uncategorised(photo)).length;
-  const available = photos.length - assigned;
+  const assigned = photos.filter(photo => photo.usedBy.length > 0 || photo.categoryCovers.length > 0).length;
+  const publishedIds = useMemo(
+    () => new Set(products.filter(product => product.status === "published").map(product => product.id)),
+    [products],
+  );
+  const isPublishedPhoto = (photo: AlbumPhoto) => photo.usedBy.some(product => publishedIds.has(product.id));
+  const publishedCount = photos.filter(isPublishedPhoto).length;
   const groups = useMemo(() => categories.map(item => {
     const items = photos.filter(photo => albumPhotoCategoryIds(photo).includes(item.id));
     return { category: item, items, cover: items.find(photo => photo.url)?.url };
@@ -266,14 +271,14 @@ export default function AlbumLibrary({
     const inFolder = filter !== "by-category" ||
       (selectedFolder === "__uncategorized__" ? ids.length===0 :
         selectedFolder !== null && ids.includes(selectedFolder));
-    return (filter!=="unassigned" || ids.length===0) &&
+    return (filter!=="published" || photo.usedBy.some(product => publishedIds.has(product.id))) &&
       inFolder &&
       (filter==="by-category" || category==="all" || ids.includes(category)) &&
       (!search.trim() || text.includes(search.trim().toLowerCase()));
-  }),[photos,filter,category,selectedFolder,search,categories]);
+  }),[photos,filter,category,selectedFolder,search,categories,publishedIds]);
   const folderTitle = selectedFolder === "__uncategorized__" ? "Uncategorised" :
     categories.find(item => item.id === selectedFolder)?.name || "Category";
-  function selectFilter(next: "all" | "by-category" | "unassigned") {
+  function selectFilter(next: "all" | "by-category" | "published") {
     setFilter(next);
     setSelectedFolder(null);
     setCategory("all");
@@ -415,13 +420,13 @@ export default function AlbumLibrary({
       <div className="brutti-album__stats" aria-label="Album counts">
         <span><strong>{photos.length}</strong> All photos</span>
         <span><strong>{assigned}</strong> In use</span>
-        <span><strong>{available}</strong> Unassigned</span>
+        <span><strong>{publishedCount}</strong> Published</span>
       </div>
       <div className="brutti-album__toolbar">
         <div className="brutti-album__tabs" aria-label="Album views">
           <button type="button" className={filter==="all"?"is-current":""} aria-pressed={filter==="all"} onClick={()=>selectFilter("all")}>All photos</button>
           <button type="button" className={filter==="by-category"?"is-current":""} aria-pressed={filter==="by-category"} onClick={()=>selectFilter("by-category")}><Folder size={14}/> By category</button>
-          <button type="button" className={filter==="unassigned"?"is-current":""} aria-pressed={filter==="unassigned"} onClick={()=>selectFilter("unassigned")}>Unassigned</button>
+          <button type="button" className={filter==="published"?"is-current":""} aria-pressed={filter==="published"} onClick={()=>selectFilter("published")}>Published</button>
         </div>
         <label className="brutti-album__search"><Search size={17}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search photos or product names…" aria-label="Search Album"/></label>
         {filter !== "by-category" && <div ref={categoryMenuRef}
