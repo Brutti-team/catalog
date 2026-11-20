@@ -1,0 +1,221 @@
+/* Brutti Catalog / Product Editor — calm, continuous premium workspace.
+   This file intentionally loads after earlier studio styles so duplicated frames
+   and section outlines do not compete. No product data or interactions change. */
+
+.admin-app .modal.product-editor-dialog--editing {
+  box-sizing: border-box;
+  border: 0 !important;
+  outline: none;
+  border-radius: 18px;
+  overflow-x: hidden;
+  background: #fbfcfa;
+  box-shadow: 0 26px 80px rgba(13, 43, 25, .2);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 {
+  background: #fbfcfa;
+}
+.admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+  min-height: 78px;
+  border: 0;
+  border-bottom: 0;
+  box-shadow: none;
+  background: #1f4c36;
+}
+.admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar-identity > .catalog-editor-back-icon {
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.09);
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-columns {
+  background: #fbfcfa;
+  border: 0;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+  background: #fbfcfa;
+  border: 0;
+  box-shadow: none;
+  padding: 24px clamp(24px,3.2vw,44px) 10px;
+}
+/* One separator BETWEEN sections; no duplicate underline on headings. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .form-section.product-editor-section {
+  margin: 0 0 29px;
+  padding: 0 0 28px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #e6ede7;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .form-section.product-editor-section:last-child {
+  border-bottom: 0;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .form-section.product-editor-section > .product-editor-section-heading {
+  margin: 0 0 19px;
+  padding: 0;
+  min-height: 40px;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  gap: 13px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .form-section.product-editor-section > .product-editor-section-heading .product-editor-step {
+  border: 1px solid #d7e6da;
+  border-radius: 10px;
+  background: #f7fbf8;
+  color: #4e7e5b;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .form-section.product-editor-section > .product-editor-section-heading h3 {
+  color: #244a33;
+  font-weight: 725;
+  letter-spacing: -.04em;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics {
+  --brutti-detail-border: #e0e9e2;
+  --brutti-detail-radius: 11px;
+  --brutti-detail-control-h: 50px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics > label > :is(input, textarea),
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics .catalog-product-id-display,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics .catalog-editor-category-trigger {
+  border: 1px solid #e0e9e2;
+  background: #fff;
+  border-radius: 11px;
+  outline: none;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics .catalog-product-id-display {
+  background: #f4f8f4;
+  color: #2e5b3e;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics > label > :is(input,textarea):hover:not(:focus),
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics .catalog-editor-category-trigger:hover:not(:focus-visible) {
+  border-color: #c1d7c6;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics > label > :is(input,textarea):focus,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics .catalog-editor-category-trigger:focus-visible,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics .catalog-editor-category.is-open .catalog-editor-category-trigger {
+  outline: 2px solid #5d986d;
+  outline-offset: 1px;
+  border-color: #6b9f79;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics > label {
+  color: #36533e;
+  font-size: 12.5px;
+  margin-bottom: 16px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics > label > textarea {
+  line-height: 1.55;
+  min-height: 112px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+  border-top: 1px solid #e4ece5;
+  background: #fff;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  min-height: 70px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer .button {
+  border-radius: 10px;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer .button.primary {
+  background: #24583c;
+  border-color: #24583c;
+  box-shadow: 0 3px 9px rgba(31,77,45,.10);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer .button.secondary:not(.catalog-editor-footer-view-live) {
+  background: #fff;
+  border-color: #e0e9e1;
+  color: #3f5c47;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer .catalog-editor-footer-view-live {
+  background: #f5f9f5;
+  border-color: #d9e8dc;
+}
+@media (max-width: 760px) {
+  .admin-app .modal.product-editor-dialog--editing {
+    border-radius: 14px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+    min-height: 69px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+    padding: 22px 17px 7px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .form-section.product-editor-section {
+    margin-bottom: 23px;
+    padding-bottom: 21px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .form-section.product-editor-section > .product-editor-section-heading {
+    padding: 0;
+    margin-bottom: 17px;
+    min-height: 38px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-basics {
+    --brutti-detail-control-h: 48px;
+  }
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing,
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2,
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-columns,
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+  background: #23362a;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .form-section.product-editor-section {
+  border-bottom-color: #3a5743;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .form-section.product-editor-section > .product-editor-section-heading h3 {
+  color: #d9efdf;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics > label > :is(input, textarea),
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics .catalog-editor-category-trigger {
+  background: #2c4534;
+  border-color: #496652;
+  color: #ecf4ef;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics .catalog-product-id-display {
+  background: #2c4534;
+  border-color: #496652;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+  background: #263b2d;
+  border-top-color: #49614c;
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer .button {
+    transition: none;
+  }
+}
