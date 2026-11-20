@@ -271,3 +271,134 @@
   .admin-app .brutti-album__download-format {width:100%;justify-content:space-between;}
   .admin-app .brutti-album__preview-actions > button {flex:1 1 auto;}
 }
+
+/* Album folders — one visual category view backed by existing Admin categories. */
+.admin-app .brutti-album__heading-actions {flex-wrap:wrap;justify-content:flex-end;}
+.admin-app .brutti-album__destination {
+  display:inline-flex;align-items:center;gap:8px;color:#697d6e;
+  font:620 11px/1.3 "DM Sans",sans-serif;white-space:nowrap;
+}
+.admin-app .brutti-album__destination select {
+  min-width:130px;max-width:185px;min-height:40px;
+  border:1px solid #d4e4d7;border-radius:10px;
+  background:rgba(255,255,255,.88);color:#325c40;
+  padding:8px 10px;font:660 11.5px "DM Sans",sans-serif;
+}
+.admin-app .brutti-album__picker-add {
+  display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin:5px 0 12px;
+}
+.admin-app .brutti-album__picker-add .brutti-album__upload-small {padding:7px 0;}
+.admin-app .brutti-album__tabs button {
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+}
+.admin-app .brutti-album__folders {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px;align-items:start;padding:3px 0 25px;
+}
+.admin-app .brutti-album__folder {
+  display:flex;flex-direction:column;overflow:hidden;min-width:0;
+  padding:0;text-align:left;cursor:pointer;color:#284735;
+  border:1px solid #dfebe0;border-radius:15px;
+  background:#fff;box-shadow:0 5px 22px rgba(32,72,43,.045);
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.admin-app .brutti-album__folder:hover {
+  transform:translateY(-3px);border-color:#a9c9b1;
+  box-shadow:0 12px 27px rgba(32,72,43,.11);
+}
+.admin-app .brutti-album__folder-cover {
+  position:relative;display:grid;place-items:center;width:100%;
+  height:165px;background:linear-gradient(140deg,#edf4ed,#dce9df);
+  color:#6e9a79;overflow:hidden;
+}
+.admin-app .brutti-album__folder-cover img {
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.admin-app .brutti-album__folder-mark {
+  position:absolute;left:13px;bottom:12px;width:35px;height:35px;
+  display:grid;place-items:center;border-radius:10px;
+  background:rgba(246,251,246,.94);color:#305c3e;
+  box-shadow:0 2px 9px rgba(32,72,43,.10);
+}
+.admin-app .brutti-album__folder-cover--empty {
+  background:linear-gradient(135deg,#f5f8f2,#e7eee5);
+}
+.admin-app .brutti-album__folder-copy {
+  display:flex;flex-direction:column;gap:5px;padding:15px 16px 17px;
+}
+.admin-app .brutti-album__folder-copy strong {
+  color:#284a36;font:720 14px/1.35 "Manrope","DM Sans",sans-serif;
+  overflow-wrap:anywhere;
+}
+.admin-app .brutti-album__folder-copy small {
+  color:#758777;font:540 11px "DM Sans",sans-serif;
+}
+.admin-app .brutti-album__folder-path {
+  display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+  margin:4px 0 19px;padding:10px 0 14px;
+  border-bottom:1px solid #dce7dd;color:#9cab9e;
+}
+.admin-app .brutti-album__folder-path > button:first-child {
+  display:inline-flex;align-items:center;gap:7px;
+  background:transparent;border:0;color:#4e7859;
+  font:680 12px "DM Sans",sans-serif;cursor:pointer;padding:4px 0;
+}
+.admin-app .brutti-album__folder-path strong {
+  color:#28553a;font:720 15px/1.4 "Manrope","DM Sans",sans-serif;
+}
+.admin-app .brutti-album__folder-items {font-size:11px;color:#788c7c;}
+.admin-app .brutti-album__folder-add {
+  margin-left:auto;display:inline-flex;align-items:center;gap:7px;
+  padding:9px 13px;min-height:37px;border-radius:10px;
+  border:1px solid #d0e2d3;background:#eaf4ec;
+  color:#2d6540;font:700 11.5px "DM Sans",sans-serif;cursor:pointer;
+}
+.admin-app .brutti-album__assign-category {
+  display:flex;flex-direction:column;align-items:stretch;gap:8px;
+  margin-top:16px;padding:13px;
+  border:1px solid #e0e9e0;border-radius:12px;background:#f5f9f5;
+}
+.admin-app .brutti-album__assign-category > span {
+  color:#365f43;font:730 12px "DM Sans",sans-serif;
+}
+.admin-app .brutti-album__assign-category select {
+  min-height:41px;width:100%;padding:9px 12px;
+  border:1px solid #cddfd1;border-radius:10px;
+  background:#fff;color:#294735;font:570 12px "DM Sans",sans-serif;
+}
+.admin-app .brutti-album__assign-category small {
+  color:#788a7c;font:460 11px/1.55 "DM Sans",sans-serif;
+}
+.admin-app[data-theme="dark"] .brutti-album__folder {
+  background:#284432;border-color:#4a7254;
+}
+.admin-app[data-theme="dark"] .brutti-album__folder-copy strong {color:#e0f0e3;}
+.admin-app[data-theme="dark"] .brutti-album__folder-path {border-color:#506c56;}
+.admin-app[data-theme="dark"] .brutti-album__folder-path strong {color:#d8ebde;}
+.admin-app[data-theme="dark"] .brutti-album__assign-category {background:#2b4433;border-color:#58745e;}
+.admin-app[data-theme="dark"] .brutti-album__assign-category > span {color:#deefe0;}
+@media(max-width:1100px) {
+  .admin-app .brutti-album__folders {grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+@media(max-width:830px) {
+  .admin-app .brutti-album__folders {grid-template-columns:repeat(2,minmax(0,1fr));}
+  .admin-app .brutti-album__heading-actions {justify-content:flex-start;}
+}
+@media(max-width:600px) {
+  .admin-app .brutti-album__heading-actions {gap:10px;}
+  .admin-app .brutti-album__heading-actions .brutti-album__destination {
+    width:100%;justify-content:space-between;order:3;
+  }
+  .admin-app .brutti-album__heading-actions .brutti-album__destination select {flex:1;max-width:230px;}
+  .admin-app .brutti-album__tabs {gap:2px;}
+  .admin-app .brutti-album__tabs button {padding:8px 6px;font-size:10.5px;}
+  .admin-app .brutti-album__folders {gap:10px;}
+  .admin-app .brutti-album__folder-cover {height:118px;}
+  .admin-app .brutti-album__folder-mark {width:29px;height:29px;left:9px;bottom:9px;}
+  .admin-app .brutti-album__folder-copy {padding:11px 10px 13px;}
+  .admin-app .brutti-album__folder-copy strong {font-size:12px;}
+  .admin-app .brutti-album__folder-add {margin-left:0;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .admin-app .brutti-album__folder {transition:none;transform:none!important;}
+}
