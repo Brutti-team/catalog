@@ -18,61 +18,9 @@ type ShowroomSectionsProps = {
   section?: "categories" | "approach";
 };
 
-/** Official Brutti project boards are collages, so crop a single photographed object only.
- * These covers are used solely when a category has no published product photo.
- * An Admin-published Featured / Best Selling product takes precedence automatically.
+/** The carousel never falls back to collage images with people.
+ * For an empty or broken category photo, show a neutral brand placeholder.
  */
-function officialCategoryCover(name: string): { url: string; position: string; zoom: string } {
-  const title = name.toLowerCase();
-  let file = "others.webp";
-  let position = "0% 9%";
-  let zoom = "215% auto";
-
-  if (/bed|bunk/.test(title)) {
-    file = "bed & bunkbed.webp";
-    position = "100% 12%"; // Timber bunk bed (top-right of the original project board).
-    zoom = "225% auto";
-  } else if (/cabinet|wardrobe/.test(title)) {
-    file = "built in cabinet.webp";
-    position = "0% 5%"; // Built-in wood cabinet, not the full montage.
-    zoom = "210% auto";
-  } else if (/kiosk/.test(title)) {
-    file = "kiosk.webp";
-    position = "0% 12%"; // Single curved timber kiosk.
-    zoom = "215% auto";
-  } else if (/rack|shel/.test(title)) {
-    file = "racks & shelves.webp";
-    position = "100% 12%"; // Tall timber display rack.
-    zoom = "225% auto";
-  } else if (/table|kitchen/.test(title)) {
-    file = "table & counters.webp";
-    position = "100% 10%"; // Timber counter with shelves.
-    zoom = "215% auto";
-  } else if (/reception|counter/.test(title)) {
-    file = "table & counters.webp";
-    position = "100% 12%"; // One counter, rather than the montage.
-    zoom = "215% auto";
-  } else if (/memento|souvenir|memorabil/.test(title)) {
-    file = "memento.webp";
-    position = "100% 9%"; // Wooden commemorative display box.
-    zoom = "220% auto";
-  } else if (/panel|sign|display/.test(title)) {
-    file = "Signages.webp";
-    position = "0% 3%"; // One Brutti timber sign.
-    zoom = "208% auto";
-  } else if (/rental/.test(title)) {
-    file = "kiosk.webp";
-    position = "0% 12%"; // Event kiosk suitable for temporary rental.
-    zoom = "215% auto";
-  }
-
-  return {
-    url: "https://brutti.my/assets/what-we-build/" + encodeURIComponent(file),
-    position,
-    zoom,
-  };
-}
-
 /**
  * Categories and names come from the live Admin category records.
  * The carousel never reveals an unpublished product's private photos.
@@ -158,7 +106,7 @@ export default function ShowroomSections({
         // Pinned Brutti Library photos do not change when new products are uploaded.
         image: selectedPhoto ? publicAssetUrl(selectedPhoto) : photo ? publicAssetUrl(photo.url) : null,
         photo: selectedPhoto ? undefined : photo,
-        fallback: officialCategoryCover(category.name),
+
       };
     });
 
@@ -179,15 +127,9 @@ export default function ShowroomSections({
             title={card.name}
           >
             <span className="pub-category-rail-image">
-              <span
-                className="pub-category-rail-single-fallback"
-                aria-hidden="true"
-                style={{
-                  backgroundImage: `url("${card.fallback.url}")`,
-                  backgroundPosition: card.fallback.position,
-                  backgroundSize: card.fallback.zoom,
-                }}
-              />
+              <span className="pub-category-rail-single-fallback" aria-hidden="true">
+                <Layers3 size={28} strokeWidth={1.4} />
+              </span>
               {card.image && (
                 <img
                   src={card.image}
@@ -196,7 +138,7 @@ export default function ShowroomSections({
                   decoding="async"
                   style={photoCropStyle(card.photo)}
                   onError={event => {
-                    // Leave the single-object branded photo underneath as fallback.
+                    // Keep the neutral placeholder instead of loading a collage with people.
                     event.currentTarget.style.display = "none";
                   }}
                 />
