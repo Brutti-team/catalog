@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
-import { Check, Crop, Image as ImageIcon, LoaderCircle, Minus, Move, Plus, RotateCcw, Scissors } from "lucide-react";
+import { Check, Crop, Image as ImageIcon, LoaderCircle, Minus, Move, Plus, RotateCcw, Scissors, Sparkles } from "lucide-react";
 import Modal from "./Modal";
+import { aiFurnitureCutout, stopAICutout } from "../lib/ai-background-removal";
 import { publicAssetUrl } from "../lib/assets";
 import {
   coverBackgrounds, drawCover, flatBackgroundCutout, loadCoverSource,
@@ -37,6 +38,10 @@ export default function PhotoCoverStudio({
   const [settings, setSettings] = useState<CoverSettings>({ ...initial });
   const [processing, setProcessing] = useState(false);
   const [cleanInnerGaps, setCleanInnerGaps] = useState(true);
+  const [cutoutMode, setCutoutMode] = useState<"none" | "ai" | "flat">("none");
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiMessage, setAiMessage] = useState("");
+  const [previewOriginal, setPreviewOriginal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const stageRef = useRef<HTMLDivElement>(null);
@@ -52,9 +57,10 @@ export default function PhotoCoverStudio({
       .catch(err => { if (mounted) setError(err instanceof Error ? err.message : "Could not open this image."); });
     return () => { mounted = false; };
   }, [imageUrl]);
+  useEffect(() => () => stopAICutout(), []);
 
   useEffect(() => {
-    if (!source || !settings.cutout) { setMask(null); setProcessing(false); return; }
+    if (!source || !settings.cutout || cutoutMode !== "flat") { setProcessing(false); return; }
     let active = true;
     setProcessing(true);
     // Keep the previous cutout visible while recomputing to avoid black flashes.
@@ -71,13 +77,55 @@ export default function PhotoCoverStudio({
       }
     }, 90);
     return () => { active = false; clearTimeout(timer); };
-  }, [source, settings.cutout, settings.tolerance, cleanInnerGaps]);
+  }, [source, settings.cutout, settings.tolerance, cleanInnerGaps, cutoutMode]);
 
   const renderCover = useCallback(() => {
     if (!canvasRef.current || !source) return;
-    drawCover(canvasRef.current, source, mask, settings);
-  }, [source, mask, settings]);
+    drawCover(canvasRef.current, source, mask, {
+      ...settings, cutout: settings.cutout && !previewOriginal,
+    });
+  }, [source, mask, settings, previewOriginal]);
   useEffect(() => { renderCover(); }, [renderCover]);
+
+  const runAI = async () => {
+    if (!source || saving || aiBusy) return;
+    setError("");
+    setAiMessage("Starting AI engine…");
+    setAiBusy(true);
+    setPreviewOriginal(false);
+    try {
+      const result = await aiFurnitureCutout(source, message => setAiMessage(message));
+      setMask(result);
+      setCutoutMode("ai");
+      patch({ cutout: true });
+      setAiMessage("AI background removed. Inspect the product before saving.");
+    } catch (err) {
+      setAiMessage("");
+      setError(err instanceof Error ? err.message : "AI could not separate this furniture.");
+    } finally {
+      setAiBusy(false);
+    }
+  };
+  const originalImage = () => {
+    stopAICutout();
+    setAiBusy(false);
+    setAiMessage("");
+    setMask(null);
+    setCutoutMode("none");
+    patch({ cutout: false });
+    setPreviewOriginal(false);
+    setError("");
+  };
+  const manualCutout = () => {
+    stopAICutout();
+    setAiBusy(false);
+    setAiMessage("");
+    setMask(null);
+    setCutoutMode("flat");
+    patch({ cutout: true });
+    setPreviewOriginal(false);
+    setError("");
+  };
 
   const pointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (event.button !== 0 || !source) return;
@@ -102,11 +150,12 @@ export default function PhotoCoverStudio({
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
   };
   const save = async () => {
-    if (saving || !source || (settings.cutout && (!mask || processing))) return;
+    if (saving || aiBusy || !source || (settings.cutout && (!mask || processing))) return;
     setSaving(true); setError("");
     try {
-      renderCover();
+      // Exports always use the chosen cutout even when Before is previewed.
       const canvas = canvasRef.current;
+      if (canvas) drawCover(canvas, source, mask, settings);
       if (!canvas) throw new Error("Photo canvas is unavailable.");
       const blob = await new Promise<Blob>((resolve, reject) => {
         canvas.toBlob(value => value ? resolve(value) : reject(new Error("Image export failed.")), "image/webp", .92);
@@ -121,7 +170,7 @@ export default function PhotoCoverStudio({
 
   return (
     <Modal title="Cover Studio" eyebrow="BRUTTI CATALOG / PRODUCT PHOTOS"
-      description="Cut out backgrounds, choose a cover colour and frame your furniture. The original photo stays unchanged."
+      description="AI removes the furniture background locally. Preview the result, set a new backdrop, crop and save a separate photo."
       className="brutti-cover-studio" onClose={() => { if (!saving) onClose(); }}>
       <div className="brutti-cover-studio-layout">
         <div className="brutti-cover-studio-visual">
@@ -134,34 +183,54 @@ export default function PhotoCoverStudio({
             <canvas ref={canvasRef} width={960} height={720}
               style={{ aspectRatio: settings.aspect === "1:1" ? "1 / 1" : "4 / 3" }} />
             {!source && <p className="brutti-cover-studio-loading" role="status">{error || "Loading photo…"}</p>}
-            {processing && <span className="brutti-cover-studio-working"><LoaderCircle size={16}/> Removing background…</span>}
+            {(processing || aiBusy) && <span className="brutti-cover-studio-working"><LoaderCircle className="spin" size={16}/> {aiBusy ? aiMessage : "Removing solid background…"}</span>}
           </div>
           <p className="brutti-cover-studio-drag-hint"><Move size={15}/> Drag to reposition · Preview updates live</p>
           <p className="brutti-cover-studio-help">
-            Cutout works best on plain backgrounds, including black studio backgrounds.
-            Adjust the tolerance carefully around timber edges.
+            AI keeps furniture shapes, legs and open frames more accurately than colour matching.
+            The model runs on your device, not a paid API. Review edges before saving.
           </p>
         </div>
         <div className="brutti-cover-studio-tools">
           <section>
-            <h3><Scissors size={16}/> Cutout</h3>
-            <button type="button" className={"brutti-cover-studio-toggle" + (settings.cutout ? " is-active" : "")}
-              disabled={!source || saving} aria-pressed={settings.cutout}
-              onClick={() => patch({ cutout: !settings.cutout })}>
-              {settings.cutout ? <Check size={16}/> : <Scissors size={16}/>}
-              {settings.cutout ? "Cutout enabled" : "Remove solid background"}
+            <h3><Sparkles size={16}/> AI Cutout</h3>
+            <button type="button"
+              className={"brutti-cover-studio-ai" + (cutoutMode === "ai" ? " is-active" : "")}
+              disabled={!source || saving || aiBusy}
+              aria-pressed={cutoutMode === "ai"}
+              onClick={() => void runAI()}>
+              {aiBusy ? <LoaderCircle className="spin" size={17}/> : <Sparkles size={17}/>}
+              {aiBusy ? "AI is processing…" : cutoutMode === "ai" ? "Re-run AI Remove Background" : "AI Remove Background"}
             </button>
-            {settings.cutout && <label className="brutti-cover-studio-range">
-              Background tolerance <strong>{settings.tolerance}</strong>
-              <input type="range" min="12" max="115" step="3" value={settings.tolerance} disabled={saving}
-                onChange={event => patch({ tolerance: Number(event.target.value) })}/>
-              <small>Increase to remove more background; decrease to protect details.</small>
+            <p className="brutti-cover-studio-ai-help">
+              Free local AI. First use downloads the model; later uses may load from browser cache.
+              No API key or paid credits.
+            </p>
+            {aiMessage && <p className="brutti-cover-studio-ai-status" role="status">{aiMessage}</p>}
+            {aiBusy && <button type="button" className="brutti-cover-studio-stop" onClick={() => {
+              stopAICutout(); setAiBusy(false); setAiMessage("");
+            }}>Cancel AI</button>}
+            <div className="brutti-cover-studio-review">
+              <button type="button" onClick={() => setPreviewOriginal(value => !value)}
+                disabled={!settings.cutout || aiBusy}
+                aria-pressed={previewOriginal}>{previewOriginal ? "Show cutout" : "View original / Before"}</button>
+              <button type="button" onClick={originalImage} disabled={!settings.cutout || aiBusy}>Restore original</button>
+            </div>
+            <button type="button" className="brutti-cover-studio-manual" onClick={manualCutout}
+              disabled={!source || saving || aiBusy} aria-pressed={cutoutMode === "flat"}>
+              <Scissors size={15}/> Solid-colour Cutout (manual)
+            </button>
+            {cutoutMode === "flat" && <label className="brutti-cover-studio-range">
+              Colour tolerance <strong>{settings.tolerance}</strong>
+              <input type="range" min="12" max="115" step="3" value={settings.tolerance}
+                disabled={saving || aiBusy} onChange={event => patch({ tolerance: Number(event.target.value) })}/>
+              <small>Use for plain black or white backgrounds only. It can remove dark product panels.</small>
             </label>}
-            {settings.cutout && <label className="brutti-cover-studio-inner-gaps">
+            {cutoutMode === "flat" && <label className="brutti-cover-studio-inner-gaps">
               <input type="checkbox" checked={cleanInnerGaps} disabled={saving}
                 onChange={event => setCleanInnerGaps(event.target.checked)}/>
               <span><strong>Clean inner gaps</strong>
-                <small>Removes black background trapped inside frames. Turn off if the product itself has dark panels.</small>
+                <small>Removes solid background trapped inside frames; disable for dark panels.</small>
               </span>
             </label>}
           </section>
@@ -209,12 +278,12 @@ export default function PhotoCoverStudio({
         </div>
       </div>
       <div className="brutti-cover-studio-footer">
-        <button type="button" className="brutti-cover-studio-reset" onClick={() => { setSettings({ ...initial }); setCleanInnerGaps(true); setError(""); }}
+        <button type="button" className="brutti-cover-studio-reset" onClick={() => { originalImage(); setSettings({ ...initial }); setCleanInnerGaps(true); setError(""); }}
           disabled={saving}><RotateCcw size={16}/> Reset</button>
         <span>Saved as a new image · Original retained</span>
         <button type="button" className="brutti-cover-studio-cancel" disabled={saving} onClick={onClose}>Cancel</button>
         <button type="button" className="brutti-cover-studio-save" onClick={() => void save()}
-          disabled={!source || saving || (settings.cutout && (!mask || processing))}>
+          disabled={!source || saving || aiBusy || (settings.cutout && (!mask || processing))}>
           {saving ? <LoaderCircle size={16}/> : <Check size={16}/>}
           {saving ? "Saving…" : saveLabel}
         </button>
