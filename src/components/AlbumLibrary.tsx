@@ -398,32 +398,32 @@ export default function AlbumLibrary({
   return (
     <section className={`brutti-album ${picker?"brutti-album--picker":""}`} aria-label={picker?"Choose photos from Album":"Brutti media Album"}>
       {!picker && (
-        <div className="brutti-album__heading">
-          <div className="brutti-album__heading-main">
-            <div className="brutti-album__heading-copy">
-              <p className="brutti-album__eyebrow">BRUTTI CATALOG / MEDIA LIBRARY</p>
-              <h1>Album</h1>
-              <p>One place for your furniture photos. Upload once, reuse across products.</p>
-            </div>
-            <div className="brutti-album__heading-actions">
+        <header className="brutti-album__heading brutti-album__header-v2">
+          <div className="brutti-album__heading-copy">
+            <p className="brutti-album__eyebrow">BRUTTI CATALOG / MEDIA LIBRARY</p>
+            <h1>Album</h1>
+            <p>Organise your furniture photos and reuse them across products.</p>
+            {albumStats}
+          </div>
+          <div className="brutti-album__heading-actions">
+            <label className="brutti-album__destination">
+              <span>Upload photos to</span>
+              <select aria-label="Category for new uploads" value={uploadCategory}
+                onChange={event=>setUploadCategory(event.target.value)} disabled={busy}>
+                <option value="none">Uncategorised</option>
+                {categories.map(item=><option value={item.id} key={item.id}>{item.name}</option>)}
+              </select>
+            </label>
+            <div className="brutti-album__action-buttons">
               {onAddCategory && <button type="button" className="brutti-album__secondary" onClick={onAddCategory}>
                 <Plus size={16} aria-hidden="true"/> Add category
               </button>}
-              <label className="brutti-album__destination">
-                <span>Upload to</span>
-                <select aria-label="Category for new uploads" value={uploadCategory}
-                  onChange={event=>setUploadCategory(event.target.value)} disabled={busy}>
-                  <option value="none">Uncategorised</option>
-                  {categories.map(item=><option value={item.id} key={item.id}>{item.name}</option>)}
-                </select>
-              </label>
               <button type="button" className="brutti-album__primary" onClick={()=>fileRef.current?.click()} disabled={busy}>
                 <Upload size={17} aria-hidden="true"/> Add photos
               </button>
             </div>
           </div>
-          {albumStats}
-        </div>
+        </header>
       )}
       {picker && <div className="brutti-album__picker-intro">
         Choose up to {maxSelect} images to attach. Existing images will be linked, not uploaded twice.
