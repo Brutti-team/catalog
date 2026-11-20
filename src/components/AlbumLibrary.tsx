@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Images, Upload, Download, Search, Check, Trash2, LoaderCircle, Eye,
-  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Grid2X2, List,
+  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Grid2X2, Table2,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import {
@@ -12,6 +12,7 @@ import {
 } from "../lib/album";
 import Modal from "./Modal";
 import SafeImage from "./SafeImage";
+import { AlbumCategoryTable, AlbumPhotoTable } from "./AlbumTableView";
 import PhotoCoverStudio from "./PhotoCoverStudio";
 import { downloadCatalogPhoto, type PhotoDownloadFormat } from "../lib/photo-download";
 import "./album-library.css";
@@ -174,7 +175,7 @@ export default function AlbumLibrary({
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "by-category" | "published">("all");
-  const [viewMode, setViewMode] = useState<"gallery" | "list">("gallery");
+  const [viewMode, setViewMode] = useState<"gallery" | "table">("gallery");
   const [category, setCategory] = useState("all");
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
   const [categoryMenuAbove, setCategoryMenuAbove] = useState(false);
@@ -489,9 +490,9 @@ export default function AlbumLibrary({
           <button type="button" className={viewMode==="gallery"?"is-active":""}
             aria-pressed={viewMode==="gallery"} aria-label="Gallery view" title="Gallery view"
             onClick={()=>setViewMode("gallery")}><Grid2X2 size={16} aria-hidden="true"/><span>Gallery</span></button>
-          <button type="button" className={viewMode==="list"?"is-active":""}
-            aria-pressed={viewMode==="list"} aria-label="List view" title="List view"
-            onClick={()=>setViewMode("list")}><List size={17} aria-hidden="true"/><span>List</span></button>
+          <button type="button" className={viewMode==="table"?"is-active":""}
+            aria-pressed={viewMode==="table"} aria-label="Table view" title="Table view"
+            onClick={()=>setViewMode("table")}><Table2 size={17} aria-hidden="true"/><span>Table</span></button>
         </div>
         <button type="button" className="brutti-album__refresh" disabled={busy||loading} onClick={()=>void reload()} title="Refresh Album" aria-label="Refresh Album"><RefreshCw size={17}/></button>
       </div>
@@ -523,7 +524,15 @@ export default function AlbumLibrary({
       {notice && <p className="brutti-album__success" role="status">{notice}</p>}
       {loading ? <div className="brutti-album__empty" role="status"><LoaderCircle className="brutti-album__spin"/>Loading your photos…</div> :
         filter === "by-category" && selectedFolder === null ? (
-          <div className={`brutti-album__folders${viewMode==="list"?" is-list":""}`} aria-label="Photo folders by category">
+          viewMode === "table" ? (
+            <AlbumCategoryTable
+              groups={groups}
+              uncategorised={ungrouped}
+              search={search}
+              onOpen={openFolder}
+            />
+          ) : (
+          <div className="brutti-album__folders" aria-label="Photo folders by category">
             {groups.filter(({category:item,items})=>!search.trim() ||
               item.name.toLowerCase().includes(search.trim().toLowerCase()) ||
               items.some(photo=>photo.name.toLowerCase().includes(search.trim().toLowerCase())))
@@ -549,14 +558,26 @@ export default function AlbumLibrary({
               </button>
             )}
           </div>
+          )
         ) : visible.length===0 ? (
           <div className="brutti-album__empty">
             <ImageOff size={28}/>
             <strong>{search || filter!=="all" || category!=="all" ? "No matching photos" : "Your Album is ready"}</strong>
             <p>{search || filter!=="all" || category!=="all" ? "Try a different search or filter." : "Upload product photos to keep them organised here."}</p>
           </div>
+        ) : viewMode === "table" ? (
+          <AlbumPhotoTable
+            photos={visible}
+            categories={categories}
+            publishedIds={publishedIds}
+            picker={picker}
+            selectedKeys={selected}
+            excludedUrls={excludedUrls}
+            onView={setPreview}
+            onSelect={toggle}
+          />
         ) : (
-          <div className={`brutti-album__grid${viewMode==="list"?" is-list":""}`}>
+          <div className="brutti-album__grid">
             {visible.map(photo=>{
               const checked=selected.includes(photo.key);
               const disabled=picker && excludedUrls.includes(photo.url);
