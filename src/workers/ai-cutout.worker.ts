@@ -1,3 +1,5 @@
+import { applyAIAlpha } from "../lib/ai-alpha-matte";
+
 /**
  * Apache-2.0 ORMBG local inference: no external cutout API, photo stays in
  * the browser. Downloads the model from Hugging Face on first staff click.
@@ -68,29 +70,12 @@ async function process(job: Job) {
   if (!result?.length) throw new Error("No mask returned by the AI model.");
   let mask = result[0];
   if (mask.width !== width || mask.height !== height) mask = await mask.resize(width, height);
-  const channels = mask.channels;
-  const bytes = mask.data;
-  if (![1, 3, 4].includes(channels) || bytes.length < width * height * channels ||
-      mask.width !== width || mask.height !== height) {
-    throw new Error("AI returned an invalid mask; original photo is safe.");
+  if (mask.width !== width || mask.height !== height) {
+    throw new Error("AI mask size does not match original photograph.");
   }
   notify("Refining transparent edges…");
-  const output = new Uint8ClampedArray(rgba);
-  const floatMask = bytes instanceof Float32Array;
-  let changed = 0, kept = 0;
-  for (let i = 0; i < width * height; i++) {
-    // Transformers.js background-removal returns an RGBA CUTOUT. Its fourth
-    // channel is the alpha matte: using the first (red) channel would destroy
-    // dark wood, black cabinets and other legitimate furniture surfaces.
-    const m = Number(bytes[i * channels + (channels === 4 ? 3 : 0)]);
-    const alpha = floatMask ? Math.max(0, Math.min(255, Math.round(m * 255))) : m;
-    if (alpha < 245) changed++;
-    if (alpha > 5) kept++;
-    output[i * 4 + 3] = Math.round(output[i * 4 + 3] * alpha / 255);
-  }
-  if (kept < width * height * .009 || changed < width * height * .005) {
-    throw new Error("AI could not reliably separate this furniture. Try another photo or use Solid-colour Cutout.");
-  }
+  // Keep original RGB and use the predicted alpha instead of RGB brightness.
+  const output = applyAIAlpha(new Uint8ClampedArray(rgba), mask, width, height);
   const outputBuffer = output.buffer as ArrayBuffer;
   scope.postMessage({ type: "done", rgba: outputBuffer, width, height }, [outputBuffer]);
 }
