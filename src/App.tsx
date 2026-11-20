@@ -486,9 +486,9 @@ export default function App() {
           {(
             [
               { id: "overview", text: "Overview", icon: LayoutDashboard },
+              { id: "categories", text: "Categories", icon: Layers },
               { id: "products", text: "Products", icon: Package },
               { id: "album", text: "Album", icon: Images },
-              { id: "categories", text: "Categories", icon: Layers },
             ] as const
           ).filter((n) => accountRole !== "editor" || n.id !== "categories").map((n) => (
             <button
@@ -499,8 +499,10 @@ export default function App() {
             >
               <span className="nav-icon" aria-hidden="true"><n.icon size={19} strokeWidth={1.9} /></span>
               {n.text}
-              {n.id === "products" && (
-                <span className="nav-count">{data.products.length}</span>
+              {(n.id === "products" || n.id === "categories") && (
+                <span className="nav-count">
+                  {n.id === "categories" ? data.categories.length : data.products.length}
+                </span>
               )}
             </button>
           ))}
