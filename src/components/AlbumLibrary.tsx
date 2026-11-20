@@ -589,7 +589,7 @@ export default function AlbumLibrary({
                 </button>
                 <div className="brutti-album__card-info">
                   <strong title={photo.name}>{photo.name}</strong>
-                  <small>{disabled?"Already added":photo.usedBy.length?`${photo.usedBy.length} product${photo.usedBy.length>1?"s":""}`:photo.categoryCovers.length?"Category cover":"Unassigned"}</small>
+                  <small>{disabled?"Already added":photo.usedBy.length?`${photo.usedBy.length} product${photo.usedBy.length>1?"s":""}`:photo.categoryCovers.length?"Category cover":photo.sourceKind==="external"?"Product Library":"Unassigned"}</small>
                   <span className="brutti-album__list-category" title="Photo category">
                     {albumPhotoCategoryIds(photo).map(id=>categories.find(item=>item.id===id)?.name).filter(Boolean).join(", ") || "Uncategorised"}
                   </span>
@@ -628,7 +628,8 @@ export default function AlbumLibrary({
                 <span className={preview.usedBy.length || preview.categoryCovers.length ? "is-in-use" : "is-available"} aria-hidden="true"/>
                 {preview.usedBy.length
                   ? `Used in ${preview.usedBy.length} product${preview.usedBy.length===1?"":"s"}`
-                  : preview.categoryCovers.length ? "Used as category cover" : "Unassigned photo"}
+                  : preview.categoryCovers.length ? "Used as category cover"
+                    : preview.sourceKind==="external" ? "Product Library · Available" : "Unassigned photo"}
               </span>
             </div>
             {preview.usedBy.length>0 && <div className="brutti-album__detail-related">
@@ -638,6 +639,16 @@ export default function AlbumLibrary({
               </button>)}
             </div>}
             {!!preview.categoryCovers.length && <p className="brutti-album__category-note">Category cover: {preview.categoryCovers.join(", ")}</p>}
+            {preview.sourceKind === "external" && <div className="brutti-album__source-details">
+              <span className="brutti-album__detail-label">BRUTTI PRODUCT LIBRARY{preview.sourceCode ? ` · ${preview.sourceCode}` : ""}</span>
+              <dl>
+                {(["category","size","materials","colour","finishing"] as const).filter(field=>preview.sourceDetails[field]).map(field=>(
+                  <div key={field}><dt>{field==="colour"?"Colour":field==="size"?"Size":field==="materials"?"Materials":field==="finishing"?"Finishing":"Original category"}</dt>
+                    <dd>{preview.sourceDetails[field]}</dd></div>
+                ))}
+              </dl>
+              <p>Linked from the original source. The image file has not been copied into Catalog Storage.</p>
+            </div>}
             {!picker && <div className="brutti-album__assign-category">
               <span id="brutti-album-photo-category-label">Album category</span>
               <AlbumCategorySelect
