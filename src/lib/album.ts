@@ -7,6 +7,9 @@ export type AlbumRecord = {
   url: string;
   name: string;
   category_id: string | null;
+  source_kind?: "upload" | "external";
+  source_product_code?: string | null;
+  source_details?: Record<string,string> | null;
   created_at: string;
 };
 
@@ -17,6 +20,9 @@ export type AlbumPhoto = {
   storagePath?: string;
   name: string;
   createdAt: string;
+  sourceKind: "upload" | "external";
+  sourceCode?: string;
+  sourceDetails: Record<string,string>;
   /** Explicit Album folder, separate from the linked Product category. */
   manualCategoryId: string | null;
   categoryCoverIds: string[];
@@ -32,25 +38,36 @@ const keyFor = (image: Pick<ProductImage,"url"|"storagePath">) => image.storageP
  */
 export function combineAlbumPhotos(records: AlbumRecord[], products: Product[], categories: Category[]): AlbumPhoto[] {
   const photos = new Map<string, AlbumPhoto>();
-  for (const record of records) photos.set(record.storage_path, {
-    key: record.storage_path, id: record.id, url: record.url,
-    storagePath: record.storage_path, name: record.name, createdAt: record.created_at,
-    manualCategoryId: record.category_id, categoryCoverIds: [],
-    usedBy: [], categoryCovers: [], isIndexed: true,
-  });
+  const byUrl = new Map<string, AlbumPhoto>();
+  for (const record of records) {
+    const photo: AlbumPhoto = {
+      key: record.storage_path, id: record.id, url: record.url,
+      storagePath: record.source_kind==="external" ? undefined : record.storage_path,
+      name: record.name, createdAt: record.created_at,
+      sourceKind: record.source_kind || "upload",
+      sourceCode: record.source_product_code || undefined,
+      sourceDetails: record.source_details || {},
+      manualCategoryId: record.category_id, categoryCoverIds: [],
+      usedBy: [], categoryCovers: [], isIndexed: true,
+    };
+    photos.set(photo.key, photo);
+    byUrl.set(photo.url, photo);
+  }
   for (const product of products) for (const image of product.images) {
     const key = keyFor(image);
     if (!key || !image.url) continue;
-    const photo = photos.get(key) || {
+    const photo: AlbumPhoto = photos.get(key) || byUrl.get(image.url) || {
       key, url: image.url, storagePath: image.storagePath,
       name: image.alt || product.name, createdAt: product.createdAt,
+      sourceKind: "upload", sourceDetails: {},
       manualCategoryId: null, categoryCoverIds: [],
       usedBy: [], categoryCovers: [], isIndexed: false,
     };
     if (!photo.usedBy.some(item=>item.id===product.id)) {
       photo.usedBy.push({ id: product.id, name: product.name, categoryId: product.categoryId });
     }
-    photos.set(key,photo);
+    photos.set(photo.key,photo);
+    byUrl.set(photo.url,photo);
   }
   for (const category of categories) {
     if (!category.cover_image_url) continue;
@@ -77,7 +94,7 @@ export async function listAlbumRecords(): Promise<AlbumRecord[]> {
   const all: AlbumRecord[] = [];
   for (let offset=0; offset < 10000; offset += 500) {
     const { data,error } = await db.from("catalog_media_assets")
-      .select("id,storage_path,url,name,category_id,created_at")
+      .select("id,storage_path,url,name,category_id,source_kind,source_product_code,source_details,created_at")
       .order("created_at",{ascending:false})
       .range(offset,offset+499);
     if (error) throw new Error("Could not load Album: "+error.message);
@@ -101,7 +118,7 @@ export async function uploadAlbumPhotos(files: File[], categoryId: string | null
         storage_path:image.storagePath,url:image.url,
         name:(image.alt||"Product photo").slice(0,240),uploaded_by:user.id,
         category_id:categoryId,
-      }).select("id,storage_path,url,name,category_id,created_at").single();
+      }).select("id,storage_path,url,name,category_id,source_kind,source_product_code,source_details,created_at").single();
       if (error || !data) throw new Error(error?.message||"Album registration failed.");
       uploaded.push(data as AlbumRecord);
     } catch (error) {
@@ -137,10 +154,15 @@ export async function removeUnassignedAlbumPhoto(photo: AlbumPhoto): Promise<voi
   const {data,error}=await db.from("catalog_media_assets").delete().eq("id",photo.id).select("id").maybeSingle();
   if (error) throw new Error("Could not remove Album entry: "+error.message);
   if (!data) throw new Error("Photo is in use, or your Album changed. Refresh before deleting.");
+  // Product Library source links are not stored in the product-images bucket.
+  if (photo.sourceKind === "external") return;
   const {error:storageError}=await db.storage.from("product-images").remove([photo.storagePath]);
   if (storageError) throw new Error("Album entry removed, but storage cleanup failed: "+storageError.message);
 }
 
 export function albumPhotoToProductImage(photo: AlbumPhoto): ProductImage {
-  return {id:crypto.randomUUID(),url:photo.url,storagePath:photo.storagePath,alt:photo.name};
+  return {
+    id:crypto.randomUUID(),url:photo.url,alt:photo.name,
+    ...(photo.sourceKind === "external" ? {} : { storagePath:photo.storagePath }),
+  };
 }
