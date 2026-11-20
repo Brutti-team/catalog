@@ -113,7 +113,7 @@ export function AlbumPhotoTable({
             const alreadyAdded = picker && excludedUrls.includes(photo.url);
             const selected = selectedKeys.includes(photo.key);
             const names = albumPhotoCategoryIds(photo).map(id => categoryNames.get(id)).filter(Boolean);
-            const status = published ? "Published" : linked || covered ? "In use" : "Unassigned";
+            const status = published ? "Published" : linked || covered ? "In use" : photo.sourceKind === "external" ? "Library photo" : "Unassigned";
             return (
               <tr key={photo.key} className={selected ? "is-selected" : undefined}>
                 <td className="brutti-album__table-preview">
@@ -126,7 +126,7 @@ export function AlbumPhotoTable({
                 </td>
                 <td className="brutti-album__table-title">
                   <strong title={photo.name}>{photo.name}</strong>
-                  <small>{linked ? "Product image" : covered ? "Category cover" : "Album upload"}</small>
+                  <small>{linked ? "Product image" : covered ? "Category cover" : photo.sourceKind === "external" ? "Brutti Product Library" : "Album upload"}</small>
                 </td>
                 <td className="brutti-album__table-category" title={names.join(", ")}>
                   {names.join(", ") || "Uncategorised"}
