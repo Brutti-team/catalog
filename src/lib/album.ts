@@ -6,6 +6,7 @@ export type AlbumRecord = {
   storage_path: string;
   url: string;
   name: string;
+  category_id: string | null;
   created_at: string;
 };
 
@@ -16,6 +17,9 @@ export type AlbumPhoto = {
   storagePath?: string;
   name: string;
   createdAt: string;
+  /** Explicit Album folder, separate from the linked Product category. */
+  manualCategoryId: string | null;
+  categoryCoverIds: string[];
   usedBy: { id: string; name: string; categoryId: string }[];
   categoryCovers: string[];
   isIndexed: boolean;
@@ -31,6 +35,7 @@ export function combineAlbumPhotos(records: AlbumRecord[], products: Product[], 
   for (const record of records) photos.set(record.storage_path, {
     key: record.storage_path, id: record.id, url: record.url,
     storagePath: record.storage_path, name: record.name, createdAt: record.created_at,
+    manualCategoryId: record.category_id, categoryCoverIds: [],
     usedBy: [], categoryCovers: [], isIndexed: true,
   });
   for (const product of products) for (const image of product.images) {
@@ -39,6 +44,7 @@ export function combineAlbumPhotos(records: AlbumRecord[], products: Product[], 
     const photo = photos.get(key) || {
       key, url: image.url, storagePath: image.storagePath,
       name: image.alt || product.name, createdAt: product.createdAt,
+      manualCategoryId: null, categoryCoverIds: [],
       usedBy: [], categoryCovers: [], isIndexed: false,
     };
     if (!photo.usedBy.some(item=>item.id===product.id)) {
@@ -50,8 +56,20 @@ export function combineAlbumPhotos(records: AlbumRecord[], products: Product[], 
     if (!category.cover_image_url) continue;
     const photo = [...photos.values()].find(item=>item.url===category.cover_image_url);
     if (photo && !photo.categoryCovers.includes(category.name)) photo.categoryCovers.push(category.name);
+    if (photo && !photo.categoryCoverIds.includes(category.id)) photo.categoryCoverIds.push(category.id);
   }
   return [...photos.values()].sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+}
+
+/** A photo can show in its manually selected folder and in linked Product
+ * categories; All Photos still lists it just once.
+ */
+export function albumPhotoCategoryIds(photo: AlbumPhoto): string[] {
+  return [...new Set([
+    ...(photo.manualCategoryId ? [photo.manualCategoryId] : []),
+    ...photo.categoryCoverIds,
+    ...photo.usedBy.map(product => product.categoryId).filter(Boolean),
+  ])];
 }
 
 export async function listAlbumRecords(): Promise<AlbumRecord[]> {
@@ -59,7 +77,7 @@ export async function listAlbumRecords(): Promise<AlbumRecord[]> {
   const all: AlbumRecord[] = [];
   for (let offset=0; offset < 10000; offset += 500) {
     const { data,error } = await db.from("catalog_media_assets")
-      .select("id,storage_path,url,name,created_at")
+      .select("id,storage_path,url,name,category_id,created_at")
       .order("created_at",{ascending:false})
       .range(offset,offset+499);
     if (error) throw new Error("Could not load Album: "+error.message);
@@ -70,7 +88,7 @@ export async function listAlbumRecords(): Promise<AlbumRecord[]> {
   return all;
 }
 
-export async function uploadAlbumPhotos(files: File[], onProgress?: (completed:number,total:number)=>void): Promise<{ uploaded: AlbumRecord[]; failures: string[] }> {
+export async function uploadAlbumPhotos(files: File[], categoryId: string | null = null, onProgress?: (completed:number,total:number)=>void): Promise<{ uploaded: AlbumRecord[]; failures: string[] }> {
   const db=catalogClient();
   const {data:{user},error:authError}=await db.auth.getUser();
   if (authError || !user) throw new Error("Sign in to Brutti Catalog before uploading.");
@@ -82,7 +100,8 @@ export async function uploadAlbumPhotos(files: File[], onProgress?: (completed:n
       const {data,error}=await db.from("catalog_media_assets").insert({
         storage_path:image.storagePath,url:image.url,
         name:(image.alt||"Product photo").slice(0,240),uploaded_by:user.id,
-      }).select("id,storage_path,url,name,created_at").single();
+        category_id:categoryId,
+      }).select("id,storage_path,url,name,category_id,created_at").single();
       if (error || !data) throw new Error(error?.message||"Album registration failed.");
       uploaded.push(data as AlbumRecord);
     } catch (error) {
@@ -91,6 +110,21 @@ export async function uploadAlbumPhotos(files: File[], onProgress?: (completed:n
     onProgress?.(index+1,files.length);
   }
   return {uploaded,failures};
+}
+
+/** Update an Album folder without changing the product's category.
+ * RLS and the foreign key validate the staff account/category.
+ */
+export async function setAlbumPhotoCategory(id: string, categoryId: string | null): Promise<string | null> {
+  const db = catalogClient();
+  const { data, error } = await db.from("catalog_media_assets")
+    .update({ category_id: categoryId })
+    .eq("id", id)
+    .select("category_id")
+    .maybeSingle();
+  if (error) throw new Error("Could not update photo category: " + error.message);
+  if (!data) throw new Error("This photo could not be updated. Refresh the Album and check your access.");
+  return data.category_id as string | null;
 }
 
 /** Delete is supported only for unassigned Album uploads. The database's
