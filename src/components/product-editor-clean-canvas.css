@@ -219,3 +219,182 @@
     transition: none;
   }
 }
+
+
+/* Product Editor proportions: narrower, lighter and better balanced on
+   laptop/desktop. The existing editor still scrolls, validates and saves. */
+@media (min-width: 761px) {
+  .admin-app .modal.product-editor-dialog--editing {
+    width: min(1120px, calc(100vw - 42px));
+    max-width: 1120px;
+    max-height: min(88dvh, 890px);
+    padding: 0;
+  }
+  .admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+    box-sizing: border-box;
+    min-height: 65px;
+    padding: 10px 28px;
+    gap: 15px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .catalog-editor-header-title > strong {
+    font-size: clamp(14px, 1.2vw, 17px);
+    line-height: 1.32;
+  }
+  .admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar-identity {
+    gap: 11px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar-identity > .catalog-editor-back-icon {
+    flex-basis: 34px;
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    min-height: 34px;
+    border-radius: 10px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+    padding: 21px clamp(22px, 2.5vw, 32px) 6px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .form-section.product-editor-section {
+    margin-bottom: 20px;
+    padding-bottom: 19px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .form-section.product-editor-section > .product-editor-section-heading {
+    min-height: 35px;
+    margin-bottom: 15px;
+    gap: 11px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .form-section.product-editor-section > .product-editor-section-heading h3 {
+    font-size: 21px;
+    line-height: 1.3;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .form-section.product-editor-section > .product-editor-section-heading .product-editor-step {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+    min-height: 32px;
+    font-size: 10px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-basics {
+    --brutti-detail-control-h: 46px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-basics > label {
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-basics > label > input {
+    height: 46px;
+    min-height: 46px;
+    font-size: 13px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-basics .field-pair {
+    gap: 13px;
+    margin-bottom: 12px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-basics > label > textarea {
+    height: 94px;
+    min-height: 94px;
+    padding: 11px 13px;
+    font-size: 13px;
+    line-height: 1.5;
+    resize: vertical;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  > .editor-footer {
+    box-sizing: border-box;
+    min-height: 60px;
+    padding: 9px 26px;
+    gap: 8px 12px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  > .editor-footer .button-row {
+    gap: 8px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  > .editor-footer .button-row .button {
+    min-height: 38px;
+    padding: 8px 13px;
+    font-size: 11px;
+  }
+  /* Keep photo controls aligned instead of spreading out on a wide row. */
+  .admin-app .modal.product-editor-dialog--editing
+  #product-editor-photos > .product-editor-section-heading > div {
+    min-width: 0;
+  }
+  .admin-app .modal.product-editor-dialog--editing
+  #product-editor-photos .catalog-reference-manage-photos {
+    white-space: nowrap;
+  }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+    padding-inline: 22px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+    padding-inline: 23px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+    padding-inline: 21px;
+  }
+}
+@media (max-width: 760px) {
+  .admin-app .modal.product-editor-dialog--editing {
+    box-sizing: border-box;
+    width: calc(100vw - 12px);
+    max-width: 660px;
+    max-height: 94dvh;
+    border-radius: 13px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+    min-height: 60px;
+    padding: 10px 14px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+    padding: 17px 15px 6px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .form-section.product-editor-section {
+    margin-bottom: 19px;
+    padding-bottom: 17px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .form-section.product-editor-section > .product-editor-section-heading {
+    min-height: 34px;
+    margin-bottom: 13px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-basics {
+    --brutti-detail-control-h: 45px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-basics > label > textarea {
+    height: 96px;
+    min-height: 96px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+    min-height: 60px;
+    padding: 10px 12px max(10px, env(safe-area-inset-bottom));
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  > .editor-footer .button-row .button {
+    min-height: 40px;
+    padding: 8px 9px;
+    font-size: 11px;
+  }
+}
+@media (max-height: 640px) and (min-width: 761px) {
+  .admin-app .modal.product-editor-dialog--editing {
+    max-height: 94dvh;
+  }
+  .admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+    min-height: 57px;
+  }
+}
