@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Images, Upload, Search, Check, Trash2, LoaderCircle, Eye,
+  Images, Upload, Download, Search, Check, Trash2, LoaderCircle, Eye,
   Package, Layers, RefreshCw, ImageOff, ArrowUpRight,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
@@ -11,6 +11,7 @@ import {
 } from "../lib/album";
 import Modal from "./Modal";
 import SafeImage from "./SafeImage";
+import { downloadCatalogPhoto, type PhotoDownloadFormat } from "../lib/photo-download";
 import "./album-library.css";
 
 type Props = {
@@ -35,6 +36,9 @@ export default function AlbumLibrary({
   const [category, setCategory] = useState("all");
   const [selected, setSelected] = useState<string[]>([]);
   const [preview, setPreview] = useState<AlbumPhoto | null>(null);
+  const [downloadFormat, setDownloadFormat] = useState<PhotoDownloadFormat>("jpg");
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
   const [progress, setProgress] = useState<{done:number,total:number}|null>(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -103,6 +107,22 @@ export default function AlbumLibrary({
       setError("");
       return [...ids,photo.key];
     });
+  }
+  async function download(photo: AlbumPhoto) {
+    if (downloading) return;
+    setDownloading(true);
+    setDownloadError("");
+    try {
+      await downloadCatalogPhoto({
+        url: photo.url,
+        storagePath: photo.storagePath,
+        name: photo.name,
+      }, downloadFormat);
+    } catch (error) {
+      setDownloadError(error instanceof Error ? error.message : "Image download failed.");
+    } finally {
+      setDownloading(false);
+    }
   }
   async function remove(photo: AlbumPhoto) {
     if(photo.usedBy.length||photo.categoryCovers.length){
@@ -212,7 +232,23 @@ export default function AlbumLibrary({
           <Package size={16}/>{p.name}<ArrowUpRight size={15}/>
         </button>)}
         {!!preview.categoryCovers.length && <p className="brutti-album__category-note">Category cover: {preview.categoryCovers.join(", ")}</p>}
+        {downloadError && <p className="brutti-album__error" role="alert">{downloadError}</p>}
         <div className="brutti-album__preview-actions">
+          <label className="brutti-album__download-format">
+            Save as
+            <select value={downloadFormat} disabled={downloading}
+              aria-label="Download image format"
+              onChange={event => setDownloadFormat(event.target.value as PhotoDownloadFormat)}>
+              <option value="jpg">JPG</option>
+              <option value="png">PNG</option>
+              <option value="webp">WebP</option>
+            </select>
+          </label>
+          <button type="button" className="brutti-album__primary" disabled={downloading}
+            onClick={()=>void download(preview)}>
+            {downloading ? <LoaderCircle size={16} className="brutti-album__spin"/> : <Download size={16}/>}
+            {downloading ? "Saving…" : "Download image"}
+          </button>
           <button type="button" className="brutti-album__secondary" onClick={()=>setPreview(null)}>Close</button>
           {!picker && <button type="button" className="brutti-album__delete" disabled={!!preview.usedBy.length||!!preview.categoryCovers.length||!preview.id}
             title={preview.usedBy.length||preview.categoryCovers.length?"Unlink from products and category covers before deleting":undefined}
