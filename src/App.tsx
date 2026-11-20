@@ -724,7 +724,7 @@ export default function App() {
                 </button>
               </div>
             </section>
-          )}
+          ) : null}
           {(error || actionError) && !catEditor && (
             <div className="notice error" role="alert">
               <AlertCircle size={18} />
