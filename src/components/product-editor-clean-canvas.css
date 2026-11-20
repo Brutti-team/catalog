@@ -398,3 +398,53 @@
     min-height: 57px;
   }
 }
+
+
+/* Product Editor viewport spacing refinement / 20 Nov 2026. */
+/* Keep genuine breathing room both above and below the modal. The editor still
+   scrolls internally; its Save, Cancel and View live actions remain accessible. */
+@media (min-width: 761px) {
+  .admin-app dialog.modal.product-editor-dialog--editing[open] {
+    box-sizing: border-box;
+    max-height: min(82dvh, 810px);
+    margin-block: auto;
+    margin-inline: auto;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+    padding-top: 32px;
+    padding-bottom: 33px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+    min-height: 66px;
+    padding-block: 12px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer .button-row .button {
+    min-height: 41px;
+  }
+}
+@media (max-width: 760px) {
+  .admin-app dialog.modal.product-editor-dialog--editing[open] {
+    box-sizing: border-box;
+    width: calc(100vw - 24px);
+    max-height: min(89dvh, calc(100dvh - 36px));
+    margin-block: auto;
+    margin-inline: auto;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+    padding-top: 25px;
+    padding-bottom: 26px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+    min-height: 67px;
+    padding-block: 11px max(12px, env(safe-area-inset-bottom));
+  }
+}
+@media (max-height: 640px) and (min-width: 761px) {
+  .admin-app dialog.modal.product-editor-dialog--editing[open] {
+    max-height: calc(100dvh - 50px);
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+    padding-top: 23px;
+    padding-bottom: 22px;
+  }
+}
