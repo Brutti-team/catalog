@@ -36,11 +36,21 @@ export default function ShowroomSections({
   const viewportRef = useRef<HTMLDivElement>(null);
   const pointerPaused = useRef(false);
   const manualUntil = useRef(0);
+  // Includes names and selected covers, not only the number of rows: renames,
+  // additions, deletions and new Admin cover selections all resync the carousel.
+  const categorySignature = categories
+    .map(({ id, name, cover_image_url }) => `${id}:${name}:${cover_image_url ?? ""}`)
+    .join("|");
 
   useEffect(() => {
     if (section !== "categories" || categories.length === 0) return;
     const viewport = viewportRef.current;
     if (!viewport) return;
+
+    // Show the same first category as Staff Portal after any Admin change.
+    // Slow automatic motion resumes after a short reading pause.
+    viewport.scrollLeft = 0;
+    manualUntil.current = performance.now() + 4500;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
@@ -66,7 +76,7 @@ export default function ShowroomSections({
       window.cancelAnimationFrame(frame);
       window.removeEventListener("resize", measure);
     };
-  }, [categories.length, section]);
+  }, [categorySignature, section]);
 
   const moveCategories = (direction: -1 | 1) => {
     const viewport = viewportRef.current;
@@ -83,9 +93,15 @@ export default function ShowroomSections({
   };
 
   if (section === "categories") {
-    const categoryCards = categories.map(category => {
-      // Staff choose the showcase item by marking a published product Featured
-      // (or Best Selling). Never reveal private Draft/Archived product photos.
+    // The Admin category records are the only authority for public categories.
+    // Match the alphabetical ordering used in Staff Portal; stable ID breaks ties.
+    const adminCategories = [...categories].sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { sensitivity: "base" }) ||
+      a.id.localeCompare(b.id)
+    );
+    const categoryCards = adminCategories.map(category => {
+      // Images come from Admin cover selection, a pinned product-only Brutti
+      // fallback, or published products; labels ALWAYS come from Admin records.
       const categoryProducts = publishedProducts
         .filter(product => product.categoryId === category.id && product.images.some(image => image.url?.trim()))
         .sort((a, b) =>
