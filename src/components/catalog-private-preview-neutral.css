@@ -1,0 +1,310 @@
+/* Brutti Catalog / Private preview — neutral studio finish, 20 November 2026.
+   LAST admin stylesheet. Changes visuals only: controls, data, previews,
+   photo cropping, 3D model and WhatsApp links retain their original behaviour. */
+.admin-app dialog.modal.catalog-private-preview-dialog {
+  border: 1px solid #dce5dd;
+  border-radius: 20px;
+  background: #f8faf7 !important;
+  color: #233d2e;
+  box-shadow: 0 24px 80px rgb(12 38 23 / 22%);
+}
+.admin-app dialog.modal.catalog-private-preview-dialog::backdrop {
+  background: rgb(17 34 25 / 52%);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+/* Quiet, professional modal header + subtle status notification. */
+.admin-app .catalog-private-preview-dialog > .modal-heading {
+  background: #fff !important;
+  border-bottom: 1px solid #e4ebe5;
+  box-shadow: none;
+}
+.admin-app .catalog-private-preview-dialog > .modal-heading h2 {
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 750;
+  letter-spacing: -.025em;
+  color: #23402e;
+}
+.admin-app .catalog-private-preview-dialog > .modal-heading > .icon-button {
+  border: 1px solid #dce6df;
+  border-radius: 11px;
+  background: #f6f9f6;
+  color: #4b6d56;
+  box-shadow: none;
+}
+.admin-app .catalog-private-preview-dialog > .modal-heading > .icon-button:hover {
+  background: #eaf2eb;
+  color: #214f34;
+  border-color: #c6d9cb;
+}
+.admin-app .catalog-private-preview-dialog > .catalog-private-preview-note {
+  background: #f0f5f0 !important;
+  color: #617968;
+  border-bottom: 1px solid #e3ebe3;
+  font-size: 10.5px;
+  letter-spacing: .003em;
+}
+/* No beige/pink in the overall canvas, photo stage, or detail sheet. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-section,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-product-detail {
+  background: #f9faf8 !important;
+  color: #243c2e;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery {
+  border-right: 1px solid #e4e9e3;
+  background: #eef2ee !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image {
+  border: 1px solid #dce5dd;
+  border-radius: 14px;
+  background: #e8ede8 !important;
+  box-shadow: 0 2px 12px rgb(33 59 39 / 4%);
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image > img {
+  background: #e8ede8 !important;
+}
+/* A polished segmented photo / 3D control; disabled 3D remains disabled. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs {
+  padding: 4px;
+  gap: 4px;
+  border: 1px solid rgb(222 231 222 / 92%);
+  border-radius: 13px;
+  background: rgb(255 255 255 / 92%);
+  box-shadow: 0 6px 18px rgb(27 54 37 / 10%);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs button {
+  border-radius: 9px;
+  color: #63816b;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs button.is-active {
+  color: #fff;
+  background: #28563e;
+  box-shadow: 0 2px 7px rgb(25 57 36 / 14%);
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-photo-caption {
+  border: 1px solid rgb(223 231 222 / 92%);
+  border-radius: 9px;
+  background: rgb(255 255 255 / 94%);
+  color: #557461;
+  box-shadow: 0 3px 12px rgb(24 50 32 / 7%);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-gallery-thumbnails button {
+  border-radius: 9px;
+  border-color: #dce6de;
+  background: #fff;
+}
+/* Editorial copy, but neat enough to fit inside existing one-screen layout. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+  background: #fff !important;
+  color: #21392b !important;
+  text-align: left;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {
+  color: #63816e;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .13em;
+  text-align: left;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+  color: #243b2e;
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-size: clamp(28px, 2.7vw, 39px);
+  font-weight: 690;
+  letter-spacing: -.052em;
+  line-height: 1.16;
+  max-width: 100%;
+  text-align: left;
+  text-wrap: balance;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+  color: #6b796e;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: clamp(12px, .98vw, 14px);
+  font-weight: 440;
+  line-height: 1.6;
+  max-width: 64ch;
+  text-align: left;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+  align-self: stretch;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0 !important;
+  text-align: left;
+  color: #245438;
+  font-family: "Manrope", system-ui, sans-serif;
+  font-size: clamp(23px, 1.9vw, 28px);
+  font-weight: 735;
+  letter-spacing: -.04em;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-line {
+  justify-content: flex-start;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-current {
+  color: #245438;
+  font-family: "Manrope", system-ui, sans-serif;
+  font-size: clamp(23px, 1.9vw, 28px);
+  font-weight: 735;
+  letter-spacing: -.04em;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-old {
+  color: #88978b;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price > small {
+  color: #8a958c;
+  text-align: left;
+}
+/* Existing specifications, including custom sections, remain intact. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications {
+  align-self: stretch;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  padding: 0;
+  border-top: 1px solid #dce5dd;
+  background: transparent;
+  text-align: left;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div {
+  border-bottom: 1px solid #e3e9e2;
+  background: transparent;
+  gap: 14px;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dt {
+  color: #708075;
+  font-weight: 540;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dd {
+  color: #2e4133;
+  font-weight: 595;
+  overflow-wrap: anywhere;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications .pub-spec-section {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid #e0e8e0;
+  color: #294937;
+  background: transparent;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications .pub-spec-section h3 {
+  color: #2d5740;
+  font-family: "Manrope", system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 720;
+  letter-spacing: -.025em;
+}
+/* Preserve the real WhatsApp href and ability to click. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry {
+  align-self: flex-start;
+  width: auto;
+  margin-inline: 0;
+  min-height: 45px;
+  border: 1px solid #24513a;
+  border-radius: 11px;
+  background: #24513a !important;
+  color: #fff !important;
+  box-shadow: 0 5px 14px rgb(26 66 40 / 13%);
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 720;
+  text-decoration: none;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry:hover {
+  background: #173d2b !important;
+  border-color: #173d2b;
+  box-shadow: 0 8px 17px rgb(26 66 40 / 18%);
+  transform: translateY(-1px);
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-note {
+  align-self: flex-start;
+  max-width: 56ch;
+  margin-inline: 0;
+  color: #859188;
+  font-size: 10px;
+  text-align: left;
+}
+@media (min-width: 900px) {
+  /* Preserve one-screen desktop preview; only the details may scroll. */
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    justify-content: flex-start;
+    gap: 0;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow { margin: 0 0 9px; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 { margin: 0 0 14px; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description { margin: 0 0 17px; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price { margin: 0 0 18px !important; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications { margin: 0 0 18px; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div { padding-block: 10px; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry { margin-bottom: 9px; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-note { margin: 0; }
+}
+@media (max-width: 899px) {
+  /* Native scrolling remains enabled when stacked image + copy exceed screen. */
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery {
+    border-right: 0;
+    border-bottom: 1px solid #e4e9e3;
+    padding: 12px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    padding: clamp(20px, 4.2vw, 28px);
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    font-size: clamp(26px, 5.2vw, 34px);
+    margin: 0 0 15px;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description { margin-bottom: 18px; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price { margin-bottom: 18px !important; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications { margin-bottom: 20px; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-note { margin-top: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry {
+    transition: none; transform: none;
+  }
+}
+/* Bright dark theme, still neutral and not pink. */
+.admin-app[data-theme="dark"] dialog.modal.catalog-private-preview-dialog {
+  background: #1e3226 !important; border-color: #415948; color: #eef6ee;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog > .modal-heading {
+  background: #22372a !important; border-bottom-color: #3d5a45;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog > .modal-heading h2 { color: #eff6ef; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog > .catalog-private-preview-note {
+  background: #2b4132 !important; border-bottom-color: #435b48; color: #c6d8c8;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview,
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-section,
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-product-detail { background: #1f3026 !important; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery { background: #283b2e !important; border-right-color: #405748; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image { background: #314336 !important; border-color: #455c4a; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy { background: #23392b !important; color: #eff6ef !important; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 { color: #f1f8ef; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow { color: #a8caaf; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description { color: #c1d2c3; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price,
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-current { color: #d6ebd6; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dt { color: #a9c2ad; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dd { color: #eef7ed; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications .pub-spec-section h3 { color: #d6eed9; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications,
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div { border-color: #47604d; }
