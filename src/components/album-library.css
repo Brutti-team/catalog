@@ -207,3 +207,29 @@
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="album"] .admin-content {
   background:#f7f9f6;
 }
+
+/* Choose from Album: compact secondary photo action in Product Editor. */
+.admin-app .product-editor-v2 .brutti-album-editor-toolbar {
+  display:flex; align-items:center; flex-wrap:wrap; gap:11px;
+  margin:0 0 13px;
+}
+.admin-app .product-editor-v2 .brutti-album-editor-toolbar button {
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:39px;padding:8px 14px;
+  border:1px solid #a8ceb3;border-radius:10px;
+  background:rgba(232,246,235,.9);color:#28583a;
+  font:710 12px "DM Sans",sans-serif;cursor:pointer;
+}
+.admin-app .product-editor-v2 .brutti-album-editor-toolbar button:hover:not(:disabled) {
+  background:#dceee1;border-color:#91bda0;
+}
+.admin-app .product-editor-v2 .brutti-album-editor-toolbar button:disabled {opacity:.5;cursor:not-allowed;}
+.admin-app .product-editor-v2 .brutti-album-editor-toolbar span {
+  color:#7d8e80;font:480 11px/1.5 "DM Sans",sans-serif;
+}
+@media(max-width:600px){
+  .admin-app .product-editor-v2 .brutti-album-editor-toolbar {
+    flex-direction:column;align-items:stretch;
+  }
+  .admin-app .product-editor-v2 .brutti-album-editor-toolbar button {width:100%;}
+}
