@@ -36,6 +36,7 @@ export default function PhotoCoverStudio({
   const [mask, setMask] = useState<HTMLCanvasElement | null>(null);
   const [settings, setSettings] = useState<CoverSettings>({ ...initial });
   const [processing, setProcessing] = useState(false);
+  const [cleanInnerGaps, setCleanInnerGaps] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const stageRef = useRef<HTMLDivElement>(null);
@@ -56,10 +57,10 @@ export default function PhotoCoverStudio({
     if (!source || !settings.cutout) { setMask(null); setProcessing(false); return; }
     let active = true;
     setProcessing(true);
-    setMask(null);
+    // Keep the previous cutout visible while recomputing to avoid black flashes.
     const timer = window.setTimeout(() => {
       try {
-        const result = flatBackgroundCutout(source, settings.tolerance);
+        const result = flatBackgroundCutout(source, settings.tolerance, cleanInnerGaps);
         if (active) { setMask(result); setProcessing(false); }
       } catch (err) {
         if (active) {
@@ -70,7 +71,7 @@ export default function PhotoCoverStudio({
       }
     }, 90);
     return () => { active = false; clearTimeout(timer); };
-  }, [source, settings.cutout, settings.tolerance]);
+  }, [source, settings.cutout, settings.tolerance, cleanInnerGaps]);
 
   const renderCover = useCallback(() => {
     if (!canvasRef.current || !source) return;
@@ -156,6 +157,13 @@ export default function PhotoCoverStudio({
                 onChange={event => patch({ tolerance: Number(event.target.value) })}/>
               <small>Increase to remove more background; decrease to protect details.</small>
             </label>}
+            {settings.cutout && <label className="brutti-cover-studio-inner-gaps">
+              <input type="checkbox" checked={cleanInnerGaps} disabled={saving}
+                onChange={event => setCleanInnerGaps(event.target.checked)}/>
+              <span><strong>Clean inner gaps</strong>
+                <small>Removes black background trapped inside frames. Turn off if the product itself has dark panels.</small>
+              </span>
+            </label>}
           </section>
           <section>
             <h3><ImageIcon size={16}/> Background</h3>
@@ -201,7 +209,7 @@ export default function PhotoCoverStudio({
         </div>
       </div>
       <div className="brutti-cover-studio-footer">
-        <button type="button" className="brutti-cover-studio-reset" onClick={() => { setSettings({ ...initial }); setError(""); }}
+        <button type="button" className="brutti-cover-studio-reset" onClick={() => { setSettings({ ...initial }); setCleanInnerGaps(true); setError(""); }}
           disabled={saving}><RotateCcw size={16}/> Reset</button>
         <span>Saved as a new image · Original retained</span>
         <button type="button" className="brutti-cover-studio-cancel" disabled={saving} onClick={onClose}>Cancel</button>
