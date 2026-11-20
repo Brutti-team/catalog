@@ -736,6 +736,9 @@ export default function App() {
           )}
           {tab === "album" && (
             <AlbumLibrary products={data.products} categories={data.categories}
+              onAddCategory={accountRole !== "editor"
+                ? () => editCategory({ id: crypto.randomUUID(), name: "", description: "" })
+                : undefined}
               onEditProduct={(id) => {
                 const product = data.products.find(item => item.id === id);
                 if (product) setEditor(product);
