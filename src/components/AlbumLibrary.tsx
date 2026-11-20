@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Images, Upload, Download, Search, Check, Trash2, LoaderCircle, Eye,
-  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Grid2X2, Table2,
+  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Crop, Grid2X2, Table2,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import {
@@ -592,7 +592,10 @@ export default function AlbumLibrary({
                   <span className="brutti-album__list-category" title="Photo category">
                     {albumPhotoCategoryIds(photo).map(id=>categories.find(item=>item.id===id)?.name).filter(Boolean).join(", ") || "Uncategorised"}
                   </span>
-                  {!picker && <button type="button" onClick={()=>setPreview(photo)} aria-label={`View details for ${photo.name}`}><Eye size={14}/> View</button>}
+                  {!picker && <div className="brutti-album__card-actions">
+                    <button type="button" onClick={()=>setPreview(photo)} aria-label={"View details for " + photo.name}><Eye size={14}/> View</button>
+                    <button type="button" onClick={()=>setEditingAlbumPhoto(photo)} aria-label={"Edit background and cover for " + photo.name}><Crop size={14}/> Edit cover</button>
+                  </div>}
                 </div>
               </div>;
             })}
