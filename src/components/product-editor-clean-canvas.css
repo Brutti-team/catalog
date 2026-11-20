@@ -400,51 +400,84 @@
 }
 
 
-/* Product Editor viewport spacing refinement / 20 Nov 2026. */
-/* Keep genuine breathing room both above and below the modal. The editor still
-   scrolls internally; its Save, Cancel and View live actions remain accessible. */
+/* Product Editor framing refinement — keep generous, even space on all sides.
+   At laptop/desktop sizes the dialog is a centered workspace, not a full-height
+   panel touching browser chrome or the Windows taskbar. Existing internal
+   scrolling and sticky Save actions stay unchanged. */
 @media (min-width: 761px) {
   .admin-app dialog.modal.product-editor-dialog--editing[open] {
     box-sizing: border-box;
-    max-height: min(82dvh, 810px);
-    margin-block: auto;
-    margin-inline: auto;
+    width: min(1100px, calc(100vw - 80px));
+    max-width: 1100px;
+    max-height: min(78dvh, calc(100dvh - 88px), 780px);
+    margin: auto;
+    border-radius: 18px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+    padding-inline: clamp(30px, 3.4vw, 43px);
   }
   .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
-    padding-top: 32px;
-    padding-bottom: 33px;
+    padding: 30px clamp(33px, 3.65vw, 48px) 28px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .form-section.product-editor-section {
+    margin-bottom: 25px;
+    padding-bottom: 24px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .form-section.product-editor-section > .product-editor-section-heading {
+    margin-bottom: 18px;
   }
   .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
-    min-height: 66px;
-    padding-block: 12px;
+    min-height: 68px;
+    padding: 12px clamp(30px, 3.4vw, 43px);
+    column-gap: 17px;
   }
-  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer .button-row .button {
-    min-height: 41px;
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer .button-row {
+    gap: 10px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  > .editor-footer .button-row .button {
+    min-height: 42px;
+    padding-inline: 15px;
+  }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .admin-app dialog.modal.product-editor-dialog--editing[open] {
+    width: calc(100vw - 58px);
+  }
+  .admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+    padding-inline: 29px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+    padding-inline: 32px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+    padding-inline: 30px;
   }
 }
 @media (max-width: 760px) {
   .admin-app dialog.modal.product-editor-dialog--editing[open] {
     box-sizing: border-box;
     width: calc(100vw - 24px);
-    max-height: min(89dvh, calc(100dvh - 36px));
-    margin-block: auto;
-    margin-inline: auto;
+    max-height: min(90dvh, calc(100dvh - 36px));
+    margin: auto;
+    border-radius: 14px;
   }
   .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
-    padding-top: 25px;
-    padding-bottom: 26px;
+    padding: 22px 19px 23px;
   }
   .admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
-    min-height: 67px;
-    padding-block: 11px max(12px, env(safe-area-inset-bottom));
+    min-height: 68px;
+    padding: 11px 17px max(12px, env(safe-area-inset-bottom));
   }
 }
 @media (max-height: 640px) and (min-width: 761px) {
   .admin-app dialog.modal.product-editor-dialog--editing[open] {
-    max-height: calc(100dvh - 50px);
+    max-height: calc(100dvh - 54px);
   }
   .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
     padding-top: 23px;
-    padding-bottom: 22px;
+    padding-bottom: 20px;
   }
 }
