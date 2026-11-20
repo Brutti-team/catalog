@@ -12,6 +12,7 @@ import {
 } from "../lib/album";
 import Modal from "./Modal";
 import SafeImage from "./SafeImage";
+import PhotoCoverStudio from "./PhotoCoverStudio";
 import { downloadCatalogPhoto, type PhotoDownloadFormat } from "../lib/photo-download";
 import "./album-library.css";
 
@@ -184,6 +185,7 @@ export default function AlbumLibrary({
   const [categorising, setCategorising] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [preview, setPreview] = useState<AlbumPhoto | null>(null);
+  const [editingAlbumPhoto, setEditingAlbumPhoto] = useState<AlbumPhoto | null>(null);
   const [downloadFormat, setDownloadFormat] = useState<PhotoDownloadFormat>("jpg");
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
@@ -621,6 +623,12 @@ export default function AlbumLibrary({
               />
               <small>Organise this photo in Album. Product categories remain unchanged.</small>
             </div>}
+            {!picker && (
+              <button type="button" className="brutti-album__edit-cover"
+                onClick={() => setEditingAlbumPhoto(preview)} disabled={downloading || busy}>
+                <Images size={16} aria-hidden="true" /> Edit cover · Cutout, background, crop & zoom
+              </button>
+            )}
             {downloadError && <p className="brutti-album__error" role="alert">{downloadError}</p>}
             <div className="brutti-album__detail-download">
               <span className="brutti-album__detail-label">DOWNLOAD PHOTO</span>
@@ -668,6 +676,24 @@ export default function AlbumLibrary({
           </div>
         </div>
       </Modal>}
+      {editingAlbumPhoto && (
+        <PhotoCoverStudio
+          key={editingAlbumPhoto.key}
+          imageUrl={editingAlbumPhoto.url}
+          imageName={editingAlbumPhoto.name}
+          saveLabel="Save edited photo to Album"
+          onClose={() => setEditingAlbumPhoto(null)}
+          onSave={async file => {
+            const result = await uploadAlbumPhotos([file], editingAlbumPhoto.manualCategoryId);
+            if (result.failures.length) throw new Error(result.failures.join(" | "));
+            if (!result.uploaded.length) throw new Error("Edited image was not saved. Please try again.");
+            setRecords(old => [...result.uploaded, ...old]);
+            setEditingAlbumPhoto(null);
+            setPreview(null);
+            setNotice("Edited image saved as a new Album photo. You can choose it from Product Editor for any product cover.");
+          }}
+        />
+      )}
     </section>
   );
 }
