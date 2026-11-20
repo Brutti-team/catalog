@@ -1,4 +1,4 @@
-import { ArrowUpRight, Check, Eye, Folder, Package } from "lucide-react";
+import { ArrowUpRight, Check, Crop, Eye, Folder, Package } from "lucide-react";
 import type { Category } from "../lib/types";
 import { albumPhotoCategoryIds, type AlbumPhoto } from "../lib/album";
 import SafeImage from "./SafeImage";
@@ -80,7 +80,7 @@ export function AlbumCategoryTable({
 }
 
 export function AlbumPhotoTable({
-  photos, categories, publishedIds, picker, selectedKeys, excludedUrls, onView, onSelect,
+  photos, categories, publishedIds, picker, selectedKeys, excludedUrls, onView, onSelect, onEditCover,
 }: {
   photos: AlbumPhoto[];
   categories: Category[];
@@ -90,6 +90,7 @@ export function AlbumPhotoTable({
   excludedUrls: string[];
   onView: (photo: AlbumPhoto) => void;
   onSelect: (photo: AlbumPhoto) => void;
+  onEditCover: (photo: AlbumPhoto) => void;
 }) {
   const categoryNames = new Map(categories.map(item => [item.id,item.name]));
   return (
@@ -141,13 +142,20 @@ export function AlbumPhotoTable({
                   </span>
                 </td>
                 <td className="brutti-album__table-action">
-                  <button type="button" disabled={alreadyAdded} aria-label={picker ? `Select ${photo.name}` : `View details for ${photo.name}`}
-                    onClick={() => picker ? onSelect(photo) : onView(photo)}>
-                    {picker
-                      ? selected ? <><Check size={15} aria-hidden="true"/> Selected</>
-                        : alreadyAdded ? "Added" : "Select"
-                      : <><Eye size={15} aria-hidden="true"/> View</>}
-                  </button>
+                  <div className="brutti-album__table-actions">
+                    <button type="button" disabled={alreadyAdded} aria-label={picker ? `Select ${photo.name}` : `View details for ${photo.name}`}
+                      onClick={() => picker ? onSelect(photo) : onView(photo)}>
+                      {picker
+                        ? selected ? <><Check size={15} aria-hidden="true"/> Selected</>
+                          : alreadyAdded ? "Added" : "Select"
+                        : <><Eye size={15} aria-hidden="true"/> View</>}
+                    </button>
+                    {!picker && <button type="button" className="brutti-album__table-edit-cover"
+                      title="Edit photo background and cover" aria-label={`Edit photo cover for ${photo.name}`}
+                      onClick={() => onEditCover(photo)}>
+                      <Crop size={15} aria-hidden="true"/>
+                    </button>}
+                  </div>
                 </td>
               </tr>
             );
