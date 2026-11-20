@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Images, Upload, Download, Search, Check, Trash2, LoaderCircle, Eye,
-  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown,
+  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Grid2X2, List,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import {
@@ -173,6 +173,7 @@ export default function AlbumLibrary({
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "by-category" | "published">("all");
+  const [viewMode, setViewMode] = useState<"gallery" | "list">("gallery");
   const [category, setCategory] = useState("all");
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
   const [categoryMenuAbove, setCategoryMenuAbove] = useState(false);
@@ -482,6 +483,14 @@ export default function AlbumLibrary({
             </div>
           </div>}
         </div>}
+        <div className="brutti-album__view-switch" role="group" aria-label="Album display style">
+          <button type="button" className={viewMode==="gallery"?"is-active":""}
+            aria-pressed={viewMode==="gallery"} aria-label="Gallery view" title="Gallery view"
+            onClick={()=>setViewMode("gallery")}><Grid2X2 size={16} aria-hidden="true"/><span>Gallery</span></button>
+          <button type="button" className={viewMode==="list"?"is-active":""}
+            aria-pressed={viewMode==="list"} aria-label="List view" title="List view"
+            onClick={()=>setViewMode("list")}><List size={17} aria-hidden="true"/><span>List</span></button>
+        </div>
         <button type="button" className="brutti-album__refresh" disabled={busy||loading} onClick={()=>void reload()} title="Refresh Album" aria-label="Refresh Album"><RefreshCw size={17}/></button>
       </div>
       {picker && <div className="brutti-album__picker-add">
@@ -512,7 +521,7 @@ export default function AlbumLibrary({
       {notice && <p className="brutti-album__success" role="status">{notice}</p>}
       {loading ? <div className="brutti-album__empty" role="status"><LoaderCircle className="brutti-album__spin"/>Loading your photos…</div> :
         filter === "by-category" && selectedFolder === null ? (
-          <div className="brutti-album__folders" aria-label="Photo folders by category">
+          <div className={`brutti-album__folders${viewMode==="list"?" is-list":""}`} aria-label="Photo folders by category">
             {groups.filter(({category:item,items})=>!search.trim() ||
               item.name.toLowerCase().includes(search.trim().toLowerCase()) ||
               items.some(photo=>photo.name.toLowerCase().includes(search.trim().toLowerCase())))
@@ -524,6 +533,7 @@ export default function AlbumLibrary({
                   <span className="brutti-album__folder-mark"><FolderOpen size={18}/></span>
                 </span>
                 <span className="brutti-album__folder-copy"><strong>{item.name}</strong><small>{items.length} photos</small></span>
+                <span className="brutti-album__folder-open" aria-hidden="true"><ArrowUpRight size={17}/></span>
               </button>
             ))}
             {(!search.trim() || "uncategorised".includes(search.trim().toLowerCase()) ||
@@ -533,6 +543,7 @@ export default function AlbumLibrary({
                   <Folder size={44}/><span className="brutti-album__folder-mark"><FolderOpen size={18}/></span>
                 </span>
                 <span className="brutti-album__folder-copy"><strong>Uncategorised</strong><small>{ungrouped.length} photos</small></span>
+                <span className="brutti-album__folder-open" aria-hidden="true"><ArrowUpRight size={17}/></span>
               </button>
             )}
           </div>
@@ -543,7 +554,7 @@ export default function AlbumLibrary({
             <p>{search || filter!=="all" || category!=="all" ? "Try a different search or filter." : "Upload product photos to keep them organised here."}</p>
           </div>
         ) : (
-          <div className="brutti-album__grid">
+          <div className={`brutti-album__grid${viewMode==="list"?" is-list":""}`}>
             {visible.map(photo=>{
               const checked=selected.includes(photo.key);
               const disabled=picker && excludedUrls.includes(photo.url);
@@ -555,6 +566,9 @@ export default function AlbumLibrary({
                 <div className="brutti-album__card-info">
                   <strong title={photo.name}>{photo.name}</strong>
                   <small>{disabled?"Already added":photo.usedBy.length?`${photo.usedBy.length} product${photo.usedBy.length>1?"s":""}`:photo.categoryCovers.length?"Category cover":"Unassigned"}</small>
+                  <span className="brutti-album__list-category" title="Photo category">
+                    {albumPhotoCategoryIds(photo).map(id=>categories.find(item=>item.id===id)?.name).filter(Boolean).join(", ") || "Uncategorised"}
+                  </span>
                   {!picker && <button type="button" onClick={()=>setPreview(photo)} aria-label={`View details for ${photo.name}`}><Eye size={14}/> View</button>}
                 </div>
               </div>;
