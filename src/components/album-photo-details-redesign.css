@@ -414,3 +414,211 @@
     scroll-behavior: auto;
   }
 }
+
+
+/* 2026-11-20 — Photo details v2: integrated action panel, no browser-native
+   format dropdown and no crowded bottom footer. Scoped to this dialog only. */
+.admin-app dialog.brutti-album-preview-modal[open] {
+  width: min(940px, calc(100vw - 34px));
+  max-width: 940px;
+  max-height: min(744px, 90dvh);
+  border-radius: 18px;
+  background: #fbfcfa;
+}
+.admin-app .brutti-album-preview-modal .modal-heading {
+  padding: 18px 26px 17px;
+}
+.admin-app .brutti-album-preview-modal .modal-heading h2 {
+  font-size: 21px;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__detail-layout {
+  grid-template-columns: minmax(0, 1.07fr) minmax(0, .93fr);
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__detail-visual {
+  gap: 10px;
+  padding: clamp(15px, 2.3vw, 24px);
+  background: #eff4ef;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__preview-image {
+  height: min(48dvh, 414px);
+  max-height: 414px;
+  border: 1px solid #dce7de;
+  border-radius: 11px;
+  padding: 8px;
+  background: #e9efea;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__visual-caption {
+  font-size: 10.5px;
+  font-weight: 570;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__detail-content {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #cad9ce transparent;
+  gap: 17px;
+  padding: 25px 27px 22px;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__preview-info {
+  gap: 8px;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__preview-info h3 {
+  font-size: clamp(19px, 2.05vw, 23px);
+}
+.admin-app .brutti-album-preview-modal .brutti-album__linked-product {
+  padding: 11px 12px;
+  min-height: 45px;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__assign-category {
+  padding-top: 15px;
+  gap: 7px;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__assign-category select {
+  min-height: 41px;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__detail-download {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 17px;
+  border-top: 1px solid #e2ece4;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__format-switch {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  min-height: 42px;
+  border: 1px solid #dfe9e0;
+  border-radius: 11px;
+  background: #eff4ef;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__format-switch button {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 33px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #647f6c;
+  font: 680 11.5px/1.3 "DM Sans", sans-serif;
+  cursor: pointer;
+  transition: background .16s ease, color .16s ease, box-shadow .16s ease;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__format-switch button:hover:not(:disabled):not(.is-selected) {
+  background: #e0ece2;
+  color: #305b3e;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__format-switch button.is-selected {
+  background: #fff;
+  color: #245a39;
+  border-color: #d1e0d3;
+  box-shadow: 0 2px 6px rgba(35, 79, 47, .08);
+}
+.admin-app .brutti-album-preview-modal .brutti-album__format-switch button:disabled {
+  opacity: .62;
+  cursor: not-allowed;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__download-main {
+  display: inline-flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 43px;
+  padding: 11px 17px;
+  border-radius: 10px;
+  background: #24563b;
+  color: #fff;
+  font: 710 12px/1.4 "DM Sans", sans-serif;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__download-help {
+  margin: 0;
+  color: #869889;
+  text-align: center;
+  font: 500 10.5px/1.5 "DM Sans", sans-serif;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__detail-bottom {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 13px;
+  border-top: 1px solid #e8eee8;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__detail-bottom .brutti-album__protected-photo {
+  font-size: 11px;
+}
+.admin-app .brutti-album-preview-modal .brutti-album__detail-bottom .brutti-album__delete {
+  font-size: 11px;
+  min-height: 35px;
+  padding: 7px 11px;
+}
+.admin-app[data-theme="dark"] .brutti-album-preview-modal .brutti-album__detail-content {
+  background: #263e2e;
+}
+.admin-app[data-theme="dark"] .brutti-album-preview-modal .brutti-album__detail-download,
+.admin-app[data-theme="dark"] .brutti-album-preview-modal .brutti-album__detail-bottom {
+  border-color: #4b6853;
+}
+.admin-app[data-theme="dark"] .brutti-album-preview-modal .brutti-album__format-switch {
+  background: #243e2d;
+  border-color: #517059;
+}
+.admin-app[data-theme="dark"] .brutti-album-preview-modal .brutti-album__format-switch button {
+  color: #aac5af;
+}
+.admin-app[data-theme="dark"] .brutti-album-preview-modal .brutti-album__format-switch button.is-selected {
+  background: #40664b;
+  color: #fff;
+  border-color: #60856b;
+}
+.admin-app[data-theme="dark"] .brutti-album-preview-modal .brutti-album__download-help {
+  color: #9fb4a4;
+}
+@media (max-width: 720px) {
+  .admin-app dialog.brutti-album-preview-modal[open] {
+    width: calc(100vw - 20px);
+    max-height: 93dvh;
+  }
+  .admin-app .brutti-album-preview-modal .modal-heading {
+    padding: 16px 18px;
+  }
+  .admin-app .brutti-album-preview-modal .brutti-album__detail-layout {
+    display: block;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    min-height: 0;
+  }
+  .admin-app .brutti-album-preview-modal .brutti-album__detail-visual {
+    padding: 15px;
+    gap: 7px;
+  }
+  .admin-app .brutti-album-preview-modal .brutti-album__preview-image {
+    height: min(32dvh, 260px);
+    min-height: 155px;
+    max-height: 260px;
+    padding: 8px;
+  }
+  .admin-app .brutti-album-preview-modal .brutti-album__detail-content {
+    overflow: visible;
+    padding: 20px 18px 22px;
+    gap: 15px;
+  }
+  .admin-app .brutti-album-preview-modal .brutti-album__detail-download {
+    margin-top: 5px;
+  }
+}
+@media (max-width: 380px) {
+  .admin-app .brutti-album-preview-modal .brutti-album__format-switch button {
+    padding: 7px 5px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .brutti-album-preview-modal .brutti-album__format-switch button {
+    transition: none;
+  }
+}
