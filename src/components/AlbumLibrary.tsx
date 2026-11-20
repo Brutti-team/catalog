@@ -204,8 +204,19 @@ export default function AlbumLibrary({
           </div>
           <div className="brutti-album__heading-actions">
             <span className="brutti-album__total"><Images size={17}/><strong>{photos.length}</strong> photos</span>
+            {onAddCategory && <button type="button" className="brutti-album__secondary" onClick={onAddCategory}>
+              <Plus size={16}/> Add category
+            </button>}
+            <label className="brutti-album__destination">
+              Add photos to
+              <select aria-label="Category for new uploads" value={uploadCategory}
+                onChange={event=>setUploadCategory(event.target.value)} disabled={busy}>
+                <option value="none">Uncategorised</option>
+                {categories.map(item=><option value={item.id} key={item.id}>{item.name}</option>)}
+              </select>
+            </label>
             <button type="button" className="brutti-album__primary" onClick={()=>fileRef.current?.click()} disabled={busy}>
-              <Upload size={17}/> Upload photos
+              <Upload size={17}/> Add photos
             </button>
           </div>
         </div>
@@ -221,26 +232,74 @@ export default function AlbumLibrary({
         <span><strong>{available}</strong> Unassigned</span>
       </div>
       <div className="brutti-album__toolbar">
-        <div className="brutti-album__tabs" aria-label="Photo status">
-          <button type="button" className={filter==="all"?"is-current":""} aria-pressed={filter==="all"} onClick={()=>setFilter("all")}>All photos</button>
-          <button type="button" className={filter==="unassigned"?"is-current":""} aria-pressed={filter==="unassigned"} onClick={()=>setFilter("unassigned")}>Unassigned</button>
+        <div className="brutti-album__tabs" aria-label="Album views">
+          <button type="button" className={filter==="all"?"is-current":""} aria-pressed={filter==="all"} onClick={()=>selectFilter("all")}>All photos</button>
+          <button type="button" className={filter==="by-category"?"is-current":""} aria-pressed={filter==="by-category"} onClick={()=>selectFilter("by-category")}><Folder size={14}/> By category</button>
+          <button type="button" className={filter==="unassigned"?"is-current":""} aria-pressed={filter==="unassigned"} onClick={()=>selectFilter("unassigned")}>Unassigned</button>
         </div>
         <label className="brutti-album__search"><Search size={17}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search photos or product names…" aria-label="Search Album"/></label>
-        <label className="brutti-album__category">
+        {filter !== "by-category" && <label className="brutti-album__category">
           <Layers size={17}/>
           <select value={category} onChange={e=>setCategory(e.target.value)} aria-label="Filter album by category">
             <option value="all">All categories</option>
             {categories.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}
           </select>
-        </label>
+        </label>}
         <button type="button" className="brutti-album__refresh" disabled={busy||loading} onClick={()=>void reload()} title="Refresh Album" aria-label="Refresh Album"><RefreshCw size={17}/></button>
       </div>
-      {picker && <button type="button" className="brutti-album__upload-small" onClick={()=>fileRef.current?.click()} disabled={busy}><Upload size={15}/> Upload new photos to Album</button>}
+      {picker && <div className="brutti-album__picker-add">
+        <label className="brutti-album__destination">
+          Add photos to
+          <select value={uploadCategory} disabled={busy} aria-label="Album category for new photos"
+            onChange={event=>setUploadCategory(event.target.value)}>
+            <option value="none">Uncategorised</option>
+            {categories.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}
+          </select>
+        </label>
+        <button type="button" className="brutti-album__upload-small" onClick={()=>fileRef.current?.click()} disabled={busy}>
+          <Upload size={15}/> Add photos to Album
+        </button>
+      </div>}
+      {filter==="by-category" && selectedFolder!==null && <div className="brutti-album__folder-path">
+        <button type="button" onClick={()=>setSelectedFolder(null)}><ArrowLeft size={16}/> All categories</button>
+        <span aria-hidden="true">/</span>
+        <strong>{folderTitle}</strong>
+        <span className="brutti-album__folder-items">{visible.length} photos</span>
+        <button type="button" className="brutti-album__folder-add" disabled={busy}
+          onClick={()=>{setUploadCategory(selectedFolder==="__uncategorized__"?"none":selectedFolder);fileRef.current?.click();}}>
+          <Plus size={16}/> Add photos
+        </button>
+      </div>}
       {progress && <p className="brutti-album__message" role="status"><LoaderCircle className="brutti-album__spin" size={16}/> Uploading {progress.done} / {progress.total} photos…</p>}
       {error && <p className="brutti-album__error" role="alert">{error}</p>}
       {notice && <p className="brutti-album__success" role="status">{notice}</p>}
       {loading ? <div className="brutti-album__empty" role="status"><LoaderCircle className="brutti-album__spin"/>Loading your photos…</div> :
-        visible.length===0 ? (
+        filter === "by-category" && selectedFolder === null ? (
+          <div className="brutti-album__folders" aria-label="Photo folders by category">
+            {groups.filter(({category:item,items})=>!search.trim() ||
+              item.name.toLowerCase().includes(search.trim().toLowerCase()) ||
+              items.some(photo=>photo.name.toLowerCase().includes(search.trim().toLowerCase())))
+              .map(({category:item,items,cover})=>(
+              <button type="button" key={item.id} className="brutti-album__folder"
+                onClick={()=>openFolder(item.id)} aria-label={`Open ${item.name}: ${items.length} photos`}>
+                <span className="brutti-album__folder-cover">
+                  {cover?<SafeImage src={cover} alt="" loading="lazy"/>:<Folder size={44}/>}
+                  <span className="brutti-album__folder-mark"><FolderOpen size={18}/></span>
+                </span>
+                <span className="brutti-album__folder-copy"><strong>{item.name}</strong><small>{items.length} photos</small></span>
+              </button>
+            ))}
+            {(!search.trim() || "uncategorised".includes(search.trim().toLowerCase()) ||
+              ungrouped.some(photo=>photo.name.toLowerCase().includes(search.trim().toLowerCase()))) && (
+              <button type="button" className="brutti-album__folder" onClick={()=>openFolder("__uncategorized__")}>
+                <span className="brutti-album__folder-cover brutti-album__folder-cover--empty">
+                  <Folder size={44}/><span className="brutti-album__folder-mark"><FolderOpen size={18}/></span>
+                </span>
+                <span className="brutti-album__folder-copy"><strong>Uncategorised</strong><small>{ungrouped.length} photos</small></span>
+              </button>
+            )}
+          </div>
+        ) : visible.length===0 ? (
           <div className="brutti-album__empty">
             <ImageOff size={28}/>
             <strong>{search || filter!=="all" || category!=="all" ? "No matching photos" : "Your Album is ready"}</strong>
@@ -284,6 +343,16 @@ export default function AlbumLibrary({
           <Package size={16}/>{p.name}<ArrowUpRight size={15}/>
         </button>)}
         {!!preview.categoryCovers.length && <p className="brutti-album__category-note">Category cover: {preview.categoryCovers.join(", ")}</p>}
+        {!picker && <label className="brutti-album__assign-category">
+          <span>Album category</span>
+          <select value={preview.manualCategoryId || "none"} disabled={categorising || !preview.id}
+            aria-label="Assign photo to Album category"
+            onChange={event=>void assignCategory(preview,event.target.value)}>
+            <option value="none">Automatic / Uncategorised</option>
+            {categories.map(item=><option value={item.id} key={item.id}>{item.name}</option>)}
+          </select>
+          <small>Product-linked categories appear automatically. This controls the Album folder only.</small>
+        </label>}
         {downloadError && <p className="brutti-album__error" role="alert">{downloadError}</p>}
         <div className="brutti-album__preview-actions">
           <label className="brutti-album__download-format">
