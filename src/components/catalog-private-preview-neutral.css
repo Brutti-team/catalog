@@ -518,3 +518,162 @@
 .admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dd {
   color: #e4f2e7 !important;
 }
+
+
+/* Brutti striped specifications table for private product preview, Nov 2026. */
+/* Inspired by the reference's neat alternating table rows, but uses Brutti
+   forest green, mist-green and warm white instead of beige/pink. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications {
+  align-self: stretch;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 0 24px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: left;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications > h2 {
+  display: block !important;
+  margin: 0 0 12px !important;
+  padding: 0;
+  color: #536f5a;
+  font-family: "DM Sans", system-ui, sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 750 !important;
+  line-height: 1.4;
+  letter-spacing: .13em !important;
+  text-transform: uppercase;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl {
+  display: block !important;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  border: 1px solid #dfe8df;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: none !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div {
+  display: grid !important;
+  grid-template-columns: minmax(135px, 32%) minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 14px !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: #ffffff !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div:nth-child(even),
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div:nth-child(even) {
+  background: #edf3ed !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div + div,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div + div {
+  border-top: 1px solid rgba(190, 208, 192, .32) !important;
+}
+/* Cell padding makes both label and value line up without adding nested cards. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div > dt,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div > dd,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div > dt,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div > dd {
+  min-width: 0;
+  margin: 0 !important;
+  padding: 12px 0 !important;
+  background: transparent !important;
+  overflow-wrap: anywhere;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div > dt,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div > dt {
+  padding-left: 17px !important;
+  color: #375b43 !important;
+  font-family: "DM Sans", system-ui, sans-serif !important;
+  font-size: 11.5px !important;
+  font-weight: 720 !important;
+  line-height: 1.5 !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div > dd,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div > dd {
+  padding-right: 17px !important;
+  color: #33493a !important;
+  font-family: "DM Sans", system-ui, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.55 !important;
+}
+/* Every Admin-added specification group uses exactly the same striped table. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications .pub-spec-section {
+  width: 100%;
+  max-width: none;
+  margin: 17px 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications .pub-spec-section > h3 {
+  display: block !important;
+  margin: 0 0 11px !important;
+  color: #40634a !important;
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: -.018em !important;
+  line-height: 1.5;
+}
+/* The table works on phone without clipping long material names. */
+@media (max-width: 580px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div,
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div {
+    grid-template-columns: minmax(100px, 36%) minmax(0, 1fr) !important;
+    gap: 9px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div > dt,
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div > dt {
+    padding: 10px 0 10px 11px !important;
+    font-size: 10.5px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div > dd,
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div > dd {
+    padding: 10px 11px 10px 0 !important;
+    font-size: 11px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl,
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl {
+    border-radius: 10px;
+  }
+}
+/* Dark theme retains alternating rows with legible contrast. */
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl,
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl {
+  border-color: #45614b;
+  background: #263b2d;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div,
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div {
+  background: #2a4031 !important;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div:nth-child(even),
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div:nth-child(even) {
+  background: #344d3b !important;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div > dt,
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div > dt {
+  color: #d3e8d5 !important;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div > dd,
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div > dd {
+  color: #ecf6ee !important;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications > h2,
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications .pub-spec-section > h3 {
+  color: #cce4d0 !important;
+}
