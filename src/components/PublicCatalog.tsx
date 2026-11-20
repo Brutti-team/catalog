@@ -131,6 +131,12 @@ export default function PublicCatalog({
   const productId = previewProduct ? previewProduct.id : routeProductId;
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
+  // When an Admin deletes a category, avoid keeping a stale public filter.
+  useEffect(() => {
+    if (!loading && category !== "all" && !categories.some(item => item.id === category)) {
+      setCategory("all");
+    }
+  }, [category, categories, loading]);
   const [featuredOnly, setFeaturedOnly] = useState(false);
   const [sort, setSort] = useState("curated");
   const [sortOpen, setSortOpen] = useState(false);
