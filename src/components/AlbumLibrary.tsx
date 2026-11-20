@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Images, Upload, Download, Search, Check, Trash2, LoaderCircle, Eye,
-  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Crop, Grid2X2, Table2,
+  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Crop, Grid2X2, Table2, AlertTriangle,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import {
@@ -186,6 +186,9 @@ export default function AlbumLibrary({
   const [categorising, setCategorising] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [preview, setPreview] = useState<AlbumPhoto | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AlbumPhoto | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
   const [editingAlbumPhoto, setEditingAlbumPhoto] = useState<AlbumPhoto | null>(null);
   const [downloadFormat, setDownloadFormat] = useState<PhotoDownloadFormat>("jpg");
   const [downloading, setDownloading] = useState(false);
@@ -371,21 +374,44 @@ export default function AlbumLibrary({
       setDownloading(false);
     }
   }
-  async function remove(photo: AlbumPhoto) {
-    if(photo.usedBy.length||photo.categoryCovers.length){
-      setError("This photo is used by a product or category. Remove those links first.");
+  function requestDelete(photo: AlbumPhoto) {
+    if (photo.usedBy.length || photo.categoryCovers.length) {
+      setDownloadError("This photo is still linked to a product or category cover. Unlink it before deleting.");
       return;
     }
-    if(!photo.id){setError("This photo has no Album record. Refresh and try again.");return;}
-    if(!window.confirm(`Permanently delete "${photo.name}" from Album storage? This cannot be undone.`))return;
-    setError("");setNotice("");
-    try{
+    if (!photo.id) {
+      setDownloadError("This photo has no Album record. Refresh and try again.");
+      return;
+    }
+    setDeleteError("");
+    setDeleteTarget(photo);
+  }
+  function closeDeleteConfirmation() {
+    if (deleting) return;
+    setDeleteTarget(null);
+    setDeleteError("");
+  }
+  async function confirmDelete() {
+    if (!deleteTarget || deleting) return;
+    const photo = deleteTarget;
+    setDeleting(true);
+    setDeleteError("");
+    try {
       await removeUnassignedAlbumPhoto(photo);
-      setRecords(old=>old.filter(item=>item.id!==photo.id));
+      setRecords(old => old.filter(item => item.id !== photo.id));
+      setSelected(ids => ids.filter(id => id !== photo.key));
       setPreview(null);
-      setSelected(ids=>ids.filter(id=>id!==photo.key));
-      setNotice("Unassigned photo removed.");
-    }catch(e){setError(e instanceof Error?e.message:"Could not remove the photo.");void reload();}
+      setDeleteTarget(null);
+      setDownloadError("");
+      setError("");
+      setNotice(photo.sourceKind === "external"
+        ? "Photo removed from Brutti Album. Original source image is unchanged."
+        : "Photo deleted from Brutti Album.");
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : "Could not delete this photo.");
+    } finally {
+      setDeleting(false);
+    }
   }
   const selectedPhotos=photos.filter(p=>selected.includes(p.key));
   const albumStats=(
@@ -709,12 +735,42 @@ export default function AlbumLibrary({
                       <Check size={15} aria-hidden="true"/> In use · Protected from deletion
                     </span>
                   : <button type="button" className="brutti-album__delete"
-                      onClick={() => void remove(preview)}>
+                      disabled={deleting} onClick={() => requestDelete(preview)}>
                       <Trash2 size={15} aria-hidden="true"/> Delete photo
                     </button>
               )}
             </div>
           </div>
+        </div>
+      </Modal>}
+      {deleteTarget && <Modal
+        title="Delete photo?"
+        eyebrow="BRUTTI / ALBUM"
+        className="brutti-album-delete-confirm-modal"
+        onClose={closeDeleteConfirmation}
+      >
+        <div className="brutti-album__delete-confirm-body">
+          <span className="brutti-album__delete-confirm-icon">
+            <AlertTriangle size={22} strokeWidth={1.8} aria-hidden="true"/>
+          </span>
+          <p className="brutti-album__delete-confirm-heading">Remove this photo from Album?</p>
+          <p className="brutti-album__delete-confirm-name">{deleteTarget.name}</p>
+          <p className="brutti-album__delete-confirm-message">
+            {deleteTarget.sourceKind === "external"
+              ? "This removes the photo reference from Brutti Album only. The original image on GitHub or Google will not be deleted."
+              : "This permanently removes the photo from Album and deletes its stored image. This action cannot be undone."}
+          </p>
+          {deleteError && <p className="brutti-album__delete-confirm-error" role="alert">{deleteError}</p>}
+        </div>
+        <div className="brutti-album__delete-confirm-actions">
+          <button type="button" className="brutti-album__delete-confirm-cancel"
+            disabled={deleting} onClick={closeDeleteConfirmation}>Cancel</button>
+          <button type="button" className="brutti-album__delete-confirm-submit"
+            disabled={deleting} onClick={() => void confirmDelete()}>
+            {deleting ? <LoaderCircle size={16} className="brutti-album__spin" aria-hidden="true"/>
+              : <Trash2 size={16} aria-hidden="true"/>}
+            {deleting ? "Deleting…" : "Yes, delete photo"}
+          </button>
         </div>
       </Modal>}
       {editingAlbumPhoto && (
