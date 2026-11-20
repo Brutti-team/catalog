@@ -1,0 +1,181 @@
+/* Brutti Catalog / staff-only Cover Studio. Keeps originals untouched. */
+.admin-app dialog.modal.brutti-cover-studio[open] {
+  display:flex;flex-direction:column;
+  width:min(1120px,calc(100vw - 34px));max-width:1120px;
+  max-height:min(900px,94dvh);padding:0;overflow:hidden;
+  border:1px solid #dbe6dc;border-radius:20px;background:#fafbf9;
+  box-shadow:0 25px 95px rgba(14,41,25,.24);color:#294937;
+}
+.admin-app .brutti-cover-studio > .modal-heading {
+  flex:0 0 auto;display:flex;align-items:center;
+  padding:18px 23px;border-bottom:1px solid #e4ebe4;background:#fff;
+}
+.admin-app .brutti-cover-studio .modal-heading h2 {
+  color:#244832;font:750 19px/1.3 "Manrope","DM Sans",sans-serif;letter-spacing:-.035em;
+}
+.admin-app .brutti-cover-studio .modal-heading .eyebrow {color:#678b71;letter-spacing:.13em;font-size:10px;}
+.admin-app .brutti-cover-studio .modal-description {
+  max-width:620px;color:#7b8d7f;font:450 11px/1.45 "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-layout {
+  min-height:0;flex:1 1 auto;display:grid;
+  grid-template-columns:minmax(0,1.25fr) minmax(305px,.75fr);
+  overflow:auto;
+}
+.admin-app .brutti-cover-studio-visual {
+  min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:clamp(19px,2.6vw,32px);
+  background:#eef3ee;border-right:1px solid #e0e9e0;
+}
+.admin-app .brutti-cover-studio-stage {
+  display:grid;place-items:center;position:relative;
+  width:min(100%,620px);aspect-ratio:4/3;overflow:hidden;touch-action:none;
+  background:#e7ede7;border:1px solid #d6e3d7;border-radius:15px;
+  box-shadow:0 9px 29px rgba(31,64,39,.08);cursor:grab;user-select:none;
+}
+.admin-app .brutti-cover-studio-stage:active {cursor:grabbing;}
+.admin-app .brutti-cover-studio-stage.is-transparent,
+.admin-app .brutti-cover-studio-swatch:first-child {
+  background-color:#fff;
+  background-image:linear-gradient(45deg,#e4e9e5 25%,transparent 25%),
+    linear-gradient(-45deg,#e4e9e5 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#e4e9e5 75%),
+    linear-gradient(-45deg,transparent 75%,#e4e9e5 75%);
+  background-size:22px 22px;
+  background-position:0 0,0 11px,11px -11px,-11px 0;
+}
+.admin-app .brutti-cover-studio-stage canvas {
+  display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;
+}
+.admin-app .brutti-cover-studio-loading {
+  position:absolute;padding:12px;background:rgba(255,255,255,.89);
+  border-radius:9px;color:#5b7863;font:600 12px "DM Sans",sans-serif;text-align:center;
+}
+.admin-app .brutti-cover-studio-working {
+  position:absolute;bottom:14px;left:14px;display:flex;align-items:center;gap:8px;
+  padding:7px 10px;border-radius:8px;background:rgba(255,255,255,.9);
+  color:#476b51;font:650 11px "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-drag-hint {
+  display:flex;align-items:center;gap:8px;margin:12px 0 5px;
+  color:#56755e;font:650 11px "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-help {
+  margin:0;max-width:52ch;text-align:center;color:#889b8d;
+  font:440 10px/1.55 "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-tools {
+  display:flex;flex-direction:column;gap:0;min-height:0;padding:4px 20px 16px;
+  overflow-y:auto;background:#fff;scrollbar-width:thin;
+}
+.admin-app .brutti-cover-studio-tools section {
+  display:flex;flex-direction:column;gap:10px;padding:17px 0;
+  border-bottom:1px solid #e3eae3;
+}
+.admin-app .brutti-cover-studio-tools h3 {
+  display:flex;align-items:center;gap:9px;margin:0;color:#35573f;
+  font:730 13px/1.4 "Manrope","DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-toggle {
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 12px;min-height:41px;border:1px solid #d7e6d9;border-radius:11px;
+  background:#f6faf6;color:#345e40;font:700 11px "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-toggle.is-active {
+  background:#e8f2e9;border-color:#80ad88;color:#225a36;
+}
+.admin-app .brutti-cover-studio-swatches {
+  display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+}
+.admin-app .brutti-cover-studio-swatch {
+  width:41px;height:41px;flex:0 0 41px;display:grid;place-items:center;
+  border-radius:12px;border:1px solid #dbe5dc;color:#316344;cursor:pointer;
+}
+.admin-app .brutti-cover-studio-swatch:nth-child(5) {color:#fff;}
+.admin-app .brutti-cover-studio-swatch.is-active {
+  border:2px solid #39834f;
+  outline:2px solid #fff;outline-offset:-4px;
+  box-shadow:0 0 0 2px #b1d1b7;
+}
+.admin-app .brutti-cover-studio-custom {
+  display:flex;align-items:center;gap:6px;color:#6c8672;
+  font:600 10px "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-custom input {
+  width:35px;height:35px;padding:2px;border:1px solid #d7e6d9;border-radius:9px;
+}
+.admin-app .brutti-cover-studio-segment {
+  display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:4px;
+  background:#ecf3ec;border:1px solid #e1eae1;border-radius:11px;
+}
+.admin-app .brutti-cover-studio-segment button {
+  min-height:35px;border:0;border-radius:8px;background:transparent;
+  color:#69816f;font:680 11px "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-segment button.is-active {
+  background:#fff;color:#2c5a3c;box-shadow:0 1px 6px rgba(39,69,45,.10);
+}
+.admin-app .brutti-cover-studio-range {
+  display:grid;grid-template-columns:1fr auto;gap:10px 6px;align-items:center;
+  margin:0;color:#52715b;font:650 11px "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-range strong {
+  color:#295b3b;font:750 11px "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-range > input,
+.admin-app .brutti-cover-studio-zoom {grid-column:1/-1;width:100%;}
+.admin-app .brutti-cover-studio-range input[type=range] {
+  accent-color:#336846;cursor:pointer;width:100%;
+}
+.admin-app .brutti-cover-studio-range small {
+  grid-column:1/-1;color:#879b8a;font:440 10px/1.5 "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-zoom {
+  display:flex;align-items:center;gap:9px;
+}
+.admin-app .brutti-cover-studio-zoom button {
+  display:grid;place-items:center;flex:0 0 29px;width:29px;height:29px;
+  border:1px solid #dbe7dc;border-radius:8px;background:#fff;color:#3b704a;
+}
+.admin-app .brutti-cover-studio-error {
+  margin:14px 0 0;padding:11px;border:1px solid #efd1ca;border-radius:9px;
+  color:#9f463f;background:#fff7f6;font:500 11px/1.5 "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-footer {
+  display:flex;align-items:center;gap:11px;padding:15px 22px;flex:0 0 auto;
+  border-top:1px solid #e0eae1;background:#fff;
+}
+.admin-app .brutti-cover-studio-footer > span {
+  flex:1;color:#8b9c8d;font:460 10px "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-footer button {
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 14px;min-height:41px;border-radius:10px;
+  font:720 11px "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-reset,
+.admin-app .brutti-cover-studio-cancel {
+  background:#fff;border:1px solid #d9e6dc;color:#3e694b;
+}
+.admin-app .brutti-cover-studio-save {
+  border:1px solid #27543d;background:#28563e;color:#fff;
+}
+.admin-app .brutti-cover-studio-save:hover:not(:disabled) {background:#1b422e;}
+.admin-app .brutti-cover-studio :is(button,input):focus-visible {
+  outline:3px solid #96bd9e;outline-offset:2px;
+}
+.admin-app .brutti-cover-studio button:disabled {opacity:.45;cursor:not-allowed;}
+@media(max-width:740px) {
+  .admin-app dialog.modal.brutti-cover-studio[open] {
+    width:calc(100vw - 16px);max-width:none;max-height:calc(100dvh - 16px);border-radius:15px;
+  }
+  .admin-app .brutti-cover-studio-layout {display:block;overflow:auto;}
+  .admin-app .brutti-cover-studio-visual {border-right:0;border-bottom:1px solid #e0e9e0;padding:14px;}
+  .admin-app .brutti-cover-studio-tools {overflow:visible;padding:0 16px 10px;}
+  .admin-app .brutti-cover-studio-tools section {padding:16px 0;}
+  .admin-app .brutti-cover-studio-footer {padding:10px;gap:6px;flex-wrap:wrap;}
+  .admin-app .brutti-cover-studio-footer > span {display:none;}
+  .admin-app .brutti-cover-studio-footer button {padding:10px;font-size:10.5px;}
+  .admin-app .brutti-cover-studio-save {margin-left:auto;}
+  .admin-app .brutti-cover-studio-drag-hint {font-size:10px;}
+}
