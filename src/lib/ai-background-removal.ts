@@ -34,6 +34,8 @@ export async function aiFurnitureCutout(
   const worker = new Worker(new URL("../workers/ai-cutout.worker.ts", import.meta.url), { type: "module" });
   activeWorker = worker;
   const imageDataUrl = source.canvas.toDataURL("image/png");
+  const sourcePixels = source.canvas.getContext("2d")?.getImageData(0, 0, source.width, source.height);
+  if (!sourcePixels) throw new Error("The source photo cannot be read for local AI editing.");
   return new Promise<HTMLCanvasElement>((resolve, reject) => {
     worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
       if (requestId !== nextRequestId) return;
@@ -65,6 +67,6 @@ export async function aiFurnitureCutout(
       reject(new Error("AI worker could not start. Check browser console, network access to Hugging Face and memory."));
       event.preventDefault();
     };
-    worker.postMessage({ imageDataUrl, width: source.width, height: source.height });
+    worker.postMessage({ imageDataUrl, width: source.width, height: source.height, rgba: sourcePixels.data.buffer }, [sourcePixels.data.buffer]);
   });
 }
