@@ -732,25 +732,34 @@ export default function PublicCatalog({
                     <p className="pub-enquiry-note">
                       Opens WhatsApp with a ready-to-send message about this product. You can review it before sending.
                     </p>
-                    <div className="pub-specifications">
+                    {(!previewProduct ||
+                      Boolean(product.materials?.trim()) ||
+                      [product.width, product.depth, product.height].every(value => Number.isFinite(value) && value > 0) ||
+                      specificationGroups.primary.some(item => item.name.trim() && item.value.trim()) ||
+                      specificationGroups.sections.some(section => section.rows.some(item => item.name.trim() && item.value.trim()))
+                    ) && <div className="pub-specifications">
                       <h2>The details</h2>
                       <dl>
-                        <div>
-                          <dt>Materials</dt>
-                          <dd>{product.materials}</dd>
-                        </div>
-                        <div>
-                          <dt>Dimensions</dt>
-                          <dd>
-                            {product.width} W × {product.depth} D ×{" "}
-                            {product.height} H cm
-                          </dd>
-                        </div>
+                        {(!previewProduct || Boolean(product.materials?.trim())) && (
+                          <div>
+                            <dt>Materials</dt>
+                            <dd>{product.materials}</dd>
+                          </div>
+                        )}
+                        {(!previewProduct || [product.width, product.depth, product.height].every(value => Number.isFinite(value) && value > 0)) && (
+                          <div>
+                            <dt>Dimensions</dt>
+                            <dd>
+                              {product.width} W × {product.depth} D ×{" "}
+                              {product.height} H cm
+                            </dd>
+                          </div>
+                        )}
                         <div className={previewProduct ? "catalog-preview-hidden-meta" : ""}>
                           <dt>Category</dt>
                           <dd>{categoryName(product.categoryId)}</dd>
                         </div>
-                        {specificationGroups.primary.map((item) => (
+                        {specificationGroups.primary.filter(item => !previewProduct || (item.name.trim() && item.value.trim())).map((item) => (
                           <div key={item.id}>
                             <dt>{item.name}</dt>
                             <dd>{item.value}</dd>
@@ -761,11 +770,11 @@ export default function PublicCatalog({
                           <dd>{product.sku}</dd>
                         </div>
                       </dl>
-                      {specificationGroups.sections.map(section => (
+                      {specificationGroups.sections.filter(section => !previewProduct || section.rows.some(item => item.name.trim() && item.value.trim())).map(section => (
                         <div className="pub-spec-section" key={section.id}>
                           <h3>{section.title}</h3>
                           <dl>
-                            {section.rows.map(item => (
+                            {section.rows.filter(item => !previewProduct || (item.name.trim() && item.value.trim())).map(item => (
                               <div key={item.id}>
                                 <dt>{item.name}</dt>
                                 <dd>{item.value}</dd>
@@ -774,7 +783,7 @@ export default function PublicCatalog({
                           </dl>
                         </div>
                       ))}
-                    </div>
+                    </div>}
                     <div className="pub-detail-promise">
                       <span className="pub-promise-symbol">b.</span>
                       <p>
