@@ -334,46 +334,71 @@ export default function AlbumLibrary({
         </div>
       </div>}
       {preview && <Modal title="Photo details" eyebrow="BRUTTI / ALBUM" className="brutti-album-preview-modal" onClose={()=>setPreview(null)}>
-        <div className="brutti-album__preview-image"><SafeImage src={preview.url} alt={preview.name}/></div>
-        <div className="brutti-album__preview-info">
-          <strong>{preview.name}</strong>
-          <small>{preview.usedBy.length?"Used in product listings":preview.categoryCovers.length?"Used as category cover":"Unassigned photo"}</small>
+        <div className="brutti-album__detail-layout">
+          <div className="brutti-album__detail-visual">
+            <div className="brutti-album__preview-image"><SafeImage src={preview.url} alt={preview.name}/></div>
+            <div className="brutti-album__visual-caption">
+              <Images size={15} aria-hidden="true"/>
+              <span>Product photography</span>
+              <span className="brutti-album__visual-format">Stored in Brutti Album</span>
+            </div>
+          </div>
+          <div className="brutti-album__detail-content">
+            <div className="brutti-album__preview-info">
+              <span className="brutti-album__detail-label">IMAGE INFORMATION</span>
+              <h3>{preview.name}</h3>
+              <span className="brutti-album__photo-status">
+                <span className={preview.usedBy.length || preview.categoryCovers.length ? "is-in-use" : "is-available"} aria-hidden="true"/>
+                {preview.usedBy.length
+                  ? `Used in ${preview.usedBy.length} product${preview.usedBy.length===1?"":"s"}`
+                  : preview.categoryCovers.length ? "Used as category cover" : "Unassigned photo"}
+              </span>
+            </div>
+            {preview.usedBy.length>0 && <div className="brutti-album__detail-related">
+              <span className="brutti-album__detail-label">LINKED PRODUCTS</span>
+              {preview.usedBy.map(p=><button type="button" className="brutti-album__linked-product" key={p.id} onClick={()=>{setPreview(null);onEditProduct?.(p.id);}}>
+                <Package size={17} aria-hidden="true"/><span>{p.name}</span><ArrowUpRight size={16} aria-hidden="true"/>
+              </button>)}
+            </div>}
+            {!!preview.categoryCovers.length && <p className="brutti-album__category-note">Category cover: {preview.categoryCovers.join(", ")}</p>}
+            {!picker && <label className="brutti-album__assign-category">
+              <span>Album category</span>
+              <select value={preview.manualCategoryId || "none"} disabled={categorising || !preview.id}
+                aria-label="Assign photo to Album category"
+                onChange={event=>void assignCategory(preview,event.target.value)}>
+                <option value="none">Automatic / Uncategorised</option>
+                {categories.map(item=><option value={item.id} key={item.id}>{item.name}</option>)}
+              </select>
+              <small>Organise this photo in Album. Product categories remain unchanged.</small>
+            </label>}
+            {downloadError && <p className="brutti-album__error" role="alert">{downloadError}</p>}
+          </div>
         </div>
-        {preview.usedBy.map(p=><button type="button" className="brutti-album__linked-product" key={p.id} onClick={()=>{setPreview(null);onEditProduct?.(p.id);}}>
-          <Package size={16}/>{p.name}<ArrowUpRight size={15}/>
-        </button>)}
-        {!!preview.categoryCovers.length && <p className="brutti-album__category-note">Category cover: {preview.categoryCovers.join(", ")}</p>}
-        {!picker && <label className="brutti-album__assign-category">
-          <span>Album category</span>
-          <select value={preview.manualCategoryId || "none"} disabled={categorising || !preview.id}
-            aria-label="Assign photo to Album category"
-            onChange={event=>void assignCategory(preview,event.target.value)}>
-            <option value="none">Automatic / Uncategorised</option>
-            {categories.map(item=><option value={item.id} key={item.id}>{item.name}</option>)}
-          </select>
-          <small>Product-linked categories appear automatically. This controls the Album folder only.</small>
-        </label>}
-        {downloadError && <p className="brutti-album__error" role="alert">{downloadError}</p>}
         <div className="brutti-album__preview-actions">
-          <label className="brutti-album__download-format">
-            Save as
-            <select value={downloadFormat} disabled={downloading}
-              aria-label="Download image format"
-              onChange={event => setDownloadFormat(event.target.value as PhotoDownloadFormat)}>
-              <option value="jpg">JPG</option>
-              <option value="png">PNG</option>
-              <option value="webp">WebP</option>
-            </select>
-          </label>
-          <button type="button" className="brutti-album__primary" disabled={downloading}
-            onClick={()=>void download(preview)}>
-            {downloading ? <LoaderCircle size={16} className="brutti-album__spin"/> : <Download size={16}/>}
-            {downloading ? "Saving…" : "Download image"}
-          </button>
-          <button type="button" className="brutti-album__secondary" onClick={()=>setPreview(null)}>Close</button>
-          {!picker && <button type="button" className="brutti-album__delete" disabled={!!preview.usedBy.length||!!preview.categoryCovers.length||!preview.id}
-            title={preview.usedBy.length||preview.categoryCovers.length?"Unlink from products and category covers before deleting":undefined}
-            onClick={()=>void remove(preview)}><Trash2 size={15}/> Delete unassigned photo</button>}
+          {!picker && (
+            preview.usedBy.length || preview.categoryCovers.length || !preview.id
+              ? <span className="brutti-album__protected-photo"><Check size={15} aria-hidden="true"/> In use · Protected from deletion</span>
+              : <button type="button" className="brutti-album__delete" onClick={()=>void remove(preview)}>
+                  <Trash2 size={15} aria-hidden="true"/> Delete photo
+                </button>
+          )}
+          <div className="brutti-album__download-actions">
+            <label className="brutti-album__download-format">
+              Format
+              <select value={downloadFormat} disabled={downloading}
+                aria-label="Download image format"
+                onChange={event => setDownloadFormat(event.target.value as PhotoDownloadFormat)}>
+                <option value="jpg">JPG</option>
+                <option value="png">PNG</option>
+                <option value="webp">WebP</option>
+              </select>
+            </label>
+            <button type="button" className="brutti-album__primary" disabled={downloading}
+              onClick={()=>void download(preview)}>
+              {downloading ? <LoaderCircle size={16} className="brutti-album__spin"/> : <Download size={16} aria-hidden="true"/>}
+              {downloading ? "Saving…" : "Download image"}
+            </button>
+          </div>
         </div>
       </Modal>}
     </section>
