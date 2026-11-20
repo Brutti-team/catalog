@@ -339,13 +339,12 @@ export default function AlbumLibrary({
             <div className="brutti-album__preview-image"><SafeImage src={preview.url} alt={preview.name}/></div>
             <div className="brutti-album__visual-caption">
               <Images size={15} aria-hidden="true"/>
-              <span>Product photography</span>
-              <span className="brutti-album__visual-format">Stored in Brutti Album</span>
+              <span>Brutti Catalog media</span>
             </div>
           </div>
           <div className="brutti-album__detail-content">
             <div className="brutti-album__preview-info">
-              <span className="brutti-album__detail-label">IMAGE INFORMATION</span>
+              <span className="brutti-album__detail-label">PRODUCT PHOTO</span>
               <h3>{preview.name}</h3>
               <span className="brutti-album__photo-status">
                 <span className={preview.usedBy.length || preview.categoryCovers.length ? "is-in-use" : "is-available"} aria-hidden="true"/>
@@ -372,32 +371,49 @@ export default function AlbumLibrary({
               <small>Organise this photo in Album. Product categories remain unchanged.</small>
             </label>}
             {downloadError && <p className="brutti-album__error" role="alert">{downloadError}</p>}
-          </div>
-        </div>
-        <div className="brutti-album__preview-actions">
-          {!picker && (
-            preview.usedBy.length || preview.categoryCovers.length || !preview.id
-              ? <span className="brutti-album__protected-photo"><Check size={15} aria-hidden="true"/> In use · Protected from deletion</span>
-              : <button type="button" className="brutti-album__delete" onClick={()=>void remove(preview)}>
-                  <Trash2 size={15} aria-hidden="true"/> Delete photo
-                </button>
-          )}
-          <div className="brutti-album__download-actions">
-            <label className="brutti-album__download-format">
-              Format
-              <select value={downloadFormat} disabled={downloading}
-                aria-label="Download image format"
-                onChange={event => setDownloadFormat(event.target.value as PhotoDownloadFormat)}>
-                <option value="jpg">JPG</option>
-                <option value="png">PNG</option>
-                <option value="webp">WebP</option>
-              </select>
-            </label>
-            <button type="button" className="brutti-album__primary" disabled={downloading}
-              onClick={()=>void download(preview)}>
-              {downloading ? <LoaderCircle size={16} className="brutti-album__spin"/> : <Download size={16} aria-hidden="true"/>}
-              {downloading ? "Saving…" : "Download image"}
-            </button>
+            <div className="brutti-album__detail-download">
+              <span className="brutti-album__detail-label">DOWNLOAD PHOTO</span>
+              <div className="brutti-album__format-switch" role="group" aria-label="Download file format">
+                {(["jpg", "png", "webp"] as const).map(format => (
+                  <button
+                    key={format}
+                    type="button"
+                    className={downloadFormat === format ? "is-selected" : ""}
+                    aria-pressed={downloadFormat === format}
+                    disabled={downloading}
+                    onClick={() => setDownloadFormat(format)}
+                  >
+                    {format === "jpg" ? "JPG" : format === "png" ? "PNG" : "WebP"}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                className="brutti-album__primary brutti-album__download-main"
+                disabled={downloading}
+                onClick={() => void download(preview)}
+              >
+                {downloading
+                  ? <LoaderCircle size={17} className="brutti-album__spin" aria-hidden="true"/>
+                  : <Download size={17} aria-hidden="true"/>}
+                {downloading ? "Preparing image…" : `Download ${downloadFormat.toUpperCase()}`}
+              </button>
+              <p className="brutti-album__download-help">
+                Saved as an image file, not an HTML page.
+              </p>
+            </div>
+            <div className="brutti-album__detail-bottom">
+              {!picker && (
+                preview.usedBy.length || preview.categoryCovers.length || !preview.id
+                  ? <span className="brutti-album__protected-photo">
+                      <Check size={15} aria-hidden="true"/> In use · Protected from deletion
+                    </span>
+                  : <button type="button" className="brutti-album__delete"
+                      onClick={() => void remove(preview)}>
+                      <Trash2 size={15} aria-hidden="true"/> Delete photo
+                    </button>
+              )}
+            </div>
           </div>
         </div>
       </Modal>}
