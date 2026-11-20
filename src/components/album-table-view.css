@@ -348,3 +348,31 @@
   .admin-app .brutti-album__table-pill {font-size:8.5px;}
   .admin-app .brutti-album__table-action button {padding-inline:6px;}
 }
+
+/* The Table action column preserves View and Edit cover, just like Gallery. */
+.admin-app .brutti-album__table--photos th:nth-child(6) {width:137px;}
+.admin-app .brutti-album__table-actions {
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  flex-wrap:nowrap;
+  gap:6px;
+}
+.admin-app .brutti-album__table-actions .brutti-album__table-edit-cover {
+  width:33px;
+  min-width:33px;
+  height:33px;
+  padding:0;
+}
+@media(max-width:650px) {
+  .admin-app .brutti-album__table-actions {
+    flex-direction:column;
+    align-items:flex-end;
+    gap:5px;
+  }
+  .admin-app .brutti-album__table-actions .brutti-album__table-edit-cover {
+    width:31px;
+    height:29px;
+    min-height:29px;
+  }
+}
