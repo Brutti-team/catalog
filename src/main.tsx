@@ -66,6 +66,7 @@ import "./components/catalog-products-background.css";
 import "./components/album-photo-details-redesign.css";
 import "./components/product-editor-clean-canvas.css";
 import "./components/catalog-private-preview-neutral.css";
+import "./components/album-table-view.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
