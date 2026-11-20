@@ -29,6 +29,8 @@ import { nextProductId } from "../lib/product-ids";
 import { cmToUnit, unitToCm, unitMax, type DimensionUnit } from "../lib/dimensions";
 import DimensionUnitPicker from "./DimensionUnitPicker";
 import PhotoCropEditor from "./PhotoCropEditor";
+import AlbumLibrary from "./AlbumLibrary";
+import { albumPhotoToProductImage, type AlbumPhoto } from "../lib/album";
 import { photoCropStyle } from "../lib/photo-crop";
 import { splitSpecifications } from "../lib/specification-groups";
 
@@ -78,6 +80,7 @@ export default function ProductEditor({
     return () => cancelAnimationFrame(frame);
   }, [showLivePreview]);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
+  const [showAlbumPicker, setShowAlbumPicker] = useState(false);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [show3DTools, setShow3DTools] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -536,6 +539,13 @@ export default function ProductEditor({
                   <p>First photo is the cover · add up to 8 images.</p>
                   {isEditing && <button type="button" className="catalog-reference-manage-photos" onClick={() => setShowPhotoOptions(value => !value)}>{showPhotoOptions ? "Hide photo options" : "Manage photos"}</button>}
                 </div>
+              </div>
+              <div className="brutti-album-editor-toolbar">
+                <button type="button" onClick={() => setShowAlbumPicker(true)}
+                  disabled={busy || uploading || draft.images.length >= 8}>
+                  <ImagePlus size={17} aria-hidden="true" /> Choose from Album
+                </button>
+                <span>Reuse saved Brutti photos without uploading them again.</span>
               </div>
               <input
                 ref={fileRef}
@@ -1043,6 +1053,34 @@ export default function ProductEditor({
             setEditingPhotoId(null);
           }}
         />
+      )}
+      {showAlbumPicker && (
+        <Modal title="Choose from Album" eyebrow="BRUTTI / MEDIA LIBRARY"
+          className="brutti-album-picker-dialog" onClose={() => setShowAlbumPicker(false)}>
+          <AlbumLibrary
+            products={existingProducts}
+            categories={categories}
+            maxSelect={8 - draft.images.length}
+            excludedUrls={draft.images.map(image => image.url)}
+            onClose={() => setShowAlbumPicker(false)}
+            onSelect={(photos: AlbumPhoto[]) => {
+              const existing=new Set(draft.images.map(image=>image.url));
+              const images=photos.filter(photo=>!existing.has(photo.url))
+                .slice(0,Math.max(0,8-draft.images.length))
+                .map(albumPhotoToProductImage);
+              if(!images.length) {
+                setError("Those photos have already been added to this product.");
+                return;
+              }
+              setDraft(current => ({
+                ...current,
+                images:[...current.images,...images].slice(0,8),
+              }));
+              setError("");
+              setShowAlbumPicker(false);
+            }}
+          />
+        </Modal>
       )}
       {showLivePreview && (
         <Modal
