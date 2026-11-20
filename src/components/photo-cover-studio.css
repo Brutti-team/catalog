@@ -199,3 +199,33 @@
   background:#dceedd;border-color:#85b791;
 }
 .admin-app .brutti-cover-studio-stage.is-square {aspect-ratio:1/1;max-width:535px;}
+
+.admin-app .brutti-album__card-actions {
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  width:100%;gap:6px 10px;padding-top:2px;
+}
+.admin-app .brutti-album__card-actions button {
+  display:inline-flex;align-items:center;gap:5px;min-height:28px;
+  border:0;background:transparent;color:#457653;
+  font:710 10px/1.3 "DM Sans",sans-serif;cursor:pointer;
+}
+.admin-app .brutti-album__card-actions button:last-child {
+  color:#2b6742;
+}
+.admin-app .brutti-album__card-actions button:hover:not(:disabled) {
+  color:#1b5431;text-decoration:underline;
+}
+.admin-app .brutti-album__grid.is-list .brutti-album__card-actions {
+  grid-column:4;grid-row:1;flex-wrap:nowrap;justify-content:flex-end;width:auto;
+}
+@media(max-width:890px) {
+  .admin-app .brutti-album__grid.is-list .brutti-album__card-actions {grid-column:3;}
+}
+@media(max-width:600px) {
+  .admin-app .brutti-album__grid.is-list .brutti-album__card-actions {
+    grid-column:2;grid-row:1 / span 3;flex-direction:column;align-items:flex-end;gap:3px;
+  }
+  .admin-app .brutti-album__grid.is-list .brutti-album__card-actions button {
+    grid-column:auto;grid-row:auto;min-height:26px;
+  }
+}
