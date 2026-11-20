@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
-import { ArrowLeft, ArrowRight, Expand, Minimize, Minus, Plus, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Download, Expand, Minimize, Minus, Plus, RotateCcw } from 'lucide-react';
 import { publicAssetUrl } from '../lib/assets';
 import type { ProductImage } from '../lib/types';
+import { downloadCatalogPhoto } from '../lib/photo-download';
 
 type Props = {
   images: readonly ProductImage[];
@@ -18,6 +19,8 @@ export default function ProductPhotoViewer({ images, productName }: Props) {
   const [zoom, setZoom] = useState(1);
   const [expanded, setExpanded] = useState(false);
   const [fallbackFullscreen, setFallbackFullscreen] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
   const active = images[Math.min(imageIndex, Math.max(0, images.length - 1))];
   const firstImageId = images[0]?.id;
 
@@ -90,6 +93,23 @@ export default function ProductPhotoViewer({ images, productName }: Props) {
     }
   }
 
+  async function downloadPhoto() {
+    if (!active || downloading) return;
+    setDownloadError("");
+    setDownloading(true);
+    try {
+      await downloadCatalogPhoto({
+        url: active.url,
+        storagePath: active.storagePath,
+        name: active.alt || productName,
+      }, "jpg");
+    } catch (error) {
+      setDownloadError(error instanceof Error ? error.message : "Could not download this photo.");
+    } finally {
+      setDownloading(false);
+    }
+  }
+
   const isFullscreen = expanded || fallbackFullscreen;
   return (
     <div className="product-photo-viewer">
@@ -140,11 +160,16 @@ export default function ProductPhotoViewer({ images, productName }: Props) {
           <button type="button" onClick={() => adjustZoom(1 / 1.25)} aria-label="Zoom out" disabled={zoom <= 1}><Minus size={16} /></button>
           <button type="button" onClick={() => adjustZoom(1.25)} aria-label="Zoom in" disabled={zoom >= 2.5}><Plus size={16} /></button>
           <button type="button" onClick={reset} aria-label="Reset photo view" title="Reset view"><RotateCcw size={16} /></button>
+          <button type="button" onClick={() => void downloadPhoto()} disabled={downloading}
+            aria-label="Download photo as JPG" title="Download JPG image (not HTML)">
+            <Download size={16} />
+          </button>
           <button type="button" onClick={() => void toggleFullscreen()} aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'} title="Fullscreen">
             {isFullscreen ? <Minimize size={16} /> : <Expand size={16} />}
           </button>
         </div>
       </div>
+      {downloadError && <p className="product-photo-download-error" role="alert">{downloadError}</p>}
       <p className="product-photo-explainer">Uses the product photos already uploaded. The perspective effect is a photo preview, not a reconstructed 3D model; unphotographed sides cannot be shown.</p>
     </div>
   );
