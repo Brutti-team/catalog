@@ -126,7 +126,7 @@ export default function PhotoCoverStudio({
         <div className="brutti-cover-studio-visual">
           <div
             ref={stageRef}
-            className={"brutti-cover-studio-stage" + (settings.background === "transparent" ? " is-transparent" : "")}
+            className={"brutti-cover-studio-stage" + (settings.background === "transparent" ? " is-transparent" : "") + (settings.aspect === "1:1" ? " is-square" : "")}
             onPointerDown={pointerDown} onPointerMove={pointerMove}
             onPointerUp={pointerUp} onPointerCancel={pointerUp}
             aria-label="Drag photo to position the furniture">
