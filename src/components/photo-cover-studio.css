@@ -229,3 +229,29 @@
     grid-column:auto;grid-row:auto;min-height:26px;
   }
 }
+
+/* Cutout: optional removal of enclosed black studio-background islands. */
+.admin-app .brutti-cover-studio-inner-gaps {
+  display:flex;align-items:flex-start;gap:10px;padding:10px 11px;
+  background:#f6faf6;border:1px solid #dae8dc;border-radius:10px;
+  cursor:pointer;
+}
+.admin-app .brutti-cover-studio-inner-gaps input[type=checkbox] {
+  flex:0 0 auto;width:16px;height:16px;margin:2px 0 0;
+  accent-color:#2b6844;
+}
+.admin-app .brutti-cover-studio-inner-gaps span {
+  display:flex;min-width:0;flex-direction:column;gap:4px;
+}
+.admin-app .brutti-cover-studio-inner-gaps strong {
+  color:#315e41;font:710 11px/1.35 "DM Sans",sans-serif;
+}
+.admin-app .brutti-cover-studio-inner-gaps small {
+  color:#778b7a;font:460 10px/1.45 "DM Sans",sans-serif;
+}
+.admin-app[data-theme="dark"] .brutti-cover-studio-inner-gaps {
+  background:#2b4432;border-color:#4b6d52;
+}
+.admin-app[data-theme="dark"] .brutti-cover-studio-inner-gaps :is(strong,small) {
+  color:#dfefdf;
+}
