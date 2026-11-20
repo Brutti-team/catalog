@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Images, Upload, Download, Search, Check, Trash2, LoaderCircle, Eye,
-  Package, Layers, RefreshCw, ImageOff, ArrowUpRight,
+  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import {
-  combineAlbumPhotos, listAlbumRecords,
-  removeUnassignedAlbumPhoto, uploadAlbumPhotos,
+  albumPhotoCategoryIds, combineAlbumPhotos, listAlbumRecords,
+  removeUnassignedAlbumPhoto, setAlbumPhotoCategory, uploadAlbumPhotos,
   type AlbumPhoto, type AlbumRecord,
 } from "../lib/album";
 import Modal from "./Modal";
@@ -19,21 +19,25 @@ type Props = {
   categories: Category[];
   onSelect?: (photos: AlbumPhoto[]) => void;
   onEditProduct?: (id: string) => void;
+  onAddCategory?: () => void;
   onClose?: () => void;
   maxSelect?: number;
   excludedUrls?: string[];
 };
 
 export default function AlbumLibrary({
-  products, categories, onSelect, onEditProduct, onClose,
+  products, categories, onSelect, onEditProduct, onAddCategory, onClose,
   maxSelect = 8, excludedUrls = [],
 }: Props) {
   const picker = Boolean(onSelect);
   const [records, setRecords] = useState<AlbumRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | "unassigned">("all");
+  const [filter, setFilter] = useState<"all" | "by-category" | "unassigned">("all");
   const [category, setCategory] = useState("all");
+  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
+  const [uploadCategory, setUploadCategory] = useState("none");
+  const [categorising, setCategorising] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [preview, setPreview] = useState<AlbumPhoto | null>(null);
   const [downloadFormat, setDownloadFormat] = useState<PhotoDownloadFormat>("jpg");
@@ -61,14 +65,40 @@ export default function AlbumLibrary({
     }
   }
   const photos = useMemo(()=>combineAlbumPhotos(records,products,categories),[records,products,categories]);
-  const assigned = photos.filter(p=>p.usedBy.length>0||p.categoryCovers.length>0).length;
-  const available = photos.filter(p=>!p.usedBy.length&&!p.categoryCovers.length).length;
+  const uncategorised = (photo: AlbumPhoto) => albumPhotoCategoryIds(photo).length === 0;
+  const assigned = photos.filter(photo => !uncategorised(photo)).length;
+  const available = photos.length - assigned;
+  const groups = useMemo(() => categories.map(item => {
+    const items = photos.filter(photo => albumPhotoCategoryIds(photo).includes(item.id));
+    return { category: item, items, cover: items.find(photo => photo.url)?.url };
+  }), [categories, photos]);
+  const ungrouped = useMemo(() => photos.filter(uncategorised), [photos]);
   const visible = useMemo(()=>photos.filter(photo=>{
-    const text=[photo.name,...photo.usedBy.map(p=>p.name),...photo.categoryCovers].join(" ").toLowerCase();
-    return (filter==="all" || (!photo.usedBy.length && !photo.categoryCovers.length)) &&
-      (category==="all" || photo.usedBy.some(product=>product.categoryId===category)) &&
+    const ids = albumPhotoCategoryIds(photo);
+    const text=[photo.name,...photo.usedBy.map(product=>product.name),
+      ...photo.categoryCovers, ...categories.filter(item=>ids.includes(item.id)).map(item=>item.name)]
+      .join(" ").toLowerCase();
+    const inFolder = filter !== "by-category" ||
+      (selectedFolder === "__uncategorized__" ? ids.length===0 :
+        selectedFolder !== null && ids.includes(selectedFolder));
+    return (filter!=="unassigned" || ids.length===0) &&
+      inFolder &&
+      (filter==="by-category" || category==="all" || ids.includes(category)) &&
       (!search.trim() || text.includes(search.trim().toLowerCase()));
-  }),[photos,filter,category,search]);
+  }),[photos,filter,category,selectedFolder,search,categories]);
+  const folderTitle = selectedFolder === "__uncategorized__" ? "Uncategorised" :
+    categories.find(item => item.id === selectedFolder)?.name || "Category";
+  function selectFilter(next: "all" | "by-category" | "unassigned") {
+    setFilter(next);
+    setSelectedFolder(null);
+    setCategory("all");
+    if (next !== "by-category") setUploadCategory("none");
+  }
+  function openFolder(id: string) {
+    setFilter("by-category");
+    setSelectedFolder(id);
+    setUploadCategory(id === "__uncategorized__" ? "none" : id);
+  }
   const busy = progress!==null;
   async function upload(files: FileList|null) {
     if (!files?.length || busy) return;
@@ -80,7 +110,7 @@ export default function AlbumLibrary({
     }
     setProgress({done:0,total:batch.length});
     try {
-      const result=await uploadAlbumPhotos(batch,(done,total)=>{
+      const result=await uploadAlbumPhotos(batch,uploadCategory === "none" ? null : uploadCategory,(done,total)=>{
         if(mounted.current)setProgress({done,total});
       });
       if(!mounted.current)return;
@@ -107,6 +137,28 @@ export default function AlbumLibrary({
       setError("");
       return [...ids,photo.key];
     });
+  }
+  async function assignCategory(photo: AlbumPhoto, next: string) {
+    if (!photo.id || categorising) {
+      setDownloadError("This photo needs an Album record first. Refresh and retry.");
+      return;
+    }
+    setCategorising(true); setDownloadError("");
+    try {
+      const chosen = next === "none" ? null : next;
+      const saved = await setAlbumPhotoCategory(photo.id, chosen);
+      setRecords(old => old.map(item =>
+        item.id === photo.id ? { ...item, category_id: saved } : item
+      ));
+      setPreview(current =>
+        current?.id === photo.id ? { ...current, manualCategoryId: saved } : current
+      );
+      setNotice("Photo category updated.");
+    } catch (error) {
+      setDownloadError(error instanceof Error ? error.message : "Could not save the category.");
+    } finally {
+      setCategorising(false);
+    }
   }
   async function download(photo: AlbumPhoto) {
     if (downloading) return;
