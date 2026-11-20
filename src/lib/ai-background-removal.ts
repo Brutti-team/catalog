@@ -29,13 +29,15 @@ export async function aiFurnitureCutout(
   source: CoverSource,
   onProgress?: AICutoutProgress,
 ): Promise<HTMLCanvasElement> {
-  // A new click supersedes any previous run and keeps the original image safe.
-  stopAICutout();
+  // Reuse an idle worker so the ONNX model remains warm between edits.
+  // A second request cancels only an actually pending inference.
+  if (cancelPending) stopAICutout();
   const requestId = ++nextRequestId;
   if (typeof Worker === "undefined") {
     throw new Error("This browser does not support local AI editing. Try Chrome or Edge on desktop.");
   }
-  const worker = new Worker(new URL("../workers/ai-cutout.worker.ts", import.meta.url), { type: "module" });
+  const worker = activeWorker ??
+    new Worker(new URL("../workers/ai-cutout.worker.ts", import.meta.url), { type: "module" });
   activeWorker = worker;
   // Feed pixels directly to the local model, not a URL or a remote API.
   const sourcePixels = source.canvas.getContext("2d")?.getImageData(0, 0, source.width, source.height);
@@ -46,8 +48,7 @@ export async function aiFurnitureCutout(
       if (requestId !== nextRequestId) return;
       const data = event.data;
       if (data.type === "progress") { onProgress?.(data.message); return; }
-      worker.terminate();
-      if (activeWorker === worker) activeWorker = undefined;
+      // Keep worker alive while this Cover Studio is open; retain model in RAM.
       cancelPending = undefined;
       if (data.type === "error") {
         reject(new Error(data.message));
