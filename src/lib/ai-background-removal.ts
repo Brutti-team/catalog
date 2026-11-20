@@ -15,10 +15,14 @@ type WorkerMessage =
 
 let activeWorker: Worker | undefined;
 let nextRequestId = 0;
+let cancelPending: ((reason?: unknown) => void) | undefined;
 
 export function stopAICutout(): void {
   nextRequestId++;
   if (activeWorker) { activeWorker.terminate(); activeWorker = undefined; }
+  const reject = cancelPending;
+  cancelPending = undefined;
+  if (reject) reject(new Error("AI processing cancelled. Original image retained."));
 }
 
 export async function aiFurnitureCutout(
@@ -37,12 +41,14 @@ export async function aiFurnitureCutout(
   const sourcePixels = source.canvas.getContext("2d")?.getImageData(0, 0, source.width, source.height);
   if (!sourcePixels) throw new Error("The source photo cannot be read for local AI editing.");
   return new Promise<HTMLCanvasElement>((resolve, reject) => {
+    cancelPending = reject;
     worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
       if (requestId !== nextRequestId) return;
       const data = event.data;
       if (data.type === "progress") { onProgress?.(data.message); return; }
       worker.terminate();
       if (activeWorker === worker) activeWorker = undefined;
+      cancelPending = undefined;
       if (data.type === "error") {
         reject(new Error(data.message));
         return;
@@ -64,6 +70,7 @@ export async function aiFurnitureCutout(
       if (requestId !== nextRequestId) return;
       worker.terminate();
       if (activeWorker === worker) activeWorker = undefined;
+      cancelPending = undefined;
       reject(new Error("AI worker could not start. Check browser console, network access to Hugging Face and memory."));
       event.preventDefault();
     };
