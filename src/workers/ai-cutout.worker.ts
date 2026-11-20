@@ -79,7 +79,10 @@ async function process(job: Job) {
   const floatMask = bytes instanceof Float32Array;
   let changed = 0, kept = 0;
   for (let i = 0; i < width * height; i++) {
-    const m = Number(bytes[i * channels]);
+    // Transformers.js background-removal returns an RGBA CUTOUT. Its fourth
+    // channel is the alpha matte: using the first (red) channel would destroy
+    // dark wood, black cabinets and other legitimate furniture surfaces.
+    const m = Number(bytes[i * channels + (channels === 4 ? 3 : 0)]);
     const alpha = floatMask ? Math.max(0, Math.min(255, Math.round(m * 255))) : m;
     if (alpha < 245) changed++;
     if (alpha > 5) kept++;
