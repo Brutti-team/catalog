@@ -151,7 +151,7 @@ export default function AlbumLibrary({
         item.id === photo.id ? { ...item, category_id: saved } : item
       ));
       setPreview(current =>
-        current?.id === photo.id ? { ...current, manualCategoryId: saved } : current
+        current && current.id === photo.id ? { ...current, manualCategoryId: saved } : current
       );
       setNotice("Photo category updated.");
     } catch (error) {
