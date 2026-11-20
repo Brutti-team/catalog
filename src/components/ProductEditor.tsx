@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   Circle,
   Upload,
+  Download,
   ChevronDown,
   Crop,
 } from "lucide-react";
@@ -32,6 +33,7 @@ import PhotoCropEditor from "./PhotoCropEditor";
 import AlbumLibrary from "./AlbumLibrary";
 import { albumPhotoToProductImage, type AlbumPhoto } from "../lib/album";
 import { photoCropStyle } from "../lib/photo-crop";
+import { downloadCatalogPhoto } from "../lib/photo-download";
 import { splitSpecifications } from "../lib/specification-groups";
 
 export type CatalogEditorNavigation = "overview" | "products" | "categories" | "users" | "activity" | "catalog";
@@ -609,6 +611,23 @@ export default function ProductEditor({
                     >
                       <Crop size={14} aria-hidden="true" /> Adjust image
                     </button>
+                    <button
+                      type="button"
+                      className="catalog-photo-download"
+                      aria-label={`Download photo ${index + 1} as JPG`}
+                      title="Download actual JPG image, not an HTML file"
+                      disabled={busy || uploading}
+                      onClick={() => {
+                        void downloadCatalogPhoto({
+                          url: img.url,
+                          storagePath: img.storagePath,
+                          name: img.alt || draft.name,
+                        }, "jpg").catch(downloadError => {
+                          setError(downloadError instanceof Error
+                            ? downloadError.message : "Photo download failed.");
+                        });
+                      }}
+                    ><Download size={14} aria-hidden="true" /> Download JPG</button>
                     <input
                       aria-label={`Image ${index + 1} description`}
                       placeholder="Image description"
