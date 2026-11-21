@@ -1,5 +1,6 @@
 import { applyAIAlpha } from "../lib/ai-alpha-matte";
 import { recoverEnclosedPanels } from "../lib/ai-panel-repair";
+import { cleanDetachedAIMatte } from "../lib/ai-speckle-cleanup";
 
 /**
  * Apache-2.0 ORMBG local inference: no external cutout API, photo stays in
@@ -8,6 +9,7 @@ import { recoverEnclosedPanels } from "../lib/ai-panel-repair";
  */
 type CutoutQuality = "detail" | "fast";
 type Job = { width: number; height: number; rgba: ArrayBuffer; quality?: CutoutQuality; protectPanels?: boolean };
+type Warm = { type: "warm"; quality: CutoutQuality };
 type Result =
   | { type: "progress"; message: string; percent: number }
   | { type: "done"; rgba: ArrayBuffer; width: number; height: number }
@@ -27,7 +29,7 @@ type TransformPackage = {
 };
 const scope = self as unknown as {
   postMessage: (message: Result, transfer?: Transferable[]) => void;
-  onmessage: ((event: MessageEvent<Job>) => void) | null;
+  onmessage: ((event: MessageEvent<Job | Warm>) => void) | null;
 };
 let latestProgress = 0;
 const notify = (message: string, percent: number) => {
@@ -123,10 +125,20 @@ async function process(job: Job) {
       ? "Recovered " + recovered.panelsRestored + " solid cabinet panel region(s). Review before saving."
       : "No enclosed panels found automatically. Use Restore product for any missing white faces.", 94);
   }
+  // Only trim isolated, tiny leftover matte speckles. Do not erode connected
+  // cabinet frames or white surfaces merely to get a sharper edge.
+  notify("Removing tiny detached background leftovers…", 94);
+  output = cleanDetachedAIMatte(output, width, height);
   const outputBuffer = output.buffer as ArrayBuffer;
   scope.postMessage({ type: "done", rgba: outputBuffer, width, height }, [outputBuffer]);
 }
-scope.onmessage = (event: MessageEvent<Job>) => {
+scope.onmessage = (event: MessageEvent<Job | Warm>) => {
+  if ("type" in event.data && event.data.type === "warm") {
+    // Warm the model cache when users open the Background tab. Preloading is
+    // silent to the UI and does not process or upload any product image.
+    void model(event.data.quality).catch(() => { /* Actual click reports errors. */ });
+    return;
+  }
   void process(event.data).catch(error => scope.postMessage({
     type: "error", message: error instanceof Error ? error.message : "AI cutout failed.",
   }));
