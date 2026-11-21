@@ -237,3 +237,76 @@
 @media (prefers-reduced-motion: reduce) {
   .admin-app .brutti-background-task-toast { animation: none; }
 }
+
+/* Editorial secondary action: stays visually distinct from foreground remove. */
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-background-button {
+  display: flex;
+  width: 100%;
+  min-height: 46px;
+  margin-top: 9px;
+  padding: 10px 14px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid #9dbba6;
+  border-radius: 11px;
+  background: linear-gradient(140deg, #f7faf5, #e9f2ea);
+  color: #25533a;
+  box-shadow: 0 3px 9px rgba(33, 78, 50, .07);
+  font: 730 12px/1.35 "DM Sans", sans-serif;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-background-button:hover:not(:disabled) {
+  border-color: #669e79;
+  background: linear-gradient(140deg, #eaf4eb, #daeedd);
+  transform: translateY(-1px);
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-background-button:disabled {
+  opacity: .54;
+  cursor: not-allowed;
+  transform: none;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-background-note {
+  display: block;
+  margin: 7px 1px 12px;
+  color: #819384;
+  font: 520 10px/1.5 "DM Sans", sans-serif;
+}
+
+/* Brighter photo-studio light sweep: clearly visible across the photography,
+   but warm and organic rather than the previous sci-fi green laser/grid. */
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview {
+  background: linear-gradient(180deg,
+    rgba(24, 38, 29, .12), rgba(30, 47, 36, .015) 45%, rgba(24, 38, 29, .11));
+  box-shadow: inset 0 0 0 1px rgba(248, 251, 237, .30);
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview::before {
+  top: -32%;
+  left: -8%;
+  width: 116%;
+  height: 32%;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    rgba(253, 249, 234, .065) 20%,
+    rgba(255, 254, 245, .21) 60%,
+    rgba(253, 249, 231, .34) 81%,
+    rgba(255, 253, 236, .40) 91%,
+    rgba(253, 247, 226, .06) 100%);
+  border-bottom: 1px solid rgba(255, 255, 245, .46);
+  filter: blur(4px);
+  animation-duration: 3.4s;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview-indicator {
+  background: rgba(32, 48, 37, .84);
+  border-color: rgba(247, 249, 238, .25);
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview::before {
+    animation: none !important;
+    opacity: .35;
+  }
+  .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-background-button {
+    transition: none !important;
+  }
+}
