@@ -1253,13 +1253,22 @@
   border-color: #e2e4db;
 }
 
-/* Editorial cover with a real product photo, not a decorative gradient */
-.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="overview"] .brutti-editorial-hero.catalog-command {
+/* The hero occupies EXACTLY the same grid, height and spacing in both themes.
+   Previously these dimensions applied to Light Mode only. Dark Mode fell
+   back to the old 306px hero, moving all KPI/Analytics cards by ~30px. */
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero.catalog-command {
   grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
   height: 336px;
   min-height: 336px;
   max-height: 336px;
   margin-bottom: 14px;
+}
+.admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content {
+  justify-content: center;
+  padding: 26px clamp(25px, 3vw, 52px);
+}
+/* Colour treatment is theme-specific; placement is no longer theme-specific. */
+.admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="overview"] .brutti-editorial-hero.catalog-command {
   border: 1px solid #21422e;
   border-radius: 3px;
   box-shadow: 0 13px 32px rgb(43 52 37 / 8%);
@@ -1267,8 +1276,6 @@
 }
 .admin-app.brutti-staff-redesign[data-theme="light"][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content {
   background: #1b3c2c;
-  justify-content: center;
-  padding: 26px clamp(25px, 3vw, 52px);
 }
 .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-eyebrow {
   display: inline-flex;
@@ -1718,7 +1725,7 @@
 
 /* Responsive editorial spread and accessible dark theme */
 @media (max-width: 1320px) {
-  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero.catalog-command {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero.catalog-command {
     height: 310px;
     min-height: 310px;
     max-height: 310px;
@@ -1744,7 +1751,7 @@
   }
 }
 @media (max-width: 800px) {
-  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero.catalog-command {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero.catalog-command {
     grid-template-columns: 1fr;
     grid-template-rows: auto 190px;
     height: auto;
