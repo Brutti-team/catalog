@@ -52,13 +52,14 @@ function parseMeasurementValue(value: string): { amount: string; unit: Dimension
 /** Uses the existing name/value specification record. Measurement units stay
  * embedded in value for the public product view, with kind for editing. */
 function SpecificationRowFields({
-  row, label, namePlaceholder, valuePlaceholder, onChange, onRemove,
+  row, label, namePlaceholder, valuePlaceholder, onChange, onQuantityChange, onRemove,
 }: {
   row: ProductSpecification;
   label: string;
   namePlaceholder: string;
   valuePlaceholder: string;
   onChange: (id: string, field: "name" | "value" | "description", value: string) => void;
+  onQuantityChange: (id: string, quantity: number | undefined) => void;
   onRemove: (id: string) => void;
 }) {
   const measurement = row.kind === "measurement";
@@ -109,6 +110,28 @@ function SpecificationRowFields({
           onChange={(event) => onChange(row.id, "value", event.target.value)}
         />
       )}
+      <div className="catalog-spec-row-quantity" role="group" aria-label={label + " quantity"}>
+        <input
+          aria-label={label + " quantity in pieces"}
+          type="number"
+          inputMode="numeric"
+          min={1}
+          max={9999}
+          step={1}
+          placeholder="Qty"
+          title="Number of pieces (optional)"
+          value={row.quantity ?? ""}
+          onChange={event => {
+            const raw = event.target.value;
+            if (!raw) { onQuantityChange(row.id, undefined); return; }
+            const quantity = Number(raw);
+            if (/^[0-9]+$/.test(raw) && Number.isInteger(quantity) && quantity >= 1 && quantity <= 9999) {
+              onQuantityChange(row.id, quantity);
+            }
+          }}
+        />
+        <span aria-hidden="true">pcs</span>
+      </div>
       <input
         className="catalog-spec-row-description"
         aria-label={label + " description"}
@@ -311,7 +334,7 @@ export default function ProductEditor({
     const next = specifications.findIndex((item, index) => index > start && item.kind === "section");
     const end = next < 0 ? specifications.length : next;
     const members = specifications.slice(start, end);
-    if (members.some(item => item.value.trim() || item.description?.trim() || (item.kind !== "section" && item.name.trim())) &&
+    if (members.some(item => item.value.trim() || item.quantity || item.description?.trim() || (item.kind !== "section" && item.name.trim())) &&
         !window.confirm("Remove this section and all its rows? This cannot be undone after saving.")) return;
     setDraft(current => ({
       ...current,
@@ -327,6 +350,13 @@ export default function ProductEditor({
       ...current,
       specifications: (current.specifications ?? []).map((row) =>
         row.id === id ? { ...row, [field]: value } : row,
+      ),
+    }));
+  const changeSpecificationQuantity = (id: string, quantity: number | undefined) =>
+    setDraft((current) => ({
+      ...current,
+      specifications: (current.specifications ?? []).map((row) =>
+        row.id === id ? { ...row, quantity } : row,
       ),
     }));
   const removeSpecification = (id: string) =>
@@ -896,6 +926,7 @@ export default function ProductEditor({
                   namePlaceholder="e.g. Drawer dimensions"
                   valuePlaceholder="e.g. W 3ft × D 1.8ft × H 2ft"
                   onChange={changeSpecification}
+                  onQuantityChange={changeSpecificationQuantity}
                   onRemove={removeSpecification}
                 />
               ))}
@@ -942,6 +973,7 @@ export default function ProductEditor({
                         namePlaceholder="e.g. Finishing"
                         valuePlaceholder="e.g. Clear satin finishing"
                         onChange={changeSpecification}
+                        onQuantityChange={changeSpecificationQuantity}
                         onRemove={removeSpecification}
                       />
                     ))}
