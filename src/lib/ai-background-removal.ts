@@ -34,6 +34,7 @@ export async function aiFurnitureCutout(
   source: CoverSource,
   onProgress?: AICutoutProgress,
   quality: "detail" | "fast" = "detail",
+  protectPanels = false,
 ): Promise<HTMLCanvasElement> {
   // Reuse an idle worker so the ONNX model remains warm between edits.
   // A second request cancels only an actually pending inference.
@@ -82,6 +83,6 @@ export async function aiFurnitureCutout(
       event.preventDefault();
     };
     const rgba = sourcePixels.data.buffer as ArrayBuffer;
-    worker.postMessage({ width: source.width, height: source.height, rgba, quality }, [rgba]);
+    worker.postMessage({ width: source.width, height: source.height, rgba, quality, protectPanels }, [rgba]);
   });
 }
