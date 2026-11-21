@@ -17,6 +17,27 @@ type WorkerMessage =
 let activeWorker: Worker | undefined;
 let nextRequestId = 0;
 let cancelPending: ((reason?: unknown) => void) | undefined;
+let detailedWarmRequested = false;
+
+function activeCutoutWorker(): Worker {
+  if (!activeWorker) {
+    activeWorker = new Worker(new URL("../workers/ai-cutout.worker.ts", import.meta.url), { type: "module" });
+  }
+  return activeWorker;
+}
+
+/** Start downloading/caching BEN2 after opening Background, before the user
+ * clicks Remove. This never transmits or processes a user photo. */
+export function preloadDetailedCutout(): void {
+  if (typeof Worker === "undefined" || detailedWarmRequested || cancelPending) return;
+  try {
+    activeCutoutWorker().postMessage({ type: "warm", quality: "detail" });
+    detailedWarmRequested = true;
+  } catch {
+    detailedWarmRequested = false;
+  }
+}
+
 
 export function stopAICutout(): void {
   // Closing an idle editor must NOT destroy a fully loaded model. Keeping
@@ -25,7 +46,7 @@ export function stopAICutout(): void {
   const reject = cancelPending;
   if (!reject) return;
   nextRequestId++;
-  if (activeWorker) { activeWorker.terminate(); activeWorker = undefined; }
+  if (activeWorker) { activeWorker.terminate(); activeWorker = undefined; detailedWarmRequested = false; }
   cancelPending = undefined;
   reject(new Error("AI processing cancelled. Original image retained."));
 }
@@ -43,9 +64,7 @@ export async function aiFurnitureCutout(
   if (typeof Worker === "undefined") {
     throw new Error("This browser does not support local AI editing. Try Chrome or Edge on desktop.");
   }
-  const worker = activeWorker ??
-    new Worker(new URL("../workers/ai-cutout.worker.ts", import.meta.url), { type: "module" });
-  activeWorker = worker;
+  const worker = activeCutoutWorker();
   // Feed pixels directly to the local model, not a URL or a remote API.
   const sourcePixels = source.canvas.getContext("2d")?.getImageData(0, 0, source.width, source.height);
   if (!sourcePixels) throw new Error("The source photo cannot be read for local AI editing.");
@@ -57,6 +76,7 @@ export async function aiFurnitureCutout(
       if (data.type === "progress") { onProgress?.(data.message, data.percent); return; }
       // Keep worker alive while this Cover Studio is open; retain model in RAM.
       cancelPending = undefined;
+      worker.onmessage = null;
       if (data.type === "error") {
         reject(new Error(data.message));
         return;
@@ -77,7 +97,10 @@ export async function aiFurnitureCutout(
     worker.onerror = event => {
       if (requestId !== nextRequestId) return;
       worker.terminate();
-      if (activeWorker === worker) activeWorker = undefined;
+      if (activeWorker === worker) {
+        activeWorker = undefined;
+        detailedWarmRequested = false;
+      }
       cancelPending = undefined;
       reject(new Error("AI worker could not start. Check browser console, network access to Hugging Face and memory."));
       event.preventDefault();
