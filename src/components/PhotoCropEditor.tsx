@@ -648,12 +648,15 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                           : "100%"}
                       </output>
                     </div>
-                    <progress max={100}
-                      value={aiBusy
-                        ? aiStage === "download" ? aiPercent ?? undefined : undefined
-                        : 100}
-                      aria-label={aiStage === "download" && aiBusy
-                        ? "Current AI model file download" : "Background removal progress"}/>
+                    {aiBusy && (aiStage !== "download" || aiPercent === null) ? (
+                      <div className="brutti-photo-studio-indeterminate" role="progressbar"
+                        aria-label="AI is actively processing the photo">
+                        <span aria-hidden="true"/>
+                      </div>
+                    ) : (
+                      <progress max={100} value={aiBusy ? aiPercent ?? 0 : 100}
+                        aria-label={aiBusy ? "Current model file downloaded" : "Background removal complete"}/>
+                    )}
                     <small role="status" aria-live="polite">
                       {aiBusy
                         ? aiProgress || "Preparing background removal…"
