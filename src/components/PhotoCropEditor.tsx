@@ -167,10 +167,12 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
   const [aiProgress, setAiProgress] = useState("");
   const [aiPercent, setAiPercent] = useState<number | null>(null);
   const [aiStage, setAiStage] = useState<"preparing" | "download" | "processing">("preparing");
+  const [showAiReveal, setShowAiReveal] = useState(false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const aiRun = useRef(0);
+  const aiRevealTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const workingCutout = useRef<HTMLCanvasElement | null>(null);
   const previousBrushPoint = useRef<{ x: number; y: number } | null>(null);
   const gesture = useRef<{
@@ -205,7 +207,11 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     return () => { active = false; next.onload = null; next.onerror = null; };
   }, [image.url]);
 
-  useEffect(() => () => { aiRun.current++; stopAICutout(); }, []);
+  useEffect(() => () => {
+    aiRun.current++;
+    stopAICutout();
+    if (aiRevealTimeout.current !== null) window.clearTimeout(aiRevealTimeout.current);
+  }, []);
 
   useEffect(() => {
     if (tool === "background" && source && !aiBusy) preloadDetailedCutout();
@@ -242,6 +248,9 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
 
   function cancelAI() {
     aiRun.current++;
+    if (aiRevealTimeout.current !== null) window.clearTimeout(aiRevealTimeout.current);
+    aiRevealTimeout.current = null;
+    setShowAiReveal(false);
     stopAICutout();
     setAiBusy(false);
     setAiProgress("");
@@ -264,6 +273,9 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     if (!source || aiBusy || saving) return;
     const run = ++aiRun.current;
     setAiBusy(true);
+    if (aiRevealTimeout.current !== null) window.clearTimeout(aiRevealTimeout.current);
+    aiRevealTimeout.current = null;
+    setShowAiReveal(false);
     setAiProgress("Preparing local AI model…");
     setAiStage("preparing");
     setAiPercent(1);
@@ -338,6 +350,12 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
       setAiProgress("Cutout finished. Review any remaining edges before applying.");
       setAiPercent(100);
       setAiStage("processing");
+      // Visual-only transition. Never baked into photo pixels or exported files.
+      setShowAiReveal(true);
+      aiRevealTimeout.current = window.setTimeout(() => {
+        setShowAiReveal(false);
+        aiRevealTimeout.current = null;
+      }, 920);
     } catch (reason) {
       if (run !== aiRun.current) return;
       setAiProgress("");
@@ -547,16 +565,20 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                 onPointerDown={onPointerDown} onPointerMove={onPointerMove}
                 onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
                 <canvas ref={canvasRef} width={width} height={height}
+                  className={showAiReveal && !aiBusy ? "is-fresh-cutout" : undefined}
                   style={{ aspectRatio: aspectRatios[ratio] }}
                   aria-label="Live crop and background preview" />
                 {aiBusy && (
                   <div className="brutti-photo-studio-ai-preview" aria-hidden="true">
                     <div className="brutti-photo-studio-ai-preview-indicator">
-                      <Sparkles size={13}/>
-                      <span>AI scanning</span>
+                      <span className="brutti-photo-studio-ai-pulse" />
+                      <span>Refining photo</span>
                       <strong>{aiPercent ?? 1}%</strong>
                     </div>
                   </div>
+                )}
+                {showAiReveal && !aiBusy && (
+                  <div className="brutti-photo-studio-ai-finish" aria-hidden="true" />
                 )}
                 {tool === "crop" && (
                   <div className="brutti-photo-crop-selection"
