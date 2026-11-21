@@ -74,8 +74,8 @@ import "./components/product-editor-photo-3d-layout.css";
 import "./components/public-collection-editorial.css";
 import "./components/product-media-whatsapp-studio.css";
 import "./components/product-editor-section-cards.css";
-import "./components/catalog-dark-mode-charcoal.css";
 import "./components/catalog-products-gallery-minimal.css";
+import "./components/catalog-dark-mode-charcoal.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
