@@ -1104,12 +1104,12 @@ export default function App() {
                       )}
                       <div className="category-card-body">
                         <div className="section-title">
-                          <h2>{c.name}</h2>
+                          <h2 title={c.name}>{c.name}</h2>
                           <span className="category-count">
                             {items.length} pieces
                           </span>
                         </div>
-                        <p>
+                        <p title={c.description || "A thoughtful category for your collection."}>
                           {c.description ||
                             "A thoughtful category for your collection."}
                         </p>
