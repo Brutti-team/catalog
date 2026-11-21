@@ -5,7 +5,8 @@ import { applyAIAlpha } from "../lib/ai-alpha-matte";
  * the browser. Downloads the model from Hugging Face on first staff click.
  * Images are never saved or uploaded by this worker.
  */
-type Job = { width: number; height: number; rgba: ArrayBuffer };
+type CutoutQuality = "detail" | "fast";
+type Job = { width: number; height: number; rgba: ArrayBuffer; quality?: CutoutQuality };
 type Result =
   | { type: "progress"; message: string; percent: number }
   | { type: "done"; rgba: ArrayBuffer; width: number; height: number }
@@ -34,46 +35,72 @@ const notify = (message: string, percent: number) => {
   latestProgress = Math.min(95, Math.max(latestProgress, Math.round(percent)));
   scope.postMessage({ type: "progress", message, percent: latestProgress });
 };
-let modelPromise: Promise<{ segmenter: Segmenter; RawImage: TransformPackage["RawImage"] }> | undefined;
-async function model(): Promise<{ segmenter: Segmenter; RawImage: TransformPackage["RawImage"] }> {
-  if (modelPromise) return modelPromise;
-  modelPromise = (async () => {
-    notify("Preparing local AI engine…", 5);
-    // Pinned browser ESM runtime: only loaded when staff explicitly clicks AI.
+type ModelState = { segmenter: Segmenter; RawImage: TransformPackage["RawImage"] };
+const modelPromises = new Map<CutoutQuality, Promise<ModelState>>();
+
+/**
+ * BEN2 (MIT) prioritizes complete products, including pale cabinetry and
+ * thin metal edges. ORMBG (Apache-2.0) remains optional for slower devices.
+ * Both run in the existing in-browser WASM Worker. No photo upload occurs.
+ */
+async function model(quality: CutoutQuality): Promise<ModelState> {
+  const cached = modelPromises.get(quality);
+  if (cached) {
+    notify(quality === "detail" ? "Using detailed furniture model…" : "Using fast AI model…", 56);
+    return cached;
+  }
+  const modelName = quality === "detail" ? "onnx-community/BEN2-ONNX" : "onnx-community/ormbg-ONNX";
+  const dtype = quality === "detail" ? "fp16" : "uint8";
+  const loading = (async () => {
+    notify(quality === "detail" ? "Preparing detailed furniture model…" : "Preparing fast AI model…", 5);
     const moduleUrl: string = "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
     const mod = await import(/* @vite-ignore */ moduleUrl) as TransformPackage;
     mod.env.allowLocalModels = false;
     mod.env.useBrowserCache = true;
-    notify("Downloading AI model (first use only)…", 10);
-    const segmenter = await mod.pipeline("background-removal", "onnx-community/ormbg-ONNX", {
+    notify("Loading AI model (first use downloads model files)…", 10);
+    const segmenter = await mod.pipeline("background-removal", modelName, {
       device: "wasm",
-      dtype: "uint8",
+      dtype,
       progress_callback: (progress: { status?: string; loaded?: number; total?: number }) => {
         if (progress.status === "progress" && progress.total && progress.loaded !== undefined) {
           const downloadPercent = Math.min(100, Math.round(100 * progress.loaded / progress.total));
-          notify("Downloading AI model file… " + downloadPercent + "%", 10 + downloadPercent * .43);
+          notify("Downloading " + (quality === "detail" ? "detailed" : "fast") +
+            " AI model… " + downloadPercent + "%", 10 + downloadPercent * .43);
         } else if (progress.status === "initiate") {
-          notify("Preparing model files…", 10);
+          notify("Preparing local model files…", 10);
         } else if (progress.status === "done") {
-          notify("AI model ready. Processing furniture…", 56);
+          notify("AI model ready. Detecting furniture…", 56);
         }
       },
     });
     return { segmenter, RawImage: mod.RawImage };
-  })().catch(error => { modelPromise = undefined; throw error; });
-  return modelPromise;
+  })();
+  modelPromises.set(quality, loading);
+  try {
+    return await loading;
+  } catch (error) {
+    modelPromises.delete(quality);
+    throw new Error(
+      quality === "detail"
+        ? "Detailed AI model could not load. Try Fast model on a lower-memory device; check browser Network / Console for model downloads."
+        : error instanceof Error ? error.message : "Fast AI model could not load.",
+    );
+  }
 }
 async function process(job: Job) {
   const { width, height, rgba } = job;
+  const quality: CutoutQuality = job.quality === "fast" ? "fast" : "detail";
   if (width < 1 || height < 1 || width * height > 1400 * 1400 ||
     rgba.byteLength !== width * height * 4) {
     throw new Error("Invalid photo data. Close and reopen Cover Studio.");
   }
   latestProgress = 0;
   notify("Preparing image for local AI…", 4);
-  const { segmenter, RawImage } = await model();
+  const { segmenter, RawImage } = await model(quality);
   notify("AI model loaded. Segmenting furniture…", 63);
-  notify("Identifying the furniture silhouette (may take a while on CPU)…", 68);
+  notify(quality === "detail"
+    ? "Tracing fine furniture details and cabinet panels on this device…"
+    : "Identifying the furniture silhouette on this device…", 68);
   // RawImage is passed in memory; the original pixels stay on the device.
   const picture = new RawImage(new Uint8ClampedArray(rgba.slice(0)), width, height, 4);
   const result = await segmenter([picture]);
