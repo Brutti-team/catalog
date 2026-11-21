@@ -292,10 +292,14 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
         detailPixels.data[i] = Math.round(detailPixels.data[i] * resizedMask.data[i] / 255);
       }
       detailContext.putImageData(detailPixels, 0, 0);
+      // Keep a separate pristine AI cutout. Manual erasing must be reversible.
+      const baseline = document.createElement("canvas");
+      baseline.width = detailWidth; baseline.height = detailHeight;
+      baseline.getContext("2d")?.drawImage(editable, 0, 0);
       workingCutout.current = editable;
       setMaskRevision(v => v + 1);
       setEraserEnabled(false);
-      setCutout(editable);
+      setCutout(baseline);
       // First show true transparency with a checkerboard. Pale cream is an
       // intentional optional colour, never an automatic background replacement.
       setBackground("transparent");
