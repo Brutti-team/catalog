@@ -247,3 +247,52 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Model choice is explicit: use detailed furniture segmentation by default. */
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-quality-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-quality-options button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-height: 69px;
+  padding: 11px 12px;
+  border: 1px solid #d5e1d7;
+  border-radius: 12px;
+  background: #fff;
+  color: #355744;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-quality-options button.is-active {
+  border-color: #78aa89;
+  background: #e8f3ea;
+  box-shadow: inset 0 0 0 1px rgba(36,99,59,.12);
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-quality-options button:hover:not(:disabled) {
+  border-color: #94bba1;
+  background: #eef5ef;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-quality-options strong {
+  color: #245138;
+  font: 750 11px/1.3 "DM Sans", sans-serif;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-quality-options small {
+  color: #708575;
+  font: 520 10px/1.45 "DM Sans", sans-serif;
+}
+@media (max-width: 390px) {
+  .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-quality-options {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-quality-options button {
+    transition: none;
+  }
+}
