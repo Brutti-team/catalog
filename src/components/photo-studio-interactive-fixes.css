@@ -296,3 +296,39 @@
     transition: none;
   }
 }
+
+/* Cabinet panel preservation is opt-in for see-through products, automatic
+   for solid-faced cabinetry. The label remains readable in both themes. */
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-protect-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 13px;
+  background: #f0f6f0;
+  border: 1px solid #d8e8da;
+  border-radius: 12px;
+  color: #245238;
+  cursor: pointer;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-protect-option input {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  margin: 2px 0 0;
+  accent-color: #286a44;
+  cursor: pointer;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-protect-option span {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-protect-option strong {
+  color: #245238;
+  font: 740 11px/1.35 "DM Sans", sans-serif;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-protect-option small {
+  color: #657e6c;
+  font: 520 10px/1.5 "DM Sans", sans-serif;
+}
