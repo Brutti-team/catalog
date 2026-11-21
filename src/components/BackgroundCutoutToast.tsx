@@ -18,21 +18,29 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
   const [previewError, setPreviewError] = useState("");
   const [toastError, setToastError] = useState("");
 
-  // Native dialogs are in the browser's top layer. Place the toast inside
-  // whichever editor dialog is on top so it remains visible at the top-left
-  // while staff works on other fields, products or Catalog screens.
+  // Anchor the progress inside the fixed sidebar, just above View public
+  // catalog. On phones the sidebar is hidden, so keep a small topbar badge.
+  // Native dialogs may use the browser top layer; those still get the dialog
+  // notification to remain visible while editing other products.
   useEffect(() => {
     const updateHost = () => {
       const open = Array.from(document.querySelectorAll<HTMLDialogElement>("dialog[open]"));
-      const header = document.getElementById("brutti-background-task-host");
-      setHost(open[open.length - 1] ?? header ?? document.body);
+      const small = window.matchMedia("(max-width: 800px)").matches;
+      const target = document.getElementById(small
+        ? "brutti-background-task-mobile-host"
+        : "brutti-background-sidebar-host");
+      setHost(open[open.length - 1] ?? target ?? document.body);
     };
     const observer = new MutationObserver(updateHost);
     observer.observe(document.body, {
       childList: true, subtree: true, attributes: true, attributeFilter: ["open"],
     });
+    window.addEventListener("resize", updateHost);
     updateHost();
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateHost);
+    };
   }, []);
 
   useEffect(() => {
@@ -75,8 +83,9 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
   return (
     <>
       {visible && !previewOpen && createPortal(
-        host.id === "brutti-background-task-host" ? (
-          <div className="brutti-background-header-task"
+        (host.id === "brutti-background-sidebar-host" ||
+          host.id === "brutti-background-task-mobile-host") ? (
+          <div className={`brutti-background-header-task${host.id === "brutti-background-sidebar-host" ? " brutti-background-sidebar-task" : ""}`}
             aria-label="Current photo background removal">
             <button type="button" className="brutti-background-header-open"
               title={`${label}: ${running ? "Background removal in progress" : job.message}`}
@@ -96,6 +105,9 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
                   job.status === "done" ? "Result ready · Open" : "Removal failed"}</span>
               </span>
               <strong>{running ? `${job.percent}%` : job.status === "done" ? "100%" : "!"}</strong>
+              {host.id === "brutti-background-sidebar-host" && (
+                <span className="brutti-background-sidebar-product" title={label}>{label}</span>
+              )}
               <span className="brutti-background-header-track" aria-hidden="true">
                 <span style={{ width: `${job.percent}%` }}/>
               </span>
