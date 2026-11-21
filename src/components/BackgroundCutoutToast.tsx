@@ -75,7 +75,22 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
     <>
       {visible && !previewOpen && createPortal(
         <aside className="brutti-background-task-toast"
-          aria-label="Background removal task" aria-busy={running}>
+          role="region" tabIndex={0}
+          aria-label="Background removal task. Click to return to the product photo."
+          aria-busy={running}
+          onClick={event => {
+            // Every non-control part of the notification returns to the
+            // original product. Nested Cancel/Preview/Download retain actions.
+            if ((event.target as HTMLElement).closest("button, a")) return;
+            if (openPhoto()) setPreviewOpen(false);
+          }}
+          onKeyDown={event => {
+            if (event.target !== event.currentTarget) return;
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              if (openPhoto()) setPreviewOpen(false);
+            }
+          }}>
           <div className="brutti-background-task-toast-head">
             <span className="brutti-background-task-toast-mark">
               {running ? <LoaderCircle className="spin" size={17}/> :
