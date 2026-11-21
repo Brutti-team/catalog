@@ -18,6 +18,7 @@ import {
   MoreHorizontal,
   ChevronDown,
   Ruler,
+  Hash,
   Pencil,
   Trash2,
   Image as ImageIcon,
@@ -40,7 +41,7 @@ import { albumPhotoToProductImage, type AlbumPhoto } from "../lib/album";
 import { photoCropStyle } from "../lib/photo-crop";
 import { splitSpecifications } from "../lib/specification-groups";
 
-type SpecificationRowType = "detail" | "measurement";
+type SpecificationRowType = "detail" | "measurement" | "quantity";
 
 function parseMeasurementValue(value: string): { amount: string; unit: DimensionUnit } {
   const match = value.trim().match(/^([0-9]*(?:\.[0-9]*)?)\s*(mm|cm|m|in|ft)$/);
@@ -63,17 +64,41 @@ function SpecificationRowFields({
   onRemove: (id: string) => void;
 }) {
   const measurement = row.kind === "measurement";
+  const quantityRow = row.kind === "quantity";
   const { amount, unit } = measurement ? parseMeasurementValue(row.value) : { amount: "", unit: "cm" as DimensionUnit };
   return (
-    <div className={"catalog-reference-custom-row" + (measurement ? " catalog-spec-measurement-row" : "")}>
+    <div className={"catalog-reference-custom-row" + (measurement ? " catalog-spec-measurement-row" : "") + (quantityRow ? " catalog-spec-quantity-row" : "")}>
       <input
         aria-label={label + " name"}
-        placeholder={measurement ? "e.g. Pipe diameter" : namePlaceholder}
+        placeholder={measurement ? "e.g. Pipe diameter" : quantityRow ? "e.g. Drawer" : namePlaceholder}
         maxLength={80}
         value={row.name}
         onChange={(event) => onChange(row.id, "name", event.target.value)}
       />
-      {measurement ? (
+      {quantityRow ? (
+        <div className="catalog-spec-row-quantity" role="group" aria-label={label + " quantity"}>
+          <input
+            aria-label={label + " quantity in pieces"}
+            type="number"
+            inputMode="numeric"
+            min={1}
+            max={9999}
+            step={1}
+            placeholder="e.g. 2"
+            title="Number of pieces"
+            value={row.quantity ?? ""}
+            onChange={event => {
+              const raw = event.target.value;
+              if (!raw) { onQuantityChange(row.id, undefined); return; }
+              const quantity = Number(raw);
+              if (/^[0-9]+$/.test(raw) && Number.isInteger(quantity) && quantity >= 1 && quantity <= 9999) {
+                onQuantityChange(row.id, quantity);
+              }
+            }}
+          />
+          <span aria-hidden="true">pcs</span>
+        </div>
+      ) : measurement ? (
         <div className="catalog-spec-measurement-fields" role="group" aria-label={label + " measurement"}>
           <input
             aria-label={label + " measurement value"}
@@ -110,28 +135,6 @@ function SpecificationRowFields({
           onChange={(event) => onChange(row.id, "value", event.target.value)}
         />
       )}
-      <div className="catalog-spec-row-quantity" role="group" aria-label={label + " quantity"}>
-        <input
-          aria-label={label + " quantity in pieces"}
-          type="number"
-          inputMode="numeric"
-          min={1}
-          max={9999}
-          step={1}
-          placeholder="Qty"
-          title="Number of pieces (optional)"
-          value={row.quantity ?? ""}
-          onChange={event => {
-            const raw = event.target.value;
-            if (!raw) { onQuantityChange(row.id, undefined); return; }
-            const quantity = Number(raw);
-            if (/^[0-9]+$/.test(raw) && Number.isInteger(quantity) && quantity >= 1 && quantity <= 9999) {
-              onQuantityChange(row.id, quantity);
-            }
-          }}
-        />
-        <span aria-hidden="true">pcs</span>
-      </div>
       <input
         className="catalog-spec-row-description"
         aria-label={label + " description"}
@@ -144,7 +147,7 @@ function SpecificationRowFields({
       <button
         type="button"
         className="catalog-reference-remove-row"
-        aria-label={"Remove " + (measurement ? "measurement " : "detail ") + (row.name || label)}
+        aria-label={"Remove " + (quantityRow ? "quantity " : measurement ? "measurement " : "detail ") + (row.name || label)}
         title="Remove row"
         onClick={() => onRemove(row.id)}
       ><X size={17} aria-hidden="true" /></button>
@@ -183,7 +186,7 @@ function AddSpecificationRowMenu({
     <div className="catalog-spec-row-menu-wrap" ref={ref}>
       <button type="button" className="catalog-reference-add-row"
         disabled={disabled} aria-expanded={open}
-        aria-label="Add specification row: choose detail or measurement"
+        aria-label="Add specification row: choose detail, measurement or quantity"
         onClick={() => setOpen(value => !value)}>
         <Plus size={17} aria-hidden="true" /> Add row
         <ChevronDown size={14} className={open ? "is-open" : ""} aria-hidden="true" />
@@ -197,6 +200,10 @@ function AddSpecificationRowMenu({
           <button type="button" onClick={() => { onAdd("measurement"); setOpen(false); }}>
             <span className="catalog-spec-choice-icon"><Ruler size={17} aria-hidden="true" /></span>
             <span><strong>Measurement</strong><small>Numeric value with mm, cm, m, in or ft</small></span>
+          </button>
+          <button type="button" onClick={() => { onAdd("quantity"); setOpen(false); }}>
+            <span className="catalog-spec-choice-icon"><Hash size={17} aria-hidden="true" /></span>
+            <span><strong>Quantity</strong><small>Count pieces, e.g. Drawer · 2 pcs</small></span>
           </button>
         </div>
       )}
@@ -297,13 +304,15 @@ export default function ProductEditor({
   }, []);
   const update = <K extends keyof Product>(key: K, value: Product[K]) =>
     setDraft((p) => ({ ...p, [key]: value }));
-  const addSpecificationRow = (type: "detail" | "measurement", sectionId?: string) =>
+  const addSpecificationRow = (type: SpecificationRowType, sectionId?: string) =>
     setDraft((current) => {
       const specifications = [...(current.specifications ?? [])];
       if (specifications.length >= 24) return current;
       const row: ProductSpecification = type === "measurement"
         ? { id: crypto.randomUUID(), name: "", value: " cm", kind: "measurement" }
-        : { id: crypto.randomUUID(), name: "", value: "" };
+        : type === "quantity"
+          ? { id: crypto.randomUUID(), name: "", value: "", kind: "quantity" }
+          : { id: crypto.randomUUID(), name: "", value: "" };
       const startOfSection = sectionId
         ? specifications.findIndex(item => item.id === sectionId && item.kind === "section")
         : -1;
