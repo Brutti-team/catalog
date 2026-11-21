@@ -8,9 +8,10 @@ import type { CoverSource } from "./cover-studio-canvas";
  * Detailed model: https://huggingface.co/onnx-community/BEN2-ONNX
  * Fast model: https://huggingface.co/onnx-community/ormbg-ONNX
  */
-export type AICutoutProgress = (message: string, percent?: number) => void;
+export type AIProgressPhase = "preparing" | "download" | "processing";
+export type AICutoutProgress = (message: string, percent?: number, phase?: AIProgressPhase) => void;
 type WorkerMessage =
-  | { type: "progress"; message: string; percent?: number }
+  | { type: "progress"; message: string; percent?: number; phase: AIProgressPhase }
   | { type: "done"; rgba: ArrayBuffer; width: number; height: number }
   | { type: "error"; message: string };
 
@@ -73,7 +74,10 @@ export async function aiFurnitureCutout(
     worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
       if (requestId !== nextRequestId) return;
       const data = event.data;
-      if (data.type === "progress") { onProgress?.(data.message, data.percent); return; }
+      if (data.type === "progress") {
+        onProgress?.(data.message, data.percent, data.phase);
+        return;
+      }
       // Keep worker alive while this Cover Studio is open; retain model in RAM.
       cancelPending = undefined;
       worker.onmessage = null;
