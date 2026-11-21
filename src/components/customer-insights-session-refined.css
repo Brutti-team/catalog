@@ -482,3 +482,212 @@
     transform: none !important;
   }
 }
+
+
+/* Sessions polish v2 — invisible scrollbar + elevated glass hierarchy.
+   The modal is still vertically scrollable by wheel, touch, trackpad and keyboard. */
+.admin-app.brutti-staff-redesign .modal.customer-session-dialog {
+  box-sizing: border-box;
+  width: min(720px, calc(100vw - 32px));
+  max-height: min(88dvh, 810px);
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge */
+  scroll-padding-top: 110px;
+  border-radius: 24px;
+  border: 1px solid rgba(210, 229, 216, .82);
+  background:
+    radial-gradient(ellipse 84% 42% at 100% 0%, rgba(221, 245, 228, .53), transparent 86%),
+    radial-gradient(ellipse 62% 46% at 1% 100%, rgba(231, 244, 236, .48), transparent 90%),
+    linear-gradient(154deg, rgba(255, 255, 255, .91), rgba(246, 252, 248, .87)) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(135%);
+  backdrop-filter: blur(30px) saturate(135%);
+  box-shadow:
+    0 35px 95px rgba(12, 37, 25, .24),
+    0 10px 26px rgba(30, 70, 45, .09),
+    inset 0 1px 0 rgba(255, 255, 255, .95) !important;
+}
+.admin-app.brutti-staff-redesign .modal.customer-session-dialog::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.admin-app.brutti-staff-redesign .modal.customer-session-dialog::backdrop {
+  background: rgba(20, 41, 31, .48);
+  -webkit-backdrop-filter: blur(11px) saturate(90%);
+  backdrop-filter: blur(11px) saturate(90%);
+}
+.admin-app.brutti-staff-redesign .modal.customer-session-dialog .modal-heading {
+  z-index: 2;
+  top: 0;
+  padding: 21px 27px 18px;
+  background: linear-gradient(115deg, rgba(250, 254, 251, .93), rgba(236, 248, 240, .87));
+  -webkit-backdrop-filter: blur(22px) saturate(126%);
+  backdrop-filter: blur(22px) saturate(126%);
+  border-bottom: 1px solid rgba(198, 222, 205, .71);
+  box-shadow: 0 7px 19px rgba(40, 80, 51, .032), inset 0 1px 0 rgba(255,255,255,.92);
+}
+.admin-app.brutti-staff-redesign .modal.customer-session-dialog .modal-heading .eyebrow {
+  color: #6b8b75;
+  letter-spacing: .16em;
+}
+.admin-app.brutti-staff-redesign .modal.customer-session-dialog .modal-heading h2 {
+  font-size: clamp(21px, 2vw, 24px);
+  font-weight: 700;
+  color: #244a34;
+  letter-spacing: -.042em;
+}
+.admin-app.brutti-staff-redesign .modal.customer-session-dialog .modal-heading > .icon-button {
+  background: rgba(255, 255, 255, .78);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(193, 218, 201, .8);
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(38, 79, 51, .08), inset 0 1px 0 rgba(255, 255, 255, .98);
+}
+.admin-app.brutti-staff-redesign .customer-session-content {
+  padding: 19px 25px 24px;
+}
+.admin-app.brutti-staff-redesign .customer-session-summary {
+  margin-bottom: 16px;
+  padding: 2px 1px;
+}
+.admin-app.brutti-staff-redesign .customer-session-summary-icon {
+  border-color: rgba(191, 220, 201, .85);
+  border-radius: 13px;
+  background: linear-gradient(145deg, rgba(243, 252, 246, .86), rgba(224, 242, 230, .69));
+  box-shadow: 0 7px 15px rgba(37, 85, 51, .075), inset 0 1px 0 rgba(255, 255, 255, .95);
+}
+.admin-app.brutti-staff-redesign .customer-session-summary-total strong {
+  font-size: 15px;
+  letter-spacing: -.03em;
+}
+.admin-app.brutti-staff-redesign .customer-session-list {
+  gap: 12px;
+}
+.admin-app.brutti-staff-redesign .customer-session-item {
+  padding: 16px 18px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(187, 215, 197, .72);
+  background:
+    radial-gradient(ellipse 65% 70% at 100% 0%, rgba(229, 246, 233, .53), transparent 87%),
+    linear-gradient(132deg, rgba(255, 255, 255, .75), rgba(248, 253, 250, .62));
+  -webkit-backdrop-filter: blur(19px) saturate(125%);
+  backdrop-filter: blur(19px) saturate(125%);
+  box-shadow: 0 7px 22px rgba(28, 69, 44, .065), inset 0 1px 0 rgba(255, 255, 255, .86);
+}
+.admin-app.brutti-staff-redesign .customer-session-item:hover {
+  transform: translateY(-2px);
+  background:
+    radial-gradient(ellipse 70% 75% at 100% 0%, rgba(223, 243, 231, .67), transparent 90%),
+    linear-gradient(132deg, rgba(255, 255, 255, .87), rgba(239, 250, 243, .70));
+  border-color: #a7cdb4;
+  box-shadow: 0 13px 32px rgba(29, 76, 45, .12), inset 0 1px 0 rgba(255, 255, 255, .97);
+}
+.admin-app.brutti-staff-redesign .customer-session-item-heading {
+  margin-bottom: 13px;
+}
+.admin-app.brutti-staff-redesign .customer-session-index {
+  background: rgba(233, 245, 237, .72);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-color: #cbdfd0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .92);
+}
+.admin-app.brutti-staff-redesign .customer-session-events {
+  gap: 8px;
+}
+.admin-app.brutti-staff-redesign .customer-session-events > span {
+  border-color: rgba(206, 228, 213, .74);
+  background: linear-gradient(140deg, rgba(255, 255, 255, .69), rgba(239, 249, 243, .38));
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-radius: 11px;
+  padding: 10px 12px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.86);
+}
+.admin-app.brutti-staff-redesign .customer-session-events strong {
+  font-size: 18px;
+}
+.admin-app.brutti-staff-redesign .customer-session-product-section {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top-color: rgba(193, 219, 201, .67);
+}
+.admin-app.brutti-staff-redesign .customer-session-no-product {
+  padding: 12px 13px;
+  border: 1px solid rgba(204, 226, 210, .70);
+  border-radius: 11px;
+  background: linear-gradient(120deg, rgba(245, 251, 247, .50), rgba(234, 246, 237, .38));
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+}
+.admin-app.brutti-staff-redesign .customer-session-no-product > span {
+  background: rgba(226, 243, 232, .75);
+}
+.admin-app.brutti-staff-redesign .customer-session-privacy {
+  margin-top: 16px;
+  padding-inline: 2px;
+  line-height: 1.65;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.customer-session-dialog {
+  background:
+    radial-gradient(ellipse 80% 48% at 100% 0%, rgba(60, 96, 72, .24), transparent 85%),
+    linear-gradient(145deg, rgba(37, 45, 45, .93), rgba(26, 32, 34, .92)) !important;
+  border-color: #506b5b !important;
+  box-shadow: 0 30px 85px rgba(0,0,0,.51), inset 0 1px 0 rgba(255,255,255,.075) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.customer-session-dialog .modal-heading {
+  background: linear-gradient(120deg, rgba(49, 67, 58, .94), rgba(39, 52, 50, .92)) !important;
+  border-bottom-color: #557264 !important;
+  box-shadow: 0 7px 18px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .customer-session-item {
+  background:
+    radial-gradient(ellipse 60% 75% at 100% 0%, rgba(72, 108, 81, .19), transparent 90%),
+    linear-gradient(145deg, rgba(51, 66, 58, .81), rgba(35, 47, 44, .78)) !important;
+  border-color: #5a7565 !important;
+  box-shadow: 0 8px 23px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .customer-session-item:hover {
+  border-color: #8fb89a !important;
+  box-shadow: 0 12px 33px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.085) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .customer-session-events > span {
+  background: linear-gradient(140deg, rgba(50, 67, 57, .66), rgba(33, 49, 42, .64)) !important;
+  border-color: #607c65 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .customer-session-no-product {
+  background: rgba(35, 53, 42, .72) !important;
+  border-color: #55705d !important;
+}
+
+@media (max-width: 620px) {
+  .admin-app.brutti-staff-redesign .modal.customer-session-dialog {
+    width: calc(100vw - 22px);
+    max-height: 91dvh;
+    border-radius: 17px;
+  }
+  .admin-app.brutti-staff-redesign .modal.customer-session-dialog .modal-heading {
+    padding: 18px 16px 15px;
+  }
+  .admin-app.brutti-staff-redesign .customer-session-content {
+    padding: 15px 14px 18px;
+  }
+  .admin-app.brutti-staff-redesign .customer-session-item {
+    padding: 14px 12px;
+  }
+  .admin-app.brutti-staff-redesign .customer-session-events > span {
+    padding: 9px 7px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign .customer-session-item {
+    transform: none !important;
+    transition: none !important;
+  }
+}
