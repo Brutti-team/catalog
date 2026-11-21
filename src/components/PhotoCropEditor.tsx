@@ -506,14 +506,16 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                 </button>
                 {aiBusy && <button type="button" className="brutti-photo-studio-cancel-ai"
                   onClick={cancelAI}>Cancel processing</button>}
-                {aiBusy && (
+                {(aiBusy || (hasCutout && aiPercent === 100)) && (
                   <div className="brutti-photo-studio-progress" aria-label="AI progress estimate">
                     <div className="brutti-photo-studio-progress-head">
-                      <strong>Processing AI cutout</strong>
+                      <strong>{aiBusy ? "Processing AI cutout" : "Cutout completed"}</strong>
                       <output>{aiPercent}%</output>
                     </div>
                     <progress max={100} value={aiPercent} aria-label="AI processing estimated percent"/>
-                    <small>Estimated by processing stage; inference speed depends on your device.</small>
+                    <small>{aiBusy
+                      ? "Estimated by processing stage; inference speed depends on your device."
+                      : "You can now refine edges, erase leftovers or choose a background colour."}</small>
                   </div>
                 )}
                 {aiProgress && <p role="status" className="brutti-photo-studio-ai-status">{aiProgress}</p>}
@@ -592,7 +594,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                     onClick={() => {
                       setBackground("original"); setCutout(null);
                       workingCutout.current = null; setMaskRevision(v => v + 1);
-                      setEraserEnabled(false); setPreviewOriginal(false); setAiProgress("");
+                      setEraserEnabled(false); setPreviewOriginal(false); setAiProgress(""); setAiPercent(0);
                     }}>
                     <RotateCcw size={15}/> Restore original background
                   </button>
