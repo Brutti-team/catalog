@@ -83,6 +83,7 @@ import "./components/catalog-products-table-glass.css";
 import "./components/catalog-dark-mode-charcoal.css";
 import "./components/catalog-overview-premium-glass.css";
 import "./components/catalog-sidebar-glass-refine.css";
+import "./components/catalog-activity-history-glass.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
