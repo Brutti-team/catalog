@@ -310,3 +310,38 @@
     transition: none !important;
   }
 }
+
+/* While the staff is already watching the same job in Photo Studio, avoid
+   duplicate progress UI. The toast reappears as soon as Studio is closed. */
+body:has(dialog.brutti-photo-studio-v2[open])
+  .brutti-background-task-toast {
+  display: none !important;
+}
+/* Premium dark-mode surface without changing the fixed placement. */
+.admin-app[data-theme="dark"] .brutti-background-task-toast {
+  background: rgba(34, 42, 37, .97);
+  border-color: rgba(132, 158, 139, .35);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .3);
+  color: #eff6ed;
+}
+.admin-app[data-theme="dark"] .brutti-background-task-toast-title strong,
+.admin-app[data-theme="dark"] .brutti-background-task-toast-progress strong {
+  color: #d9f0df;
+}
+.admin-app[data-theme="dark"] .brutti-background-task-toast-title small,
+.admin-app[data-theme="dark"] .brutti-background-task-toast p,
+.admin-app[data-theme="dark"] .brutti-background-task-toast-progress span,
+.admin-app[data-theme="dark"] .brutti-background-task-toast-actions small {
+  color: #bacbc0;
+}
+.admin-app[data-theme="dark"] .brutti-background-task-toast-actions button,
+.admin-app[data-theme="dark"] .brutti-background-task-close {
+  border-color: rgba(143, 167, 149, .35);
+  color: #e9f3e9;
+  background: #34453a;
+}
+.admin-app[data-theme="dark"] .brutti-background-task-toast-actions button.brutti-background-task-open {
+  background: #4a8862;
+  border-color: #4a8862;
+  color: #fff;
+}
