@@ -1,0 +1,121 @@
+/* Brutti Catalog • Product Editor section headers
+   Slightly richer sage headings with a proper edge-to-edge header inside
+   each card. No additional nested cards or heavy colored surfaces. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card {
+  --brutti-card-side: 24px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card
+> .product-editor-section-heading {
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start;
+  gap: 13px;
+  width: calc(100% + 2 * var(--brutti-card-side)) !important;
+  max-width: none !important;
+  min-width: 0;
+  min-height: 72px !important;
+  margin: 0 calc(-1 * var(--brutti-card-side)) 22px !important;
+  padding: 15px var(--brutti-card-side) !important;
+  border: 0 !important;
+  border-bottom: 1px solid #d2e3d6 !important;
+  border-radius: 14px 14px 0 0 !important;
+  background: linear-gradient(100deg,#e6f0e9 0%,#eef5ef 66%,#f5f9f5 100%) !important;
+  box-shadow: none !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card
+> .product-editor-section-heading > .product-editor-step {
+  display: grid !important;
+  place-items: center !important;
+  flex: 0 0 36px !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 1px solid #c5dbcb !important;
+  border-radius: 10px !important;
+  background: #f7fbf7 !important;
+  color: #245a3b !important;
+  box-shadow: 0 1px 3px rgba(27,68,40,.04) !important;
+  font: 750 11px/1 "DM Sans",sans-serif !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card
+> .product-editor-section-heading h3 {
+  color: #1d4832 !important;
+  font: 750 20px/1.25 "Manrope","DM Sans",sans-serif !important;
+  letter-spacing: -.035em !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card
+> .product-editor-section-heading p {
+  color: #678372 !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> #product-editor-basics > label:first-of-type {
+  color: #2a5139;
+  font-weight: 690;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> #product-editor-basics > label:first-of-type > input {
+  border-color: #d5e3d9;
+  background: #fcfefc;
+}
+
+/* Use charcoal surfaces in dark mode; green remains a gentle accent only. */
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card
+> .product-editor-section-heading {
+  border-bottom-color: #425449 !important;
+  background: linear-gradient(105deg,#2c4035 0%,#2a3832 54%,#262f2c 100%) !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card
+> .product-editor-section-heading > .product-editor-step {
+  border-color: #55765f !important;
+  background: #324c3c !important;
+  color: #dbeddf !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card
+> .product-editor-section-heading h3 {
+  color: #e6f2e8 !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card
+> .product-editor-section-heading p {
+  color: #aec4b5 !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> #product-editor-basics > label:first-of-type {
+  color: #dcebe0;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> #product-editor-basics > label:first-of-type > input {
+  border-color: #4a6451;
+  background: #202b25;
+}
+@media (max-width:760px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card {
+    --brutti-card-side: 14px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card
+  > .product-editor-section-heading {
+    min-height: 61px !important;
+    margin-bottom: 17px !important;
+    padding-block: 12px !important;
+    gap: 10px;
+    border-radius: 12px 12px 0 0 !important;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card
+  > .product-editor-section-heading h3 {
+    font-size: 17px !important;
+  }
+}
