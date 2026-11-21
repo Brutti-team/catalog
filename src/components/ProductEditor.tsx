@@ -1028,13 +1028,15 @@ export default function ProductEditor({
             const img = draft.images.find(item=>item.id===previewPhotoId)!;
             return <div className="brutti-media-preview-body">
               <div className="brutti-media-preview-image">
-                <SafeImage src={img.url} alt={img.alt||draft.name} style={photoCropStyle(img)}/>
-                <button type="button" className="brutti-media-preview-edit"
-                  aria-label="Crop and rotate photo" title="Crop and rotate"
-                  disabled={busy||uploading}
-                  onClick={()=>{setPreviewPhotoId(null);setEditingPhotoId(img.id);}}>
-                  <Crop size={23} aria-hidden="true"/>
-                </button>
+                <div className="brutti-media-preview-ambient" aria-hidden="true">
+                  <SafeImage src={img.url} alt="" />
+                </div>
+                <SafeImage
+                  className="brutti-media-preview-photo"
+                  src={img.url}
+                  alt={img.alt||draft.name}
+                  style={photoCropStyle(img)}
+                />
               </div>
               <div className="brutti-media-preview-footer">
                 <span>{img.alt||draft.name}</span>
