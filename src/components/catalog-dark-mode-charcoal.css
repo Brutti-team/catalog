@@ -1471,3 +1471,49 @@ body:has(.admin-app.catalog-os-layout[data-theme="dark"]) {
     transition: none !important;
   }
 }
+
+
+/* SIDEBAR ACTIVE NAV — QUIET OS STYLE (no pill, border or mint frame) */
+/* The active page is recognised by brighter text and a soft mint icon only.
+   There is deliberately no tinted rounded rectangle or selection bar. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active:hover {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+  outline: none;
+  color: #f5f7f6 !important;
+  font-weight: 720;
+  transform: none !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active::before,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active .nav-icon,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active .nav-icon svg {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: #94d7ae !important;
+  stroke: currentColor;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active .nav-count {
+  background: #2c3335 !important;
+  color: #ebf0ed !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item:not(.active):hover {
+  background: #1d2425 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active:focus-visible {
+  outline: 2px solid #85d7a5 !important;
+  outline-offset: -2px;
+}
