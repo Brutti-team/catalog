@@ -26,8 +26,6 @@ import {
   ArrowRight,
   ArrowLeft,
   Menu,
-  PanelLeftClose,
-  PanelLeftOpen,
   X,
   LogOut,
   LoaderCircle,
@@ -474,10 +472,7 @@ export default function App() {
           <button type="button" className="catalog-sidebar-toggle" onClick={toggleSidebar}
             aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}>
-            {sidebarCollapsed ? <PanelLeftOpen size={18} aria-hidden="true" /> : <PanelLeftClose size={18} aria-hidden="true" />}
-          </button>
-          <button type="button" className="catalog-sidebar-mobile-close" aria-label="Close navigation" title="Close navigation" onClick={() => setMobileNav(false)}>
-            <X size={19} aria-hidden="true" />
+            <Menu size={19} aria-hidden="true" />
           </button>
         </div>
         <nav aria-label="Admin navigation">
