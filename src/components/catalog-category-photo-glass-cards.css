@@ -27,6 +27,21 @@
   border-color: rgba(112,163,126,.75) !important;
   box-shadow: 0 13px 30px rgba(30,67,42,.15), inset 0 1px 0 rgba(255,255,255,.75) !important;
 }
+/* Photo is an accessible native button, including keyboard activation. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-cover {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0;
+  margin: 0;
+  border: 0 !important;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-cover:focus-visible {
+  outline: 3px solid #a7d5b1;
+  outline-offset: -5px;
+}
 /* Fill the category photograph, like Products; no additional image boxes. */
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card:not(.category-card--without-cover) .category-cover {
   position: absolute;
