@@ -113,3 +113,90 @@ export async function aiFurnitureCutout(
     worker.postMessage({ width: source.width, height: source.height, rgba, quality, protectPanels }, [rgba]);
   });
 }
+
+
+/**
+ * A separate worker for a background cutout. This deliberately does NOT use
+ * the foreground worker's cancelPending slot. Closing the Photo Studio modal
+ * (or processing a different cover) cannot silently cancel this request.
+ *
+ * Work continues while the Catalog browser tab remains open. Navigating away
+ * from the site, reloading or closing the tab ends in-memory processing.
+ */
+export async function aiFurnitureCutoutIsolated(
+  source: CoverSource,
+  onProgress?: AICutoutProgress,
+  signal?: AbortSignal,
+  protectPanels = false,
+): Promise<HTMLCanvasElement> {
+  if (typeof Worker === "undefined") {
+    throw new Error("Your browser cannot run background AI. Use Chrome or Edge.");
+  }
+  if (signal?.aborted) throw new Error("Background removal was cancelled.");
+  const pixels = source.canvas.getContext("2d")?.getImageData(0, 0, source.width, source.height);
+  if (!pixels) throw new Error("Could not read the source image. Re-upload the photo and retry.");
+  const worker = new Worker(new URL("../workers/ai-cutout.worker.ts", import.meta.url), { type: "module" });
+  return new Promise<HTMLCanvasElement>((resolve, reject) => {
+    let settled = false;
+    const cleanup = () => {
+      if (settled) return false;
+      settled = true;
+      signal?.removeEventListener("abort", abort);
+      worker.onmessage = null;
+      worker.onerror = null;
+      worker.terminate();
+      return true;
+    };
+    const abort = () => {
+      if (cleanup()) reject(new Error("Background removal was cancelled."));
+    };
+    signal?.addEventListener("abort", abort, { once: true });
+    worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
+      if (settled) return;
+      const data = event.data;
+      if (data.type === "progress") {
+        onProgress?.(data.message, data.percent, data.phase);
+        return;
+      }
+      if (!cleanup()) return;
+      if (data.type === "error") {
+        reject(new Error(data.message));
+        return;
+      }
+      if (data.width !== source.width || data.height !== source.height ||
+        data.rgba.byteLength !== source.width * source.height * 4) {
+        reject(new Error("Incomplete AI mask. The original image was kept."));
+        return;
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = data.width;
+      canvas.height = data.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        reject(new Error("The browser could not render the background removal result."));
+        return;
+      }
+      ctx.putImageData(new ImageData(new Uint8ClampedArray(data.rgba), data.width, data.height), 0, 0);
+      resolve(canvas);
+    };
+    worker.onerror = event => {
+      if (cleanup()) {
+        reject(new Error("AI worker failed. Check browser Console, Network model downloads and device memory."));
+      }
+      event.preventDefault();
+    };
+    if (signal?.aborted) { abort(); return; }
+    const rgba = pixels.data.buffer as ArrayBuffer;
+    try {
+      worker.postMessage({
+        width: source.width,
+        height: source.height,
+        rgba,
+        quality: "detail",
+        protectPanels,
+      }, [rgba]);
+    } catch {
+      if (cleanup()) reject(new Error("Unable to start the background AI worker."));
+    }
+  });
+}
