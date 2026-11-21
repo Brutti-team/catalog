@@ -6,6 +6,8 @@ export interface ProductSpecification {
   value: string;
   /** Optional staff description for a custom detail or measurement row. */
   description?: string;
+  /** Optional component count (e.g. Drawer × 2); separate from physical size. */
+  quantity?: number;
   /** Section markers group following rows under their title. Legacy rows omit this. */
   kind?: "section" | "measurement";
 }
