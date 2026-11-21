@@ -95,6 +95,7 @@ import "./components/product-editor-corners-refined.css";
 import "./components/product-editor-details-premium.css";
 import "./components/catalog-category-photo-glass-cards.css";
 import "./components/product-editor-media-preview-glass.css";
+import "./components/photo-background-task.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
