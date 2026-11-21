@@ -250,7 +250,7 @@ export function validateProduct(product: Product): void {
     (row.kind === "measurement" && !/^([0-9]+(?:\.[0-9]+)?) (mm|cm|m|in|ft)$/.test(row.value.trim())) ||
     (row.kind === "measurement" && Number(row.value.trim().split(" ")[0]) <= 0)
   ))
-    throw new Error("Add a title for each new specification section, and complete the name and value of every row.");
+    throw new Error("Complete every specification name and value. For Measurement rows, enter a positive number and choose mm, cm, m, in or ft.");
   if (new Set(specifications.map(row => row.id)).size !== specifications.length)
     throw new Error("Each specification row needs a unique ID.");
   if (!["draft", "published", "archived"].includes(product.status))
