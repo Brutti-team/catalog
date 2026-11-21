@@ -758,6 +758,12 @@ export default function App() {
                   ...draft,
                   name: details.name.trim(),
                   description: details.description,
+                  materials: details.materials,
+                  specifications: [
+                    ...(details.size.trim() ? [{ id: crypto.randomUUID(), name: "Dimensions", value: details.size.trim() }] : []),
+                    ...(details.colour.trim() ? [{ id: crypto.randomUUID(), name: "Colour", value: details.colour.trim() }] : []),
+                    ...(details.finishing.trim() ? [{ id: crypto.randomUUID(), name: "Finishing", value: details.finishing.trim() }] : []),
+                  ],
                   images: [albumPhotoToProductImage({ ...photo, name: details.name.trim() })],
                 });
               }}
