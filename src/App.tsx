@@ -1310,14 +1310,15 @@ export default function App() {
         const target = editor?.id === productId
           ? editor
           : data.products.find(item => item.id === productId);
-        if (!target) {
-          setToast("This photo is no longer attached to an open product. Download the transparent PNG instead.");
-          return;
+        if (!target || (editor?.id !== productId && !target.images.some(image => image.id === imageId))) {
+          setToast("The source photo is no longer attached. You can still download the transparent PNG.");
+          return false;
         }
         setEditor(target);
         setPhotoOpenRequest(previous => ({
           productId, imageId, requestId: (previous?.requestId ?? 0) + 1,
         }));
+        return true;
       }}/>
     </div>
   );
