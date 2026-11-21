@@ -1730,7 +1730,7 @@
     min-height: 310px;
     max-height: 310px;
   }
-  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content {
     padding: 22px 28px;
   }
   .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero h1 { font-size: 42px; }
@@ -1758,7 +1758,7 @@
     min-height: 0;
     max-height: none;
   }
-  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content {
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content {
     grid-column: 1;
     grid-row: 1;
     height: auto;
@@ -1777,7 +1777,7 @@
   .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-feature-art { height: 235px; }
 }
 @media (max-width: 530px) {
-  .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content { padding: 25px 19px; }
+  .admin-app.brutti-staff-redesign[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content { padding: 25px 19px; }
   .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero h1 { font-size: 36px; }
   .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-meta { gap: 6px; }
   .admin-app.brutti-staff-redesign[data-active-tab="overview"] .brutti-editorial-hero .catalog-command-meta > span + span { padding-left: 7px; }
