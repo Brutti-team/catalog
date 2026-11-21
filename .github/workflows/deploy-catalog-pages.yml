@@ -40,7 +40,7 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
       - name: Verify AI cutout mask safety
-        run: npm run test -- tests/ai-panel-repair.test.ts tests/ai-alpha-matte.test.ts
+        run: npm run test -- tests/ai-panel-repair.test.ts tests/ai-alpha-matte.test.ts tests/ai-speckle-cleanup.test.ts
       - name: Build GitHub Pages site
         run: npm run build:pages
       - name: Configure GitHub Pages
