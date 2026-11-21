@@ -1,6 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { ArrowUpRight, Check, Download, Eye, LoaderCircle, Sparkles, X } from "lucide-react";
+import { Check, Download, Eye, LoaderCircle, Sparkles, X } from "lucide-react";
 import Modal from "./Modal";
 import {
   cancelBackgroundJob, dismissBackgroundJob,
@@ -13,28 +13,24 @@ type Props = {
 
 export default function BackgroundCutoutToast({ onEditResult }: Props) {
   const job = useSyncExternalStore(subscribeBackgroundJob, getBackgroundJobSnapshot);
-  const [host, setHost] = useState<HTMLElement>(() => document.body);
+  const [host, setHost] = useState<HTMLElement | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewError, setPreviewError] = useState("");
   const [toastError, setToastError] = useState("");
 
-  // Anchor the progress inside the fixed sidebar, just above View public
-  // catalog. On phones the sidebar is hidden, so keep a small topbar badge.
-  // Native dialogs may use the browser top layer; those still get the dialog
-  // notification to remain visible while editing other products.
+  // Product Editor and Photo Studio use native modal dialogs. Never portal
+  // the status into a dialog: that used to put a floating card over Details.
+  // The in-page sidebar dock is the only desktop home for this task.
   useEffect(() => {
     const updateHost = () => {
-      const open = Array.from(document.querySelectorAll<HTMLDialogElement>("dialog[open]"));
       const small = window.matchMedia("(max-width: 800px)").matches;
       const target = document.getElementById(small
         ? "brutti-background-task-mobile-host"
         : "brutti-background-sidebar-host");
-      setHost(open[open.length - 1] ?? target ?? document.body);
+      setHost(previous => previous === target ? previous : target);
     };
     const observer = new MutationObserver(updateHost);
-    observer.observe(document.body, {
-      childList: true, subtree: true, attributes: true, attributeFilter: ["open"],
-    });
+    observer.observe(document.body, { childList: true, subtree: true });
     window.addEventListener("resize", updateHost);
     updateHost();
     return () => {
@@ -82,9 +78,7 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
 
   return (
     <>
-      {visible && !previewOpen && createPortal(
-        (host.id === "brutti-background-sidebar-host" ||
-          host.id === "brutti-background-task-mobile-host") ? (
+      {visible && !previewOpen && host && createPortal(
           <div className={`brutti-background-header-task${host.id === "brutti-background-sidebar-host" ? " brutti-background-sidebar-task" : ""}`}
             aria-label="Current photo background removal">
             <button type="button" className="brutti-background-header-open"
@@ -125,93 +119,7 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
               </button>
             )}
           </div>
-        ) : (
-        <aside className="brutti-background-task-toast"
-          role="region" tabIndex={0}
-          aria-label="Background removal task. Click to return to the product photo."
-          aria-busy={running}
-          onClick={event => {
-            // Every non-control part of the notification returns to the
-            // original product. Nested Cancel/Preview/Download retain actions.
-            if ((event.target as HTMLElement).closest("button, a")) return;
-            if (openPhoto()) setPreviewOpen(false);
-          }}
-          onKeyDown={event => {
-            if (event.target !== event.currentTarget) return;
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              if (openPhoto()) setPreviewOpen(false);
-            }
-          }}>
-          <div className="brutti-background-task-toast-head">
-            <span className="brutti-background-task-toast-mark">
-              {running ? <LoaderCircle className="spin" size={17}/> :
-                job.status === "done" ? <Check size={17}/> : <X size={17}/>}
-            </span>
-            <button type="button" className="brutti-background-task-toast-title brutti-background-task-title-link"
-              onClick={() => { if (openPhoto()) setPreviewOpen(false); }}
-              title="Return to the photo being edited"
-              aria-label={`Open Photo Studio for ${label}`}>
-              <strong>{running ? "Removing background" :
-                job.status === "done" ? "Background ready" : "Background removal failed"}</strong>
-              <small title={label}>{label}</small>
-            </button>
-            {job.status !== "running" && (
-              <button type="button" className="brutti-background-task-close"
-                onClick={dismissBackgroundJob} aria-label="Dismiss background task">
-                <X size={15}/>
-              </button>
-            )}
-          </div>
-          {running ? (
-            <>
-              <div className="brutti-background-task-toast-progress">
-                <span>Processing in this tab</span>
-                <strong>{job.percent}%</strong>
-              </div>
-              <progress max={100} value={job.percent}
-                aria-label="Estimated background-removal progress"/>
-              <p role="status">{job.message || "Preparing AI…"}</p>
-              <div className="brutti-background-task-toast-actions">
-                <small>Estimated · Keep this browser tab open</small>
-                <button type="button" className="brutti-background-task-view"
-                  onClick={() => { if (openPhoto()) setPreviewOpen(false); }}>
-                  <ArrowUpRight size={14}/> Open photo
-                </button>
-                <button type="button" onClick={cancelBackgroundJob}>Cancel</button>
-              </div>
-            </>
-          ) : job.status === "done" ? (
-            <>
-              <p>Photo cutout is ready to review. Your original is unchanged.</p>
-              <div className="brutti-background-task-toast-actions">
-                <button type="button" className="brutti-background-task-open"
-                  onClick={() => {
-                    if (openPhoto()) setPreviewOpen(false);
-                    else setPreviewOpen(true);
-                  }}>
-                  <ArrowUpRight size={15}/> Open result
-                </button>
-                <button type="button" onClick={() => setPreviewOpen(true)}
-                  aria-label="Preview transparent result" title="Preview image">
-                  <Eye size={16}/>
-                </button>
-                <button type="button" onClick={() => void download()} aria-label="Download transparent PNG">
-                  <Download size={16}/>
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <p role="alert">{job.error || "Processing could not finish."}</p>
-              <div className="brutti-background-task-toast-actions">
-                <button type="button" onClick={dismissBackgroundJob}>Dismiss</button>
-              </div>
-            </>
-          )}
-          {toastError && <p role="alert" className="brutti-background-task-toast-error">{toastError}</p>}
-        </aside>
-        ),
+        ,
         host,
       )}
       {previewOpen && job.status === "done" && job.result && (
