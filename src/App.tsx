@@ -62,6 +62,7 @@ import {
   requestPasswordReset,
 } from "./lib/catalog";
 import ProductEditor from "./components/ProductEditor";
+import BackgroundCutoutToast from "./components/BackgroundCutoutToast";
 import CatalogOverviewStudio from "./components/CatalogOverviewStudio";
 import PublicCatalog from "./components/PublicCatalog";
 import Modal from "./components/Modal";
@@ -140,6 +141,9 @@ export default function App() {
     catch { /* Keep the selected view in this session. */ }
   };
   const [editor, setEditor] = useState<Product | null>(null);
+  const [photoOpenRequest, setPhotoOpenRequest] = useState<{
+    productId: string; imageId: string; requestId: number;
+  } | null>(null);
   const [photoImportOpen, setPhotoImportOpen] = useState(false);
   const [catEditor, setCatEditor] = useState<Category | null>(null);
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
@@ -1166,6 +1170,7 @@ export default function App() {
         <ProductEditor
           key={editor.id}
           product={editor}
+          photoOpenRequest={photoOpenRequest}
           categories={data.categories}
           existingProducts={data.products}
           isNewProduct={!data.products.some(item => item.id === editor.id)}
@@ -1301,6 +1306,19 @@ export default function App() {
           {toast}
         </div>
       )}
+      <BackgroundCutoutToast onEditResult={(productId, imageId) => {
+        const target = editor?.id === productId
+          ? editor
+          : data.products.find(item => item.id === productId);
+        if (!target) {
+          setToast("This photo is no longer attached to an open product. Download the transparent PNG instead.");
+          return;
+        }
+        setEditor(target);
+        setPhotoOpenRequest(previous => ({
+          productId, imageId, requestId: (previous?.requestId ?? 0) + 1,
+        }));
+      }}/>
     </div>
   );
 }
