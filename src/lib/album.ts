@@ -173,7 +173,7 @@ export async function saveAlbumPhotoDetails(
   if (name.length > 120) throw new Error("Photo name must be 120 characters or fewer.");
   const description = details.description.trim();
   if (description.length > 10000) throw new Error("Description must be 10,000 characters or fewer.");
-  const sourceDetails = { ...photo.sourceDetails, description };
+  const sourceDetails: Record<string, string> = { ...photo.sourceDetails, description };
   for (const field of ["size", "materials", "colour", "finishing"] as const) {
     const value = details[field].trim();
     if (value.length > 2000) throw new Error(`${field} must be 2,000 characters or fewer.`);
