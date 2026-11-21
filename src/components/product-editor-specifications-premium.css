@@ -735,3 +735,101 @@
     transition: none;
   }
 }
+
+
+/* 2026-11-21 Availability visibility fix: keep the actual option list INSIDE
+   the expanding Specifications form row. Portaled absolute menus were hidden
+   behind the editor's clipping and sticky footer on some desktop sizes. */
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-reference-spec-row:has(.catalog-spec-availability.is-open) {
+  align-items: start !important;
+  position: relative;
+  z-index: 20;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-reference-spec-row:has(.catalog-spec-availability.is-open) > .catalog-reference-spec-key {
+  padding-top: 14px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability.is-open {
+  overflow: visible !important;
+  position: relative !important;
+  z-index: 21;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability-menu.catalog-spec-availability-inline {
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  z-index: 2 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: min(100%, 350px) !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  margin: 10px 0 0 !important;
+  padding: 8px !important;
+  border: 1px solid rgba(196,218,201,.9);
+  border-radius: 15px;
+  background: rgba(255,255,253,.98);
+  box-shadow: 0 10px 25px rgba(26,62,36,.10),0 2px 7px rgba(26,62,36,.04);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability-inline .catalog-spec-availability-option {
+  display: flex !important;
+  align-items: center;
+  min-height: 53px;
+  width: 100%;
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  gap: 11px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability-inline .catalog-spec-availability-option[data-option-status="available"] {
+  color: #27633e;
+  background: #eff8f0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability-inline .catalog-spec-availability-option[data-option-status="made-to-order"] {
+  color: #936b30;
+  background: #fcf7eb;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability-inline .catalog-spec-availability-option[data-option-status="unavailable"] {
+  color: #a1574d;
+  background: #fcf0ed;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability-inline .catalog-spec-availability-option:is(:hover,:focus-visible,.is-selected) {
+  outline: none;
+  border-color: currentColor;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability-inline .catalog-spec-availability-option-copy small {
+  color: inherit;
+  opacity: .75;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability-menu.catalog-spec-availability-inline {
+  border-color: #48664d;
+  background: #20332a;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability-inline .catalog-spec-availability-option[data-option-status="available"] {
+  color: #d0edda;
+  background: #2b5038;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability-inline .catalog-spec-availability-option[data-option-status="made-to-order"] {
+  color: #f4daa9;
+  background: #493d2a;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability-inline .catalog-spec-availability-option[data-option-status="unavailable"] {
+  color: #f6cdc4;
+  background: #503534;
+}
+@media (max-width: 620px) {
+  .admin-app .product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-availability-menu.catalog-spec-availability-inline {
+    width: 100% !important;
+  }
+}
