@@ -527,6 +527,8 @@ export default function App() {
             </button>
           )}
         </nav>
+        <div className="brutti-background-sidebar-host" id="brutti-background-sidebar-host"
+          aria-label="Photo background removal progress"/>
         <div className="sidebar-utility">
           <button type="button" className="sidebar-public-link catalog-photo-link"
             onClick={() => navigate("/catalog")} aria-label="View public catalog" title="View public catalog">
@@ -578,8 +580,8 @@ export default function App() {
               <span className="catalog-search-shortcut" aria-hidden="true">Ctrl K</span>
               <button type="submit" className="catalog-search-submit" aria-label="Search products"><ArrowRight size={15} /></button>
             </form>
-            <div className="brutti-background-task-host" id="brutti-background-task-host"
-              aria-label="Photo background removal progress"/>
+            <div className="brutti-background-task-mobile-host" id="brutti-background-task-mobile-host"
+              aria-label="Photo background removal progress on mobile"/>
             <button type="button" className="theme-toggle" onClick={toggleTheme}
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               aria-pressed={theme === "dark"} title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
