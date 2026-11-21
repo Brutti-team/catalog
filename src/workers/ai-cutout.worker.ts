@@ -133,13 +133,13 @@ async function process(job: Job) {
   scope.postMessage({ type: "done", rgba: outputBuffer, width, height }, [outputBuffer]);
 }
 scope.onmessage = (event: MessageEvent<Job | Warm>) => {
-  if ("type" in event.data && event.data.type === "warm") {
-    // Warm the model cache when users open the Background tab. Preloading is
-    // silent to the UI and does not process or upload any product image.
-    void model(event.data.quality).catch(() => { /* Actual click reports errors. */ });
+  const message = event.data;
+  if ("type" in message) {
+    // A warm request only prepares the model; it is never an image job.
+    void model(message.quality).catch(() => { /* Actual click reports errors. */ });
     return;
   }
-  void process(event.data).catch(error => scope.postMessage({
+  void process(message).catch(error => scope.postMessage({
     type: "error", message: error instanceof Error ? error.message : "AI cutout failed.",
   }));
 };
