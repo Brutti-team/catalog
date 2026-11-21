@@ -71,6 +71,7 @@ import "./components/album-header-premium-2026.css";
 import "./components/album-delete-confirm.css";
 import "./components/product-model-upload-only.css";
 import "./components/catalog-dark-mode-charcoal.css";
+import "./components/product-editor-photo-3d-layout.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
