@@ -1,10 +1,11 @@
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRight, ChartNoAxesCombined, ChevronDown, Eye, Layers3, MousePointerClick,
   RefreshCw, UsersRound, Zap
 } from "lucide-react";
 import SafeImage from "./SafeImage";
-import { loadCustomerInsights, type CustomerInsightData, type InsightPeriod } from "../lib/customer-analytics";
+import Modal from "./Modal";
+import { loadCustomerInsights, loadCustomerSessionDetails, type CustomerInsightData, type CustomerSessionDetails, type InsightPeriod } from "../lib/customer-analytics";
 import type { Category, Product } from "../lib/types";
 
 type Props = {
@@ -19,6 +20,7 @@ type Props = {
 const nfmt = new Intl.NumberFormat("en-MY");
 const fdate = (date: string) => new Intl.DateTimeFormat("en-MY", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(date + "T12:00:00Z"));
 const compact = (value: number) => nfmt.format(value);
+const sessionTimestamp = (iso: string) => new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(iso)) + " MYT";
 
 function CustomerInterestChart({ data, days }: { data: CustomerInsightData; days: InsightPeriod }) {
   const id = useId().replace(/:/g, "");
@@ -80,6 +82,32 @@ export default function CustomerInsights({ products, categories, loading: produc
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refresh, setRefresh] = useState(0);
+  const [sessionDetailsOpen, setSessionDetailsOpen] = useState(false);
+  const [sessionDetails, setSessionDetails] = useState<CustomerSessionDetails | null>(null);
+  const [sessionBusy, setSessionBusy] = useState(false);
+  const [sessionError, setSessionError] = useState<string | null>(null);
+  const sessionRequest = useRef(0);
+  function openSessionDetails() {
+    if (busy || !data?.visitorSessions) return;
+    const request = ++sessionRequest.current;
+    setSessionDetailsOpen(true);
+    setSessionBusy(true);
+    setSessionError(null);
+    setSessionDetails(null);
+    void loadCustomerSessionDetails(days).then(result => {
+      if (request !== sessionRequest.current) return;
+      setSessionDetails(result);
+      setSessionBusy(false);
+    }).catch((reason: unknown) => {
+      if (request !== sessionRequest.current) return;
+      setSessionError(reason instanceof Error ? reason.message : "Unable to load session details.");
+      setSessionBusy(false);
+    });
+  }
+  function closeSessionDetails() {
+    ++sessionRequest.current;
+    setSessionDetailsOpen(false);
+  }
   useEffect(() => {
     if (!enabled) return;
     let live = true;
@@ -138,10 +166,23 @@ export default function CustomerInsights({ products, categories, loading: produc
       </div> : (
         <>
           <div className="customer-insights-kpis" aria-live="polite">
-            {totals.map(item => <div key={item.name} className="customer-insights-kpi">
-              <span className="customer-insights-kpi-icon"><item.Icon size={23} strokeWidth={1.7} aria-hidden="true" /></span>
-              <div><strong>{busy || !data ? "—" : compact(item.value ?? 0)}</strong><span>{compactLayout ? ({ "Total product views": "Views", "Visitor sessions": "Sessions", "Product clicks": "Clicks", "Products viewed": "Products" }[item.name] ?? item.name) : item.name}</span></div>
-            </div>)}
+            {totals.map(item => {
+              const details = <>
+                <span className="customer-insights-kpi-icon"><item.Icon size={23} strokeWidth={1.7} aria-hidden="true" /></span>
+                <div><strong>{busy || !data ? "—" : compact(item.value ?? 0)}</strong><span>{compactLayout ? ({ "Total product views": "Views", "Visitor sessions": "Sessions", "Product clicks": "Clicks", "Products viewed": "Products" }[item.name] ?? item.name) : item.name}</span></div>
+              </>;
+              return item.name === "Visitor sessions"
+                ? <button key={item.name} type="button"
+                    className="customer-insights-kpi customer-insights-kpi--sessions"
+                    disabled={busy || !data?.visitorSessions}
+                    aria-label={`View details for ${compact(item.value ?? 0)} anonymous visitor sessions`}
+                    title={data?.visitorSessions ? "View session details" : "No sessions recorded"}
+                    onClick={openSessionDetails}>
+                    {details}
+                    <ArrowUpRight className="customer-insights-kpi-link" size={15} aria-hidden="true" />
+                  </button>
+                : <div key={item.name} className="customer-insights-kpi">{details}</div>;
+            })}
           </div>
           <div className="customer-insights-mid">
             <div className="customer-insights-chart-wrap">
@@ -187,6 +228,41 @@ export default function CustomerInsights({ products, categories, loading: produc
           </p>
         </>
       )}
+      {sessionDetailsOpen && <Modal
+        title="Visitor sessions"
+        eyebrow="PRODUCT VIEW ANALYTICS"
+        description={`Anonymous catalog visits · Last ${days} days (Malaysia time)`}
+        className="customer-session-dialog"
+        onClose={closeSessionDetails}>
+        {sessionBusy ? <div className="customer-session-loading" role="status">Loading session activity…</div> :
+          sessionError ? <div className="customer-session-error" role="alert">
+            <p>{sessionError}</p>
+            <button type="button" onClick={openSessionDetails}><RefreshCw size={14} /> Retry</button>
+          </div> :
+          <div className="customer-session-content">
+            <div className="customer-session-summary">
+              <strong>{compact(sessionDetails?.totalSessions ?? 0)} recorded {sessionDetails?.totalSessions === 1 ? "session" : "sessions"}</strong>
+              <span>Sessions count browser visits, not unique people.</span>
+            </div>
+            {sessionDetails?.sessions.length ? <div className="customer-session-list">
+              {sessionDetails.sessions.map(session => <article className="customer-session-item" key={session.number}>
+                <div className="customer-session-item-heading">
+                  <span className="customer-session-label"><UsersRound size={15} aria-hidden="true" /> Session {session.number}</span>
+                  <time dateTime={session.firstSeen}>{sessionTimestamp(session.firstSeen)}</time>
+                </div>
+                <div className="customer-session-events">
+                  <span>Catalog opened <strong>{session.catalogOpens}</strong></span>
+                  <span>Product views <strong>{session.productViews}</strong></span>
+                  <span>Product clicks <strong>{session.productClicks}</strong></span>
+                </div>
+                {session.lastSeen !== session.firstSeen && <p className="customer-session-last">Last activity: {sessionTimestamp(session.lastSeen)}</p>}
+              </article>)}
+            </div> : <p className="customer-session-empty">No sessions found for this period.</p>}
+            {(sessionDetails?.totalSessions ?? 0) > (sessionDetails?.sessions.length ?? 0) &&
+              <p className="customer-session-limit">Showing the latest {sessionDetails?.sessions.length} sessions.</p>}
+            <p className="customer-session-privacy">For privacy, visitor names, identities and session identifiers are not collected for this report. Admin previews are excluded.</p>
+          </div>}
+      </Modal>}
     </section>
   );
 }
