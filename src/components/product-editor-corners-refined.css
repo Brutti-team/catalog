@@ -1,0 +1,39 @@
+/* Brutti Catalog — Product Editor, refined corner geometry.
+   Less rounded without losing the premium glass surfaces or touch target sizes. */
+.admin-app.brutti-staff-redesign.catalog-os-layout dialog.modal.product-editor-dialog--editing[open],
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing {
+  border-radius: 12px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card {
+  border-radius: 10px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card > .product-editor-section-heading,
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > #brutti-media-section.brutti-editor-section-card > div.brutti-media-section-heading {
+  border-radius: 9px 9px 0 0 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card > .product-editor-section-heading > .product-editor-step {
+  border-radius: 8px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .catalog-editor-actionbar-identity > .catalog-editor-back-icon,
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .catalog-editor-header-close {
+  border-radius: 9px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .catalog-editor-header-sku,
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .catalog-editor-header-status {
+  border-radius: 7px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics :is(input:not([type="checkbox"]),textarea,.catalog-product-id-display,.catalog-editor-category-trigger) {
+  border-radius: 8px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-footer .button {
+  border-radius: 9px !important;
+}
+@media (max-width: 760px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout dialog.modal.product-editor-dialog--editing[open],
+  .admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing {
+    border-radius: 10px !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card {
+    border-radius: 9px !important;
+  }
+}
