@@ -667,3 +667,139 @@ body:has(.admin-app[data-theme="dark"]) .brutti-background-header-action {
     transition: none;
   }
 }
+
+/* Sidebar AI task dock: in the unused left rail above View public catalog.
+   It is part of the fixed sidebar layout and never overlays page content. */
+.admin-app.catalog-os-layout .sidebar > .brutti-background-sidebar-host {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+  margin-bottom: 12px;
+}
+.admin-app.catalog-os-layout .sidebar > .brutti-background-sidebar-host:empty {
+  display: none;
+}
+.admin-app.catalog-os-layout .sidebar:has(> .brutti-background-sidebar-host:not(:empty)) > .sidebar-utility {
+  margin-top: 0;
+}
+.admin-app.catalog-os-layout .sidebar .brutti-background-sidebar-task {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: 82px;
+  align-items: center;
+  padding: 11px 9px 10px 12px;
+  border-radius: 12px;
+  background: rgba(249, 253, 249, .88);
+  border: 1px solid #cadece;
+  box-shadow: 0 4px 15px rgba(31, 76, 43, .07);
+}
+.admin-app.catalog-os-layout .sidebar .brutti-background-sidebar-task .brutti-background-header-open {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  column-gap: 7px;
+  row-gap: 8px;
+  min-width: 0;
+  width: 100%;
+  align-content: center;
+}
+.admin-app.catalog-os-layout .sidebar .brutti-background-sidebar-task .brutti-background-header-label {
+  min-width: 0;
+  justify-content: flex-start;
+  font: 735 11px/1.3 "DM Sans", sans-serif;
+}
+.admin-app.catalog-os-layout .sidebar .brutti-background-sidebar-task .brutti-background-header-label > span {
+  display: inline;
+}
+.admin-app.catalog-os-layout .sidebar .brutti-background-sidebar-task .brutti-background-header-open > strong {
+  font: 760 12px/1.2 "DM Sans", sans-serif;
+}
+.admin-app.catalog-os-layout .sidebar .brutti-background-sidebar-task .brutti-background-sidebar-product {
+  grid-column: 1/-1;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  color: #718979;
+  font: 520 9.5px/1.3 "DM Sans", sans-serif;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.admin-app.catalog-os-layout .sidebar .brutti-background-sidebar-task .brutti-background-header-track {
+  grid-column: 1/-1;
+  height: 4px;
+}
+.admin-app.catalog-os-layout .sidebar .brutti-background-sidebar-task .brutti-background-header-action {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 27px;
+}
+
+/* Collapsed fixed rail: preserve a usable progress control, never overflow
+   the sidebar or make a wide floating toast. Expanding shows full details. */
+@media (min-width: 801px) {
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .sidebar .brutti-background-sidebar-task {
+    min-height: 76px;
+    flex-direction: column;
+    padding: 7px 3px;
+    gap: 5px;
+    border-radius: 10px;
+  }
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .sidebar .brutti-background-sidebar-task .brutti-background-header-open {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 6px;
+  }
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .sidebar .brutti-background-sidebar-task .brutti-background-header-label {
+    justify-content: center;
+  }
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .sidebar .brutti-background-sidebar-task .brutti-background-header-label > span,
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .sidebar .brutti-background-sidebar-task .brutti-background-sidebar-product {
+    display: none;
+  }
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .sidebar .brutti-background-sidebar-task .brutti-background-header-open > strong {
+    text-align: center;
+    font-size: 10px;
+  }
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .sidebar .brutti-background-sidebar-task .brutti-background-header-track {
+    width: 100%;
+  }
+  .admin-app.catalog-os-layout.catalog-sidebar-collapsed .sidebar .brutti-background-sidebar-task .brutti-background-header-action {
+    flex-basis: 20px;
+    width: 24px;
+    height: 20px;
+  }
+}
+/* The mobile menu is normally closed, so the running job remains reachable
+   in a tiny toolbar status only on phones/tablets. */
+.admin-app .brutti-background-task-mobile-host {
+  display: none;
+}
+@media (max-width: 800px) {
+  .admin-app.catalog-os-layout .sidebar > .brutti-background-sidebar-host {
+    display: none;
+  }
+  .admin-app .brutti-background-task-mobile-host:not(:empty) {
+    display: flex;
+    align-items: center;
+    flex: 0 0 62px;
+    width: 62px;
+    min-width: 0;
+    margin-left: auto;
+  }
+  .admin-app .brutti-background-task-mobile-host .brutti-background-header-task {
+    width: 100%;
+  }
+}
+body:has(.admin-app.catalog-os-layout[data-theme="dark"]) .sidebar .brutti-background-sidebar-task {
+  background: rgba(38, 56, 44, .94);
+  border-color: rgba(134, 178, 143, .36);
+}
+body:has(.admin-app.catalog-os-layout[data-theme="dark"]) .sidebar .brutti-background-sidebar-task .brutti-background-sidebar-product {
+  color: #b2cab9;
+}
