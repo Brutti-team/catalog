@@ -14,7 +14,7 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import type { Category, Product, ProductImage } from "../lib/types";
+import type { Category, Product, ProductImage, ProductSpecification } from "../lib/types";
 import { photoCropStyle } from "../lib/photo-crop";
 import { publicAssetUrl } from "../lib/assets";
 import ProductPrice from "./ProductPrice";
@@ -28,6 +28,16 @@ import "./public.css";
 import "./brutti-3d.css";
 import "./public-reference.css";
 const ProductModelViewer = lazy(() => import('./ProductModelViewer'));
+
+/** Preserve dimensions while showing component counts, e.g. Drawer: 2 pcs. */
+function specificationDisplayValue(item: ProductSpecification): string {
+  const quantity = Number.isInteger(item.quantity) && (item.quantity ?? 0) > 0
+    ? `${item.quantity} pcs` : "";
+  return [item.value.trim(), quantity].filter(Boolean).join(" · ");
+}
+function specificationHasContent(item: ProductSpecification): boolean {
+  return Boolean(item.name.trim() && specificationDisplayValue(item));
+}
 
 interface Props {
   products: Product[];
@@ -755,8 +765,8 @@ export default function PublicCatalog({
                     {(!previewProduct ||
                       Boolean(product.materials?.trim()) ||
                       [product.width, product.depth, product.height].every(value => Number.isFinite(value) && value > 0) ||
-                      specificationGroups.primary.some(item => item.name.trim() && item.value.trim()) ||
-                      specificationGroups.sections.some(section => section.rows.some(item => item.name.trim() && item.value.trim()))
+                      specificationGroups.primary.some(item => specificationHasContent(item)) ||
+                      specificationGroups.sections.some(section => section.rows.some(item => specificationHasContent(item)))
                     ) && <div className="pub-specifications">
                       <h2>The details</h2>
                       <dl>
@@ -779,10 +789,10 @@ export default function PublicCatalog({
                           <dt>Category</dt>
                           <dd>{categoryName(product.categoryId)}</dd>
                         </div>
-                        {specificationGroups.primary.filter(item => !previewProduct || (item.name.trim() && item.value.trim())).map((item) => (
+                        {specificationGroups.primary.filter(item => !previewProduct || (specificationHasContent(item))).map((item) => (
                           <div key={item.id}>
                             <dt>{item.name}</dt>
-                            <dd>{item.value}</dd>
+                            <dd>{specificationDisplayValue(item)}</dd>
                           </div>
                         ))}
                         <div className={previewProduct ? "catalog-preview-hidden-meta" : ""}>
@@ -790,14 +800,14 @@ export default function PublicCatalog({
                           <dd>{product.sku}</dd>
                         </div>
                       </dl>
-                      {specificationGroups.sections.filter(section => !previewProduct || section.rows.some(item => item.name.trim() && item.value.trim())).map(section => (
+                      {specificationGroups.sections.filter(section => !previewProduct || section.rows.some(item => specificationHasContent(item))).map(section => (
                         <div className="pub-spec-section" key={section.id}>
                           <h3>{section.title}</h3>
                           <dl>
-                            {section.rows.filter(item => !previewProduct || (item.name.trim() && item.value.trim())).map(item => (
+                            {section.rows.filter(item => !previewProduct || (specificationHasContent(item))).map(item => (
                               <div key={item.id}>
                                 <dt>{item.name}</dt>
-                                <dd>{item.value}</dd>
+                                <dd>{specificationDisplayValue(item)}</dd>
                               </div>
                             ))}
                           </dl>
