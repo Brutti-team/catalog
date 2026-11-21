@@ -571,6 +571,9 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
                       <span>Refining photo</span>
                       <strong>{aiPercent ?? 1}%</strong>
                     </div>
+                    <div className="brutti-photo-studio-ai-image-track">
+                      <span style={{ width: `${aiPercent ?? 1}%` }} />
+                    </div>
                   </div>
                 )}
                 {showAiReveal && !aiBusy && (
