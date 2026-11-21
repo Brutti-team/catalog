@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
-  ArrowUpRight, ChartNoAxesCombined, ChevronDown, Eye, Layers3, MousePointerClick,
+  ChartNoAxesCombined, ChevronDown, Eye, Layers3, MousePointerClick,
   RefreshCw, UsersRound, Zap
 } from "lucide-react";
 import SafeImage from "./SafeImage";
@@ -188,7 +188,6 @@ export default function CustomerInsights({ products, categories, loading: produc
                   title={`View ${item.name.toLowerCase()} details`}
                   onClick={() => openMetricDetails(item.key)}>
                   {details}
-                  <ArrowUpRight className="customer-insights-kpi-link" size={15} aria-hidden="true" />
                 </button>;
             })}
           </div>
