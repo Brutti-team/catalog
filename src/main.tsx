@@ -78,6 +78,7 @@ import "./components/product-editor-header-color.css";
 import "./components/product-editor-neutral-palette.css";
 import "./components/catalog-products-gallery-minimal.css";
 import "./components/photo-studio-premium.css";
+import "./components/photo-studio-interactive-fixes.css";
 import "./components/catalog-products-table-glass.css";
 import "./components/catalog-dark-mode-charcoal.css";
 import "./components/catalog-overview-premium-glass.css";
