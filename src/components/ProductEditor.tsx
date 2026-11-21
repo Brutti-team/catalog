@@ -6,7 +6,6 @@ import {
   Plus,
   Box,
   ArrowLeft,
-  ArrowRight,
   X,
   Eye,
   Save,
@@ -15,9 +14,10 @@ import {
   CheckCircle2,
   Circle,
   Upload,
-  Download,
   Crop,
   MoreHorizontal,
+  Pencil,
+  Trash2,
   Image as ImageIcon,
 } from "lucide-react";
 import type { Product, Category, ProductImage } from "../lib/types";
@@ -36,7 +36,6 @@ import PhotoCoverStudio from "./PhotoCoverStudio";
 import AlbumLibrary from "./AlbumLibrary";
 import { albumPhotoToProductImage, type AlbumPhoto } from "../lib/album";
 import { photoCropStyle } from "../lib/photo-crop";
-import { downloadCatalogPhoto } from "../lib/photo-download";
 import { splitSpecifications } from "../lib/specification-groups";
 
 export type CatalogEditorNavigation = "overview" | "products" | "categories" | "users" | "activity" | "catalog";
@@ -264,14 +263,6 @@ export default function ProductEditor({
     }
     closing.current = false;
     if (mounted.current) setBusy(false);
-  }
-  function move(index: number, step: number) {
-    const images = [...draft.images];
-    [images[index], images[index + step]] = [
-      images[index + step],
-      images[index],
-    ];
-    update("images", images);
   }
   const publishChecks = [
     { label: "Name, Product ID & category", done: draft.name.trim().length >= 2 && !!draft.sku.trim() && !!draft.categoryId },
@@ -616,35 +607,26 @@ export default function ProductEditor({
                       </button>
                       <button type="button" className="brutti-media-more"
                         aria-expanded={photoMenuId===img.id}
+                        aria-haspopup="menu"
                         aria-label={`More actions for photo ${index+1}`}
                         title="Photo options"
                         onClick={()=>setPhotoMenuId(current=>current===img.id?null:img.id)}>
                         <MoreHorizontal size={19} aria-hidden="true"/>
                       </button>
-                      {photoMenuId===img.id && <div className="brutti-media-photo-menu">
-                        <button type="button" onClick={()=>{setPreviewPhotoId(img.id);setPhotoMenuId(null);}}><Eye size={15}/> View photo</button>
-                        <button type="button" disabled={busy||uploading}
-                          onClick={()=>{setEditingPhotoId(img.id);setPhotoMenuId(null);}}><Crop size={15}/> Crop &amp; rotate</button>
-                        <button type="button" disabled={busy||uploading||draft.images.length>=8}
-                          onClick={()=>{setEditingCoverId(img.id);setPhotoMenuId(null);}}><ImagePlus size={15}/> Cover Studio</button>
-                        {index!==0 && <button type="button" onClick={()=>{
-                          update("images",[img,...draft.images.filter(item=>item.id!==img.id)]);setPhotoMenuId(null);
-                        }}><CheckCircle2 size={15}/> Set as cover</button>}
-                        <button type="button" disabled={index===0} onClick={()=>{move(index,-1);setPhotoMenuId(null);}}><ArrowLeft size={15}/> Move earlier</button>
-                        <button type="button" disabled={index===draft.images.length-1} onClick={()=>{move(index,1);setPhotoMenuId(null);}}><ArrowRight size={15}/> Move later</button>
-                        <button type="button" disabled={busy||uploading} onClick={()=>{
+                      {photoMenuId===img.id && <div className="brutti-media-photo-menu" role="menu" aria-label={`Photo ${index+1} actions`} onKeyDown={event=>{
+                        if (event.key==="Escape") { event.stopPropagation(); setPhotoMenuId(null); }
+                      }}>
+                        <button type="button" role="menuitem" disabled={busy||uploading}
+                          onClick={()=>{setEditingPhotoId(img.id);setPhotoMenuId(null);}}>
+                          <Pencil size={15} aria-hidden="true"/> Edit
+                        </button>
+                        <button type="button" role="menuitem" className="is-danger" disabled={busy||uploading} onClick={()=>{
                           setPhotoMenuId(null);
-                          void downloadCatalogPhoto({url:img.url,storagePath:img.storagePath,name:img.alt||draft.name},"jpg")
-                            .catch(cause=>setError(cause instanceof Error?cause.message:"Photo download failed."));
-                        }}><Download size={15}/> Download JPG</button>
-                        <label className="brutti-media-photo-caption-label">
-                          Description
-                          <input aria-label={`Photo ${index+1} description`} value={img.alt}
-                            maxLength={160} onChange={event=>update("images",draft.images.map(item=>item.id===img.id?{...item,alt:event.target.value}:item))}/>
-                        </label>
-                        <button type="button" className="is-danger" disabled={busy||uploading} onClick={()=>{
-                          update("images",draft.images.filter(item=>item.id!==img.id));setPhotoMenuId(null);
-                        }}><X size={15}/> Remove photo</button>
+                          if (!window.confirm("Delete this photo from the product? It will be removed when you save. The original Album photo will remain.")) return;
+                          setDraft(current=>({...current,images:current.images.filter(item=>item.id!==img.id)}));
+                        }}>
+                          <Trash2 size={15} aria-hidden="true"/> Delete
+                        </button>
                       </div>}
                     </div>
                   ))}
