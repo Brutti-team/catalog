@@ -574,7 +574,7 @@
 .admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-gallery-body::before {
   content: "";
   position: absolute;
-  z-index: -1;
+  z-index: 0;
   width: 175%;
   height: 170px;
   left: -35%;
@@ -586,6 +586,10 @@
 }
 .admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card:is(:hover,:focus-visible) .catalog-gallery-body::before {
   top: 140px;
+}
+.admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-gallery-body > * {
+  position: relative;
+  z-index: 1;
 }
 .admin-app.brutti-staff-redesign[data-active-tab="products"] .catalog-products-panel .catalog-gallery-body > strong {
   min-height: 49px;
