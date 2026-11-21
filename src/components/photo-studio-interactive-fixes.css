@@ -364,3 +364,106 @@
     width: 50%;
   }
 }
+
+/* AI processing preview: a restrained green scan travels across the photo
+   without altering the original pixels, exported crop, or background mask. */
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(130deg, rgba(22, 104, 68, .045), transparent 40%, rgba(70, 150, 99, .085));
+  box-shadow: inset 0 0 0 1px rgba(184, 242, 194, .46), inset 0 0 28px rgba(37, 124, 80, .1);
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: -27%;
+  left: 0;
+  width: 100%;
+  height: 27%;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    rgba(76, 201, 139, .045) 39%,
+    rgba(115, 237, 163, .22) 93%,
+    rgba(161, 255, 193, .8) 100%);
+  border-bottom: 1px solid rgba(200, 255, 216, .93);
+  box-shadow: 0 3px 16px rgba(85, 238, 153, .35), 0 8px 36px rgba(74, 180, 118, .14);
+  animation: brutti-photo-ai-scan 2.8s linear infinite;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: .16;
+  background: repeating-linear-gradient(0deg,
+    transparent 0, transparent 10px, rgba(170, 239, 187, .2) 11px, transparent 12px);
+  animation: brutti-photo-ai-grid 2.8s ease-in-out infinite;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview-indicator {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
+  max-width: calc(100% - 24px);
+  padding: 4px 10px;
+  background: rgba(23, 50, 37, .87);
+  border: 1px solid rgba(172, 241, 197, .34);
+  border-radius: 9px;
+  box-shadow: 0 5px 15px rgba(0,0,0,.16);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #eafbed;
+  font: 650 11px/1.3 "DM Sans", sans-serif;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview-indicator svg {
+  flex: none;
+  color: #a6efbd;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview-indicator strong {
+  margin-left: 5px;
+  color: #c3f7d2;
+  font: 800 13px/1.3 "DM Sans", sans-serif;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-estimate-note {
+  color: #809184;
+  font: 520 10px/1.4 "DM Sans", sans-serif;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-progress progress {
+  transition: width .18s linear;
+}
+@keyframes brutti-photo-ai-scan {
+  0% { top: -27%; }
+  100% { top: 100%; }
+}
+@keyframes brutti-photo-ai-grid {
+  0%,100% { opacity: .08; }
+  50% { opacity: .23; }
+}
+@media (max-width: 640px) {
+  .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview-indicator {
+    left: 8px; top: 8px;
+    min-height: 26px;
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview::before,
+  .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview::after {
+    animation: none !important;
+  }
+  .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-ai-preview::before {
+    top: 45%;
+  }
+}
