@@ -165,7 +165,8 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
   const protectPanels = /cabinet|cupboard|wardrobe|door|drawer|dresser|counter|panel/i.test(image.alt || "");
   const [aiBusy, setAiBusy] = useState(false);
   const [aiProgress, setAiProgress] = useState("");
-  const [aiPercent, setAiPercent] = useState(0);
+  const [aiPercent, setAiPercent] = useState<number | null>(null);
+  const [aiStage, setAiStage] = useState<"preparing" | "download" | "processing">("preparing");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -228,7 +229,8 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     stopAICutout();
     setAiBusy(false);
     setAiProgress("");
-    setAiPercent(0);
+    setAiPercent(null);
+    setAiStage("preparing");
   }
 
   function reset() {
@@ -247,7 +249,8 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     const run = ++aiRun.current;
     setAiBusy(true);
     setAiProgress("Preparing local AI model…");
-    setAiPercent(3);
+    setAiStage("preparing");
+    setAiPercent(null);
     setError("");
     try {
       // Keep detailed AI but reduce pre-processing pixels, while preserving
@@ -265,10 +268,12 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
       try { context.getImageData(0, 0, 1, 1); }
       catch { throw new Error("This photo host blocks background removal. Re-upload the image to Brutti Album."); }
       const localSource: CoverSource = { canvas: sourceCanvas, width: w, height: h };
-      const result = await aiFurnitureCutout(localSource, (message, percent) => {
+      const result = await aiFurnitureCutout(localSource, (message, percent, phase) => {
         if (run !== aiRun.current) return;
         setAiProgress(message);
-        if (typeof percent === "number") setAiPercent(current => Math.max(current, Math.min(95, percent)));
+        setAiStage(phase ?? "processing");
+        // File byte progress is measurable, but ONNX inference is not.
+        setAiPercent(phase === "download" && typeof percent === "number" ? percent : null);
       }, "detail", protectPanels);
       if (run !== aiRun.current) return;
       const maskPixels = result.getContext("2d", { willReadFrequently: true })
@@ -316,10 +321,12 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
       setPreviewOriginal(false);
       setAiProgress("Cutout finished. Review any remaining edges before applying.");
       setAiPercent(100);
+      setAiStage("processing");
     } catch (reason) {
       if (run !== aiRun.current) return;
       setAiProgress("");
-      setAiPercent(0);
+      setAiPercent(null);
+      setAiStage("preparing");
       setError(reason instanceof Error ? reason.message : "Could not remove this background.");
     } finally {
       if (run === aiRun.current) setAiBusy(false);
@@ -624,16 +631,33 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                 {aiBusy && <button type="button" className="brutti-photo-studio-cancel-ai"
                   onClick={cancelAI}>Cancel processing</button>}
                 {(aiBusy || (hasCutout && aiPercent === 100)) && (
-                  <div className="brutti-photo-studio-progress" aria-label="AI progress estimate">
+                  <div className="brutti-photo-studio-progress"
+                    aria-label="Background removal status" aria-busy={aiBusy}>
                     <div className="brutti-photo-studio-progress-head">
-                      <strong>{aiBusy ? "Processing AI cutout" : "AI processing finished"}</strong>
-                      <output>{aiPercent}%</output>
+                      <strong>
+                        {aiBusy
+                          ? aiStage === "download" ? "Downloading AI model"
+                            : aiStage === "preparing" ? "Preparing AI" : "Removing background"
+                          : "Background removal finished"}
+                      </strong>
+                      <output>
+                        {aiBusy
+                          ? aiStage === "download" && aiPercent !== null
+                            ? `${aiPercent}% of file`
+                            : <LoaderCircle size={17} className="spin" aria-label="Working"/>
+                          : "100%"}
+                      </output>
                     </div>
-                    <progress max={100} value={aiPercent} aria-label="AI processing estimated percent"/>
+                    <progress max={100}
+                      value={aiBusy
+                        ? aiStage === "download" ? aiPercent ?? undefined : undefined
+                        : 100}
+                      aria-label={aiStage === "download" && aiBusy
+                        ? "Current AI model file download" : "Background removal progress"}/>
                     <small role="status" aria-live="polite">
-                      {aiProgress || (aiBusy
-                        ? "Preparing detailed AI…"
-                        : "Check remaining edges and use the cleanup brush if needed.")}
+                      {aiBusy
+                        ? aiProgress || "Preparing background removal…"
+                        : "Cutout complete. Inspect furniture edges before saving."}
                     </small>
                   </div>
                 )}
@@ -727,7 +751,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                     onClick={() => {
                       setBackground("original"); setCutout(null);
                       workingCutout.current = null; setMaskRevision(v => v + 1);
-                      setBrushMode(null); setPreviewOriginal(false); setAiProgress(""); setAiPercent(0);
+                      setBrushMode(null); setPreviewOriginal(false); setAiProgress(""); setAiPercent(null); setAiStage("preparing");
                     }}>
                     <RotateCcw size={15}/> Restore original background
                   </button>
