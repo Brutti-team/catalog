@@ -148,3 +148,17 @@
     transform: none !important;
   }
 }
+
+/* Seamless editor edge: remove the bright outside white perimeter. */
+.admin-app.brutti-staff-redesign.catalog-os-layout dialog.modal.product-editor-dialog--editing[open] {
+  border: 0 !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+  background-clip: border-box;
+  box-shadow: 0 30px 90px rgba(13,37,24,.25), 0 8px 24px rgba(12,42,24,.11) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] dialog.modal.product-editor-dialog--editing[open] {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: 0 32px 90px rgba(0,0,0,.46), 0 8px 24px rgba(0,0,0,.18) !important;
+}
