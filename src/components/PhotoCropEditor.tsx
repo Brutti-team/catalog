@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import {
   Check, CheckCircle2, Crop, FlipHorizontal2, Image as ImageIcon,
   LoaderCircle, Palette, RotateCcw, RotateCw, Scan,
@@ -94,13 +94,13 @@ function drawPhoto(
   background: Backdrop,
   custom: string,
   angle: number, zoom: number, pan: Pan, mirror: boolean,
-  previewOriginal = false, edgeStrength = 0,
+  previewOriginal = false,
 ) {
   const ctx = output.getContext("2d");
   if (!ctx) throw new Error("Could not open the photo canvas.");
   const { width, height } = output;
   const showCutout = !!cutout && background !== "original" && !previewOriginal;
-  const graphic = showCutout && cutout ? refineCutout(cutout, edgeStrength) : original;
+  const graphic = showCutout && cutout ? cutout : original;
   const sw = showCutout ? cutout.width : original.naturalWidth;
   const sh = showCutout ? cutout.height : original.naturalHeight;
   ctx.clearRect(0, 0, width, height);
@@ -149,6 +149,8 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
   const totalAngle = quarterTurn + tilt;
   const width = 900, height = Math.round(width / aspectRatios[ratio]);
   const hasCutout = !!cutout;
+  // Apply alpha correction once when the slider changes, not for every drag frame.
+  const refinedCutout = useMemo(() => cutout ? refineCutout(cutout, edgeStrength) : null, [cutout, edgeStrength]);
 
   useEffect(() => {
     let active = true;
@@ -175,12 +177,12 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
       const canvas = canvasRef.current;
       if (canvas.width !== width) canvas.width = width;
       if (canvas.height !== height) canvas.height = height;
-      drawPhoto(canvas, source, cutout, background, customColor,
-        totalAngle, zoom, pan, mirror, previewOriginal, edgeStrength);
+      drawPhoto(canvas, source, refinedCutout, background, customColor,
+        totalAngle, zoom, pan, mirror, previewOriginal);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Unable to preview this photo.");
     }
-  }, [source, cutout, background, customColor, totalAngle, zoom, pan, mirror, previewOriginal, edgeStrength, width, height]);
+  }, [source, refinedCutout, background, customColor, totalAngle, zoom, pan, mirror, previewOriginal, width, height]);
 
   function cancelAI() {
     aiRun.current++;
@@ -296,8 +298,8 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
       full.height = Math.round(full.width / aspectRatios[ratio]);
       // Export EXACTLY what the draggable crop handles enclose. "Before"
       // remains preview-only; edits never change the original Album file.
-      drawPhoto(full, source, cutout, background, customColor,
-        totalAngle, zoom, pan, mirror, false, edgeStrength);
+      drawPhoto(full, source, refinedCutout, background, customColor,
+        totalAngle, zoom, pan, mirror, false);
       const output = document.createElement("canvas");
       output.width = Math.max(64, Math.round(full.width * crop.w));
       output.height = Math.max(64, Math.round(full.height * crop.h));
@@ -461,6 +463,16 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                 </button>
                 {aiBusy && <button type="button" className="brutti-photo-studio-cancel-ai"
                   onClick={cancelAI}>Cancel processing</button>}
+                {aiBusy && (
+                  <div className="brutti-photo-studio-progress" aria-label="AI progress estimate">
+                    <div className="brutti-photo-studio-progress-head">
+                      <strong>Processing AI cutout</strong>
+                      <output>{aiPercent}%</output>
+                    </div>
+                    <progress max={100} value={aiPercent} aria-label="AI processing estimated percent"/>
+                    <small>Estimated by processing stage; inference speed depends on your device.</small>
+                  </div>
+                )}
                 {aiProgress && <p role="status" className="brutti-photo-studio-ai-status">{aiProgress}</p>}
                 <div className="brutti-photo-studio-control-group">
                   <label>Background colour</label>
@@ -492,6 +504,17 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                     </label>
                   </div>
                 </div>
+                {hasCutout && (
+                  <div className="brutti-photo-studio-control-group">
+                    <label htmlFor="brutti-edge-cleanup">Edge cleanup <output>{edgeStrength}%</output></label>
+                    <input id="brutti-edge-cleanup" type="range" min="0" max="100" step="1"
+                      disabled={locked} value={edgeStrength}
+                      onChange={event => setEdgeStrength(Number(event.target.value))}/>
+                    <p className="brutti-photo-studio-muted">
+                      Increase to clear pale leftover backgrounds. Reduce it if thin furniture edges disappear.
+                    </p>
+                  </div>
+                )}
                 <div className="brutti-photo-studio-control-group">
                   <button type="button" className="brutti-photo-studio-original"
                     disabled={!hasCutout || locked}
