@@ -7,9 +7,9 @@ import type { CoverSource } from "./cover-studio-canvas";
  * Worker and model: src/workers/ai-cutout.worker.ts
  * Model: https://huggingface.co/onnx-community/ormbg-ONNX
  */
-export type AICutoutProgress = (message: string) => void;
+export type AICutoutProgress = (message: string, percent?: number) => void;
 type WorkerMessage =
-  | { type: "progress"; message: string }
+  | { type: "progress"; message: string; percent?: number }
   | { type: "done"; rgba: ArrayBuffer; width: number; height: number }
   | { type: "error"; message: string };
 
@@ -47,7 +47,7 @@ export async function aiFurnitureCutout(
     worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
       if (requestId !== nextRequestId) return;
       const data = event.data;
-      if (data.type === "progress") { onProgress?.(data.message); return; }
+      if (data.type === "progress") { onProgress?.(data.message, data.percent); return; }
       // Keep worker alive while this Cover Studio is open; retain model in RAM.
       cancelPending = undefined;
       if (data.type === "error") {
