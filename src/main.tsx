@@ -36,7 +36,6 @@ import "./components/category-filter-premium.css";
 import "./components/catalog-os-topbar.css";
 import "./components/product-editor-specifications-premium.css";
 import "./components/customer-insights.css";
-import "./components/catalog-latest-updates-refine.css";
 import "./components/product-editor-no-sidebar.css";
 import "./components/product-editor-category-premium.css";
 import "./components/catalog-categories-refined.css";
@@ -97,6 +96,7 @@ import "./components/catalog-category-photo-glass-cards.css";
 import "./components/product-editor-media-preview-glass.css";
 import "./components/photo-background-task.css";
 import "./components/album-product-editor-parity.css";
+import "./components/catalog-latest-updates-refine.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
