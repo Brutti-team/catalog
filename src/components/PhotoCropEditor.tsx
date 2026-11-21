@@ -20,6 +20,33 @@ type Ratio = "4:3" | "1:1" | "3:4" | "9:16";
 type Tool = "crop" | "background";
 type Backdrop = "original" | "transparent" | "white" | "cream" | "sage" | "forest" | "charcoal" | "custom";
 type Pan = { x: number; y: number };
+type CropRect = { x: number; y: number; w: number; h: number };
+type CropHandle = "nw" | "n" | "ne" | "e" | "se" | "s" | "sw" | "w";
+const initialCrop = (): CropRect => ({ x: 0, y: 0, w: 1, h: 1 });
+const cropHandles: CropHandle[] = ["nw","n","ne","e","se","s","sw","w"];
+
+// The user can refine soft matte edges without altering the source image.
+// The threshold is adjustable because furniture can be white or dark.
+function refineCutout(source: HTMLCanvasElement, strength: number): HTMLCanvasElement {
+  if (strength <= 0) return source;
+  const output = document.createElement("canvas");
+  output.width = source.width;
+  output.height = source.height;
+  const ctx = output.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return source;
+  ctx.drawImage(source, 0, 0);
+  const pixels = ctx.getImageData(0, 0, output.width, output.height);
+  const t = strength / 100;
+  const lower = t * 175;
+  const upper = 255 - t * 11;
+  for (let i = 3; i < pixels.data.length; i += 4) {
+    const alpha = pixels.data[i];
+    const fraction = clamp((alpha - lower) / Math.max(1, upper - lower), 0, 1);
+    pixels.data[i] = Math.round(255 * fraction * fraction * (3 - 2 * fraction));
+  }
+  ctx.putImageData(pixels, 0, 0);
+  return output;
+}
 
 const aspectRatios: Record<Ratio, number> = {
   "4:3": 4 / 3, "1:1": 1, "3:4": 3 / 4, "9:16": 9 / 16,
@@ -67,13 +94,13 @@ function drawPhoto(
   background: Backdrop,
   custom: string,
   angle: number, zoom: number, pan: Pan, mirror: boolean,
-  previewOriginal = false,
+  previewOriginal = false, edgeStrength = 0,
 ) {
   const ctx = output.getContext("2d");
   if (!ctx) throw new Error("Could not open the photo canvas.");
   const { width, height } = output;
   const showCutout = !!cutout && background !== "original" && !previewOriginal;
-  const graphic = showCutout ? cutout : original;
+  const graphic = showCutout && cutout ? refineCutout(cutout, edgeStrength) : original;
   const sw = showCutout ? cutout.width : original.naturalWidth;
   const sh = showCutout ? cutout.height : original.naturalHeight;
   ctx.clearRect(0, 0, width, height);
@@ -102,17 +129,23 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
   const [zoom, setZoom] = useState(1);
   const [mirror, setMirror] = useState(false);
   const [pan, setPan] = useState<Pan>({ x: 0, y: 0 });
+  const [crop, setCrop] = useState<CropRect>(initialCrop);
+  const [edgeStrength, setEdgeStrength] = useState(26);
   const [cutout, setCutout] = useState<HTMLCanvasElement | null>(null);
   const [background, setBackground] = useState<Backdrop>("original");
   const [customColor, setCustomColor] = useState("#e5dfd3");
   const [previewOriginal, setPreviewOriginal] = useState(false);
   const [aiBusy, setAiBusy] = useState(false);
   const [aiProgress, setAiProgress] = useState("");
+  const [aiPercent, setAiPercent] = useState(0);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const aiRun = useRef(0);
-  const gesture = useRef<{ id: number; x: number; y: number; px: number; py: number } | null>(null);
+  const gesture = useRef<{
+    id: number; x: number; y: number; px: number; py: number;
+    mode: "pan" | "crop"; handle?: CropHandle; startCrop: CropRect;
+  } | null>(null);
   const totalAngle = quarterTurn + tilt;
   const width = 900, height = Math.round(width / aspectRatios[ratio]);
   const hasCutout = !!cutout;
@@ -143,22 +176,24 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
       if (canvas.width !== width) canvas.width = width;
       if (canvas.height !== height) canvas.height = height;
       drawPhoto(canvas, source, cutout, background, customColor,
-        totalAngle, zoom, pan, mirror, previewOriginal);
+        totalAngle, zoom, pan, mirror, previewOriginal, edgeStrength);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Unable to preview this photo.");
     }
-  }, [source, cutout, background, customColor, totalAngle, zoom, pan, mirror, previewOriginal, width, height]);
+  }, [source, cutout, background, customColor, totalAngle, zoom, pan, mirror, previewOriginal, edgeStrength, width, height]);
 
   function cancelAI() {
     aiRun.current++;
     stopAICutout();
     setAiBusy(false);
     setAiProgress("");
+    setAiPercent(0);
   }
 
   function reset() {
     if (aiBusy) cancelAI();
-    setPan({ x: 0, y: 0 }); setZoom(1); setTilt(0); setQuarterTurn(0);
+    setPan({ x: 0, y: 0 }); setCrop(initialCrop()); setEdgeStrength(26);
+    setZoom(1); setTilt(0); setQuarterTurn(0);
     setMirror(false); setCutout(null); setBackground("original");
     setCustomColor("#e5dfd3"); setPreviewOriginal(false);
     setRatio(source && source.naturalHeight > source.naturalWidth ? "3:4" : "4:3");
@@ -170,10 +205,11 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     const run = ++aiRun.current;
     setAiBusy(true);
     setAiProgress("Preparing local AI model…");
+    setAiPercent(3);
     setError("");
     try {
       // Keep inference within the worker's existing 1100-pixel limit.
-      const factor = Math.min(1, 1100 / Math.max(source.naturalWidth, source.naturalHeight));
+      const factor = Math.min(1, 768 / Math.max(source.naturalWidth, source.naturalHeight));
       const w = Math.max(1, Math.round(source.naturalWidth * factor));
       const h = Math.max(1, Math.round(source.naturalHeight * factor));
       const sourceCanvas = document.createElement("canvas");
@@ -185,17 +221,23 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
       try { context.getImageData(0, 0, 1, 1); }
       catch { throw new Error("This photo host blocks background removal. Re-upload the image to Brutti Album."); }
       const localSource: CoverSource = { canvas: sourceCanvas, width: w, height: h };
-      const result = await aiFurnitureCutout(localSource, message => {
-        if (run === aiRun.current) setAiProgress(message);
+      const result = await aiFurnitureCutout(localSource, (message, percent) => {
+        if (run !== aiRun.current) return;
+        setAiProgress(message);
+        if (typeof percent === "number") setAiPercent(current => Math.max(current, Math.min(95, percent)));
       });
       if (run !== aiRun.current) return;
       setCutout(result);
-      setBackground("cream");
+      // First show true transparency with a checkerboard. Pale cream is an
+      // intentional optional colour, never an automatic background replacement.
+      setBackground("transparent");
       setPreviewOriginal(false);
-      setAiProgress("Background removed. Review the edges before saving.");
+      setAiProgress("AI cutout ready. Inspect the checkerboard and refine any remaining edges.");
+      setAiPercent(100);
     } catch (reason) {
       if (run !== aiRun.current) return;
       setAiProgress("");
+      setAiPercent(0);
       setError(reason instanceof Error ? reason.message : "Could not remove this background.");
     } finally {
       if (run === aiRun.current) setAiBusy(false);
