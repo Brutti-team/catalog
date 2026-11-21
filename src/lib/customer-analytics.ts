@@ -44,6 +44,46 @@ export async function loadCustomerInsights(days: InsightPeriod): Promise<Custome
   };
 }
 
+export type CustomerSessionSummary = {
+  number: number;
+  firstSeen: string;
+  lastSeen: string;
+  catalogOpens: number;
+  productViews: number;
+  productClicks: number;
+};
+export type CustomerSessionDetails = {
+  totalSessions: number;
+  sessions: CustomerSessionSummary[];
+};
+
+/** Administrator-only anonymous session summary. Session IDs and visitor identities
+ * are deliberately not returned by the database RPC. */
+export async function loadCustomerSessionDetails(days: InsightPeriod): Promise<CustomerSessionDetails> {
+  const { data, error } = await catalogClient().rpc("catalog_customer_session_details", { p_days: days });
+  if (error) throw new Error("Unable to load session details. " + error.message);
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    throw new Error("Customer sessions returned an invalid response.");
+  }
+  const raw = data as Record<string, unknown>;
+  const count = (n: unknown): number => typeof n === "number" && Number.isFinite(n) ? Math.max(0, Math.trunc(n)) : 0;
+  const sessions = Array.isArray(raw.sessions) ? raw.sessions.flatMap((row: unknown) => {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return [];
+    const item = row as Record<string, unknown>;
+    if (typeof item.firstSeen !== "string" || typeof item.lastSeen !== "string") return [];
+    if (!Number.isFinite(Date.parse(item.firstSeen)) || !Number.isFinite(Date.parse(item.lastSeen))) return [];
+    return [{
+      number: count(item.number),
+      firstSeen: item.firstSeen,
+      lastSeen: item.lastSeen,
+      catalogOpens: count(item.catalogOpens),
+      productViews: count(item.productViews),
+      productClicks: count(item.productClicks),
+    }];
+  }) : [];
+  return { totalSessions: count(raw.totalSessions), sessions };
+}
+
 let sessionToken: string | null = null;
 const recentEvents = new Map<string, number>();
 
