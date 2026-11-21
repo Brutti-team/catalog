@@ -193,3 +193,70 @@
 #product-editor-specs .catalog-spec-row-description::placeholder,
 .admin-app.brutti-staff-redesign[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
 #product-editor-specs .catalog-spec-row-quantity input::placeholder {color:#aebfb1}
+
+
+/* 21 Nov — Measurement first field is now a selectable label, with a Custom
+   fallback for legacy/bespoke measurements (Pipe diameter etc.). */
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-specs .catalog-spec-measurement-row > .catalog-spec-measurement-name {
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+}
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-specs .catalog-spec-measurement-name > :is(select,input) {
+  box-sizing:border-box !important;
+  width:100% !important;
+  min-width:0 !important;
+  height:46px !important;
+  min-height:46px !important;
+  padding:0 36px 0 13px !important;
+  margin:0 !important;
+  border:1px solid #d1e1d5 !important;
+  border-radius:11px !important;
+  color:#294733 !important;
+  background-color:#fff !important;
+  box-shadow:0 1px 2px rgba(28,65,38,.035) !important;
+  font:580 12px/1.4 "DM Sans",sans-serif !important;
+}
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-specs .catalog-spec-measurement-name > select {
+  appearance:auto;
+  cursor:pointer;
+}
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-specs .catalog-spec-measurement-name > input {
+  padding-right:13px !important;
+}
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-specs .catalog-spec-measurement-name > :is(select,input):focus-visible {
+  border-color:#78ad89 !important;
+  outline:2px solid rgba(99,159,115,.22) !important;
+  outline-offset:1px;
+}
+@media (max-width:1050px) {
+  .admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-specs :is(.catalog-spec-base-rows,.catalog-spec-new-section-rows)
+  > .catalog-spec-measurement-row > .catalog-spec-measurement-name {
+    grid-column:1 !important;
+    grid-row:1 !important;
+  }
+}
+@media (max-width:580px) {
+  .admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-specs :is(.catalog-spec-base-rows,.catalog-spec-new-section-rows)
+  > .catalog-spec-measurement-row > .catalog-spec-measurement-name {
+    grid-column:1 !important;
+    grid-row:1 !important;
+  }
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-specs .catalog-spec-measurement-name > :is(select,input) {
+  background-color:#294434 !important;
+  color:#e3f0e6 !important;
+  border-color:#53705b !important;
+  color-scheme:dark;
+}
