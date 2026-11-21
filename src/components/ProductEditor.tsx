@@ -437,11 +437,23 @@ export default function ProductEditor({
                 <strong title={draft.name}>{draft.name || "Untitled product"}</strong>
               </div>
             </div>
-            <div className="catalog-editor-header-meta" aria-label="Product information">
-              <span className="catalog-editor-header-sku">{draft.sku || "New product"}</span>
-              <span className={`catalog-editor-header-status catalog-editor-header-status--${draft.status}`}>
-                {draft.status === "published" ? "Published" : draft.status === "archived" ? "Archived" : "Draft"}
-              </span>
+            <div className="catalog-editor-header-actions">
+              <div className="catalog-editor-header-meta" aria-label="Product information">
+                <span className="catalog-editor-header-sku">{draft.sku || "New product"}</span>
+                <span className={`catalog-editor-header-status catalog-editor-header-status--${draft.status}`}>
+                  {draft.status === "published" ? "Published" : draft.status === "archived" ? "Archived" : "Draft"}
+                </span>
+              </div>
+              <button
+                type="button"
+                className="catalog-editor-header-close"
+                aria-label="Close product editor"
+                title="Close editor"
+                disabled={busy || uploading}
+                onClick={() => void requestClose()}
+              >
+                <X size={20} strokeWidth={1.9} aria-hidden="true" />
+              </button>
             </div>
           </header>
         )}
@@ -954,14 +966,6 @@ export default function ProductEditor({
             Changes are saved when you select Save.
           </span>
           <div className="button-row">
-            <button
-              className="button secondary"
-              type="button"
-              disabled={busy || uploading}
-              onClick={() => void requestClose()}
-            >
-              Cancel
-            </button>
             <button
               className="button primary"
               disabled={busy || uploading || modelPending || modelInvalid}
