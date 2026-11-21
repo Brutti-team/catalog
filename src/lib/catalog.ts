@@ -246,14 +246,15 @@ export function validateProduct(product: Product): void {
     typeof row.value !== "string" || row.value.length > 400 ||
     (row.description !== undefined && (typeof row.description !== "string" || row.description.length > 400)) ||
     (row.quantity !== undefined && (!Number.isInteger(row.quantity) || row.quantity < 1 || row.quantity > 9999)) ||
-    (row.kind !== undefined && row.kind !== "section" && row.kind !== "measurement") ||
-    (row.kind !== "section" && !row.value.trim() && !row.quantity) ||
+    (row.kind !== undefined && row.kind !== "section" && row.kind !== "measurement" && row.kind !== "quantity") ||
+    (row.kind !== "section" && row.kind !== "quantity" && !row.value.trim() && !row.quantity) ||
+    (row.kind === "quantity" && (!row.quantity || Boolean(row.value.trim()))) ||
     (row.kind === "section" && row.quantity !== undefined) ||
     (row.kind === "section" && Boolean(row.value.trim())) ||
     (row.kind === "measurement" && !/^([0-9]+(?:\.[0-9]+)?) (mm|cm|m|in|ft)$/.test(row.value.trim())) ||
     (row.kind === "measurement" && Number(row.value.trim().split(" ")[0]) <= 0)
   ))
-    throw new Error("Enter a specification name and a value or quantity (1–9999). Measurement rows still need a positive number and unit.");
+    throw new Error("Enter a specification name and value. Quantity rows need 1–9999 pcs; Measurement rows need a positive number and valid unit.");
   if (new Set(specifications.map(row => row.id)).size !== specifications.length)
     throw new Error("Each specification row needs a unique ID.");
   if (!["draft", "published", "archived"].includes(product.status))
@@ -395,7 +396,7 @@ export async function saveProduct(product: Product, modelChange?: ProductModelCh
       id, name: name.trim(), value: value.trim(),
       ...(description?.trim() ? { description: description.trim() } : {}),
       ...(quantity !== undefined ? { quantity } : {}),
-      ...(kind === "section" || kind === "measurement" ? { kind } : {}),
+      ...(kind === "section" || kind === "measurement" || kind === "quantity" ? { kind } : {}),
     })),
     updatedAt: new Date().toISOString(),
   };
