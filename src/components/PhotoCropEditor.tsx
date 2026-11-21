@@ -225,6 +225,7 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
     if (!source || backgroundTask.productId !== productId ||
       backgroundTask.image?.id !== image.id) return;
     if (backgroundTask.status === "running") {
+      setTool("background");
       setAiBusy(true);
       setAiProgress(backgroundTask.message);
       setAiPercent(backgroundTask.percent);
@@ -272,21 +273,8 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
     }, 920);
   }, [backgroundTask.jobId, backgroundTask.status, image.id, productId, source]);
 
-  // BEN2 does not expose an end-to-end inference percentage. Give staff a
-  // smooth, clearly labelled ETA-style estimate instead of frozen/absent
-  // progress or fabricated jumps to 68%. Never show 100% before completion.
-  useEffect(() => {
-    if (!aiBusy) return;
-    const startedAt = Date.now();
-    const updateEstimate = () => {
-      const elapsedMs = Date.now() - startedAt;
-      const predicted = Math.min(95,
-        Math.floor(1 + 94 * (1 - Math.exp(-elapsedMs / 55000))));
-      setAiPercent(current => Math.min(95, Math.max(current ?? 1, predicted)));
-    };
-    const interval = window.setInterval(updateEstimate, 180);
-    return () => window.clearInterval(interval);
-  }, [aiBusy]);
+  // Foreground and Gallery use the exact same background job estimate.
+  // Do not start a second timer when reopening Photo Studio.
 
   useEffect(() => {
     if (!source || !canvasRef.current) return;
