@@ -1,0 +1,195 @@
+/* Brutti Catalog • Product Editor / refined details workspace, 21 Nov 2026
+   Give the forms a richer visual hierarchy without new components, extra boxes,
+   or changing field data, actions, permissions, or validations. */
+
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+  background:
+    radial-gradient(ellipse 85% 48% at 96% 0%, rgba(219,239,223,.55), transparent 91%),
+    linear-gradient(145deg, #f0f5ef 0%, #f6f8f3 48%, #eef4ed 100%) !important;
+}
+
+/* Light-weight glass cards and a sage-tinted section masthead, consistent across
+   Details, Media and Specifications. */
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card {
+  position: relative;
+  border: 1px solid rgba(166,197,174,.70) !important;
+  background: linear-gradient(152deg,rgba(255,255,255,.91),rgba(249,252,247,.84)) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(112%);
+  backdrop-filter: blur(18px) saturate(112%);
+  box-shadow: 0 12px 33px rgba(31,72,42,.085),0 2px 6px rgba(34,74,42,.035),
+    inset 0 1px 0 rgba(255,255,255,.98) !important;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card:focus-within {
+  border-color: rgba(105,163,121,.89) !important;
+  box-shadow: 0 14px 37px rgba(31,72,42,.12),0 0 0 3px rgba(93,155,106,.07),
+    inset 0 1px 0 #fff !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card > .product-editor-section-heading,
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > #brutti-media-section.brutti-editor-section-card > div.brutti-media-section-heading {
+  position: relative;
+  min-height: 71px !important;
+  background:
+    radial-gradient(ellipse 38% 145% at 0% 50%,rgba(177,218,187,.37),transparent 94%),
+    linear-gradient(105deg,rgba(222,239,226,.94) 0%,rgba(237,246,238,.93) 51%,rgba(250,252,248,.91) 100%) !important;
+  border-bottom: 1px solid rgba(156,192,164,.46) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.92),inset 0 -1px 0 rgba(255,255,255,.48) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card > .product-editor-section-heading::before,
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > #brutti-media-section.brutti-editor-section-card > div.brutti-media-section-heading::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 17px;
+  bottom: 17px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(#6da07d,#2b6947);
+  pointer-events: none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card > .product-editor-section-heading > .product-editor-step {
+  color: #fff !important;
+  background: linear-gradient(145deg,#397752,#245b3e) !important;
+  border-color: rgba(37,92,59,.68) !important;
+  box-shadow: 0 4px 12px rgba(29,89,53,.19),inset 0 1px 0 rgba(255,255,255,.19) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card > .product-editor-section-heading h3 {
+  color: #214b33 !important;
+  font-family: "Plus Jakarta Sans","Manrope",sans-serif !important;
+  font-size: 19px !important;
+  letter-spacing: -.045em !important;
+  font-weight: 720 !important;
+}
+
+/* A little more purposeful form hierarchy. No new nested input containers. */
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics > label,
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics :is(.catalog-product-id-label,.catalog-editor-category-label) {
+  color: #2b593c !important;
+  font-family: "Plus Jakarta Sans","DM Sans",sans-serif;
+  font-size: 11.5px !important;
+  letter-spacing: -.006em;
+  font-weight: 680 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics :is(input:not([type="checkbox"]),textarea,.catalog-editor-category-trigger,.catalog-product-id-display) {
+  background: linear-gradient(130deg,rgba(255,255,255,.94),rgba(249,252,249,.88)) !important;
+  border: 1px solid #cbded0 !important;
+  color: #2b4535 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.98),0 3px 10px rgba(30,70,41,.045) !important;
+  transition: border-color .19s ease,background-color .19s ease,box-shadow .19s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics :is(input:not([type="checkbox"]),textarea,.catalog-editor-category-trigger):hover:not(:disabled) {
+  border-color: #9ac2a5 !important;
+  background: #fff !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics :is(input:not([type="checkbox"]),textarea,.catalog-editor-category-trigger):focus-visible {
+  outline: 2px solid rgba(75,145,97,.43) !important;
+  outline-offset: 1px;
+  border-color: #589a6b !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgba(73,151,95,.085),0 6px 16px rgba(31,75,44,.08) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics .catalog-product-id-display {
+  background: linear-gradient(125deg,rgba(232,245,235,.97),rgba(246,252,247,.91)) !important;
+  color: #26573a !important;
+  border-color: #b9d8c1 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics .catalog-product-id-value {
+  color: #265b3c !important;
+  font-weight: 750;
+  letter-spacing: .01em;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics .catalog-product-id-help {
+  color: #84978a;
+  font-size: 10.5px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics .catalog-editor-category-trigger {
+  background: linear-gradient(145deg,rgba(246,251,247,.96),rgba(236,246,239,.82)) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics textarea {
+  resize: vertical;
+  min-height: 102px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics .product-editor-publish-hint {
+  color: #63836e;
+  font-weight: 550;
+  font-size: 10.5px;
+}
+
+/* Visually connect actions with the editor without drowning them in green. */
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+  background: linear-gradient(100deg,rgba(244,250,246,.96),rgba(251,253,250,.96)) !important;
+  border-top-color: rgba(162,198,171,.57) !important;
+  box-shadow: 0 -7px 24px rgba(29,71,43,.055) !important;
+}
+
+/* Deep graphite glass in dark mode; precise contrast and same geometry. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+  background: linear-gradient(145deg,#1b2424,#202c27 55%,#1c2525) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card {
+  background: linear-gradient(150deg,rgba(41,51,48,.96),rgba(32,42,40,.96)) !important;
+  border-color: #4c6956 !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.055) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card:focus-within {
+  border-color: #79a687 !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.34),0 0 0 3px rgba(95,166,111,.08) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card > .product-editor-section-heading,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > #brutti-media-section.brutti-editor-section-card > div.brutti-media-section-heading {
+  background: linear-gradient(110deg,#304a3b,#2b3d35 63%,#2a3330) !important;
+  border-bottom-color: #4c6d55 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.055) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card > .product-editor-section-heading > .product-editor-step {
+  background: linear-gradient(145deg,#48795a,#2e6145) !important;
+  border-color: #638c6d !important;
+  color: #eff9f1 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card > .product-editor-section-heading h3 {
+  color: #f0f8f0 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics > label,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics :is(.catalog-product-id-label,.catalog-editor-category-label) {
+  color: #d0e7d5 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics :is(input:not([type="checkbox"]),textarea,.catalog-editor-category-trigger,.catalog-product-id-display) {
+  background: linear-gradient(130deg,#2b3732,#28342f) !important;
+  color: #eff8f0 !important;
+  border-color: #4c6757 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics :is(input:not([type="checkbox"]),textarea,.catalog-editor-category-trigger):is(:hover,:focus-visible):not(:disabled) {
+  background: #33463a !important;
+  border-color: #85b093 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics .catalog-product-id-display {
+  background: linear-gradient(120deg,#304b39,#2a4135) !important;
+  border-color: #52785c !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics .catalog-product-id-value {
+  color: #e4f9e8 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics .catalog-product-id-help,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics .product-editor-publish-hint {
+  color: #b1cbb7 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+  background: linear-gradient(100deg,#27342e,#24302b) !important;
+  border-top-color: #4c6754 !important;
+}
+@media (max-width: 760px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card > .product-editor-section-heading h3 {
+    font-size: 17px !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card > .product-editor-section-heading,
+  .admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > #brutti-media-section.brutti-editor-section-card > div.brutti-media-section-heading {
+    min-height: 63px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-basics :is(input,textarea,.catalog-editor-category-trigger),
+  .admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > section.brutti-editor-section-card {
+    transition: none !important;
+  }
+}
