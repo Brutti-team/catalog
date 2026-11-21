@@ -25,6 +25,28 @@ type CropHandle = "nw" | "n" | "ne" | "e" | "se" | "s" | "sw" | "w";
 const initialCrop = (): CropRect => ({ x: 0, y: 0, w: 1, h: 1 });
 const cropHandles: CropHandle[] = ["nw","n","ne","e","se","s","sw","w"];
 
+// Detect resize zones from coordinates too, so CSS overlays and touch hit
+// testing cannot prevent grabbing a corner or an edge.
+function hitTestCropHandle(clientX: number, clientY: number, bounds: DOMRect, crop: CropRect): CropHandle | undefined {
+  const x = clientX - bounds.left, y = clientY - bounds.top;
+  const l = crop.x * bounds.width, r = (crop.x + crop.w) * bounds.width;
+  const t = crop.y * bounds.height, b = (crop.y + crop.h) * bounds.height;
+  for (const [handle, hx, hy] of [
+    ["nw", l, t], ["ne", r, t], ["se", r, b], ["sw", l, b],
+  ] as const) {
+    if (Math.hypot(x - hx, y - hy) <= 29) return handle;
+  }
+  if (x >= l && x <= r) {
+    if (Math.abs(y - t) <= 17) return "n";
+    if (Math.abs(y - b) <= 17) return "s";
+  }
+  if (y >= t && y <= b) {
+    if (Math.abs(x - l) <= 17) return "w";
+    if (Math.abs(x - r) <= 17) return "e";
+  }
+  return undefined;
+}
+
 // The user can refine soft matte edges without altering the source image.
 // The threshold is adjustable because furniture can be white or dark.
 function refineCutout(source: HTMLCanvasElement, strength: number): HTMLCanvasElement {
@@ -220,8 +242,8 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     setAiPercent(3);
     setError("");
     try {
-      // Keep inference within the worker's existing 1100-pixel limit.
-      const factor = Math.min(1, 768 / Math.max(source.naturalWidth, source.naturalHeight));
+      // Lower CPU cost for local AI, then restore the original image detail.
+      const factor = Math.min(1, 640 / Math.max(source.naturalWidth, source.naturalHeight));
       const w = Math.max(1, Math.round(source.naturalWidth * factor));
       const h = Math.max(1, Math.round(source.naturalHeight * factor));
       const sourceCanvas = document.createElement("canvas");
@@ -239,13 +261,41 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
         if (typeof percent === "number") setAiPercent(current => Math.max(current, Math.min(95, percent)));
       });
       if (run !== aiRun.current) return;
+      const maskPixels = result.getContext("2d", { willReadFrequently: true })
+        ?.getImageData(0, 0, result.width, result.height).data;
+      if (!maskPixels) throw new Error("The AI mask could not be read.");
+      let clearPixels = 0;
+      for (let i = 3; i < maskPixels.length; i += 4) {
+        if (maskPixels[i] < 32) clearPixels++;
+      }
+      if (clearPixels / (result.width * result.height) < .02) {
+        throw new Error("AI could not clear the white background reliably. Try a photo with more contrast; the original has been kept.");
+      }
+
+      // Use the AI alpha channel with the higher-resolution original. This
+      // avoids a blurry exported photo after CPU-efficient segmentation.
+      const detailScale = Math.min(1, 1800 / Math.max(source.naturalWidth, source.naturalHeight));
+      const detailWidth = Math.max(1, Math.round(source.naturalWidth * detailScale));
+      const detailHeight = Math.max(1, Math.round(source.naturalHeight * detailScale));
       const editable = document.createElement("canvas");
-      editable.width = result.width; editable.height = result.height;
-      editable.getContext("2d")?.drawImage(result, 0, 0);
+      editable.width = detailWidth; editable.height = detailHeight;
+      const detailContext = editable.getContext("2d", { willReadFrequently: true });
+      const maskCanvas = document.createElement("canvas");
+      maskCanvas.width = detailWidth; maskCanvas.height = detailHeight;
+      const resizedMaskContext = maskCanvas.getContext("2d", { willReadFrequently: true });
+      if (!detailContext || !resizedMaskContext) throw new Error("The browser cannot refine this cutout.");
+      detailContext.drawImage(source, 0, 0, detailWidth, detailHeight);
+      resizedMaskContext.drawImage(result, 0, 0, detailWidth, detailHeight);
+      const detailPixels = detailContext.getImageData(0, 0, detailWidth, detailHeight);
+      const resizedMask = resizedMaskContext.getImageData(0, 0, detailWidth, detailHeight);
+      for (let i = 3; i < detailPixels.data.length; i += 4) {
+        detailPixels.data[i] = Math.round(detailPixels.data[i] * resizedMask.data[i] / 255);
+      }
+      detailContext.putImageData(detailPixels, 0, 0);
       workingCutout.current = editable;
       setMaskRevision(v => v + 1);
       setEraserEnabled(false);
-      setCutout(result);
+      setCutout(editable);
       // First show true transparency with a checkerboard. Pale cream is an
       // intentional optional colour, never an automatic background replacement.
       setBackground("transparent");
@@ -291,7 +341,10 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     event.preventDefault();
     const el = event.target as HTMLElement;
     const requested = el.closest<HTMLElement>("[data-crop-handle]")?.dataset.cropHandle as CropHandle | undefined;
-    const handle = requested && cropHandles.includes(requested) && tool === "crop" ? requested : undefined;
+    const handle = tool === "crop"
+      ? (requested && cropHandles.includes(requested) ? requested :
+        hitTestCropHandle(event.clientX, event.clientY, event.currentTarget.getBoundingClientRect(), crop))
+      : undefined;
     const erase = tool === "background" && eraserEnabled && !!workingCutout.current;
     gesture.current = {
       id: event.pointerId, x: event.clientX, y: event.clientY,
@@ -322,6 +375,20 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
       return;
     }
     setPan({ x: start.px + dx, y: start.py + dy });
+  }
+  function nudgeCrop(handle: CropHandle, key: string) {
+    const horizontal = key === "ArrowLeft" ? -.01 : key === "ArrowRight" ? .01 : 0;
+    const vertical = key === "ArrowUp" ? -.01 : key === "ArrowDown" ? .01 : 0;
+    if (!horizontal && !vertical) return;
+    setCrop(current => {
+      const minSize = .12;
+      let l = current.x, r = current.x + current.w, t = current.y, b = current.y + current.h;
+      if (handle.includes("w")) l = clamp(l + horizontal, 0, r - minSize);
+      if (handle.includes("e")) r = clamp(r + horizontal, l + minSize, 1);
+      if (handle.includes("n")) t = clamp(t + vertical, 0, b - minSize);
+      if (handle.includes("s")) b = clamp(b + vertical, t + minSize, 1);
+      return { x: l, y: t, w: r - l, h: b - t };
+    });
   }
   function onPointerUp(event: PointerEvent<HTMLDivElement>) {
     if (gesture.current?.id !== event.pointerId) return;
@@ -424,10 +491,17 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                     }} aria-label="Resize the crop by dragging corners or edges">
                     <span className="brutti-photo-crop-grid-guide" aria-hidden="true"/>
                     {cropHandles.map(handle => (
-                      <span key={handle}
+                      <button type="button" key={handle}
                         className={`brutti-photo-crop-handle handle-${handle}`}
                         data-crop-handle={handle}
-                        aria-hidden="true"/>
+                        disabled={locked}
+                        aria-label={`Resize crop ${handle.toUpperCase()}`}
+                        onKeyDown={event => {
+                          if (event.key.startsWith("Arrow")) {
+                            event.preventDefault();
+                            nudgeCrop(handle, event.key);
+                          }
+                        }}/>
                     ))}
                   </div>
                 )}
@@ -435,7 +509,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
               </div>
             </div>
             <div className="brutti-photo-studio-preview-caption">
-              <Scan size={14} aria-hidden="true"/> Drag to reposition · Your original stays unchanged
+              <Scan size={14} aria-hidden="true"/> Drag photo to reposition · Drag crop corners to resize
               {hasCutout && <button type="button" onClick={() => setPreviewOriginal(v => !v)}
                 disabled={locked} aria-pressed={previewOriginal}>
                 {previewOriginal ? "Show edited" : "Before / After"}
