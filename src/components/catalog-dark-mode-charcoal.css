@@ -17,11 +17,11 @@
   --admin-text: #edf1f1;
   --admin-muted: #a4afb4;
   --admin-border: #363f44;
-  --admin-accent: #a0cab3;
-  --admin-accent-hover: #bee0cb;
+  --admin-accent: #79dda6;
+  --admin-accent-hover: #a3efc6;
   --admin-on-accent: #17271e;
   --admin-selected: #263b32;
-  --admin-focus: #91c6a6;
+  --admin-focus: #78d9a3;
   --admin-success-bg: #243b31;
   --admin-success-text: #b8e5c7;
   --admin-success-border: #40634e;
@@ -93,7 +93,7 @@
   box-shadow: inset 3px 0 0 #8dbda2 !important;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active .nav-icon {
-  color: #b5e0c5 !important;
+  color: #a0efc0 !important;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-count {
   background: #2b3034 !important;
@@ -470,13 +470,13 @@
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .button.primary,
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .brutti-album__primary,
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .catalog-products-add-button {
-  background: #2c6649 !important;
+  background: #277e55 !important;
   color: #f4fff8 !important;
   border-color: #397858 !important;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .button.primary:hover:not(:disabled),
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .brutti-album__primary:hover:not(:disabled) {
-  background: #337958 !important;
+  background: #329464 !important;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] :is(
   .button.secondary,.brutti-album__secondary,.icon-button:not(.danger-text)
