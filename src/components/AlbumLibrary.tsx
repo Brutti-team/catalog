@@ -757,10 +757,10 @@ export default function AlbumLibrary({
           </header>
           <nav className="product-editor-jump brutti-album__section-nav" aria-label="Album editor sections">
           {([
-            ["01","Details","brutti-album-section-details"],
-            ["02","Media","brutti-album-section-media"],
-            ["03","Specifications","brutti-album-section-specs"],
-            ["04","Publishing","brutti-album-section-publishing"],
+            ["01","Essentials","product-editor-basics"],
+            ["02","Photos","brutti-media-section"],
+            ["03","Specifications","product-editor-specs"],
+            ["04","Publishing","product-editor-publish"],
           ] as const).map(([number,label,id]) => (
             <button type="button" key={id} onClick={() =>
               editorCanvasRef.current?.querySelector<HTMLElement>(`#${id}`)
@@ -772,7 +772,7 @@ export default function AlbumLibrary({
         </nav>
           <div className="editor-columns brutti-album__parity-columns">
             <div ref={editorCanvasRef} className="editor-primary brutti-album__editor-canvas">
-          <section id="brutti-album-section-details" className="form-section product-editor-section brutti-editor-section-card brutti-album__editor-section">
+          <section id="product-editor-basics" className="form-section product-editor-section brutti-editor-section-card brutti-album__editor-section">
             <div className="product-editor-section-heading brutti-album__editor-section-heading">
               <span className="product-editor-step brutti-album__editor-step">01</span>
               <div><h3>Details</h3><p>Name, product code, category and description.</p></div>
@@ -785,10 +785,10 @@ export default function AlbumLibrary({
                   disabled={savingDetails}
                   onChange={e => setDetailsDraft(current => ({...current,name:e.target.value}))}/>
               </label>
-              <div className="brutti-album__field-pair">
-                <div className="brutti-album__editor-field">
-                  <span>Product ID</span>
-                  <output className="brutti-album__reference-id">
+              <div className="field-pair brutti-album__field-pair">
+                <div className="catalog-product-id-field brutti-album__editor-field">
+                  <span className="catalog-product-id-label">Product ID</span>
+                  <output className="catalog-product-id-display brutti-album__reference-id">
                     <strong>{preview.sourceCode || "Assigned in Product Editor"}</strong>
                     <LockKeyhole size={16} strokeWidth={1.8} aria-hidden="true"/>
                   </output>
@@ -796,8 +796,8 @@ export default function AlbumLibrary({
                     ? "Original library reference · cannot be changed here"
                     : "A unique Product ID is generated when you create the product"}</small>
                 </div>
-                <div className="brutti-album__editor-field">
-                  <span>Category</span>
+                <div className="catalog-editor-category-field brutti-album__editor-field">
+                  <span className="catalog-editor-category-label">Category</span>
                   <AlbumCategorySelect
                     categories={categories}
                     value={detailsDraft.categoryId || "none"}
@@ -808,7 +808,7 @@ export default function AlbumLibrary({
                 </div>
               </div>
               <label className="brutti-album__editor-field">
-                <span>Description <small>Optional until product publishing</small></span>
+                <span>Description <small className="product-editor-publish-hint">Required to publish</small></span>
                 <textarea rows={4} maxLength={10000} value={detailsDraft.description}
                   placeholder="Describe the furniture, materials, finish or important photo notes."
                   disabled={savingDetails}
@@ -818,7 +818,7 @@ export default function AlbumLibrary({
               {!preview.id && <p className="brutti-album__details-note">This image has no Album record yet. You can open its linked product, but Album metadata cannot be saved until it is indexed.</p>}
             </div>
           </section>
-          <section id="brutti-album-section-media" className="brutti-product-media brutti-editor-section-card brutti-album__editor-section">
+          <section id="brutti-media-section" className="brutti-product-media brutti-editor-section-card brutti-album__editor-section">
             <div className="product-editor-section-heading brutti-album__editor-section-heading brutti-media-section-heading">
               <span className="product-editor-step brutti-album__editor-step">02</span>
               <div><h3>Media <small>(Photos &amp; 3D)</small></h3><p>Manage this Album photo and prepare it for your product.</p></div>
@@ -891,7 +891,7 @@ export default function AlbumLibrary({
             </div>
           </section>
 
-          <section id="brutti-album-section-specs" className="form-section product-editor-section brutti-editor-section-card brutti-album__editor-section">
+          <section id="product-editor-specs" className="form-section product-editor-section brutti-editor-section-card brutti-album__editor-section">
             <div className="product-editor-section-heading brutti-album__editor-section-heading">
               <span className="product-editor-step brutti-album__editor-step">03</span>
               <div><h3>Specifications</h3><p>Product measurements, materials and finishing notes.</p></div>
@@ -930,7 +930,7 @@ export default function AlbumLibrary({
               <p className="brutti-album__details-note">Specifications are saved with the photo in Album. They will prefill the Product Editor when you create a product; verify measurements before publishing.</p>
             </div>
           </section>
-          <section id="brutti-album-section-publishing" className="form-section product-editor-section brutti-editor-section-card brutti-album__editor-section">
+          <section id="product-editor-publish" className="form-section product-editor-section brutti-editor-section-card brutti-album__editor-section">
             <div className="product-editor-section-heading brutti-album__editor-section-heading">
               <span className="product-editor-step brutti-album__editor-step">04</span>
               <div><h3>Publishing</h3><p>Choose where this photo is used in your Catalog.</p></div>
