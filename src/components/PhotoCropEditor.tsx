@@ -10,8 +10,8 @@ type Props = {
   onClose: () => void;
 };
 
-type Ratio = "4:3" | "1:1" | "3:4";
-const aspectRatios: Record<Ratio, number> = { "4:3": 4 / 3, "1:1": 1, "3:4": 3 / 4 };
+type Ratio = "4:3" | "1:1" | "3:4" | "9:16";
+const aspectRatios: Record<Ratio, number> = { "4:3": 4 / 3, "1:1": 1, "3:4": 3 / 4, "9:16": 9 / 16 };
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
 function imagePlacement(
@@ -79,7 +79,13 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     const next = new Image();
     // Cross-origin images must grant canvas access for an actual edited file.
     next.crossOrigin = "anonymous";
-    next.onload = () => { if (active) setSource(next); };
+    next.onload = () => {
+      if (!active) return;
+      setSource(next);
+      // Portrait product photos should open in a portrait frame (like the
+      // referenced mobile crop editor) rather than cutting into landscape.
+      setRatio(next.naturalHeight > next.naturalWidth ? "3:4" : "4:3");
+    };
     next.onerror = () => { if (active) setError("Could not open this photo for editing. Download and upload the original photo to Brutti Catalog, then try again."); };
     next.src = publicAssetUrl(image.url);
     return () => { active = false; next.onload = null; next.onerror = null; };
@@ -122,7 +128,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     setError("");
     try {
       const output = document.createElement("canvas");
-      output.width = ratio === "3:4" ? 1050 : 1440;
+      output.width = ratio === "3:4" || ratio === "9:16" ? 1050 : 1440;
       output.height = Math.round(output.width / aspectRatios[ratio]);
       drawImage(output, source, totalAngle, zoom, pan, mirror);
       const blob = await new Promise<Blob>((resolve, reject) => {
@@ -181,7 +187,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
             <button type="button" title="Flip horizontally" aria-label="Flip horizontally"
               aria-pressed={mirror} className={mirror?"is-active":""} onClick={()=>setMirror(v=>!v)} disabled={saving}><FlipHorizontal2 size={19}/></button>
             <span className="brutti-photo-crop-tool-divider" />
-            {(["4:3","1:1","3:4"] as Ratio[]).map(item=>(
+            {(["4:3","1:1","3:4","9:16"] as Ratio[]).map(item=>(
               <button key={item} type="button" className={ratio===item?"is-active":""}
                 aria-pressed={ratio===item} onClick={()=>setRatio(item)} disabled={saving}>{item}</button>
             ))}
