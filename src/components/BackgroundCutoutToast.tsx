@@ -8,13 +8,14 @@ import {
 } from "../lib/photo-background-jobs";
 
 type Props = {
-  onEditResult: (productId: string, imageId: string) => void;
+  onEditResult: (productId: string, imageId: string) => boolean;
 };
 
 export default function BackgroundCutoutToast({ onEditResult }: Props) {
   const job = useSyncExternalStore(subscribeBackgroundJob, getBackgroundJobSnapshot);
   const [host, setHost] = useState<HTMLElement>(() => document.body);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewError, setPreviewError] = useState("");
 
   // Native dialogs are in the browser's top layer. Place the toast inside
   // whichever editor dialog is on top so it remains visible at the top-left
@@ -33,7 +34,10 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
   }, []);
 
   useEffect(() => {
-    if (job.status === "idle" || job.status === "running") setPreviewOpen(false);
+    if (job.status === "idle" || job.status === "running") {
+      setPreviewOpen(false);
+      setPreviewError("");
+    }
   }, [job.jobId, job.status]);
 
   const label = job.image?.alt || "Product photo";
@@ -128,12 +132,17 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
               <div className="brutti-background-result-actions">
                 <button type="button" className="brutti-background-task-open"
                   onClick={() => {
-                    if (!job.productId || !job.image) return;
+                    if (!job.productId || !job.image ||
+                      !onEditResult(job.productId, job.image.id)) {
+                      setPreviewError("The original photo is no longer available in Product Editor. Download the result as PNG instead.");
+                      return;
+                    }
+                    setPreviewError("");
                     setPreviewOpen(false);
-                    onEditResult(job.productId, job.image.id);
                   }}>
                   <Sparkles size={16}/> Continue in Photo Studio
                 </button>
+                {previewError && <p role="alert" className="brutti-background-result-error">{previewError}</p>}
                 <button type="button" onClick={() => void download()}>
                   <Download size={16}/> Download PNG
                 </button>
