@@ -72,6 +72,7 @@ import "./components/album-delete-confirm.css";
 import "./components/product-model-upload-only.css";
 import "./components/catalog-dark-mode-charcoal.css";
 import "./components/product-editor-photo-3d-layout.css";
+import "./components/product-media-whatsapp-studio.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
