@@ -1,0 +1,220 @@
+/* Brutti Catalog • Media Editor Layout
+   Keep Photos visually grouped: gallery and photo upload occupy adjacent columns,
+   not opposite ends of the editor. 3D has its own quiet section below Photos.
+   This stylesheet is loaded last to override earlier legacy grid definitions. */
+
+@media (min-width: 801px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-photos {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 310px);
+    justify-content: start;
+    align-items: start;
+    gap: 16px 18px;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* With only one/two photos, shrink the image strip to its actual content.
+     Otherwise the upload zone drifted to the far-right edge of the modal. */
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-photos.product-photos-count-1 {
+    grid-template-columns: minmax(0, 180px) minmax(0, 310px);
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-photos.product-photos-count-2 {
+    grid-template-columns: minmax(0, 340px) minmax(0, 310px);
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-photos.product-photos-count-0 {
+    grid-template-columns: minmax(0, 540px);
+  }
+
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-photos > .product-editor-section-heading {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-photos > .image-editor-grid {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+    justify-content: start;
+    align-content: start;
+    gap: 12px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-photos > .upload-zone {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: stretch;
+    width: 100%;
+    min-width: 0;
+    height: 176px;
+    min-height: 176px;
+    max-height: none;
+    margin: 0;
+    padding: 16px 18px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-photos.product-photos-count-0 > .upload-zone {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    max-width: 540px;
+    justify-self: start;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-photos > .brutti-album-editor-toolbar {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin-top: 1px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-photos > .tiny {
+    grid-column: 1 / -1;
+    grid-row: 4;
+  }
+}
+
+/* Independent 3D uploader: section heading is editorial, never a separate
+   heavy card/banner. All model file preview/save controls remain in place. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .form-section.product-editor-section.product-model-independent {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 0;
+  padding-bottom: 26px;
+  border-bottom: 1px solid #e3ebe5;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .product-model-independent > .product-editor-section-heading {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .product-model-independent > .product-editor-section-heading p {
+  color: #829387;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .product-model-independent .product-model-section--upload-only {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  margin: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .product-model-independent .product-model-upload--direct {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  width: 100%;
+  min-height: 108px;
+  padding: 18px 20px;
+  border: 1px dashed #b8d1bd;
+  border-radius: 12px;
+  background: #f7faf7;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .product-model-independent .product-model-upload-copy {
+  flex: 1 1 235px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .product-model-independent .product-model-upload-button {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .product-model-independent {
+  border-bottom-color: #405f48;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .product-model-independent .product-model-upload--direct {
+  background: #294535;
+  border-color: #648570;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> .product-model-independent > .product-editor-section-heading p {
+  color: #aec1b1;
+}
+
+/* Narrow desktop & tablet: one upload control immediately below the gallery
+   rather than forcing two squashed columns. */
+@media (max-width: 800px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  #product-editor-photos {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 13px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-photos > .product-editor-section-heading {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-photos > .image-editor-grid {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0;
+    min-width: 0;
+    width: 100%;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-photos > .upload-zone {
+    grid-column: 1;
+    grid-row: 3;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    min-height: 135px;
+    max-height: none;
+    margin: 0;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-photos > .brutti-album-editor-toolbar {
+    grid-column: 1;
+    grid-row: 4;
+    margin: 0;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #product-editor-photos > .tiny {
+    grid-column: 1;
+    grid-row: 5;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .product-model-independent .product-model-upload--direct {
+    padding: 15px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .product-model-independent .product-model-upload-button {
+    margin-left: 0;
+  }
+}
+@media (max-width: 480px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > .product-model-independent .product-model-upload-button {
+    width: 100%;
+  }
+}
