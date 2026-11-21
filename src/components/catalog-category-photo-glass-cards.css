@@ -3,11 +3,13 @@
    independent Edit/Delete controls, cover photos, counts and category data. */
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-grid {
   align-items: stretch;
+  grid-auto-rows: 1fr;
   gap: 18px;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
   position: relative;
   isolation: isolate;
+  --brutti-category-dock-height: 180px;
   display: block;
   box-sizing: border-box;
   width: 100%;
@@ -108,8 +110,9 @@
   justify-content: flex-start;
   box-sizing: border-box;
   width: auto;
-  height: auto !important;
-  min-height: 0 !important;
+  height: var(--brutti-category-dock-height) !important;
+  min-height: var(--brutti-category-dock-height) !important;
+  max-height: var(--brutti-category-dock-height) !important;
   margin: 0;
   padding: 12px 14px 11px;
   border: 1px solid rgba(255,255,255,.8) !important;
@@ -161,7 +164,7 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   min-height: 0;
   margin: 6px 0 9px !important;
   overflow: hidden;
@@ -301,8 +304,12 @@
    of clipping Edit or Delete. Never hide product/category data. */
 @media (max-width: 1120px) {
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
+    --brutti-category-dock-height: 211px;
     min-height: 420px;
     aspect-ratio: auto;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions {
+    flex-wrap: wrap;
   }
 }
 @media (max-width: 680px) {
@@ -311,6 +318,7 @@
     padding: 5px 3px 21px;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
+    --brutti-category-dock-height: 182px;
     min-height: 420px;
     aspect-ratio: auto;
     border-radius: 13px !important;
@@ -333,15 +341,16 @@
     height: 40px;
   }
 }
-@media (max-width: 390px) {
+@media (max-width: 430px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
+    --brutti-category-dock-height: 236px;
+    min-height: 462px;
+  }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions .category-view-products {
     flex: 1 1 100%;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions .text-button:not(.category-view-products) {
     flex: 1 1 auto;
-  }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
-    min-height: 452px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
