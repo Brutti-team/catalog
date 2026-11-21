@@ -511,11 +511,18 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
     }
   }
 
+  function closeStudio() {
+    if (saving) return;
+    // Leaving a running removal must show the global task toast, NOT cancel
+    // the isolated AI Worker. Only explicit "Cancel processing" stops it.
+    onClose();
+  }
+
   const locked = saving || aiBusy;
   return (
     <Modal title="Photo Studio" eyebrow="BRUTTI CATALOG / PHOTO EDITOR"
       className="catalog-photo-crop-dialog catalog-photo-crop-dialog--dark brutti-photo-studio-v2"
-      onClose={() => { if (!saving) { cancelAI(); onClose(); } }}>
+      onClose={closeStudio}>
       <div className="brutti-photo-crop-fullscreen">
         <header className="brutti-photo-crop-topbar">
           <div className="brutti-photo-studio-brand">
@@ -528,7 +535,7 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
           <button type="button" className="brutti-photo-crop-reset" onClick={reset} disabled={saving}>
             <RotateCcw size={17} aria-hidden="true" /> Reset
           </button>
-          <button type="button" className="brutti-photo-studio-close" onClick={() => { cancelAI(); onClose(); }}
+          <button type="button" className="brutti-photo-studio-close" onClick={closeStudio}
             disabled={saving} aria-label="Close photo editor"><X size={20}/></button>
         </header>
 
