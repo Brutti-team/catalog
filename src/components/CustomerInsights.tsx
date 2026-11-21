@@ -188,6 +188,7 @@ export default function CustomerInsights({ products, categories, loading: produc
                   title={`View ${item.name.toLowerCase()} details`}
                   onClick={() => openMetricDetails(item.key)}>
                   {details}
+                  <span className="customer-insights-kpi-cta" aria-hidden="true">View details</span>
                 </button>;
             })}
           </div>
