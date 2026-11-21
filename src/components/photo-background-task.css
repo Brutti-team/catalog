@@ -803,3 +803,18 @@ body:has(.admin-app.catalog-os-layout[data-theme="dark"]) .sidebar .brutti-backg
 body:has(.admin-app.catalog-os-layout[data-theme="dark"]) .sidebar .brutti-background-sidebar-task .brutti-background-sidebar-product {
   color: #b2cab9;
 }
+
+/* Keep an inline error accessible in the sidebar instead of resurrecting
+   the intrusive floating notification inside Product Editor dialogs. */
+.brutti-background-header-task:has(.brutti-background-sidebar-error) {
+  flex-wrap: wrap;
+}
+.brutti-background-sidebar-error {
+  display: block;
+  flex: 0 0 100%;
+  width: 100%;
+  margin: 3px 0 0;
+  font: 550 10px/1.4 "DM Sans", sans-serif;
+  color: #ad5141;
+  overflow-wrap: anywhere;
+}
