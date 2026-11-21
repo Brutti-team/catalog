@@ -24,7 +24,8 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
   useEffect(() => {
     const updateHost = () => {
       const open = Array.from(document.querySelectorAll<HTMLDialogElement>("dialog[open]"));
-      setHost(open[open.length - 1] ?? document.body);
+      const header = document.getElementById("brutti-background-task-host");
+      setHost(open[open.length - 1] ?? header ?? document.body);
     };
     const observer = new MutationObserver(updateHost);
     observer.observe(document.body, {
@@ -74,6 +75,45 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
   return (
     <>
       {visible && !previewOpen && createPortal(
+        host.id === "brutti-background-task-host" ? (
+          <div className="brutti-background-header-task"
+            aria-label="Current photo background removal">
+            <button type="button" className="brutti-background-header-open"
+              title={`${label}: ${running ? "Background removal in progress" : job.message}`}
+              onClick={() => {
+                if (job.status === "done") {
+                  if (!openPhoto()) setPreviewOpen(true);
+                } else if (job.status === "running") {
+                  openPhoto();
+                } else {
+                  setToastError(job.error);
+                }
+              }}>
+              <span className="brutti-background-header-label">
+                {running ? <LoaderCircle className="spin" size={13}/> :
+                  job.status === "done" ? <Check size={13}/> : <X size={13}/>}
+                <span>{running ? "Removing background" :
+                  job.status === "done" ? "Result ready · Open" : "Removal failed"}</span>
+              </span>
+              <strong>{running ? `${job.percent}%` : job.status === "done" ? "100%" : "!"}</strong>
+              <span className="brutti-background-header-track" aria-hidden="true">
+                <span style={{ width: `${job.percent}%` }}/>
+              </span>
+            </button>
+            {running ? (
+              <button type="button" className="brutti-background-header-action"
+                onClick={cancelBackgroundJob} title="Cancel background removal"
+                aria-label="Cancel background removal"><X size={14}/></button>
+            ) : (
+              <button type="button" className="brutti-background-header-action"
+                title={job.status === "done" ? "Preview transparent result" : "Dismiss error"}
+                aria-label={job.status === "done" ? "Preview transparent result" : "Dismiss error"}
+                onClick={() => job.status === "done" ? setPreviewOpen(true) : dismissBackgroundJob()}>
+                {job.status === "done" ? <Eye size={15}/> : <X size={14}/>}
+              </button>
+            )}
+          </div>
+        ) : (
         <aside className="brutti-background-task-toast"
           role="region" tabIndex={0}
           aria-label="Background removal task. Click to return to the product photo."
@@ -158,7 +198,8 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
             </>
           )}
           {toastError && <p role="alert" className="brutti-background-task-toast-error">{toastError}</p>}
-        </aside>,
+        </aside>
+        ),
         host,
       )}
       {previewOpen && job.status === "done" && job.result && (
