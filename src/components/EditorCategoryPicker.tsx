@@ -12,6 +12,7 @@ type Props = {
   value: string;
   onChange: (next: string) => void;
   disabled?: boolean;
+  allowUncategorised?: boolean;
 };
 
 function categoryIcon(name: string) {
@@ -34,7 +35,7 @@ function categoryIcon(name: string) {
  * required-product validation intact. Popover is rendered in the native
  * editor dialog so it isn't clipped by its scrolling form or sticky footer.
  */
-export default function EditorCategoryPicker({ categories, value, onChange, disabled = false }: Props) {
+export default function EditorCategoryPicker({ categories, value, onChange, disabled = false, allowUncategorised = false }: Props) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [layout, setLayout] = useState<CSSProperties | null>(null);
@@ -44,11 +45,15 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
   const searchRef = useRef<HTMLInputElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const menuId = useId();
-  const selected = categories.find(category => category.id === value);
+  // Product Editor stays required-by-default; Album also supports no folder.
+  const choices = useMemo(() => allowUncategorised
+    ? [{ id: "none", name: "Automatic / Uncategorised" }, ...categories]
+    : categories, [allowUncategorised, categories]);
+  const selected = choices.find(category => category.id === value);
   const Icon = selected ? categoryIcon(selected.name) : Grid2X2;
-  const filtered = useMemo(() => categories.filter(category =>
+  const filtered = useMemo(() => choices.filter(category =>
     category.name.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase())
-  ), [categories, search]);
+  ), [choices, search]);
   const dialog = rootRef.current?.closest<HTMLDialogElement>("dialog");
 
   useLayoutEffect(() => {
@@ -136,7 +141,7 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
       <button type="button" ref={triggerRef} disabled={disabled}
         className="catalog-editor-category-trigger"
         aria-label={selected ? `Category: ${selected.name}` : "Select a category"}
-        aria-required="true" aria-haspopup="dialog" aria-expanded={open}
+        aria-required={!allowUncategorised} aria-haspopup="dialog" aria-expanded={open}
         aria-controls={open ? menuId : undefined}
         onClick={() => { setSearch(""); setLayout(null); setOpen(previous => !previous); }}
         onKeyDown={event => {
@@ -156,7 +161,7 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
           onKeyDown={handleKeys}>
           <div className="catalog-editor-category-menu-head">
             <span>SELECT CATEGORY</span>
-            <span>{categories.length} categories</span>
+            <span>{choices.length} categories</span>
           </div>
           <div className="catalog-editor-category-search">
             <Search size={16} strokeWidth={1.8} aria-hidden="true" />
