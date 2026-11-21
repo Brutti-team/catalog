@@ -108,9 +108,10 @@
   justify-content: flex-start;
   box-sizing: border-box;
   width: auto;
-  min-height: 192px;
+  height: auto !important;
+  min-height: 0 !important;
   margin: 0;
-  padding: 16px 16px 14px;
+  padding: 12px 14px 11px;
   border: 1px solid rgba(255,255,255,.8) !important;
   border-radius: 12px !important;
   background: linear-gradient(145deg,rgba(255,255,255,.93),rgba(243,250,245,.84)) !important;
@@ -130,23 +131,23 @@
   align-items: flex-start;
   justify-content: space-between;
   min-width: 0;
-  gap: 10px;
+  gap: 8px;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-body h2 {
   min-width: 0;
   margin: 0;
   font-family: "Inter","DM Sans",sans-serif !important;
-  font-size: clamp(15px, 1vw, 17px) !important;
+  font-size: clamp(14px, .95vw, 16px) !important;
   font-weight: 670 !important;
-  line-height: 1.4 !important;
+  line-height: 1.34 !important;
   letter-spacing: -.025em !important;
   color: #253f30 !important;
   overflow-wrap: anywhere;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-count {
   flex: 0 0 auto;
-  min-height: 26px;
-  padding: 5px 9px;
+  min-height: 24px;
+  padding: 4px 8px;
   border: 1px solid rgba(178,207,185,.33) !important;
   border-radius: 8px !important;
   background: rgba(225,240,229,.74) !important;
@@ -162,13 +163,13 @@
   -webkit-line-clamp: 2;
   flex: 0 0 auto;
   min-height: 0;
-  margin: 9px 0 14px !important;
+  margin: 6px 0 9px !important;
   overflow: hidden;
   color: #738579 !important;
   font-family: "Inter","DM Sans",sans-serif !important;
-  font-size: 11.5px !important;
+  font-size: 11px !important;
   font-weight: 450;
-  line-height: 1.55 !important;
+  line-height: 1.48 !important;
 }
 /* All three buttons remain native, distinct and usable. View products still
    has its existing full-card click target; Edit/Delete sit above that layer. */
@@ -180,7 +181,7 @@
   gap: 7px;
   min-width: 0;
   margin-top: auto;
-  padding-top: 12px !important;
+  padding-top: 9px !important;
   border-top: 1px solid rgba(113,155,126,.17) !important;
   background: transparent !important;
 }
@@ -188,9 +189,9 @@
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions .icon-button.danger-text {
   flex-shrink: 0;
   box-sizing: border-box;
-  min-height: 39px;
-  height: 39px;
-  padding: 0 11px;
+  min-height: 37px;
+  height: 37px;
+  padding: 0 10px;
   border-radius: 9px !important;
   font-family: "Inter","DM Sans",sans-serif !important;
   font-size: 10.7px !important;
@@ -219,9 +220,9 @@
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions .icon-button.danger-text {
   display: grid;
   place-items: center;
-  flex: 0 0 39px;
-  width: 39px;
-  min-width: 39px;
+  flex: 0 0 37px;
+  width: 37px;
+  min-width: 37px;
   margin-left: auto;
   padding: 0 !important;
   background: rgba(255,246,243,.78) !important;
@@ -244,7 +245,7 @@
   background: linear-gradient(150deg,#d9e8dd,#eef5ec 60%,#cedfce) !important;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card--without-cover .category-card-body {
-  padding-top: 16px !important;
+  padding-top: 12px !important;
 }
 /* Graphite glass for OS dark mode; never muddy emerald tiles. */
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="categories"] .category-card {
@@ -318,7 +319,7 @@
     left: 9px;
     right: 9px;
     bottom: 9px;
-    padding: 14px 13px 12px;
+    padding: 12px 12px 11px;
     border-radius: 11px !important;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-body h2 {
