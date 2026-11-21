@@ -15,6 +15,9 @@ export interface ProductImage {
   storagePath?: string;
   /** Non-destructive focus and zoom for catalog presentation (0-100% position). */
   crop?: { x: number; y: number; zoom: number };
+  /** Storage originals retained when the photo is edited into a new media file.
+   * The public product still displays only the final image. */
+  preservedOriginalPaths?: string[];
 }
 export interface ProductModel {
   path: string;
