@@ -12,7 +12,9 @@ export function applyAIAlpha(
   height: number,
 ): Uint8ClampedArray {
   const { data, channels } = output;
-  if (![1, 3, 4].includes(channels) ||
+  // RGB-only output has no matte. Using its red channel can leave a white
+  // backdrop opaque, so reject it instead of pretending removal succeeded.
+  if (![1, 4].includes(channels) ||
       original.length !== width * height * 4 ||
       data.length < width * height * channels) {
     throw new Error("AI mask dimensions are invalid; the original photo was not changed.");
