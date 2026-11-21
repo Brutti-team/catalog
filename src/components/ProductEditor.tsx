@@ -190,8 +190,11 @@ export default function ProductEditor({
       validateProduct({ ...draft, status });
       setBusy(true);
       const saved = await onSave({ ...draft, sku: isNewProduct ? draft.sku : product.sku, status, updatedAt: new Date().toISOString() }, modelChange.current, isNewProduct);
-      const retained = new Set((saved?.images ?? draft.images).map(image => image.url));
-      const abandoned = [...uploadedImages.current.values()].filter(image => !retained.has(image.url));
+      const savedImages = saved?.images ?? draft.images;
+      const retained = new Set(savedImages.map(image => image.url));
+      const preservedOriginalPaths = new Set(savedImages.flatMap(image => image.preservedOriginalPaths ?? []));
+      const abandoned = [...uploadedImages.current.values()].filter(image =>
+        !retained.has(image.url) && !(image.storagePath && preservedOriginalPaths.has(image.storagePath)));
       const cleanup = await cleanupAbandonedImages(abandoned);
       uploadedImages.current.clear();
       if (mounted.current) onClose(cleanup.cleanupWarning);
@@ -1056,7 +1059,14 @@ export default function ProductEditor({
               setDraft(current=>({
                 ...current,
                 images:current.images.map(image=>image.id===editingPhotoId
-                  ? {...edited,alt:image.alt||current.name}:image),
+                  ? {
+                    ...edited,
+                    alt:image.alt||current.name,
+                    preservedOriginalPaths:[
+                      ...new Set([...(image.preservedOriginalPaths ?? []),
+                        ...(image.storagePath ? [image.storagePath] : [])]),
+                    ],
+                  }:image),
               }));
               setEditingPhotoId(null);
               setError("");
