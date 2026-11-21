@@ -113,7 +113,7 @@ function SpecificationRowFields({
         className="catalog-spec-row-description"
         aria-label={label + " description"}
         title="Description (optional)"
-        placeholder="e.g. Materials, finish or additional notes"
+        placeholder="Description (optional)"
         maxLength={400}
         value={row.description ?? ""}
         onChange={(event) => onChange(row.id, "description", event.target.value)}
