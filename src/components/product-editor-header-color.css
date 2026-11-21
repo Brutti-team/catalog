@@ -306,3 +306,62 @@
     background: #202729 !important;
   }
 }
+
+/* Finish the glass system across the surrounding dialog and composite fields. */
+.admin-app dialog.modal.product-editor-dialog--editing[open] {
+  background: rgba(241,247,242,.92) !important;
+  box-shadow: 0 30px 88px rgba(13,42,26,.25),0 5px 20px rgba(17,50,28,.08) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.08);
+  backdrop-filter: blur(20px) saturate(1.08);
+}
+.admin-app .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+  background: linear-gradient(105deg,rgba(20,65,42,.98),rgba(30,79,53,.94)) !important;
+  border-bottom: 1px solid rgba(255,255,255,.14) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.08);
+  backdrop-filter: blur(16px) saturate(1.08);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-columns {
+  background: rgba(233,241,235,.72) !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics :is(.catalog-product-id-display,.catalog-editor-category-trigger),
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs :is(.catalog-reference-price-field,.catalog-spec-availability-trigger) {
+  background: rgba(249,253,249,.8) !important;
+  border-color: rgba(201,219,206,.8) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.77),0 1px 5px rgba(35,74,45,.035) !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics .catalog-editor-category-trigger:focus-visible {
+  outline: 2px solid #80ad8b;
+  outline-offset: 2px;
+}
+.admin-app[data-theme="dark"] dialog.modal.product-editor-dialog--editing[open] {
+  background: #172022 !important;
+  box-shadow: 0 30px 80px rgba(0,0,0,.5) !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+  background: linear-gradient(105deg,rgba(21,53,39,.98),rgba(31,63,47,.97)) !important;
+  border-bottom-color: rgba(130,162,139,.19) !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-columns {
+  background: rgba(24,34,35,.9) !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-basics :is(.catalog-product-id-display,.catalog-editor-category-trigger),
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+#product-editor-specs :is(.catalog-reference-price-field,.catalog-spec-availability-trigger) {
+  background: rgba(39,53,46,.91) !important;
+  border-color: rgba(88,117,98,.6) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.04) !important;
+}
+@media(prefers-reduced-transparency:reduce) {
+  .admin-app dialog.modal.product-editor-dialog--editing[open] {
+    background: #f2f7f3 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .admin-app[data-theme="dark"] dialog.modal.product-editor-dialog--editing[open] {
+    background: #172022 !important;
+  }
+}
