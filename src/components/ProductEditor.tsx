@@ -478,7 +478,7 @@ export default function ProductEditor({
         </nav>
         <div className="editor-columns">
           <div className="editor-primary">
-            <section className="form-section product-editor-section" id="product-editor-basics">
+            <section className="form-section product-editor-section brutti-editor-section-card" id="product-editor-basics">
               <div className="product-editor-section-heading">
                 <span className="product-editor-step">01</span>
                 <div>
@@ -541,7 +541,7 @@ export default function ProductEditor({
                 />
               </label>
             </section>
-            <section className="brutti-product-media" id="brutti-media-section">
+            <section className="brutti-product-media brutti-editor-section-card" id="brutti-media-section">
               <span id="product-editor-photos" className="brutti-media-jump-target" aria-hidden="true" />
               <div className="product-editor-section-heading brutti-media-section-heading">
                 <span className="product-editor-step">02</span>
@@ -657,7 +657,7 @@ export default function ProductEditor({
             </section>
             {isEditing ? (
 
-            <section className="form-section product-editor-section catalog-reference-specifications" id="product-editor-specs">
+            <section className="form-section product-editor-section catalog-reference-specifications brutti-editor-section-card" id="product-editor-specs">
               <div className="product-editor-section-heading">
                 <span className="product-editor-step">03</span>
                 <div>
@@ -855,7 +855,7 @@ export default function ProductEditor({
               </button>
             </section>
             ) : (
-            <section className="form-section product-editor-section" id="product-editor-specs">
+            <section className="form-section product-editor-section brutti-editor-section-card" id="product-editor-specs">
               <div className="product-editor-section-heading">
                 <span className="product-editor-step">03</span>
                 <div>
