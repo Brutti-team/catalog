@@ -1079,6 +1079,7 @@ export default function App() {
                       : categoryCover(c.name, items);
                   return (
                     <article className={`category-card${cover.src ? "" : " category-card--without-cover"}`} key={c.id}>
+                      {!cover.src && <span className="category-card-index">0{index + 1}</span>}
                       {cover.src && (
                         <button
                           type="button"
@@ -1098,7 +1099,6 @@ export default function App() {
                         </button>
                       )}
                       <div className="category-card-body">
-                        {!cover.src && <span className="category-card-index">0{index + 1}</span>}
                         <div className="section-title">
                           <h2>{c.name}</h2>
                           <span className="category-count">
