@@ -85,6 +85,7 @@ import "./components/catalog-overview-premium-glass.css";
 import "./components/catalog-sidebar-glass-refine.css";
 import "./components/product-editor-ui-polish.css";
 import "./components/catalog-activity-history-glass.css";
+import "./components/customer-insights-session-details.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
