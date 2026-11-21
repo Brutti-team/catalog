@@ -1,0 +1,777 @@
+/* Product Editor Media: a unified, compact photo / 3D workspace. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-photos.brutti-product-media {
+  display: block !important;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  margin: 0 0 24px;
+  padding: 0 0 27px;
+  border-bottom: 1px solid #e2eae3;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-photos > .brutti-media-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  min-height: 34px;
+  margin: 0 0 15px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-section-heading > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-section-heading h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px;
+  margin: 0;
+  color: #264732;
+  font: 750 clamp(17px,1.7vw,21px)/1.3 "Manrope","DM Sans",sans-serif;
+  letter-spacing: -.04em;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-section-heading h3 small {
+  color: #425f4d;
+  font: 660 12px/1.4 "DM Sans",sans-serif;
+  letter-spacing: -.015em;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-section-heading > p {
+  margin: 0 0 0 auto;
+  color: #718479;
+  font: 500 11px/1.45 "DM Sans",sans-serif;
+  text-align: right;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px 18px;
+  margin-bottom: 14px;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid #dde8de;
+  border-radius: 11px;
+  background: #f6f8f5;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #627969;
+  font: 710 11px/1.35 "DM Sans",sans-serif;
+  cursor: pointer;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-tabs button.is-active {
+  background: #e3f1e6;
+  color: #22553b;
+  box-shadow: 0 1px 5px rgba(35,85,52,.07);
+}
+.admin-app .product-editor-dialog--editing .brutti-media-tabs button span {
+  opacity: .78;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-actions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 9px 13px;
+  border-radius: 9px;
+  font: 710 11px/1.25 "DM Sans",sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-album-button {
+  border: 1px solid #dbe6dd;
+  background: #fff;
+  color: #315640;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-upload-button {
+  border: 1px solid #285c3e;
+  background: #285b3e;
+  color: white;
+  box-shadow: 0 3px 10px rgba(35,76,43,.11);
+}
+.admin-app .product-editor-dialog--editing .brutti-media-actions button:hover:not(:disabled) {
+  filter: brightness(.965);
+}
+.admin-app .product-editor-dialog--editing .brutti-media-actions button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-photos .brutti-media-gallery-panel[hidden],
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-photos .brutti-media-3d-panel[hidden] {
+  display: none !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-photos .brutti-media-gallery {
+  display: grid !important;
+  grid-template-columns: repeat(6,minmax(0,1fr));
+  align-content: start;
+  gap: 11px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-photos .brutti-media-photo-item,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-photos .brutti-media-add-tile {
+  position: relative;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #dce7de;
+  border-radius: 12px;
+  background: #edf3ed;
+  overflow: visible;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-photo-item:focus-within {
+  z-index: 6;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-thumbnail {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  overflow: hidden;
+  cursor: zoom-in;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-thumbnail img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-cover-badge {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  top: 7px;
+  left: 7px;
+  padding: 4px 7px;
+  border-radius: 7px;
+  background: #2b6a49;
+  color: #fff;
+  font: 750 9px/1.2 "DM Sans",sans-serif;
+  pointer-events: none;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-quick-edit,
+.admin-app .product-editor-dialog--editing .brutti-media-more {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+  width: 33px;
+  height: 33px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.7);
+  border-radius: 50%;
+  background: rgba(24,34,29,.8);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.11);
+  cursor: pointer;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-quick-edit {
+  bottom: 8px;
+  right: 8px;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-more {
+  top: 7px;
+  right: 7px;
+  background: rgba(250,253,251,.96);
+  border-color: #d9e3d9;
+  color: #456751;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-quick-edit:hover:not(:disabled) {
+  background: #276c48;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-more:hover {
+  background: #e5f2e8;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-photo-menu {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 40px;
+  right: 0;
+  z-index: 12;
+  width: min(238px,calc(100vw - 64px));
+  padding: 6px;
+  border: 1px solid #dae6dc;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 15px 40px rgba(24,54,31,.18);
+}
+.admin-app .product-editor-dialog--editing .brutti-media-photo-menu > button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 33px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #3d6349;
+  text-align: left;
+  font: 640 11px/1.35 "DM Sans",sans-serif;
+  cursor: pointer;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-photo-menu > button:hover:not(:disabled) {
+  background: #eef6ef;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-photo-menu > button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-photo-menu > button.is-danger {
+  color: #a94f46;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-photo-caption-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 9px 8px;
+  color: #758d7c;
+  font: 640 10px/1.3 "DM Sans",sans-serif;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-photo-caption-label input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 36px;
+  padding: 8px 9px;
+  border: 1px solid #d9e5dc;
+  border-radius: 7px;
+  background: #fff;
+  color: #274b33;
+  font: 500 11px "DM Sans",sans-serif;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-add-tile {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1.5px dashed #c4d8c9;
+  background: #f8fbf8;
+  color: #31734b;
+  cursor: pointer;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-add-tile span {
+  font: 750 11px/1.35 "DM Sans",sans-serif;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-add-tile:hover:not(:disabled),
+.admin-app .product-editor-dialog--editing .brutti-media-add-tile.is-dragging {
+  border-color: #70aa83;
+  background: #edf7ef;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-gallery-help {
+  margin: 11px 0 0;
+  color: #8b988e;
+  font: 490 10.5px/1.5 "DM Sans",sans-serif;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-3d-panel {
+  width: 100%;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-3d-panel .product-model-section--upload-only {
+  max-width: none;
+  margin: 0;
+}
+.admin-app .product-editor-dialog--editing .brutti-media-3d-panel .product-model-upload--direct {
+  max-width: none;
+  min-height: 128px;
+}
+
+/* Full-size image preview with a WhatsApp-style circular edit shortcut. */
+.admin-app dialog.modal.brutti-media-preview-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min(880px,calc(100vw - 32px));
+  max-width: 880px;
+  max-height: min(90dvh,850px);
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #425047;
+  border-radius: 16px;
+  background: #121a15;
+  box-shadow: 0 30px 95px rgba(0,0,0,.35);
+  color: #fff;
+}
+.admin-app .brutti-media-preview-dialog .modal-heading {
+  flex: 0 0 auto;
+  padding: 15px 21px;
+  border: 0;
+  background: #17221b;
+}
+.admin-app .brutti-media-preview-dialog .modal-heading h2 {
+  color: #ecf5ed;
+  font-size: 17px;
+}
+.admin-app .brutti-media-preview-dialog .modal-heading .eyebrow {color:#a1c9ad;}
+.admin-app .brutti-media-preview-dialog .modal-heading .icon-button {
+  border-radius: 50%;
+  background: #293a2e;
+  color: #fff;
+}
+.admin-app .brutti-media-preview-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 0 14px 16px;
+}
+.admin-app .brutti-media-preview-image {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 1;
+  min-height: 0;
+  border-radius: 11px;
+  background: #0e120f;
+  overflow: hidden;
+}
+.admin-app .brutti-media-preview-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 230px;
+  max-height: 60dvh;
+  object-fit: contain;
+}
+.admin-app .brutti-media-preview-edit {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  top: 14px;
+  right: 14px;
+  width: 49px;
+  height: 49px;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 50%;
+  background: rgba(24,34,29,.87);
+  color: #fff;
+  cursor: pointer;
+}
+.admin-app .brutti-media-preview-edit:hover:not(:disabled) {background:#285e3d;}
+.admin-app .brutti-media-preview-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 13px 3px 0;
+}
+.admin-app .brutti-media-preview-footer span {
+  overflow: hidden;
+  color: #c7d6c9;
+  font: 570 12px/1.45 "DM Sans",sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-app .brutti-media-preview-footer button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 9px 13px;
+  border: 1px solid #467a58;
+  border-radius: 9px;
+  background: #2c6442;
+  color: #fff;
+  font: 690 11px "DM Sans",sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Dark, full-screen crop and straighten studio. */
+.admin-app dialog.modal.catalog-photo-crop-dialog--dark[open] {
+  display: block;
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  width: calc(100vw - 16px);
+  max-width: none;
+  height: calc(100dvh - 16px);
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #333;
+  border-radius: 16px;
+  background: #111312;
+  color: #f7faf7;
+  box-shadow: 0 35px 130px rgba(0,0,0,.65);
+}
+.admin-app dialog.modal.catalog-photo-crop-dialog--dark[open]::backdrop {
+  background: rgba(0,0,0,.84);
+  backdrop-filter: blur(5px);
+}
+.admin-app .catalog-photo-crop-dialog--dark > .modal-heading {display:none !important;}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-fullscreen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: #131514;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 0 0 auto;
+  min-height: 61px;
+  padding: 10px 22px;
+  border-bottom: 1px solid #292d2a;
+  background: #171a18;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-topbar > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 39px;
+  height: 39px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #303431;
+  color: #fff;
+  cursor: pointer;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-topbar > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1;
+  color: #ebf3ec;
+  font: 710 14px/1.3 "DM Sans",sans-serif;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-topbar > span small {
+  overflow: hidden;
+  margin-left: 9px;
+  color: #9cab9d;
+  font: 500 11px/1.4 "DM Sans",sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-topbar > button.brutti-photo-crop-reset {
+  width: auto;
+  min-width: 90px;
+  padding: 0 13px;
+  border-radius: 10px;
+  background: #2a322c;
+  font: 690 11px/1.3 "DM Sans",sans-serif;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-workarea {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  justify-content: center;
+  min-height: 0;
+  padding: 12px 22px 4px;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-stage {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  width: 100%;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-stage:active {
+  cursor: grabbing;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-image-frame {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: auto;
+  height: min(100%,55dvh);
+  max-width: min(100%,780px);
+  max-height: 100%;
+  border: 1px solid rgba(255,255,255,.65);
+  aspect-ratio: 4/3;
+  background: #101110;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-image-frame > canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-grid-guide {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,transparent 33.2%,rgba(255,255,255,.21) 33.33%,transparent 33.45%,transparent 66.6%,rgba(255,255,255,.21) 66.67%,transparent 66.8%),
+              linear-gradient(0deg,transparent 33.2%,rgba(255,255,255,.21) 33.33%,transparent 33.45%,transparent 66.6%,rgba(255,255,255,.21) 66.67%,transparent 66.8%);
+  pointer-events: none;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-color: #f4f6f3;
+  border-style: solid;
+  pointer-events: none;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-corner.tl {left:-4px;top:-4px;border-width:5px 0 0 5px;}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-corner.tr {right:-4px;top:-4px;border-width:5px 5px 0 0;}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-corner.bl {left:-4px;bottom:-4px;border-width:0 0 5px 5px;}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-corner.br {right:-4px;bottom:-4px;border-width:0 5px 5px 0;}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-loading {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  inset: 0;
+  padding: 18px;
+  color: #d7e3da;
+  background: #202721;
+  text-align: center;
+  font-size: 12px;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-instructions {
+  flex: 0 0 auto;
+  margin: 7px 0 0;
+  text-align: center;
+  color: #a5b0a5;
+  font: 490 10.5px/1.4 "DM Sans",sans-serif;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-panel {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: min(780px,100%);
+  max-height: 45dvh;
+  overflow-y: auto;
+  margin: 0 auto;
+  padding: 7px 21px 17px;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-tools {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 auto 13px;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-tools button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 40px;
+  height: 39px;
+  padding: 0 10px;
+  border: 1px solid #3e4640;
+  border-radius: 10px;
+  background: #272b28;
+  color: #f2f6f2;
+  font: 690 11px/1.3 "DM Sans",sans-serif;
+  cursor: pointer;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-tools button.is-active {
+  border-color: #4a9e66;
+  background: #27553a;
+  color: #fff;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-tools button:hover:not(:disabled) {
+  border-color: #799983;
+  background: #323d34;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-tool-divider {
+  width: 1px;
+  height: 26px;
+  margin: 0 2px;
+  background: #445047;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-angle,
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-zoom {
+  margin: 10px auto;
+  max-width: 600px;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-angle-label,
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-zoom > label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #ced7cf;
+  font: 650 11px/1.4 "DM Sans",sans-serif;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-angle-label output,
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-zoom output {
+  margin-left: auto;
+  color: #d9f1de;
+  font: 700 11px/1.4 "DM Sans",sans-serif;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-panel input[type="range"] {
+  display: block;
+  width: 100%;
+  height: 24px;
+  margin: 3px 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  accent-color: #36b569;
+  cursor: pointer;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-ticks {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 9px;
+  color: #9aaca0;
+  font: 490 10px/1.3 "DM Sans",sans-serif;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-error {
+  margin: 12px auto;
+  max-width: 600px;
+  padding: 10px 13px;
+  border: 1px solid #b55953;
+  border-radius: 9px;
+  background: #482924;
+  color: #ffdad4;
+  font: 590 11px/1.5 "DM Sans",sans-serif;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 17px;
+  margin: 13px auto 0;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-actions > span {
+  flex: 1;
+  color: #9faea2;
+  font: 490 10.5px/1.5 "DM Sans",sans-serif;
+  text-align: center;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-actions button {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-cancel {background:#3b3f3d;}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-apply {background:#21bd65;color:#082512!important;}
+.admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-apply:hover:not(:disabled) {background:#2ad771;}
+.admin-app .catalog-photo-crop-dialog--dark button:disabled {opacity:.55;cursor:not-allowed;}
+.admin-app .catalog-photo-crop-dialog--dark button:focus-visible,
+.admin-app .product-editor-dialog--editing .brutti-product-media button:focus-visible {
+  outline: 2px solid #76c18b;
+  outline-offset: 3px;
+}
+/* Ensure dark crop studio always stays dark even with light catalog theme. */
+.admin-app[data-theme="dark"] .catalog-photo-crop-dialog--dark .brutti-photo-crop-fullscreen {
+  background: #131514;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .brutti-media-tabs {background:#2e4234;border-color:#54715d;}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .brutti-media-tabs button {color:#b6d0bc;}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .brutti-media-tabs button.is-active {background:#426a4b;color:#fff;}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .brutti-media-album-button {background:#294534;color:#e4f2e6;border-color:#53735b;}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .brutti-media-add-tile {background:#294334;border-color:#5a7a61;color:#c6e7cb;}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .brutti-media-photo-menu {background:#294333;border-color:#4d6e55;}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .brutti-media-photo-menu > button {color:#e1ede3;}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .brutti-media-photo-menu > button:hover {background:#395944;}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .brutti-media-section-heading h3,
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .brutti-media-section-heading h3 small {color:#e1efe4;}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .brutti-media-section-heading > p {color:#b4cdbb;}
+@media (max-width: 1120px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-photos .brutti-media-gallery {
+    grid-template-columns: repeat(5,minmax(0,1fr));
+  }
+}
+@media (max-width: 800px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-photos .brutti-media-gallery {
+    grid-template-columns: repeat(4,minmax(0,1fr));
+  }
+  .admin-app .product-editor-dialog--editing .brutti-media-section-heading > p {display:none;}
+  .admin-app .product-editor-dialog--editing .brutti-media-toolbar {align-items:flex-start;}
+}
+@media (max-width: 580px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-photos .brutti-media-gallery {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 8px;
+  }
+  .admin-app .product-editor-dialog--editing .brutti-media-section-heading h3 {font-size:18px;}
+  .admin-app .product-editor-dialog--editing .brutti-media-toolbar {flex-direction:column;}
+  .admin-app .product-editor-dialog--editing .brutti-media-tabs {width:100%;}
+  .admin-app .product-editor-dialog--editing .brutti-media-tabs button {flex:1;}
+  .admin-app .product-editor-dialog--editing .brutti-media-actions {width:100%;}
+  .admin-app .product-editor-dialog--editing .brutti-media-actions button {flex:1;padding-inline:8px;font-size:10px;}
+  .admin-app .product-editor-dialog--editing .brutti-media-quick-edit,
+  .admin-app .product-editor-dialog--editing .brutti-media-more {width:30px;height:30px;}
+  .admin-app .product-editor-dialog--editing .brutti-media-cover-badge {padding:3px 5px;font-size:8px;}
+  .admin-app dialog.modal.brutti-media-preview-dialog[open] {width:calc(100vw - 14px);max-height:93dvh;}
+  .admin-app dialog.modal.catalog-photo-crop-dialog--dark[open] {
+    width:100vw;
+    height:100dvh;
+    border:0;
+    border-radius:0;
+  }
+  .admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-topbar {min-height:52px;padding:8px 13px;}
+  .admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-topbar > span small {display:none;}
+  .admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-workarea {padding:12px 13px 4px;}
+  .admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-image-frame {height:min(100%,49dvh);}
+  .admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-panel {padding:7px 17px max(13px,env(safe-area-inset-bottom));}
+  .admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-tools {gap:5px;}
+  .admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-tools button {min-width:34px;height:34px;padding:0 8px;}
+  .admin-app .catalog-photo-crop-dialog--dark .brutti-photo-crop-actions button {width:52px;height:52px;}
+}
+@media (max-width:390px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-photos .brutti-media-gallery {grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .product-editor-dialog--editing .brutti-media-gallery *,
+  .admin-app .catalog-photo-crop-dialog--dark * {transition:none!important;animation:none!important;}
+}
