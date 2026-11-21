@@ -22,7 +22,7 @@ type Props = {
   onPending: (pending: boolean, invalid?: boolean) => void;
 };
 
-export default function ProductModelEditor({ productName, status, model, poster, modelEnabled, disabled, onChange, onPending }: Props) {
+export default function ProductModelEditor({ productName, model, poster, modelEnabled, disabled, onChange, onPending }: Props) {
   const input = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<readonly File[]>();
   const [fileName, setFileName] = useState('');
