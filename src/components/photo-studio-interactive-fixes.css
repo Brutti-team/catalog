@@ -332,3 +332,35 @@
   color: #657e6c;
   font: 520 10px/1.5 "DM Sans", sans-serif;
 }
+
+/* Indeterminate ONNX inference: animate an activity bar without fake numbers.
+   Percent values are shown only for measurable model-file downloads. */
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-indeterminate {
+  position: relative;
+  overflow: hidden;
+  height: 10px;
+  width: 100%;
+  border-radius: 12px;
+  background: #dceadf;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-indeterminate > span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 35%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #4b9972, #287a52 60%, #72b692);
+  animation: brutti-ai-work-progress 1.8s ease-in-out infinite;
+}
+@keyframes brutti-ai-work-progress {
+  0% { transform: translateX(-115%); }
+  100% { transform: translateX(300%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-indeterminate > span {
+    animation: none;
+    left: 25%;
+    width: 50%;
+  }
+}
