@@ -76,6 +76,7 @@ import "./components/product-media-whatsapp-studio.css";
 import "./components/product-editor-section-cards.css";
 import "./components/catalog-products-gallery-minimal.css";
 import "./components/catalog-dark-mode-charcoal.css";
+import "./components/product-editor-header-color.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
