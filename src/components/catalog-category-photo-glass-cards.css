@@ -4,7 +4,7 @@
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-grid {
   align-items: stretch;
   grid-auto-rows: 1fr;
-  gap: 18px;
+  gap: 16px;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
   position: relative;
@@ -13,9 +13,11 @@
   display: block;
   box-sizing: border-box;
   width: 100%;
-  height: auto;
-  min-height: 412px;
-  aspect-ratio: 1.07 / 1;
+  /* Compact photo-first tile: prevent the old tall square proportion. */
+  height: 356px !important;
+  min-height: 356px !important;
+  max-height: 356px !important;
+  aspect-ratio: auto !important;
   overflow: hidden;
   border: 1px solid rgba(181,209,189,.66) !important;
   border-radius: 14px !important;
@@ -311,8 +313,10 @@
 @media (max-width: 1120px) {
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
     --brutti-category-dock-height: 122px;
-    min-height: 420px;
-    aspect-ratio: auto;
+    height: 360px !important;
+    min-height: 360px !important;
+    max-height: 360px !important;
+    aspect-ratio: auto !important;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions {
     flex-wrap: wrap;
@@ -325,8 +329,10 @@
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
     --brutti-category-dock-height: 114px;
-    min-height: 420px;
-    aspect-ratio: auto;
+    height: 358px !important;
+    min-height: 358px !important;
+    max-height: 358px !important;
+    aspect-ratio: auto !important;
     border-radius: 13px !important;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-body {
@@ -350,7 +356,9 @@
 @media (max-width: 430px) {
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
     --brutti-category-dock-height: 164px;
-    min-height: 462px;
+    height: 400px !important;
+    min-height: 400px !important;
+    max-height: 400px !important;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions .category-view-products {
     flex: 1 1 100%;
