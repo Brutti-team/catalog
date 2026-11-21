@@ -533,7 +533,7 @@ export default function ProductEditor({
                 />
               </label>
             </section>
-            <section className="form-section product-editor-section" id="product-editor-photos">
+            <section className={`form-section product-editor-section product-photos-count-${Math.min(draft.images.length, 3)}`} id="product-editor-photos">
               <div className="product-editor-section-heading">
                 <span className="product-editor-step">02</span>
                 <div>
@@ -683,7 +683,16 @@ export default function ProductEditor({
               <p className="tiny muted">
                 Use Adjust image to crop, drag and zoom how customers see each photo. The original upload stays intact.
               </p>
-              {isEditing && (
+            </section>
+            <section className="form-section product-editor-section product-model-independent"
+              id="product-editor-3d" aria-labelledby="product-editor-3d-heading">
+              <div className="product-editor-section-heading">
+                <span className="product-editor-step">03</span>
+                <div>
+                  <h3 id="product-editor-3d-heading">3D Model</h3>
+                  <p>Optional · Upload and preview a model file.</p>
+                </div>
+              </div>
                 <ProductModelEditor
                   productName={draft.name || "this product"}
                   productId={product.id}
@@ -698,13 +707,12 @@ export default function ProductEditor({
                   onChange={setModelChange}
                   onPending={setModelLoading}
                 />
-              )}
             </section>
             {isEditing ? (
 
             <section className="form-section product-editor-section catalog-reference-specifications" id="product-editor-specs">
               <div className="product-editor-section-heading">
-                <span className="product-editor-step">03</span>
+                <span className="product-editor-step">04</span>
                 <div>
                   <h3>Specifications</h3>
                   <p>Measurements, materials and finishing details.</p>
@@ -902,7 +910,7 @@ export default function ProductEditor({
             ) : (
             <section className="form-section product-editor-section" id="product-editor-specs">
               <div className="product-editor-section-heading">
-                <span className="product-editor-step">03</span>
+                <span className="product-editor-step">04</span>
                 <div>
                   <h3>Specifications</h3>
                   <p>Materials, measurements and pricing.</p>
@@ -981,20 +989,6 @@ export default function ProductEditor({
           </div>
           {!isEditing && (
             <aside className="editor-side product-editor-aside">
-              <ProductModelEditor
-                productName={draft.name || "this product"}
-                productId={product.id}
-                saved={isEditing}
-                status={draft.status}
-                model={product.model}
-                photos={draft.images}
-                savedPhotoIds={product.images.map(image => image.id)}
-                modelEnabled={modelEditingEnabled}
-                poster={cover?.url}
-                disabled={busy}
-                onChange={setModelChange}
-                onPending={setModelLoading}
-              />
               {publishingControls}
               <button type="button" className="button secondary full" aria-expanded={preview} onClick={() => setPreview(open => !open)}>
                 <Eye size={16} /> {preview ? "Hide preview" : "Preview product"}
