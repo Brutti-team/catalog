@@ -1,4 +1,5 @@
 import SafeImage from "./SafeImage";
+import "./product-media-whatsapp-studio.css";
 import { useState, useRef, useEffect, useCallback, type FormEvent } from "react";
 import {
   ImagePlus,
@@ -540,7 +541,8 @@ export default function ProductEditor({
                 />
               </label>
             </section>
-            <section className="form-section product-editor-section brutti-product-media" id="product-editor-photos">
+            <section className="brutti-product-media" id="brutti-media-section">
+              <span id="product-editor-photos" className="brutti-media-jump-target" aria-hidden="true" />
               <div className="product-editor-section-heading brutti-media-section-heading">
                 <span className="product-editor-step">02</span>
                 <div>
@@ -578,9 +580,9 @@ export default function ProductEditor({
 
               <div role="tabpanel" id="brutti-media-photos-panel" aria-labelledby="brutti-media-photos-tab"
                 className="brutti-media-gallery-panel" hidden={mediaTab!=="photos"}>
-                <div className="image-editor-grid brutti-media-gallery" aria-label="Product photos">
+                <div className="brutti-media-gallery" aria-label="Product photos">
                   {draft.images.map((img,index)=>(
-                    <div className="image-editor-item brutti-media-photo-item" key={img.id}>
+                    <div className="brutti-media-photo-item" key={img.id}>
                       <button type="button" className="brutti-media-thumbnail"
                         aria-label={`View photo ${index+1} of ${draft.images.length}`}
                         onClick={()=>{setPreviewPhotoId(img.id);setPhotoMenuId(null);}}>
