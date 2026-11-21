@@ -144,6 +144,41 @@ export async function setAlbumPhotoCategory(id: string, categoryId: string | nul
   return data.category_id as string | null;
 }
 
+export type AlbumPhotoDetailsUpdate = {
+  name: string;
+  description: string;
+  categoryId: string | null;
+};
+
+/** Persist Album metadata independently of Product records. Editing an Album
+ * photo must never update or publish a product automatically. Keeps imported
+ * source metadata (dimensions, materials, original codes) untouched. */
+export async function saveAlbumPhotoDetails(
+  photo: AlbumPhoto,
+  details: AlbumPhotoDetailsUpdate,
+): Promise<{ name: string; categoryId: string | null; sourceDetails: Record<string, string> }> {
+  if (!photo.id) throw new Error("This photo has no Album record. Refresh Album before editing its details.");
+  const name = details.name.trim();
+  if (!name) throw new Error("Photo name is required.");
+  if (name.length > 120) throw new Error("Photo name must be 120 characters or fewer.");
+  const description = details.description.trim();
+  if (description.length > 10000) throw new Error("Description must be 10,000 characters or fewer.");
+  const sourceDetails = { ...photo.sourceDetails, description };
+  const db = catalogClient();
+  const { data, error } = await db.from("catalog_media_assets")
+    .update({ name, category_id: details.categoryId, source_details: sourceDetails })
+    .eq("id", photo.id)
+    .select("name,category_id,source_details")
+    .maybeSingle();
+  if (error) throw new Error("Could not save Album details: " + error.message);
+  if (!data) throw new Error("Album details were not saved. Check staff access and refresh Album.");
+  return {
+    name: data.name as string,
+    categoryId: data.category_id as string | null,
+    sourceDetails: (data.source_details || {}) as Record<string,string>,
+  };
+}
+
 /** Delete an unlinked Album record. Imported Product Library images are
  * external URL references, not objects inside the product-images bucket.
  * Product/category references are protected independently by database RLS.
