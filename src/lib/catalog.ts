@@ -454,8 +454,14 @@ export async function saveProduct(product: Product, modelChange?: ProductModelCh
   }
   if (!result) throw new Error('Unable to reserve a unique Product ID. Try Save again.');
   const retained = new Set(result.images.map(storagePathForImage).filter(Boolean));
+  // Edited photos use a new uploaded file. Keep their previous originals in
+  // Catalog Storage / Album; they must never be swept up as "unused" on Save.
+  const preservedOriginalPaths = new Set(
+    result.images.flatMap(image => image.preservedOriginalPaths ?? []),
+  );
   const removed = (previous?.images ?? []).filter(image => {
     const path = storagePathForImage(image);
+    if (path && preservedOriginalPaths.has(path)) return false;
     return path ? !retained.has(path) : !result.images.some(current => current.url === image.url && current.storagePath === image.storagePath);
   });
   const cleanup = capabilities.imageCleanup ? await cleanupImages(removed, 'saved') : {};
