@@ -131,6 +131,9 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
   const [pan, setPan] = useState<Pan>({ x: 0, y: 0 });
   const [crop, setCrop] = useState<CropRect>(initialCrop);
   const [edgeStrength, setEdgeStrength] = useState(26);
+  const [eraserEnabled, setEraserEnabled] = useState(false);
+  const [brushSize, setBrushSize] = useState(30);
+  const [maskRevision, setMaskRevision] = useState(0);
   const [cutout, setCutout] = useState<HTMLCanvasElement | null>(null);
   const [background, setBackground] = useState<Backdrop>("original");
   const [customColor, setCustomColor] = useState("#e5dfd3");
@@ -142,15 +145,21 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
   const [saving, setSaving] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const aiRun = useRef(0);
+  const workingCutout = useRef<HTMLCanvasElement | null>(null);
   const gesture = useRef<{
     id: number; x: number; y: number; px: number; py: number;
-    mode: "pan" | "crop"; handle?: CropHandle; startCrop: CropRect;
+    mode: "pan" | "crop" | "erase"; handle?: CropHandle; startCrop: CropRect;
   } | null>(null);
   const totalAngle = quarterTurn + tilt;
   const width = 900, height = Math.round(width / aspectRatios[ratio]);
   const hasCutout = !!cutout;
   // Apply alpha correction once when the slider changes, not for every drag frame.
-  const refinedCutout = useMemo(() => cutout ? refineCutout(cutout, edgeStrength) : null, [cutout, edgeStrength]);
+  const refinedCutout = useMemo(
+    () => workingCutout.current ? refineCutout(workingCutout.current, edgeStrength) : null,
+    // maskRevision increments whenever the editable alpha mask changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [cutout, edgeStrength, maskRevision],
+  );
 
   useEffect(() => {
     let active = true;
@@ -196,7 +205,8 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     if (aiBusy) cancelAI();
     setPan({ x: 0, y: 0 }); setCrop(initialCrop()); setEdgeStrength(26);
     setZoom(1); setTilt(0); setQuarterTurn(0);
-    setMirror(false); setCutout(null); setBackground("original");
+    setMirror(false); setCutout(null); workingCutout.current = null;
+    setMaskRevision(0); setEraserEnabled(false); setBackground("original");
     setCustomColor("#e5dfd3"); setPreviewOriginal(false);
     setRatio(source && source.naturalHeight > source.naturalWidth ? "3:4" : "4:3");
     setError("");
@@ -229,6 +239,12 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
         if (typeof percent === "number") setAiPercent(current => Math.max(current, Math.min(95, percent)));
       });
       if (run !== aiRun.current) return;
+      const editable = document.createElement("canvas");
+      editable.width = result.width; editable.height = result.height;
+      editable.getContext("2d")?.drawImage(result, 0, 0);
+      workingCutout.current = editable;
+      setMaskRevision(v => v + 1);
+      setEraserEnabled(false);
       setCutout(result);
       // First show true transparency with a checkerboard. Pale cream is an
       // intentional optional colour, never an automatic background replacement.
@@ -246,17 +262,43 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     }
   }
 
+  function eraseAt(event: PointerEvent<HTMLDivElement>) {
+    const editable = workingCutout.current;
+    if (!editable || !source || !canvasRef.current) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    if (!bounds.width || !bounds.height) return;
+    const transform = placement(editable.width, editable.height, width, height, totalAngle, zoom, pan);
+    const px = (event.clientX - bounds.left) / bounds.width * width - width / 2 - transform.dx;
+    const py = (event.clientY - bounds.top) / bounds.height * height - height / 2 - transform.dy;
+    const cos = Math.cos(transform.radians), sin = Math.sin(transform.radians);
+    const ux = px * cos + py * sin;
+    const uy = -px * sin + py * cos;
+    const sourceX = editable.width / 2 + ux / (mirror ? -transform.scale : transform.scale);
+    const sourceY = editable.height / 2 + uy / transform.scale;
+    const context = editable.getContext("2d");
+    if (!context) return;
+    context.save();
+    context.globalCompositeOperation = "destination-out";
+    context.beginPath();
+    context.arc(sourceX, sourceY, brushSize, 0, Math.PI * 2);
+    context.fill();
+    context.restore();
+    setMaskRevision(v => v + 1);
+  }
+
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
     if (event.button !== 0 || saving || aiBusy || !source) return;
     event.preventDefault();
     const el = event.target as HTMLElement;
     const requested = el.closest<HTMLElement>("[data-crop-handle]")?.dataset.cropHandle as CropHandle | undefined;
     const handle = requested && cropHandles.includes(requested) && tool === "crop" ? requested : undefined;
+    const erase = tool === "background" && eraserEnabled && !!workingCutout.current;
     gesture.current = {
       id: event.pointerId, x: event.clientX, y: event.clientY,
-      px: pan.x, py: pan.y, mode: handle ? "crop" : "pan",
+      px: pan.x, py: pan.y, mode: erase ? "erase" : handle ? "crop" : "pan",
       handle, startCrop: crop,
     };
+    if (erase) eraseAt(event);
     event.currentTarget.setPointerCapture(event.pointerId);
   }
   function onPointerMove(event: PointerEvent<HTMLDivElement>) {
@@ -264,6 +306,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     if (!start || start.id !== event.pointerId) return;
     const bounds = event.currentTarget.getBoundingClientRect();
     if (!bounds.width || !bounds.height) return;
+    if (start.mode === "erase") { eraseAt(event); return; }
     const dx = (event.clientX - start.x) / bounds.width;
     const dy = (event.clientY - start.y) / bounds.height;
     if (start.mode === "crop" && start.handle) {
@@ -366,7 +409,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
           <div className="brutti-photo-studio-preview">
             <div className="brutti-photo-studio-stage"
               aria-label="Photo canvas; drag the product to reposition">
-              <div className={`brutti-photo-crop-image-frame${hasCutout && background === "transparent" && !previewOriginal ? " is-transparent" : ""}`}
+              <div className={`brutti-photo-crop-image-frame${hasCutout && background === "transparent" && !previewOriginal ? " is-transparent" : ""}${eraserEnabled && tool === "background" ? " is-erasing" : ""}`}
                 style={{ aspectRatio: aspectRatios[ratio] }}
                 onPointerDown={onPointerDown} onPointerMove={onPointerMove}
                 onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
@@ -515,12 +558,41 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                     </p>
                   </div>
                 )}
+                {hasCutout && (
+                  <div className="brutti-photo-studio-control-group">
+                    <label>Manual cleanup</label>
+                    <button type="button" className={`brutti-photo-studio-original${eraserEnabled ? " is-active" : ""}`}
+                      disabled={locked} aria-pressed={eraserEnabled}
+                      onClick={() => { setEraserEnabled(v => !v); setPreviewOriginal(false); }}>
+                      <Crop size={15}/> {eraserEnabled ? "Finish erasing" : "Erase leftover background"}
+                    </button>
+                    {eraserEnabled && (
+                      <>
+                        <label htmlFor="brutti-brush-size">Brush size <output>{brushSize}px</output></label>
+                        <input id="brutti-brush-size" type="range" min="6" max="110" step="2"
+                          value={brushSize} disabled={locked}
+                          onChange={event => setBrushSize(Number(event.target.value))}/>
+                        <p className="brutti-photo-studio-muted">Brush over leftover background on the image. Only the editable cutout is changed.</p>
+                        <button type="button" className="brutti-photo-studio-original"
+                          onClick={() => {
+                            if (!cutout) return;
+                            const copy = document.createElement("canvas");
+                            copy.width = cutout.width; copy.height = cutout.height;
+                            copy.getContext("2d")?.drawImage(cutout, 0, 0);
+                            workingCutout.current = copy;
+                            setMaskRevision(v => v + 1);
+                          }}>Restore AI mask</button>
+                      </>
+                    )}
+                  </div>
+                )}
                 <div className="brutti-photo-studio-control-group">
                   <button type="button" className="brutti-photo-studio-original"
                     disabled={!hasCutout || locked}
                     onClick={() => {
                       setBackground("original"); setCutout(null);
-                      setPreviewOriginal(false); setAiProgress("");
+                      workingCutout.current = null; setMaskRevision(v => v + 1);
+                      setEraserEnabled(false); setPreviewOriginal(false); setAiProgress("");
                     }}>
                     <RotateCcw size={15}/> Restore original background
                   </button>
