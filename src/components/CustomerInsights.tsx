@@ -260,7 +260,7 @@ export default function CustomerInsights({ products, categories, loading: produc
             </div> : <p className="customer-session-empty">No sessions found for this period.</p>}
             {(sessionDetails?.totalSessions ?? 0) > (sessionDetails?.sessions.length ?? 0) &&
               <p className="customer-session-limit">Showing the latest {sessionDetails?.sessions.length} sessions.</p>}
-            <p className="customer-session-privacy">For privacy, visitor names, identities and session identifiers are not collected for this report. Admin previews are excluded.</p>
+            <p className="customer-session-privacy">Sessions are anonymous and are not unique people. Names, emails, IPs and device fingerprints are not collected by these analytics; raw session IDs are not shown. Admin previews are excluded.</p>
           </div>}
       </Modal>}
     </section>
