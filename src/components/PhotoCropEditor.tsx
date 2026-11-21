@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type PointerEvent } from "react";
 import {
-  Check, CheckCircle2, Crop, FlipHorizontal2, Image as ImageIcon,
+  Check, CheckCircle2, Crop, FlipHorizontal2, Layers3, Image as ImageIcon,
   LoaderCircle, Palette, RotateCcw, RotateCw, Scan,
   SlidersHorizontal, Sparkles, X,
 } from "lucide-react";
@@ -9,9 +9,14 @@ import Modal from "./Modal";
 import { publicAssetUrl } from "../lib/assets";
 import { aiFurnitureCutout, preloadDetailedCutout, stopAICutout } from "../lib/ai-background-removal";
 import type { CoverSource } from "../lib/cover-studio-canvas";
+import {
+  backgroundResultFor, getBackgroundJobSnapshot, startBackgroundJob,
+  subscribeBackgroundJob,
+} from "../lib/photo-background-jobs";
 
 type Props = {
   image: ProductImage;
+  productId: string;
   onApply: (file: File) => Promise<void>;
   onClose: () => void;
 };
@@ -142,7 +147,7 @@ function drawPhoto(
   ctx.restore();
 }
 
-export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
+export default function PhotoCropEditor({ image, productId, onApply, onClose }: Props) {
   const [source, setSource] = useState<HTMLImageElement | null>(null);
   const [tool, setTool] = useState<Tool>("crop");
   const [ratio, setRatio] = useState<Ratio>("4:3");
@@ -168,6 +173,8 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
   const [aiPercent, setAiPercent] = useState<number | null>(null);
   const [aiStage, setAiStage] = useState<"preparing" | "download" | "processing">("preparing");
   const [showAiReveal, setShowAiReveal] = useState(false);
+  const backgroundTask = useSyncExternalStore(subscribeBackgroundJob, getBackgroundJobSnapshot);
+  const appliedBackgroundJobId = useRef<number>(0);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -217,6 +224,37 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     if (tool === "background" && source && !aiBusy) preloadDetailedCutout();
   }, [tool, source, aiBusy]);
 
+  // A background result can finish while this modal is CLOSED. Reopening the
+  // original photo restores the completed transparent cutout for editing.
+  useEffect(() => {
+    if (!source || backgroundTask.status !== "done" ||
+      appliedBackgroundJobId.current === backgroundTask.jobId) return;
+    const completed = backgroundResultFor(image.id, productId);
+    if (!completed) return;
+    const editable = document.createElement("canvas");
+    editable.width = completed.width; editable.height = completed.height;
+    editable.getContext("2d")?.drawImage(completed, 0, 0);
+    workingCutout.current = editable;
+    appliedBackgroundJobId.current = backgroundTask.jobId;
+    setCutout(completed);
+    setMaskRevision(v => v + 1);
+    setEdgeStrength(0);
+    setBrushMode(null);
+    setBackground("transparent");
+    setPreviewOriginal(false);
+    setAiBusy(false);
+    setAiPercent(100);
+    setAiStage("processing");
+    setAiProgress("Background removal finished. Review and apply your result.");
+    setTool("background");
+    setShowAiReveal(true);
+    if (aiRevealTimeout.current !== null) window.clearTimeout(aiRevealTimeout.current);
+    aiRevealTimeout.current = window.setTimeout(() => {
+      setShowAiReveal(false);
+      aiRevealTimeout.current = null;
+    }, 920);
+  }, [backgroundTask.jobId, backgroundTask.status, image.id, productId, source]);
+
   // BEN2 does not expose an end-to-end inference percentage. Give staff a
   // smooth, clearly labelled ETA-style estimate instead of frozen/absent
   // progress or fabricated jumps to 68%. Never show 100% before completion.
@@ -245,6 +283,21 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
       setError(reason instanceof Error ? reason.message : "Unable to preview this photo.");
     }
   }, [source, refinedCutout, background, customColor, totalAngle, zoom, pan, mirror, previewOriginal, width, height]);
+
+  function runBackgroundRemoval() {
+    if (!source || saving || aiBusy) return;
+    if (backgroundTask.status === "running") {
+      setError("Another background removal is already running. See the top-left status.");
+      return;
+    }
+    if (!startBackgroundJob(image, source, productId)) {
+      setError("Unable to start background removal. Check that this photo has loaded.");
+      return;
+    }
+    // Only close this editor; the isolated Worker belongs to the Catalog tab
+    // and remains active until completion or explicit cancellation.
+    onClose();
+  }
 
   function cancelAI() {
     aiRun.current++;
@@ -671,10 +724,21 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                     <small>Runs on your device. No paid credits or external photo upload.</small></div>
                 </div>
                 <button type="button" className="brutti-photo-studio-ai-button"
-                  disabled={!source || locked} onClick={() => void removeBackground()}>
+                  disabled={!source || locked || backgroundTask.status === "running"}
+                  onClick={() => void removeBackground()}>
                   {aiBusy ? <LoaderCircle size={17} className="spin"/> : <Sparkles size={17}/>}
                   {aiBusy ? "Removing background…" : hasCutout ? "Remove again" : "Remove background"}
                 </button>
+                {!aiBusy && (
+                  <button type="button" className="brutti-photo-studio-background-button"
+                    disabled={!source || saving || backgroundTask.status === "running"}
+                    onClick={runBackgroundRemoval}>
+                    <Layers3 size={16}/> Remove in background
+                  </button>
+                )}
+                {!aiBusy && <small className="brutti-photo-studio-background-note">
+                  Continues while this Catalog tab stays open. Track it from the top-left pop-up.
+                </small>}
                 {aiBusy && <button type="button" className="brutti-photo-studio-cancel-ai"
                   onClick={cancelAI}>Cancel processing</button>}
                 {(aiBusy || (hasCutout && aiPercent === 100)) && (
