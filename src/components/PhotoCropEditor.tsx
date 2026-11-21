@@ -7,7 +7,7 @@ import {
 import type { ProductImage } from "../lib/types";
 import Modal from "./Modal";
 import { publicAssetUrl } from "../lib/assets";
-import { aiFurnitureCutout, stopAICutout } from "../lib/ai-background-removal";
+import { aiFurnitureCutout, preloadDetailedCutout, stopAICutout } from "../lib/ai-background-removal";
 import type { CoverSource } from "../lib/cover-studio-canvas";
 
 type Props = {
@@ -160,10 +160,9 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
   const [background, setBackground] = useState<Backdrop>("original");
   const [customColor, setCustomColor] = useState("#e5dfd3");
   const [previewOriginal, setPreviewOriginal] = useState(false);
-  const [aiQuality, setAiQuality] = useState<"detail" | "fast">("detail");
-  const [protectPanels, setProtectPanels] = useState(
-    () => /cabinet|cupboard|wardrobe|door|drawer|dresser|counter|panel/i.test(image.alt || ""),
-  );
+  // Detailed AI is the standard. Panel protection is enabled automatically
+  // for solid-faced furniture, but avoids open/glass shelves.
+  const protectPanels = /cabinet|cupboard|wardrobe|door|drawer|dresser|counter|panel/i.test(image.alt || "");
   const [aiBusy, setAiBusy] = useState(false);
   const [aiProgress, setAiProgress] = useState("");
   const [aiPercent, setAiPercent] = useState(0);
@@ -208,6 +207,10 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
   useEffect(() => () => { aiRun.current++; stopAICutout(); }, []);
 
   useEffect(() => {
+    if (tool === "background" && source && !aiBusy) preloadDetailedCutout();
+  }, [tool, source, aiBusy]);
+
+  useEffect(() => {
     if (!source || !canvasRef.current) return;
     try {
       const canvas = canvasRef.current;
@@ -247,9 +250,9 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     setAiPercent(3);
     setError("");
     try {
-      // High-detail AI sees a larger source for slender white cabinetry;
-      // preprocessing may resize internally but the original pixels survive.
-      const maxAIWidth = aiQuality === "detail" ? 1280 : 760;
+      // Keep detailed AI but reduce pre-processing pixels, while preserving
+      // original-resolution RGB for export and fine furniture details.
+      const maxAIWidth = 1024;
       const factor = Math.min(1, maxAIWidth / Math.max(source.naturalWidth, source.naturalHeight));
       const w = Math.max(1, Math.round(source.naturalWidth * factor));
       const h = Math.max(1, Math.round(source.naturalHeight * factor));
@@ -266,7 +269,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
         if (run !== aiRun.current) return;
         setAiProgress(message);
         if (typeof percent === "number") setAiPercent(current => Math.max(current, Math.min(95, percent)));
-      }, aiQuality, protectPanels);
+      }, "detail", protectPanels);
       if (run !== aiRun.current) return;
       const maskPixels = result.getContext("2d", { willReadFrequently: true })
         ?.getImageData(0, 0, result.width, result.height).data;
@@ -311,9 +314,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
       // intentional optional colour, never an automatic background replacement.
       setBackground("transparent");
       setPreviewOriginal(false);
-      setAiProgress(aiQuality === "detail"
-        ? "Detailed AI completed. Check white doors and fine frames; auto panel protection runs when enabled."
-        : "Fast AI finished. For thin white furniture, choose Detailed and Remove again.");
+      setAiProgress("Cutout finished. Review any remaining edges before applying.");
       setAiPercent(100);
     } catch (reason) {
       if (run !== aiRun.current) return;
@@ -615,39 +616,10 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                   <div><strong>Remove background with AI</strong>
                     <small>Runs on your device. No paid credits or external photo upload.</small></div>
                 </div>
-                <div className="brutti-photo-studio-control-group brutti-photo-studio-quality">
-                  <label>AI cutout quality</label>
-                  <div className="brutti-photo-studio-quality-options" role="group" aria-label="AI cutout quality">
-                    <button type="button" className={aiQuality === "detail" ? "is-active" : ""}
-                      aria-pressed={aiQuality === "detail"} disabled={locked}
-                      onClick={() => setAiQuality("detail")}>
-                      <strong>Detailed</strong>
-                      <small>Best for white cabinets &amp; thin edges</small>
-                    </button>
-                    <button type="button" className={aiQuality === "fast" ? "is-active" : ""}
-                      aria-pressed={aiQuality === "fast"} disabled={locked}
-                      onClick={() => setAiQuality("fast")}>
-                      <strong>Fast</strong>
-                      <small>Smaller model for slower devices</small>
-                    </button>
-                  </div>
-                  <p className="brutti-photo-studio-muted">
-                    Detailed uses a different AI model (about 219 MB on first use), not just stronger edge cleanup.
-                    It runs locally; results still need checking for complex products.
-                  </p>
-                </div>
-                <label className="brutti-photo-studio-protect-option">
-                  <input type="checkbox" checked={protectPanels} disabled={locked}
-                    onChange={event => setProtectPanels(event.target.checked)}/>
-                  <span>
-                    <strong>Protect solid cabinet panels</strong>
-                    <small>Automatically recover enclosed door and drawer faces that AI mistakes for background. Turn off for open or glass furniture.</small>
-                  </span>
-                </label>
                 <button type="button" className="brutti-photo-studio-ai-button"
                   disabled={!source || locked} onClick={() => void removeBackground()}>
                   {aiBusy ? <LoaderCircle size={17} className="spin"/> : <Sparkles size={17}/>}
-                  {aiBusy ? "Removing background…" : hasCutout ? "Remove again with selected AI" : "Remove background"}
+                  {aiBusy ? "Removing background…" : hasCutout ? "Remove again" : "Remove background"}
                 </button>
                 {aiBusy && <button type="button" className="brutti-photo-studio-cancel-ai"
                   onClick={cancelAI}>Cancel processing</button>}
@@ -658,12 +630,13 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                       <output>{aiPercent}%</output>
                     </div>
                     <progress max={100} value={aiPercent} aria-label="AI processing estimated percent"/>
-                    <small>{aiBusy
-                      ? "Estimated by processing stage; inference speed depends on your device."
-                      : "100% means the AI pass is finished, not that every edge is correct. Use Restore product if panels disappeared."}</small>
+                    <small role="status" aria-live="polite">
+                      {aiProgress || (aiBusy
+                        ? "Preparing detailed AI…"
+                        : "Check remaining edges and use the cleanup brush if needed.")}
+                    </small>
                   </div>
                 )}
-                {aiProgress && <p role="status" className="brutti-photo-studio-ai-status">{aiProgress}</p>}
                 {hasCutout && (
                   <div className="brutti-photo-studio-control-group brutti-photo-studio-brush-controls">
                     <label>Fix AI mistakes</label>
