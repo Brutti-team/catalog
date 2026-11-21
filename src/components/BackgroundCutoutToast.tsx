@@ -1,0 +1,148 @@
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
+import { Check, Download, Eye, LoaderCircle, Sparkles, X } from "lucide-react";
+import Modal from "./Modal";
+import {
+  cancelBackgroundJob, dismissBackgroundJob,
+  getBackgroundJobSnapshot, subscribeBackgroundJob,
+} from "../lib/photo-background-jobs";
+
+type Props = {
+  onEditResult: (productId: string, imageId: string) => void;
+};
+
+export default function BackgroundCutoutToast({ onEditResult }: Props) {
+  const job = useSyncExternalStore(subscribeBackgroundJob, getBackgroundJobSnapshot);
+  const [host, setHost] = useState<HTMLElement>(() => document.body);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  // Native dialogs are in the browser's top layer. Place the toast inside
+  // whichever editor dialog is on top so it remains visible at the top-left
+  // while staff works on other fields, products or Catalog screens.
+  useEffect(() => {
+    const updateHost = () => {
+      const open = Array.from(document.querySelectorAll<HTMLDialogElement>("dialog[open]"));
+      setHost(open[open.length - 1] ?? document.body);
+    };
+    const observer = new MutationObserver(updateHost);
+    observer.observe(document.body, {
+      childList: true, subtree: true, attributes: true, attributeFilter: ["open"],
+    });
+    updateHost();
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (job.status === "idle" || job.status === "running") setPreviewOpen(false);
+  }, [job.jobId, job.status]);
+
+  const label = job.image?.alt || "Product photo";
+  const visible = job.status !== "idle" && job.status !== "cancelled";
+  const running = job.status === "running";
+
+  async function download(): Promise<void> {
+    if (!job.result) return;
+    const canvas = job.result;
+    const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, "image/png"));
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = (label.replace(/[^a-z0-9]+/gi, "-").slice(0, 60) || "brutti-photo") + "-transparent.png";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  return (
+    <>
+      {visible && !previewOpen && createPortal(
+        <aside className="brutti-background-task-toast"
+          aria-label="Background removal task" aria-busy={running}>
+          <div className="brutti-background-task-toast-head">
+            <span className="brutti-background-task-toast-mark">
+              {running ? <LoaderCircle className="spin" size={17}/> :
+                job.status === "done" ? <Check size={17}/> : <X size={17}/>}
+            </span>
+            <div className="brutti-background-task-toast-title">
+              <strong>{running ? "Removing background" :
+                job.status === "done" ? "Background ready" : "Background removal failed"}</strong>
+              <small title={label}>{label}</small>
+            </div>
+            {job.status !== "running" && (
+              <button type="button" className="brutti-background-task-close"
+                onClick={dismissBackgroundJob} aria-label="Dismiss background task">
+                <X size={15}/>
+              </button>
+            )}
+          </div>
+          {running ? (
+            <>
+              <div className="brutti-background-task-toast-progress">
+                <span>Processing in this tab</span>
+                <strong>{job.percent}%</strong>
+              </div>
+              <progress max={100} value={job.percent}
+                aria-label="Estimated background-removal progress"/>
+              <p role="status">{job.message || "Preparing AI…"}</p>
+              <div className="brutti-background-task-toast-actions">
+                <small>Estimated · Keep this browser tab open</small>
+                <button type="button" onClick={cancelBackgroundJob}>Cancel</button>
+              </div>
+            </>
+          ) : job.status === "done" ? (
+            <>
+              <p>Photo cutout is ready to review. Your original is unchanged.</p>
+              <div className="brutti-background-task-toast-actions">
+                <button type="button" className="brutti-background-task-open"
+                  onClick={() => setPreviewOpen(true)}>
+                  <Eye size={15}/> Open result
+                </button>
+                <button type="button" onClick={() => void download()} aria-label="Download transparent PNG">
+                  <Download size={16}/>
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p role="alert">{job.error || "Processing could not finish."}</p>
+              <div className="brutti-background-task-toast-actions">
+                <button type="button" onClick={dismissBackgroundJob}>Dismiss</button>
+              </div>
+            </>
+          )}
+        </aside>,
+        host,
+      )}
+      {previewOpen && job.status === "done" && job.result && (
+        <Modal title="Background removal result" eyebrow="BRUTTI PHOTO STUDIO"
+          className="brutti-background-result-dialog" onClose={() => setPreviewOpen(false)}>
+          <div className="brutti-background-result-content">
+            <div className="brutti-background-result-photo">
+              <img src={job.result.toDataURL("image/png")} alt={`Removed background preview for ${label}`}/>
+            </div>
+            <div className="brutti-background-result-info">
+              <strong>{label}</strong>
+              <p>Review the transparent edges before applying. Original photo is kept unchanged.</p>
+              <div className="brutti-background-result-actions">
+                <button type="button" className="brutti-background-task-open"
+                  onClick={() => {
+                    if (!job.productId || !job.image) return;
+                    setPreviewOpen(false);
+                    onEditResult(job.productId, job.image.id);
+                  }}>
+                  <Sparkles size={16}/> Continue in Photo Studio
+                </button>
+                <button type="button" onClick={() => void download()}>
+                  <Download size={16}/> Download PNG
+                </button>
+                <button type="button" onClick={() => setPreviewOpen(false)}>Close</button>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+    </>
+  );
+}
