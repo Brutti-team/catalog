@@ -3,8 +3,10 @@
 .brutti-background-task-toast {
   position: fixed;
   z-index: 2147482000;
-  top: max(18px, env(safe-area-inset-top));
-  left: max(18px, env(safe-area-inset-left));
+  /* Dock beneath the Catalog header, aligned to workspace content.
+     Never cover the brand, sidebar links or search/header controls. */
+  top: max(94px, calc(env(safe-area-inset-top) + 86px));
+  left: max(18px, calc(254px + 22px));
   box-sizing: border-box;
   width: min(342px, calc(100vw - 36px));
   padding: 15px;
@@ -219,7 +221,7 @@
 }
 @media (max-width: 700px) {
   .brutti-background-task-toast {
-    top: max(12px, env(safe-area-inset-top));
+    top: max(78px, calc(env(safe-area-inset-top) + 68px));
     left: max(12px, env(safe-area-inset-left));
     width: min(314px, calc(100vw - 24px));
     padding: 12px;
@@ -377,4 +379,56 @@ body:has(.admin-app[data-theme="dark"]) .brutti-background-task-toast-actions bu
   background: #4a8862;
   border-color: #4a8862;
   color: #fff;
+}
+
+/* Keep notifications inside the content region when the sidebar collapses.
+   This uses the same measured nav widths as catalog-sidebar-glass-refine.css. */
+@media (min-width: 801px) {
+  body:has(.admin-app.catalog-os-layout.catalog-sidebar-collapsed)
+    .brutti-background-task-toast {
+    left: 104px;
+  }
+}
+@media (min-width: 701px) and (max-width: 800px) {
+  .brutti-background-task-toast {
+    top: max(82px, calc(env(safe-area-inset-top) + 72px));
+    left: max(14px, env(safe-area-inset-left));
+  }
+}
+.brutti-background-task-title-link {
+  appearance: none;
+  text-align: left;
+  padding: 4px 3px;
+  margin: -4px -3px;
+  min-width: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  cursor: pointer;
+  transition: background .18s ease;
+}
+.brutti-background-task-title-link:hover,
+.brutti-background-task-title-link:focus-visible {
+  background: rgba(210, 231, 215, .48);
+  outline-offset: 2px;
+}
+.brutti-background-task-toast-actions .brutti-background-task-view {
+  background: #e8f2e9;
+  border-color: #c2d8c5;
+  color: #26593d;
+}
+.brutti-background-task-toast-error {
+  color: #9e4032 !important;
+  background: #fff4f1;
+  padding: 8px 9px;
+  border-radius: 7px;
+}
+.brutti-background-task-toast-actions {
+  flex-wrap: wrap;
+}
+.brutti-background-task-toast-actions small {
+  flex: 1 0 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .brutti-background-task-title-link { transition: none; }
 }
