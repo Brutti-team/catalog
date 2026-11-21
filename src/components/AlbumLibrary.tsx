@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Images, Upload, Download, Search, Check, Trash2, LoaderCircle, Eye,
-  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Crop, Grid2X2, Table2, AlertTriangle, LockKeyhole, Save,
+  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Crop, Grid2X2, Table2, AlertTriangle, LockKeyhole, Save, X,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import {
@@ -311,19 +311,9 @@ export default function AlbumLibrary({
   function openPhotoEditor(photo: AlbumPhoto) {
     setDownloadError("");
     setDownloadFormat("jpg");
-    // External Product Library photos may have a matching SKU even when their
-    // original URL was not attached to the Product's image array. Only route
-    // when the match is unambiguous; never create a fake Product record.
-    const matchingProducts = photo.usedBy.length
-      ? photo.usedBy
-      : photo.sourceCode
-        ? products.filter(product => product.sku?.trim().toLowerCase() === photo.sourceCode!.trim().toLowerCase())
-        : [];
-    if (!picker && onEditProduct && matchingProducts.length === 1) {
-      setPreview(null);
-      onEditProduct(matchingProducts[0].id);
-      return;
-    }
+    // Album is the media library. Open its Photo Editor for every image,
+    // including images linked to a Product. Product Editor stays available
+    // via explicit linked-product actions and Create Product.
     setDetailsDraft({
       name: photo.name,
       description: photo.sourceDetails.description || "",
@@ -739,8 +729,33 @@ export default function AlbumLibrary({
           </button>
         </div>
       </div>}
-      {preview && <Modal title={detailsDraft.name || preview.name} eyebrow="BRUTTI CATALOG / PHOTO EDITOR" className="brutti-album-preview-modal brutti-album-editor-dialog" onClose={closePhotoEditor}>
-        <nav className="brutti-album__section-nav" aria-label="Album editor sections">
+      {preview && <Modal title="Edit photo" wide eyebrow="BRUTTI CATALOG / PHOTO EDITOR" className="product-editor-dialog product-editor-dialog--editing brutti-album-preview-modal brutti-album-editor-dialog brutti-album__product-parity" onClose={closePhotoEditor}>
+        <div className="editor-form product-editor-v2 brutti-album__parity-form">
+          <header className="catalog-editor-actionbar" aria-label="Album photo editor actions">
+            <div className="catalog-editor-actionbar-identity">
+              <button type="button" className="catalog-editor-back catalog-editor-back-icon"
+                title="Back to Album" aria-label="Back to Album" disabled={savingDetails} onClick={closePhotoEditor}>
+                <ArrowLeft size={19} aria-hidden="true"/>
+              </button>
+              <div className="catalog-editor-header-title">
+                <span className="catalog-editor-header-eyebrow">BRUTTI CATALOG / PHOTO EDITOR</span>
+                <strong title={detailsDraft.name || preview.name}>{detailsDraft.name || preview.name}</strong>
+              </div>
+            </div>
+            <div className="catalog-editor-header-actions">
+              <div className="catalog-editor-header-meta" aria-label="Photo information">
+                <span className="catalog-editor-header-sku">{preview.sourceCode || "Album photo"}</span>
+                <span className="catalog-editor-header-status catalog-editor-header-status--draft">
+                  {preview.usedBy.length ? "In use" : "In Album"}
+                </span>
+              </div>
+              <button type="button" className="catalog-editor-header-close" title="Close editor"
+                aria-label="Close photo editor" disabled={savingDetails} onClick={closePhotoEditor}>
+                <X size={20} strokeWidth={1.9} aria-hidden="true"/>
+              </button>
+            </div>
+          </header>
+          <nav className="product-editor-jump brutti-album__section-nav" aria-label="Album editor sections">
           {([
             ["01","Details","brutti-album-section-details"],
             ["02","Media","brutti-album-section-media"],
@@ -751,16 +766,17 @@ export default function AlbumLibrary({
               editorCanvasRef.current?.querySelector<HTMLElement>(`#${id}`)
                 ?.scrollIntoView({behavior:"smooth",block:"start"})
             }>
-              <span>{number}</span>{label}
+              <span className="product-editor-jump-number">{number}</span><span>{label}</span>
             </button>
           ))}
         </nav>
-        <div ref={editorCanvasRef} className="brutti-album__editor-canvas">
-          <section id="brutti-album-section-details" className="brutti-album__editor-section">
-            <header className="brutti-album__editor-section-heading">
-              <span className="brutti-album__editor-step">01</span>
-              <h3>Details</h3>
-            </header>
+          <div className="editor-columns brutti-album__parity-columns">
+            <div ref={editorCanvasRef} className="editor-primary brutti-album__editor-canvas">
+          <section id="brutti-album-section-details" className="form-section product-editor-section brutti-editor-section-card brutti-album__editor-section">
+            <div className="product-editor-section-heading brutti-album__editor-section-heading">
+              <span className="product-editor-step brutti-album__editor-step">01</span>
+              <div><h3>Details</h3><p>Name, product code, category and description.</p></div>
+            </div>
             <div className="brutti-album__editable-details">
               <label className="brutti-album__editor-field">
                 <span>Name <b aria-hidden="true">*</b></span>
@@ -802,11 +818,11 @@ export default function AlbumLibrary({
               {!preview.id && <p className="brutti-album__details-note">This image has no Album record yet. You can open its linked product, but Album metadata cannot be saved until it is indexed.</p>}
             </div>
           </section>
-          <section id="brutti-album-section-media" className="brutti-album__editor-section">
-            <header className="brutti-album__editor-section-heading">
-              <span className="brutti-album__editor-step">02</span>
-              <h3>Media <small>(Photo)</small></h3>
-            </header>
+          <section id="brutti-album-section-media" className="brutti-product-media brutti-editor-section-card brutti-album__editor-section">
+            <div className="product-editor-section-heading brutti-album__editor-section-heading brutti-media-section-heading">
+              <span className="product-editor-step brutti-album__editor-step">02</span>
+              <div><h3>Media <small>(Photos &amp; 3D)</small></h3><p>Manage this Album photo and prepare it for your product.</p></div>
+            </div>
             <div className="brutti-album__editor-media">
               <div className="brutti-album__editor-media-image">
                 <SafeImage src={preview.url} alt={preview.name}/>
@@ -875,11 +891,11 @@ export default function AlbumLibrary({
             </div>
           </section>
 
-          <section id="brutti-album-section-specs" className="brutti-album__editor-section">
-            <header className="brutti-album__editor-section-heading">
-              <span className="brutti-album__editor-step">03</span>
+          <section id="brutti-album-section-specs" className="form-section product-editor-section brutti-editor-section-card brutti-album__editor-section">
+            <div className="product-editor-section-heading brutti-album__editor-section-heading">
+              <span className="product-editor-step brutti-album__editor-step">03</span>
               <div><h3>Specifications</h3><p>Product measurements, materials and finishing notes.</p></div>
-            </header>
+            </div>
             <div className="brutti-album__editable-details">
               <label className="brutti-album__editor-field">
                 <span>Dimensions / Size</span>
@@ -914,11 +930,11 @@ export default function AlbumLibrary({
               <p className="brutti-album__details-note">Specifications are saved with the photo in Album. They will prefill the Product Editor when you create a product; verify measurements before publishing.</p>
             </div>
           </section>
-          <section id="brutti-album-section-publishing" className="brutti-album__editor-section">
-            <header className="brutti-album__editor-section-heading">
-              <span className="brutti-album__editor-step">04</span>
+          <section id="brutti-album-section-publishing" className="form-section product-editor-section brutti-editor-section-card brutti-album__editor-section">
+            <div className="product-editor-section-heading brutti-album__editor-section-heading">
+              <span className="product-editor-step brutti-album__editor-step">04</span>
               <div><h3>Publishing</h3><p>Choose where this photo is used in your Catalog.</p></div>
-            </header>
+            </div>
             <div className="brutti-album__editable-details brutti-album__publishing-content">
               <div className="brutti-album__publish-status">
                 <span className="brutti-album__detail-label">ALBUM STATUS</span>
@@ -956,27 +972,25 @@ export default function AlbumLibrary({
               </div>}
             </div>
           </section>
-        </div>
-        <footer className="brutti-album__editor-footer">
-          <span>Changes are saved when you select Save details. Publishing happens in Product Editor.</span>
-          <div className="brutti-album__editor-footer-actions">
-            <button type="button" className="brutti-album__editor-back"
-              disabled={savingDetails} onClick={closePhotoEditor}>
-              <ArrowLeft size={16} aria-hidden="true"/> Back
-            </button>
-            <button type="button" className="brutti-album__editor-edit"
-              disabled={savingDetails || !detailsDraft.name.trim() || !preview.id || !detailsDirty}
-              onClick={()=>void persistPhotoDetails(preview)}>
-              {savingDetails ? <LoaderCircle size={16} className="brutti-album__spin"/> : <Save size={16}/>}
-              {savingDetails ? "Saving…" : "Save details"}
-            </button>
-            {onCreateProductFromPhoto && <button type="button" className="brutti-album__editor-create"
-              disabled={savingDetails || !detailsDraft.name.trim()}
-              onClick={()=>void startProductFromPhoto(preview)}>
-              <Plus size={16} aria-hidden="true"/> Create product
-            </button>}
+            </div>
           </div>
-        </footer>
+          <footer className="editor-footer brutti-album__editor-footer">
+            <span className="tiny muted">Changes are saved when you select Save.</span>
+            <div className="button-row brutti-album__editor-footer-actions">
+              <button type="button" className="button primary brutti-album__editor-edit"
+                disabled={savingDetails || !detailsDraft.name.trim() || !preview.id || !detailsDirty}
+                onClick={()=>void persistPhotoDetails(preview)}>
+                {savingDetails ? <LoaderCircle size={16} className="brutti-album__spin"/> : <Save size={16}/>}
+                {savingDetails ? "Saving…" : "Save details"}
+              </button>
+              {onCreateProductFromPhoto && <button type="button" className="button secondary brutti-album__editor-create"
+                disabled={savingDetails || !detailsDraft.name.trim()}
+                onClick={()=>void startProductFromPhoto(preview)}>
+                <Plus size={16} aria-hidden="true"/> Create product
+              </button>}
+            </div>
+          </footer>
+        </div>
       </Modal>}
       {deleteTarget && <Modal
         title="Delete photo?"
