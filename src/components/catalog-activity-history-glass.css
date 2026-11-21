@@ -1,0 +1,398 @@
+/* Brutti Catalog — premium activity history, 21 November 2026.
+   Visual-only: preserves Supabase audit data, date queries, type filters,
+   refresh actions, roles and other account screens. */
+
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity {
+  width: 100%;
+  max-width: 1460px;
+  padding: 8px 0 26px;
+  font-family: "DM Sans", sans-serif;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-heading {
+  align-items: center;
+  margin: 0 0 24px;
+  gap: 24px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-heading .eyebrow {
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .13em;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-heading h1 {
+  margin: 9px 0 7px;
+  font-family: "Plus Jakarta Sans", "Manrope", sans-serif;
+  font-size: clamp(30px, 2.9vw, 40px);
+  font-weight: 680;
+  line-height: 1.2;
+  letter-spacing: -.055em;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-heading p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-heading-actions .button {
+  min-height: 44px;
+  padding: 10px 17px;
+  border-radius: 12px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 650;
+  -webkit-backdrop-filter: blur(14px) saturate(128%);
+  backdrop-filter: blur(14px) saturate(128%);
+  transition: transform .22s ease, border-color .22s ease, background-color .22s ease, box-shadow .22s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-heading-actions .button:is(:hover,:focus-visible):not(:disabled) {
+  transform: translateY(-2px);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-panel {
+  isolation: isolate;
+  position: relative;
+  overflow: hidden;
+  border-radius: 21px;
+  -webkit-backdrop-filter: blur(24px) saturate(125%);
+  backdrop-filter: blur(24px) saturate(125%);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 22px;
+  padding: 21px 26px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-toolbar-heading {
+  gap: 13px;
+  min-width: 200px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-toolbar-icon {
+  flex: 0 0 43px;
+  width: 43px;
+  height: 43px;
+  border-radius: 13px;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-toolbar-heading h2 {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 16.5px;
+  line-height: 1.35;
+  letter-spacing: -.035em;
+  font-weight: 680;
+  gap: 9px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-toolbar-heading p {
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-count {
+  min-height: 24px;
+  min-width: 26px;
+  border-radius: 8px;
+  font: 720 11px/1.2 "Plus Jakarta Sans",sans-serif;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity :is(.account-activity-period,.account-activity-filters) {
+  min-height: 43px;
+  padding: 4px;
+  border-radius: 13px;
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  backdrop-filter: blur(16px) saturate(120%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.24);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity :is(.account-activity-filter,.account-activity-period-button) {
+  min-height: 33px;
+  border-radius: 9px;
+  padding: 7px 12px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 10.7px;
+  line-height: 1.3;
+  font-weight: 650;
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity :is(.account-activity-filter,.account-activity-period-button):is(:hover,:focus-visible):not(.is-active):not(:disabled) {
+  transform: translateY(-1px);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  min-height: 225px;
+  margin: 0;
+  padding: 28px 22px 31px;
+  text-align: center;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-empty-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 51px;
+  height: 51px;
+  margin: 0 0 14px;
+  border-radius: 17px;
+  -webkit-backdrop-filter: blur(13px);
+  backdrop-filter: blur(13px);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-empty-icon svg {
+  width: 23px;
+  height: 23px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-empty-state strong {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(13.5px,1.3vw,15px);
+  font-weight: 650;
+  line-height: 1.4;
+  letter-spacing: -.02em;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-empty-state p {
+  max-width: 370px;
+  margin: 7px auto 0;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  line-height: 1.6;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-timeline {
+  padding: 13px 22px 16px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-event {
+  margin: 5px 0;
+  padding: 17px 15px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  transition: background-color .22s ease, border-color .22s ease, box-shadow .22s ease, transform .22s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-event:is(:hover,:focus-within) {
+  transform: translateY(-1px);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-event-track::after {
+  bottom: -37px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-event:last-child .account-event-track::after {
+  display: none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-privacy {
+  margin-top: 14px;
+  font-size: 10.5px;
+  line-height: 1.6;
+}
+
+/* LIGHT — soft white glass with Brutti green as a quiet accent. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity .account-heading-actions .button {
+  color: #2b5039;
+  background: rgba(255,255,255,.76);
+  border: 1px solid rgba(192,213,197,.80);
+  box-shadow: 0 5px 15px rgba(30,67,42,.055),inset 0 1px 0 #fff;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity .account-heading-actions .button:hover:not(:disabled) {
+  background: rgba(232,245,236,.93);
+  border-color: #9ec5aa;
+  box-shadow: 0 9px 21px rgba(30,67,42,.12),inset 0 1px 0 #fff;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity .account-activity-panel {
+  background:
+    radial-gradient(ellipse 60% 52% at 97% 0%, rgba(214,238,222,.40), transparent 86%),
+    linear-gradient(155deg, rgba(255,255,255,.93), rgba(249,253,250,.79));
+  border: 1px solid rgba(192,214,199,.79);
+  box-shadow: 0 18px 48px rgba(31,71,45,.075),inset 0 1px 0 #fff;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity .account-activity-toolbar {
+  background: linear-gradient(130deg,rgba(246,252,248,.90),rgba(232,245,237,.65));
+  border-bottom: 1px solid rgba(207,225,212,.75);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity :is(.account-activity-toolbar-icon,.account-activity-count) {
+  color: #2e6847;
+  background: rgba(230,245,234,.8);
+  border: 1px solid #cfe5d4;
+  box-shadow: inset 0 1px 0 #fff,0 4px 12px rgba(32,76,47,.045);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity :is(.account-activity-period,.account-activity-filters) {
+  background: rgba(255,255,255,.63);
+  border: 1px solid #d4e3d8;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9),0 3px 12px rgba(34,70,46,.045);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity :is(.account-activity-filter,.account-activity-period-button) {
+  color: #61786a;
+  background: transparent;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity :is(.account-activity-filter,.account-activity-period-button):hover:not(.is-active):not(:disabled) {
+  color: #245939;
+  background: rgba(222,241,228,.86);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity :is(.account-activity-filter.is-active,.account-activity-period-button.is-active) {
+  color: #285d3e;
+  background: rgba(223,242,230,.93);
+  border-color: #c4dfcc;
+  box-shadow: inset 0 1px 0 #fff,0 3px 9px rgba(30,75,45,.07);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity .account-activity-empty-state {
+  background: linear-gradient(145deg,rgba(255,255,255,.32),rgba(240,249,243,.29));
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity .account-activity-empty-icon {
+  background: rgba(236,248,240,.85);
+  color: #367250;
+  border: 1px solid rgba(192,221,200,.83);
+  box-shadow: inset 0 1px 0 #fff,0 5px 19px rgba(29,77,45,.055);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity .account-activity-empty-state strong {
+  color: #385444;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity .account-activity-empty-state p {
+  color: #7e9184;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity .account-event {
+  background: rgba(255,255,255,.46);
+  border-color: rgba(219,232,222,.64);
+  box-shadow: 0 3px 13px rgba(35,78,47,.025);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity .account-event:is(:hover,:focus-within) {
+  background: rgba(225,242,231,.76);
+  border-color: rgba(159,197,169,.82);
+  box-shadow: 0 8px 22px rgba(35,78,47,.085);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="activity"] .account-center--activity .account-event-icon {
+  background: rgba(228,243,233,.83);
+  box-shadow: inset 0 1px 0 #fff;
+}
+
+/* DARK — neutral graphite instead of muddy/low-contrast green slabs. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity .account-activity-panel {
+  background: linear-gradient(145deg,rgba(39,45,45,.96),rgba(24,28,31,.95)) !important;
+  border: 1px solid #46554e !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity .account-activity-toolbar {
+  background: linear-gradient(120deg,rgba(43,54,51,.87),rgba(34,40,42,.88)) !important;
+  border-color: #445b4e !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity :is(.account-activity-toolbar-icon,.account-activity-count) {
+  background: rgba(52,90,65,.72) !important;
+  color: #c3f4d2 !important;
+  border-color: #537c5e !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity :is(.account-activity-period,.account-activity-filters) {
+  background: rgba(49,61,58,.84) !important;
+  border-color: #557065 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity :is(.account-activity-filter,.account-activity-period-button) {
+  color: #c3d3c9 !important;
+  background: transparent !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity :is(.account-activity-filter.is-active,.account-activity-period-button.is-active) {
+  color: #f4fff6 !important;
+  background: rgba(62,112,77,.80) !important;
+  border-color: #6d9f7e !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.09),0 3px 10px rgba(0,0,0,.10) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity :is(.account-activity-filter,.account-activity-period-button):hover:not(.is-active):not(:disabled) {
+  background: rgba(65,91,71,.75) !important;
+  color: #fff !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity .account-activity-empty-state {
+  background: rgba(21,26,28,.48) !important;
+  color: #e8efe9 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity .account-activity-empty-icon {
+  background: rgba(46,79,58,.82) !important;
+  color: #c2edd0 !important;
+  border: 1px solid #50765c !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.075),0 7px 18px rgba(0,0,0,.18);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity .account-activity-empty-state strong {
+  color: #f0f8f1 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity .account-activity-empty-state p {
+  color: #adbfaf !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity .account-event {
+  background: rgba(46,56,54,.58) !important;
+  border-color: #435a4c !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="activity"] .account-center--activity .account-event:is(:hover,:focus-within) {
+  background: rgba(55,87,65,.90) !important;
+  border-color: #77a187 !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,.23);
+}
+
+@media (max-width: 1100px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-toolbar {
+    align-items: flex-start;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 660px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity {
+    padding-top: 3px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-bottom: 17px;
+    gap: 12px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-heading h1 {
+    font-size: 30px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-heading-actions {
+    width: 100%;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-heading-actions .button {
+    width: 100%;
+    min-height: 42px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-panel {
+    border-radius: 16px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-toolbar {
+    gap: 14px;
+    padding: 16px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 9px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity :is(.account-activity-period,.account-activity-filters) {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    justify-content: space-between;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity :is(.account-activity-filter,.account-activity-period-button) {
+    flex: 1 1 auto;
+    padding-inline: 7px;
+    white-space: nowrap;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-activity-empty-state {
+    min-height: 200px;
+    padding: 26px 16px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-timeline {
+    padding: 10px 12px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity .account-event {
+    padding: 15px 10px;
+    margin: 4px 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="activity"] .account-center--activity :is(.account-heading-actions .button,.account-activity-filter,.account-activity-period-button,.account-event) {
+    transition: none;
+    transform: none !important;
+  }
+}
