@@ -241,22 +241,76 @@ export default function CustomerInsights({ products, categories, loading: produc
           </div> :
           <div className="customer-session-content">
             <div className="customer-session-summary">
-              <strong>{compact(sessionDetails?.totalSessions ?? 0)} recorded {sessionDetails?.totalSessions === 1 ? "session" : "sessions"}</strong>
-              <span>Sessions count browser visits, not unique people.</span>
+              <div className="customer-session-summary-total">
+                <span className="customer-session-summary-icon" aria-hidden="true"><UsersRound size={19} strokeWidth={1.7} /></span>
+                <div>
+                  <small>Session overview</small>
+                  <strong>{compact(sessionDetails?.totalSessions ?? 0)} recorded {sessionDetails?.totalSessions === 1 ? "session" : "sessions"}</strong>
+                </div>
+              </div>
+              <span className="customer-session-summary-caption">Anonymous browser sessions, not unique people</span>
             </div>
             {sessionDetails?.sessions.length ? <div className="customer-session-list">
-              {sessionDetails.sessions.map(session => <article className="customer-session-item" key={session.number}>
-                <div className="customer-session-item-heading">
-                  <span className="customer-session-label"><UsersRound size={15} aria-hidden="true" /> Session {session.number}</span>
-                  <time dateTime={session.firstSeen}>{sessionTimestamp(session.firstSeen)}</time>
-                </div>
-                <div className="customer-session-events">
-                  <span>Catalog opened <strong>{session.catalogOpens}</strong></span>
-                  <span>Product views <strong>{session.productViews}</strong></span>
-                  <span>Product clicks <strong>{session.productClicks}</strong></span>
-                </div>
-                {session.lastSeen !== session.firstSeen && <p className="customer-session-last">Last activity: {sessionTimestamp(session.lastSeen)}</p>}
-              </article>)}
+              {sessionDetails.sessions.map(session => (
+                <article className="customer-session-item" key={session.number}>
+                  <header className="customer-session-item-heading">
+                    <div className="customer-session-identity">
+                      <span className="customer-session-index" aria-hidden="true">{String(session.number).padStart(2, "0")}</span>
+                      <div className="customer-session-heading-copy">
+                        <span className="customer-session-label">Session {session.number}</span>
+                        <span className="customer-session-kind">{session.productClicks || session.productViews ? "Product activity recorded" : "Catalog visit only"}</span>
+                      </div>
+                    </div>
+                    <time dateTime={session.firstSeen}>{sessionTimestamp(session.firstSeen)}</time>
+                  </header>
+                  <div className="customer-session-events" aria-label={`Session ${session.number} activity totals`}>
+                    <span><small>Catalog opened</small><strong>{compact(session.catalogOpens)}</strong></span>
+                    <span><small>Product views</small><strong>{compact(session.productViews)}</strong></span>
+                    <span><small>Product clicks</small><strong>{compact(session.productClicks)}</strong></span>
+                  </div>
+                  <section className="customer-session-product-section" aria-label={`Products visited during session ${session.number}`}>
+                    <div className="customer-session-product-heading">
+                      <span><MousePointerClick size={15} aria-hidden="true" /> Product activity</span>
+                      <small>{session.productViews + session.productClicks} recorded actions</small>
+                    </div>
+                    {session.productActions.length ? (
+                      <div className="customer-session-product-list">
+                        {session.productActions.map((action, index) => {
+                          const relatedProduct = action.productId ? products.find(product => product.id === action.productId) : null;
+                          return <div className="customer-session-product-row" key={`${action.at}-${index}`}>
+                            <span className="customer-session-product-image" aria-hidden="true">
+                              {relatedProduct?.images[0]?.url
+                                ? <SafeImage src={relatedProduct.images[0].url} alt="" loading="lazy" />
+                                : <Layers3 size={18} />}
+                            </span>
+                            <div className="customer-session-product-main">
+                              <strong>{action.productName || relatedProduct?.name || "Product no longer available"}</strong>
+                              <small>{action.productSku || relatedProduct?.sku || "Product ID unavailable"}</small>
+                            </div>
+                            <div className="customer-session-product-action">
+                              <span className={action.kind === "product_click" ? "is-click" : "is-view"}>
+                                {action.kind === "product_click" ? "Card clicked" : "Details viewed"}
+                              </span>
+                              <time dateTime={action.at}>{sessionTimestamp(action.at)}</time>
+                            </div>
+                          </div>;
+                        })}
+                        {session.productViews + session.productClicks > session.productActions.length &&
+                          <p className="customer-session-action-limit">Showing the latest {session.productActions.length} product actions for this session.</p>}
+                      </div>
+                    ) : (
+                      <div className="customer-session-no-product">
+                        <span aria-hidden="true"><Eye size={18} strokeWidth={1.7} /></span>
+                        <div>
+                          <strong>No product selected</strong>
+                          <p>The public catalog was opened, but no product card clicks or detail views were recorded in this session.</p>
+                        </div>
+                      </div>
+                    )}
+                  </section>
+                  {session.lastSeen !== session.firstSeen && <p className="customer-session-last">Last recorded activity: {sessionTimestamp(session.lastSeen)}</p>}
+                </article>
+              ))}
             </div> : <p className="customer-session-empty">No sessions found for this period.</p>}
             {(sessionDetails?.totalSessions ?? 0) > (sessionDetails?.sessions.length ?? 0) &&
               <p className="customer-session-limit">Showing the latest {sessionDetails?.sessions.length} sessions.</p>}
