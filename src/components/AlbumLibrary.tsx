@@ -297,6 +297,19 @@ export default function AlbumLibrary({
     setSelectedFolder(id);
     setUploadCategory(id === "__uncategorized__" ? "none" : id);
   }
+  // Product-linked photos should open the real Product Editor, as product cards do.
+  // Standalone Album/legacy library photos do not have a product record, so open
+  // the matching Photo Editor instead of inventing an editable product.
+  function openPhotoEditor(photo: AlbumPhoto) {
+    setDownloadError("");
+    setDownloadFormat("jpg");
+    if (!picker && onEditProduct && photo.usedBy.length === 1) {
+      setPreview(null);
+      onEditProduct(photo.usedBy[0].id);
+      return;
+    }
+    setPreview(photo);
+  }
   const busy = progress!==null;
   async function upload(files: FileList|null) {
     if (!files?.length || busy) return;
@@ -604,7 +617,7 @@ export default function AlbumLibrary({
             picker={picker}
             selectedKeys={selected}
             excludedUrls={excludedUrls}
-            onView={setPreview}
+            onView={openPhotoEditor}
             onSelect={toggle}
             onEditCover={setEditingAlbumPhoto}
           />
@@ -614,7 +627,7 @@ export default function AlbumLibrary({
               const checked=selected.includes(photo.key);
               const disabled=picker && excludedUrls.includes(photo.url);
               return <div key={photo.key} className={`brutti-album__card${checked?" is-selected":""}`}>
-                <button type="button" className="brutti-album__thumb" onClick={()=>picker?toggle(photo):setPreview(photo)} disabled={disabled} aria-label={picker?`Select ${photo.name}`:`Preview ${photo.name}`}>
+                <button type="button" className="brutti-album__thumb" onClick={()=>picker?toggle(photo):openPhotoEditor(photo)} disabled={disabled} aria-label={picker?`Select ${photo.name}`:`Edit ${photo.name}`}>
                   <SafeImage src={photo.url} alt={photo.name} loading="lazy"/>
                   {picker && <span className="brutti-album__check">{checked?<Check size={16}/>:disabled?"Added":<span/>}</span>}
                 </button>
@@ -625,7 +638,7 @@ export default function AlbumLibrary({
                     {albumPhotoCategoryIds(photo).map(id=>categories.find(item=>item.id===id)?.name).filter(Boolean).join(", ") || "Uncategorised"}
                   </span>
                   {!picker && <div className="brutti-album__card-actions">
-                    <button type="button" onClick={()=>setPreview(photo)} aria-label={"View details for " + photo.name}><Eye size={14}/> View</button>
+                    <button type="button" onClick={()=>openPhotoEditor(photo)} aria-label={"Open editor for " + photo.name}><Eye size={14}/> Open</button>
                     <button type="button" onClick={()=>setEditingAlbumPhoto(photo)} aria-label={"Edit background and cover for " + photo.name}><Crop size={14}/> Edit cover</button>
                   </div>}
                 </div>
@@ -642,8 +655,14 @@ export default function AlbumLibrary({
           </button>
         </div>
       </div>}
-      {preview && <Modal title="Photo details" eyebrow="BRUTTI / ALBUM" className="brutti-album-preview-modal" onClose={()=>setPreview(null)}>
-        <div className="brutti-album__detail-layout">
+      {preview && <Modal title={preview.name} eyebrow="BRUTTI CATALOG / PHOTO EDITOR" className="brutti-album-preview-modal brutti-album-editor-dialog" onClose={()=>setPreview(null)}>
+        <div className="brutti-album__editor-canvas">
+          <section className="brutti-album__editor-section">
+            <header className="brutti-album__editor-section-heading">
+              <span className="brutti-album__editor-step">01</span>
+              <h3>Details</h3>
+            </header>
+            <div className="brutti-album__detail-layout">
           <div className="brutti-album__detail-visual">
             <div className="brutti-album__preview-image">
               <SafeImage src={preview.url} alt={preview.name} />
@@ -692,12 +711,6 @@ export default function AlbumLibrary({
               />
               <small>Organise this photo in Album. Product categories remain unchanged.</small>
             </div>}
-            {!picker && (
-              <button type="button" className="brutti-album__edit-cover"
-                onClick={() => setEditingAlbumPhoto(preview)} disabled={downloading || busy}>
-                <Images size={16} aria-hidden="true" /> Edit cover · Cutout, background, crop & zoom
-              </button>
-            )}
             {downloadError && <p className="brutti-album__error" role="alert">{downloadError}</p>}
             <div className="brutti-album__detail-download">
               <span className="brutti-album__detail-label">DOWNLOAD PHOTO</span>
@@ -743,7 +756,21 @@ export default function AlbumLibrary({
               )}
             </div>
           </div>
+            </div>
+          </section>
         </div>
+        <footer className="brutti-album__editor-footer">
+          <span>Album category changes are saved automatically.</span>
+          <div className="brutti-album__editor-footer-actions">
+            <button type="button" className="brutti-album__editor-back" onClick={() => setPreview(null)}>
+              <ArrowLeft size={16} aria-hidden="true"/> Back to Album
+            </button>
+            <button type="button" className="brutti-album__editor-edit" disabled={downloading || busy}
+              onClick={() => setEditingAlbumPhoto(preview)}>
+              <Images size={16} aria-hidden="true"/> Edit cover
+            </button>
+          </div>
+        </footer>
       </Modal>}
       {deleteTarget && <Modal
         title="Delete photo?"
