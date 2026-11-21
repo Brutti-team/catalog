@@ -580,3 +580,158 @@
     transition: none;
   }
 }
+
+/* Direct-dialog Availability overlay: never clipped by Specifications section */
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu.catalog-spec-availability-floating {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid rgba(195,217,200,.9);
+  border-radius: 15px;
+  background: rgba(255,255,253,.98);
+  color: #33503d;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 17px 42px rgba(26,62,36,.18),0 2px 8px rgba(26,62,36,.045);
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu::-webkit-scrollbar {
+  display: none;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-menu-title {
+  display: block;
+  padding: 8px 10px 9px;
+  color: #87958a;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 55px;
+  margin: 1px 0;
+  gap: 11px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: #33503d;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color .15s ease,border-color .15s ease;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: #edf4ee;
+  color: #527e60;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option-copy {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 3px;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option-copy strong {
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 680;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option-copy small {
+  color: inherit;
+  font-size: 10px;
+  line-height: 1.35;
+  opacity: .73;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-check {
+  flex-shrink: 0;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="available"] {
+  background: #f0f8f2;
+  color: #296746;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="made-to-order"] {
+  background: #fdf8ec;
+  color: #916c31;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="unavailable"] {
+  background: #fbf0ec;
+  color: #9a5147;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="available"] .catalog-spec-availability-option-icon {
+  color: #30815b;
+  background: #d4eadb;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="made-to-order"] .catalog-spec-availability-option-icon {
+  color: #a1762f;
+  background: #f5e6c7;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="unavailable"] .catalog-spec-availability-option-icon {
+  color: #ad6458;
+  background: #f4dcd5;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option:is(:hover,:focus-visible,.is-selected) {
+  outline: none;
+  border-color: currentColor;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="available"]:is(:hover,:focus-visible,.is-selected) {
+  background: #e3f3e8;
+  border-color: #add6bc;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="made-to-order"]:is(:hover,:focus-visible,.is-selected) {
+  background: #fcf0d6;
+  border-color: #e9d5a6;
+}
+.admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="unavailable"]:is(:hover,:focus-visible,.is-selected) {
+  background: #fae9e4;
+  border-color: #ecc7bc;
+}
+.admin-app[data-theme="dark"] dialog.product-editor-dialog--editing > .catalog-spec-availability-menu.catalog-spec-availability-floating {
+  color: #e5eee4;
+  background: rgba(26,46,32,.99);
+  border-color: #48664d;
+}
+.admin-app[data-theme="dark"] dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-menu-title {
+  color: #b9cdbd;
+}
+.admin-app[data-theme="dark"] dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="available"] {
+  background: #233e30;
+  color: #c6e9d0;
+}
+.admin-app[data-theme="dark"] dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="made-to-order"] {
+  background: #423724;
+  color: #f0d7a7;
+}
+.admin-app[data-theme="dark"] dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="unavailable"] {
+  background: #462f2f;
+  color: #f1c4ba;
+}
+.admin-app[data-theme="dark"] dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="available"]:is(:hover,:focus-visible,.is-selected) {
+  background: #2c573c;
+  border-color: #5d9770;
+}
+.admin-app[data-theme="dark"] dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="made-to-order"]:is(:hover,:focus-visible,.is-selected) {
+  background: #5a4528;
+  border-color: #9b7a46;
+}
+.admin-app[data-theme="dark"] dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option[data-option-status="unavailable"]:is(:hover,:focus-visible,.is-selected) {
+  background: #613934;
+  border-color: #a96b60;
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app dialog.product-editor-dialog--editing > .catalog-spec-availability-menu .catalog-spec-availability-option {
+    transition: none;
+  }
+}
