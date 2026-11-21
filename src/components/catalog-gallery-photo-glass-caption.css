@@ -1,0 +1,186 @@
+/* Product Gallery — photo-first cards with a readable frosted-glass caption.
+   21 Nov 2026. Keep product data, image crop, status, and click-to-edit intact. */
+
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  width: 100%;
+  height: clamp(375px, 29vw, 455px);
+  min-height: 375px;
+  padding: 0 !important;
+  overflow: hidden;
+  border-radius: 19px;
+  text-align: left;
+}
+
+/* Let the product photograph fill the card; it remains the visual hero. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  aspect-ratio: auto !important;
+  border-radius: inherit;
+  overflow: hidden;
+  z-index: 0;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-photo > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-photo .status-badge {
+  position: absolute;
+  z-index: 4;
+  top: 14px;
+  left: 14px;
+}
+
+/* One glass caption at the very bottom, not a large opaque white section. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-body {
+  position: absolute;
+  z-index: 3;
+  left: 11px;
+  right: 11px;
+  bottom: 11px;
+  width: auto;
+  min-width: 0;
+  min-height: 158px;
+  margin: 0;
+  padding: 16px 17px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.78);
+  border-radius: 16px;
+  background: linear-gradient(135deg,rgba(255,255,255,.92) 0%,rgba(246,252,247,.79) 100%) !important;
+  box-shadow: 0 11px 33px rgba(9,31,19,.16), inset 0 1px 0 rgba(255,255,255,.93) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  backdrop-filter: blur(22px) saturate(140%);
+  color: #243b2e;
+  transition: background-color .2s ease, border-color .2s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-body::before {
+  display: none !important;
+  content: none !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card:hover .catalog-gallery-body {
+  border-color: rgba(255,255,255,.9);
+  background: linear-gradient(135deg,rgba(255,255,255,.95),rgba(241,250,244,.86)) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-category {
+  display: block;
+  margin: 0 0 7px;
+  color: #56745f !important;
+  font-size: 10.5px !important;
+  line-height: 1.4;
+  font-weight: 600 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-body > strong {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-height: 0 !important;
+  max-height: 52px;
+  margin: 0;
+  overflow: hidden;
+  color: #21382c !important;
+  font-size: clamp(15.5px, 1.03vw, 17px) !important;
+  font-weight: 650 !important;
+  letter-spacing: -.018em !important;
+  line-height: 1.42 !important;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-bottom {
+  margin: auto 0 0;
+  padding: 11px 0 0;
+  border-top: 1px solid rgba(81,130,95,.16);
+  background: transparent !important;
+  gap: 7px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-id-label {
+  color: #829487 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-id-value {
+  color: #2d6241 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-edit-action {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  color: #24583a !important;
+  border: 1px solid rgba(125,175,137,.22) !important;
+  border-radius: 10px;
+  background: rgba(226,242,231,.79) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.81) !important;
+}
+
+/* Graphite glass on dark mode, maintaining the same geometry. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-body {
+  border-color: rgba(197,219,204,.23) !important;
+  background: linear-gradient(135deg,rgba(31,39,36,.90),rgba(31,45,37,.82)) !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,.33),inset 0 1px 0 rgba(255,255,255,.08) !important;
+  color: #e7f2e9;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-gallery-card:hover .catalog-gallery-body {
+  border-color: rgba(193,230,201,.36) !important;
+  background: linear-gradient(135deg,rgba(37,47,42,.94),rgba(38,55,44,.87)) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-category {
+  color: #c0d2c4 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-body > strong {
+  color: #f5faf6 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-bottom {
+  border-top-color: rgba(193,219,198,.2);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-id-label {
+  color: #b5c7ba !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-id-value {
+  color: #e0f3e5 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-edit-action {
+  color: #d7f1df !important;
+  border-color: rgba(145,197,154,.28) !important;
+  background: rgba(83,124,94,.31) !important;
+}
+
+/* Responsive cards remain touch friendly, avoid text covering the entire image. */
+@media (max-width: 1199px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card {
+    height: clamp(365px, 40vw, 450px);
+    min-height: 365px;
+  }
+}
+@media (max-width: 670px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card {
+    height: clamp(350px, 105vw, 440px);
+    min-height: 350px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-body {
+    left: 9px;
+    right: 9px;
+    bottom: 9px;
+    min-height: 149px;
+    padding: 13px 14px 12px;
+    border-radius: 14px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-body > strong {
+    font-size: 15.5px !important;
+    min-height: 0 !important;
+    max-height: 46px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-body {
+    transition: none !important;
+  }
+}
