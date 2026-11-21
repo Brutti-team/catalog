@@ -740,8 +740,23 @@ export default function AlbumLibrary({
         </div>
       </div>}
       {preview && <Modal title={detailsDraft.name || preview.name} eyebrow="BRUTTI CATALOG / PHOTO EDITOR" className="brutti-album-preview-modal brutti-album-editor-dialog" onClose={closePhotoEditor}>
-        <div className="brutti-album__editor-canvas">
-          <section className="brutti-album__editor-section">
+        <nav className="brutti-album__section-nav" aria-label="Album editor sections">
+          {([
+            ["01","Details","brutti-album-section-details"],
+            ["02","Media","brutti-album-section-media"],
+            ["03","Specifications","brutti-album-section-specs"],
+            ["04","Publishing","brutti-album-section-publishing"],
+          ] as const).map(([number,label,id]) => (
+            <button type="button" key={id} onClick={() =>
+              editorCanvasRef.current?.querySelector<HTMLElement>(`#${id}`)
+                ?.scrollIntoView({behavior:"smooth",block:"start"})
+            }>
+              <span>{number}</span>{label}
+            </button>
+          ))}
+        </nav>
+        <div ref={editorCanvasRef} className="brutti-album__editor-canvas">
+          <section id="brutti-album-section-details" className="brutti-album__editor-section">
             <header className="brutti-album__editor-section-heading">
               <span className="brutti-album__editor-step">01</span>
               <h3>Details</h3>
@@ -787,7 +802,7 @@ export default function AlbumLibrary({
               {!preview.id && <p className="brutti-album__details-note">This image has no Album record yet. You can open its linked product, but Album metadata cannot be saved until it is indexed.</p>}
             </div>
           </section>
-          <section className="brutti-album__editor-section">
+          <section id="brutti-album-section-media" className="brutti-album__editor-section">
             <header className="brutti-album__editor-section-heading">
               <span className="brutti-album__editor-step">02</span>
               <h3>Media <small>(Photo)</small></h3>
@@ -829,21 +844,6 @@ export default function AlbumLibrary({
                     <Package size={17} aria-hidden="true"/><span>{product.name}</span><ArrowUpRight size={16} aria-hidden="true"/>
                   </button>)}
                 </div>}
-                {!picker && onAttachPhotoToProduct && <div className="brutti-album__attach-product">
-                  <span className="brutti-album__detail-label">ADD TO EXISTING PRODUCT</span>
-                  <div className="brutti-album__attach-product-row">
-                    <select value={attachProductId} onChange={e => setAttachProductId(e.target.value)}
-                      aria-label="Choose product to attach photo">
-                      <option value="">Choose a product</option>
-                      {products.map(product=><option key={product.id} value={product.id}>{product.sku || "No ID"} · {product.name}</option>)}
-                    </select>
-                    <button type="button" disabled={!attachProductId || savingDetails}
-                      onClick={() => void startProductFromPhoto(preview,attachProductId)}>
-                      <Plus size={15} aria-hidden="true"/> Add photo
-                    </button>
-                  </div>
-                  <small>Opens Product Editor with this photo attached. Save the product there to confirm.</small>
-                </div>}
                 {downloadError && <p className="brutti-album__error" role="alert">{downloadError}</p>}
                 <div className="brutti-album__detail-download">
                   <span className="brutti-album__detail-label">DOWNLOAD PHOTO</span>
@@ -872,6 +872,88 @@ export default function AlbumLibrary({
                       </button>}
                 </div>
               </div>
+            </div>
+          </section>
+
+          <section id="brutti-album-section-specs" className="brutti-album__editor-section">
+            <header className="brutti-album__editor-section-heading">
+              <span className="brutti-album__editor-step">03</span>
+              <div><h3>Specifications</h3><p>Product measurements, materials and finishing notes.</p></div>
+            </header>
+            <div className="brutti-album__editable-details">
+              <label className="brutti-album__editor-field">
+                <span>Dimensions / Size</span>
+                <input value={detailsDraft.size} maxLength={2000}
+                  placeholder="e.g. 7ft H × 4ft W"
+                  disabled={savingDetails}
+                  onChange={event=>setDetailsDraft(current=>({...current,size:event.target.value}))}/>
+              </label>
+              <label className="brutti-album__editor-field">
+                <span>Materials</span>
+                <input value={detailsDraft.materials} maxLength={2000}
+                  placeholder="e.g. Solid timber and plywood"
+                  disabled={savingDetails}
+                  onChange={event=>setDetailsDraft(current=>({...current,materials:event.target.value}))}/>
+              </label>
+              <div className="brutti-album__field-pair">
+                <label className="brutti-album__editor-field">
+                  <span>Colour</span>
+                  <input value={detailsDraft.colour} maxLength={2000}
+                    placeholder="e.g. Natural timber"
+                    disabled={savingDetails}
+                    onChange={event=>setDetailsDraft(current=>({...current,colour:event.target.value}))}/>
+                </label>
+                <label className="brutti-album__editor-field">
+                  <span>Finishing</span>
+                  <input value={detailsDraft.finishing} maxLength={2000}
+                    placeholder="e.g. Satin clear coat"
+                    disabled={savingDetails}
+                    onChange={event=>setDetailsDraft(current=>({...current,finishing:event.target.value}))}/>
+                </label>
+              </div>
+              <p className="brutti-album__details-note">Specifications are saved with the photo in Album. They will prefill the Product Editor when you create a product; verify measurements before publishing.</p>
+            </div>
+          </section>
+          <section id="brutti-album-section-publishing" className="brutti-album__editor-section">
+            <header className="brutti-album__editor-section-heading">
+              <span className="brutti-album__editor-step">04</span>
+              <div><h3>Publishing</h3><p>Choose where this photo is used in your Catalog.</p></div>
+            </header>
+            <div className="brutti-album__editable-details brutti-album__publishing-content">
+              <div className="brutti-album__publish-status">
+                <span className="brutti-album__detail-label">ALBUM STATUS</span>
+                <strong>{preview.usedBy.length ? "Used in Products" : "Saved in Album"}</strong>
+                <p>A photo in Album is not a published product. Only Product Editor can publish the finished product to Public Catalog.</p>
+              </div>
+              {onCreateProductFromPhoto && <button type="button" className="brutti-album__publish-create"
+                disabled={savingDetails || !detailsDraft.name.trim()}
+                onClick={()=>void startProductFromPhoto(preview)}>
+                <Plus size={17} aria-hidden="true"/> Create product draft from this photo
+                <ArrowUpRight size={16} aria-hidden="true"/>
+              </button>}
+              {!picker && onAttachPhotoToProduct && <div className="brutti-album__attach-product">
+                  <span className="brutti-album__detail-label">ADD TO EXISTING PRODUCT</span>
+                  <div className="brutti-album__attach-product-row">
+                    <select value={attachProductId} onChange={e => setAttachProductId(e.target.value)}
+                      aria-label="Choose product to attach photo">
+                      <option value="">Choose a product</option>
+                      {products.map(product=><option key={product.id} value={product.id}>{product.sku || "No ID"} · {product.name}</option>)}
+                    </select>
+                    <button type="button" disabled={!attachProductId || savingDetails}
+                      onClick={() => void startProductFromPhoto(preview,attachProductId)}>
+                      <Plus size={15} aria-hidden="true"/> Add photo
+                    </button>
+                  </div>
+                  <small>Opens Product Editor with this photo attached. Save the product there to confirm.</small>
+                </div>}
+              {!!preview.usedBy.length && <div className="brutti-album__publish-linked">
+                <span className="brutti-album__detail-label">EXISTING PRODUCTS USING THIS PHOTO</span>
+                {preview.usedBy.map(item=><button type="button" className="brutti-album__linked-product"
+                  key={item.id} onClick={()=>{setPreview(null);onEditProduct?.(item.id);}}>
+                  <Package size={17} aria-hidden="true"/><span>{item.name}</span>
+                  <ArrowUpRight size={16} aria-hidden="true"/>
+                </button>)}
+              </div>}
             </div>
           </section>
         </div>
