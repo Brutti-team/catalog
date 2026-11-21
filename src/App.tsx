@@ -154,10 +154,8 @@ export default function App() {
   const [toast, setToast] = useState("");
   const [menu, setMenu] = useState<string | null>(null);
   const [mobileNav, setMobileNav] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-    try { return window.localStorage.getItem("brutti-catalog-sidebar-collapsed") === "true"; }
-    catch { return false; }
-  });
+  // Open the full sidebar by default so names and live counts stay visible.
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const headerSearchRef = useRef<HTMLInputElement>(null);
@@ -166,11 +164,7 @@ export default function App() {
       setMobileNav(false);
       return;
     }
-    setSidebarCollapsed(value => {
-      try { window.localStorage.setItem("brutti-catalog-sidebar-collapsed", String(!value)); }
-      catch { /* Keep the preference in this session. */ }
-      return !value;
-    });
+    setSidebarCollapsed(value => !value);
   };
   const [busy, setBusy] = useState(false);
   const catalogRequest = useRef(0);
