@@ -16,11 +16,13 @@ import {
   Upload,
   Crop,
   MoreHorizontal,
+  ChevronDown,
+  Ruler,
   Pencil,
   Trash2,
   Image as ImageIcon,
 } from "lucide-react";
-import type { Product, Category, ProductImage } from "../lib/types";
+import type { Product, Category, ProductImage, ProductSpecification } from "../lib/types";
 import { uploadImage, validateProduct, cleanupAbandonedImages, type ProductModelChange } from "../lib/catalog";
 import Modal from "./Modal";
 import AvailabilityPicker from "./AvailabilityPicker";
@@ -29,7 +31,7 @@ import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
 import ProductPrice from "./ProductPrice";
 import { nextProductId } from "../lib/product-ids";
-import { cmToUnit, unitToCm, unitMax, type DimensionUnit } from "../lib/dimensions";
+import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
 import DimensionUnitPicker from "./DimensionUnitPicker";
 import PhotoCropEditor from "./PhotoCropEditor";
 import PhotoCoverStudio from "./PhotoCoverStudio";
@@ -37,6 +39,138 @@ import AlbumLibrary from "./AlbumLibrary";
 import { albumPhotoToProductImage, type AlbumPhoto } from "../lib/album";
 import { photoCropStyle } from "../lib/photo-crop";
 import { splitSpecifications } from "../lib/specification-groups";
+
+type SpecificationRowType = "detail" | "measurement";
+
+function parseMeasurementValue(value: string): { amount: string; unit: DimensionUnit } {
+  const match = value.trim().match(/^([0-9]*(?:\.[0-9]*)?)\s*(mm|cm|m|in|ft)$/);
+  return match
+    ? { amount: match[1], unit: match[2] as DimensionUnit }
+    : { amount: "", unit: "cm" };
+}
+
+/** Uses the existing name/value specification record. Measurement units stay
+ * embedded in value for the public product view, with kind for editing. */
+function SpecificationRowFields({
+  row, label, namePlaceholder, valuePlaceholder, onChange, onRemove,
+}: {
+  row: ProductSpecification;
+  label: string;
+  namePlaceholder: string;
+  valuePlaceholder: string;
+  onChange: (id: string, field: "name" | "value", value: string) => void;
+  onRemove: (id: string) => void;
+}) {
+  const measurement = row.kind === "measurement";
+  const { amount, unit } = measurement ? parseMeasurementValue(row.value) : { amount: "", unit: "cm" as DimensionUnit };
+  return (
+    <div className={"catalog-reference-custom-row" + (measurement ? " catalog-spec-measurement-row" : "")}>
+      <input
+        aria-label={label + " name"}
+        placeholder={measurement ? "e.g. Pipe diameter" : namePlaceholder}
+        maxLength={80}
+        value={row.name}
+        onChange={(event) => onChange(row.id, "name", event.target.value)}
+      />
+      {measurement ? (
+        <div className="catalog-spec-measurement-fields" role="group" aria-label={label + " measurement"}>
+          <input
+            aria-label={label + " measurement value"}
+            type="number"
+            inputMode="decimal"
+            min={0}
+            max={unitMax(unit)}
+            step="any"
+            placeholder="e.g. 25"
+            value={amount}
+            onChange={(event) => onChange(row.id, "value", event.target.value + " " + unit)}
+          />
+          <select
+            aria-label={label + " measurement unit"}
+            value={unit}
+            title="Measurement unit"
+            onChange={(event) => {
+              const nextUnit = event.target.value as DimensionUnit;
+              const nextAmount = amount && Number.isFinite(Number(amount)) && Number(amount) > 0
+                ? String(cmToUnit(unitToCm(Number(amount), unit), nextUnit))
+                : amount;
+              onChange(row.id, "value", nextAmount + " " + nextUnit);
+            }}
+          >
+            {DIMENSION_UNIT_OPTIONS.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+          </select>
+        </div>
+      ) : (
+        <input
+          aria-label={label + " value"}
+          placeholder={valuePlaceholder}
+          maxLength={400}
+          value={row.value}
+          onChange={(event) => onChange(row.id, "value", event.target.value)}
+        />
+      )}
+      <button
+        type="button"
+        className="catalog-reference-remove-row"
+        aria-label={"Remove " + (measurement ? "measurement " : "detail ") + (row.name || label)}
+        title="Remove row"
+        onClick={() => onRemove(row.id)}
+      ><X size={17} aria-hidden="true" /></button>
+    </div>
+  );
+}
+
+/** An in-flow choice panel avoids popover clipping inside editor sections.
+ * Both the base rows and named sections use the same accessible actions. */
+function AddSpecificationRowMenu({
+  disabled, onAdd,
+}: {
+  disabled: boolean;
+  onAdd: (type: SpecificationRowType) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const handleOutside = (event: PointerEvent) => {
+      if (!ref.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      ref.current?.querySelector<HTMLButtonElement>(".catalog-reference-add-row")?.focus();
+    };
+    document.addEventListener("pointerdown", handleOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("pointerdown", handleOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [open]);
+  return (
+    <div className="catalog-spec-row-menu-wrap" ref={ref}>
+      <button type="button" className="catalog-reference-add-row"
+        disabled={disabled} aria-expanded={open}
+        aria-label="Add specification row: choose detail or measurement"
+        onClick={() => setOpen(value => !value)}>
+        <Plus size={17} aria-hidden="true" /> Add row
+        <ChevronDown size={14} className={open ? "is-open" : ""} aria-hidden="true" />
+      </button>
+      {open && !disabled && (
+        <div className="catalog-spec-row-choice-panel" role="group" aria-label="Choose row type">
+          <button type="button" onClick={() => { onAdd("detail"); setOpen(false); }}>
+            <span className="catalog-spec-choice-icon"><Plus size={17} aria-hidden="true" /></span>
+            <span><strong>Detail row</strong><small>Material, finish or description</small></span>
+          </button>
+          <button type="button" onClick={() => { onAdd("measurement"); setOpen(false); }}>
+            <span className="catalog-spec-choice-icon"><Ruler size={17} aria-hidden="true" /></span>
+            <span><strong>Measurement</strong><small>Numeric value with mm, cm, m, in or ft</small></span>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export type CatalogEditorNavigation = "overview" | "products" | "categories" | "users" | "activity" | "catalog";
 export default function ProductEditor({
@@ -131,11 +265,13 @@ export default function ProductEditor({
   }, []);
   const update = <K extends keyof Product>(key: K, value: Product[K]) =>
     setDraft((p) => ({ ...p, [key]: value }));
-  const addSpecificationRow = (sectionId?: string) =>
+  const addSpecificationRow = (type: "detail" | "measurement", sectionId?: string) =>
     setDraft((current) => {
       const specifications = [...(current.specifications ?? [])];
       if (specifications.length >= 24) return current;
-      const row = { id: crypto.randomUUID(), name: "", value: "" };
+      const row: ProductSpecification = type === "measurement"
+        ? { id: crypto.randomUUID(), name: "", value: " cm", kind: "measurement" }
+        : { id: crypto.randomUUID(), name: "", value: "" };
       const startOfSection = sectionId
         ? specifications.findIndex(item => item.id === sectionId && item.kind === "section")
         : -1;
@@ -745,38 +881,19 @@ export default function ProductEditor({
               </div>
               <div className="catalog-spec-base-rows">
               {primarySpecificationRows.map((row, index) => (
-                <div className="catalog-reference-custom-row" key={row.id}>
-                  <input
-                    aria-label={`Additional detail ${index + 1} name`}
-                    placeholder="e.g. Drawer dimensions"
-                    maxLength={80}
-                    value={row.name}
-                    onChange={(event) => changeSpecification(row.id, "name", event.target.value)}
-                  />
-                  <input
-                    aria-label={`Additional detail ${index + 1} value`}
-                    placeholder="e.g. W 3ft × D 1.8ft × H 2ft"
-                    maxLength={400}
-                    value={row.value}
-                    onChange={(event) => changeSpecification(row.id, "value", event.target.value)}
-                  />
-                  <button
-                    type="button"
-                    className="catalog-reference-remove-row"
-                    aria-label={`Remove detail ${row.name || index + 1}`}
-                    title="Remove row"
-                    onClick={() => removeSpecification(row.id)}
-                  ><X size={17} aria-hidden="true" /></button>
-                </div>
+                <SpecificationRowFields key={row.id}
+                  row={row}
+                  label={`Additional detail ${index + 1}`}
+                  namePlaceholder="e.g. Drawer dimensions"
+                  valuePlaceholder="e.g. W 3ft × D 1.8ft × H 2ft"
+                  onChange={changeSpecification}
+                  onRemove={removeSpecification}
+                />
               ))}
-              <button
-                type="button"
-                className="catalog-reference-add-row"
+              <AddSpecificationRowMenu
                 disabled={(draft.specifications ?? []).length >= 24 || busy}
-                onClick={() => addSpecificationRow()}
-              >
-                <Plus size={17} aria-hidden="true" /> Add row
-              </button>
+                onAdd={(type) => addSpecificationRow(type)}
+              />
               </div>
               <div className="catalog-spec-extra-heading">
                 <div>
@@ -810,39 +927,20 @@ export default function ProductEditor({
                   </div>
                   <div className="catalog-spec-new-section-rows">
                     {section.rows.map((row, rowIndex) => (
-                      <div className="catalog-reference-custom-row" key={row.id}>
-                        <input
-                          aria-label={`Section ${index + 2} row ${rowIndex + 1} name`}
-                          placeholder="e.g. Finishing"
-                          maxLength={80}
-                          value={row.name}
-                          onChange={event => changeSpecification(row.id, "name", event.target.value)}
-                        />
-                        <input
-                          aria-label={`Section ${index + 2} row ${rowIndex + 1} value`}
-                          placeholder="e.g. Clear satin finishing"
-                          maxLength={400}
-                          value={row.value}
-                          onChange={event => changeSpecification(row.id, "value", event.target.value)}
-                        />
-                        <button
-                          type="button"
-                          className="catalog-reference-remove-row"
-                          aria-label={`Remove row ${row.name || rowIndex + 1}`}
-                          title="Remove row"
-                          onClick={() => removeSpecification(row.id)}
-                        ><X size={17} aria-hidden="true" /></button>
-                      </div>
+                      <SpecificationRowFields key={row.id}
+                        row={row}
+                        label={`Section ${index + 2} row ${rowIndex + 1}`}
+                        namePlaceholder="e.g. Finishing"
+                        valuePlaceholder="e.g. Clear satin finishing"
+                        onChange={changeSpecification}
+                        onRemove={removeSpecification}
+                      />
                     ))}
                   </div>
-                  <button
-                    type="button"
-                    className="catalog-reference-add-row"
+                  <AddSpecificationRowMenu
                     disabled={(draft.specifications ?? []).length >= 24 || busy}
-                    onClick={() => addSpecificationRow(section.id)}
-                  >
-                    <Plus size={17} aria-hidden="true" /> Add row
-                  </button>
+                    onAdd={(type) => addSpecificationRow(type, section.id)}
+                  />
                 </div>
               ))}
               <button
