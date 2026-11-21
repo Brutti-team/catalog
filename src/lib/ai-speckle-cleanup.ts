@@ -12,7 +12,7 @@ export function cleanDetachedAIMatte(rgba: Uint8ClampedArray, width: number, hei
   // Keep furniture edges even if only partially opaque. Suppress speckles only
   // when their ENTIRE component is smaller than a tiny, bounded area.
   const minOpaque = 48;
-  const maxSpeckle = Math.min(100, Math.max(4, Math.floor(count * .00006)));
+  const maxSpeckle = Math.min(100, Math.max(8, Math.floor(count * .00006)));
   const visited = new Uint8Array(count);
   const queue = new Int32Array(count);
   for (let start = 0; start < count; start++) {
