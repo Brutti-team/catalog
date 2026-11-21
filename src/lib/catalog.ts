@@ -244,9 +244,11 @@ export function validateProduct(product: Product): void {
     !row || typeof row.id !== "string" || !row.id ||
     typeof row.name !== "string" || !row.name.trim() || row.name.length > 80 ||
     typeof row.value !== "string" || row.value.length > 400 ||
-    (row.kind !== undefined && row.kind !== "section") ||
+    (row.kind !== undefined && row.kind !== "section" && row.kind !== "measurement") ||
     (row.kind !== "section" && !row.value.trim()) ||
-    (row.kind === "section" && Boolean(row.value.trim()))
+    (row.kind === "section" && Boolean(row.value.trim())) ||
+    (row.kind === "measurement" && !/^([0-9]+(?:\.[0-9]+)?) (mm|cm|m|in|ft)$/.test(row.value.trim())) ||
+    (row.kind === "measurement" && Number(row.value.trim().split(" ")[0]) <= 0)
   ))
     throw new Error("Add a title for each new specification section, and complete the name and value of every row.");
   if (new Set(specifications.map(row => row.id)).size !== specifications.length)
@@ -388,7 +390,7 @@ export async function saveProduct(product: Product, modelChange?: ProductModelCh
     materials: product.materials.trim(),
     specifications: (product.specifications ?? []).map(({ id, name, value, kind }) => ({
       id, name: name.trim(), value: value.trim(),
-      ...(kind === "section" ? { kind: "section" as const } : {}),
+      ...(kind === "section" || kind === "measurement" ? { kind } : {}),
     })),
     updatedAt: new Date().toISOString(),
   };
