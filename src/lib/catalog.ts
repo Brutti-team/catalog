@@ -245,13 +245,15 @@ export function validateProduct(product: Product): void {
     typeof row.name !== "string" || !row.name.trim() || row.name.length > 80 ||
     typeof row.value !== "string" || row.value.length > 400 ||
     (row.description !== undefined && (typeof row.description !== "string" || row.description.length > 400)) ||
+    (row.quantity !== undefined && (!Number.isInteger(row.quantity) || row.quantity < 1 || row.quantity > 9999)) ||
     (row.kind !== undefined && row.kind !== "section" && row.kind !== "measurement") ||
-    (row.kind !== "section" && !row.value.trim()) ||
+    (row.kind !== "section" && !row.value.trim() && !row.quantity) ||
+    (row.kind === "section" && row.quantity !== undefined) ||
     (row.kind === "section" && Boolean(row.value.trim())) ||
     (row.kind === "measurement" && !/^([0-9]+(?:\.[0-9]+)?) (mm|cm|m|in|ft)$/.test(row.value.trim())) ||
     (row.kind === "measurement" && Number(row.value.trim().split(" ")[0]) <= 0)
   ))
-    throw new Error("Complete every specification name and value. For Measurement rows, enter a positive number and choose mm, cm, m, in or ft.");
+    throw new Error("Enter a specification name and a value or quantity (1–9999). Measurement rows still need a positive number and unit.");
   if (new Set(specifications.map(row => row.id)).size !== specifications.length)
     throw new Error("Each specification row needs a unique ID.");
   if (!["draft", "published", "archived"].includes(product.status))
@@ -389,9 +391,10 @@ export async function saveProduct(product: Product, modelChange?: ProductModelCh
     sku: product.sku.trim().toUpperCase(),
     description: product.description.trim(),
     materials: product.materials.trim(),
-    specifications: (product.specifications ?? []).map(({ id, name, value, description, kind }) => ({
+    specifications: (product.specifications ?? []).map(({ id, name, value, description, quantity, kind }) => ({
       id, name: name.trim(), value: value.trim(),
       ...(description?.trim() ? { description: description.trim() } : {}),
+      ...(quantity !== undefined ? { quantity } : {}),
       ...(kind === "section" || kind === "measurement" ? { kind } : {}),
     })),
     updatedAt: new Date().toISOString(),
