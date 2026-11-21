@@ -371,9 +371,17 @@ export default function AccountCenter({
             </div>
           </div>
           {!events.length ? (
-            <div className="account-empty"><Clock3 size={24}/><p>{activityPeriod === "today" ? "No activity recorded today." : activityPeriod === "yesterday" ? "No activity recorded yesterday." : "No activity has been recorded yet."}</p></div>
+            <div className="account-empty account-activity-empty-state" role="status">
+              <span className="account-activity-empty-icon" aria-hidden="true"><Clock3 size={23} strokeWidth={1.7}/></span>
+              <strong>{activityPeriod === "today" ? "No activity recorded today." : activityPeriod === "yesterday" ? "No activity recorded yesterday." : "No activity has been recorded yet."}</strong>
+              <p>Product and category updates will appear here when recorded.</p>
+            </div>
           ) : !visibleEvents.length ? (
-            <div className="account-activity-empty"><Clock3 size={20}/><p>No {activityFilter} changes in the latest records.</p></div>
+            <div className="account-activity-empty account-activity-empty-state" role="status">
+              <span className="account-activity-empty-icon" aria-hidden="true"><Clock3 size={23} strokeWidth={1.7}/></span>
+              <strong>No {activityFilter} changes in the latest records.</strong>
+              <p>Try another activity type or date to see more changes.</p>
+            </div>
           ) : (
             <div className="account-timeline" role="list" aria-label="Recent catalog changes">
               {visibleEvents.map(item => {
