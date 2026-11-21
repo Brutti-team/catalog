@@ -1,0 +1,230 @@
+/* Brutti Catalog — Products table glass refinement, 21 Nov 2026
+   Styling only. Keeps table, gallery, selection, CRUD, dropdown, filters and data intact.
+   No left-edge row marker; the entire row responds to hover/focus. */
+
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll {
+  position: relative;
+  background: transparent;
+  border-radius: 0 0 18px 18px;
+}
+
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll .catalog-inventory-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 7px;
+  background: transparent;
+}
+
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll thead th {
+  height: 46px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  font-family: "Plus Jakarta Sans", "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: .085em;
+  border-top: 0;
+}
+
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row {
+  position: relative;
+  isolation: auto;
+  transition: none;
+}
+
+/* Prevent the legacy 3px vertical stripe on hover or keyboard focus — all themes. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td:first-child::before,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:is(:hover,:focus-within) td:first-child::before {
+  content: none !important;
+  display: none !important;
+  width: 0 !important;
+  background: transparent !important;
+}
+
+/* One continuous, rounded, softly elevated surface across all six columns. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td {
+  height: 83px;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  background-clip: padding-box;
+  transition: background-color .24s ease, border-color .24s ease,
+    box-shadow .24s ease, color .24s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td:first-child {
+  border-radius: 13px 0 0 13px;
+  border-left: 1px solid transparent;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td:last-child {
+  border-radius: 0 13px 13px 0;
+  border-right: 1px solid transparent;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll .product-cell strong {
+  font-family: "Plus Jakarta Sans", "DM Sans", sans-serif;
+  font-size: 12.7px;
+  font-weight: 650;
+  letter-spacing: -.018em;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll .product-cell img {
+  border-radius: 11px;
+  transition: box-shadow .23s ease, border-color .23s ease, transform .25s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll tr.catalog-inventory-row:is(:hover,:focus-within) .product-cell img {
+  transform: scale(1.035);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-table-category {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-radius: 10px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll .status-badge {
+  border-radius: 10px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .row-actions > .icon-button,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .row-actions .action-menu > .icon-button {
+  border-radius: 11px;
+  transition: background-color .22s ease, border-color .22s ease,
+    box-shadow .22s ease, color .22s ease, transform .22s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .row-actions .icon-button:is(:hover,:focus-visible) {
+  transform: translateY(-1px);
+}
+
+/* LIGHT — refined ivory glass, not saturated green or flat white. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll {
+  background: rgba(249,252,249,.4);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll thead th {
+  background: rgba(241,247,243,.80);
+  color: #62786b;
+  border-color: rgba(210,225,215,.88);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:nth-child(even) td {
+  background: rgba(255,255,255,.86);
+  border-top-color: rgba(226,236,229,.90);
+  border-bottom-color: rgba(218,232,221,.90);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.97), inset 0 -1px 0 rgba(255,255,255,.55);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td:first-child {
+  border-left-color: rgba(218,232,221,.9);
+  box-shadow: inset 1px 0 0 rgba(255,255,255,.9), inset 0 1px 0 rgba(255,255,255,.97);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td:last-child {
+  border-right-color: rgba(218,232,221,.9);
+  box-shadow: inset -1px 0 0 rgba(255,255,255,.9), inset 0 1px 0 rgba(255,255,255,.97);
+}
+/* Hover/focus colors ALL cells, not the edge. No layout movement or stripe. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:is(:hover,:focus-within) td,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:nth-child(even):is(:hover,:focus-within) td {
+  background: rgba(219,239,224,.91);
+  border-top-color: rgba(150,195,163,.82);
+  border-bottom-color: rgba(150,195,163,.82);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.83), inset 0 -1px 0 rgba(164,207,177,.18);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:is(:hover,:focus-within) td:first-child {
+  border-left-color: rgba(150,195,163,.82);
+  box-shadow: inset 1px 0 0 rgba(255,255,255,.78), inset 0 1px 0 rgba(255,255,255,.85);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:is(:hover,:focus-within) td:last-child {
+  border-right-color: rgba(150,195,163,.82);
+  box-shadow: inset -1px 0 0 rgba(255,255,255,.78), inset 0 1px 0 rgba(255,255,255,.85);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll .catalog-table-category {
+  background: rgba(245,251,246,.82);
+  border: 1px solid #d7e8db;
+  box-shadow: inset 0 1px 0 #fff, 0 2px 6px rgba(26,65,38,.025);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .table-scroll .status-badge {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.90), 0 2px 7px rgba(55,60,33,.035);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .row-actions > .icon-button,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .row-actions .action-menu > .icon-button {
+  background: rgba(255,255,255,.63);
+  border: 1px solid rgba(202,224,208,.9);
+  color: #426d4d;
+  box-shadow: inset 0 1px 0 #fff, 0 3px 9px rgba(33,73,47,.05);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="products"] .catalog-products-panel .row-actions .icon-button:is(:hover,:focus-visible) {
+  background: rgba(208,235,216,.94);
+  border-color: #9dc8ac;
+  color: #1e5832;
+  box-shadow: 0 5px 12px rgba(40,88,56,.13), inset 0 1px 0 #fff;
+}
+
+/* DARK — charcoal glass, same exact geometry and no image filter. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll {
+  background: rgba(14,17,20,.52) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll thead th {
+  background: rgba(40,46,49,.85) !important;
+  border-color: #3e4a46 !important;
+  color: #cbd9d0 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:nth-child(even) td {
+  background: rgba(39,45,48,.90) !important;
+  border-top-color: #45534c !important;
+  border-bottom-color: #45534c !important;
+  color: #ecf3ee !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.065);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td:first-child {
+  border-left-color: #45534c !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td:last-child {
+  border-right-color: #45534c !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:is(:hover,:focus-within) td,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:nth-child(even):is(:hover,:focus-within) td {
+  background: rgba(57,78,64,.97) !important;
+  border-top-color: #6a9477 !important;
+  border-bottom-color: #6a9477 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.085);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:is(:hover,:focus-within) td:first-child {
+  border-left-color: #6a9477 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:is(:hover,:focus-within) td:last-child {
+  border-right-color: #6a9477 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll .catalog-table-category {
+  background: rgba(64,77,68,.58) !important;
+  border: 1px solid #5a7563 !important;
+  color: #e1f1e5 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll .status-badge {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 3px 9px rgba(0,0,0,.10);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .row-actions > .icon-button,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .row-actions .action-menu > .icon-button {
+  background: rgba(62,75,70,.66) !important;
+  border: 1px solid #566b5e !important;
+  color: #d7f2de !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.075), 0 4px 11px rgba(0,0,0,.10) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .row-actions .icon-button:is(:hover,:focus-visible) {
+  background: rgba(83,112,90,.78) !important;
+  border-color: #8db49a !important;
+  color: #fff !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,.19), inset 0 1px 0 rgba(255,255,255,.09) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="products"] .catalog-products-panel .table-scroll .product-cell img {
+  filter: none !important;
+}
+
+@media (max-width: 800px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll .catalog-inventory-table {
+    min-width: 780px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .row-actions .icon-button,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .table-scroll .product-cell img {
+    transition: none !important;
+    transform: none !important;
+  }
+}
