@@ -172,7 +172,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
   const [saving, setSaving] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const aiRun = useRef(0);
-  const aiRevealTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const aiRevealTimeout = useRef<number | null>(null);
   const workingCutout = useRef<HTMLCanvasElement | null>(null);
   const previousBrushPoint = useRef<{ x: number; y: number } | null>(null);
   const gesture = useRef<{
