@@ -18,6 +18,8 @@ export function cleanDetachedAIMatte(rgba: Uint8ClampedArray, width: number, hei
   for (let start = 0; start < count; start++) {
     if (visited[start] || data[start * 4 + 3] < minOpaque) continue;
     let head = 0, tail = 1;
+    // Seed the flood-fill with this component's first pixel (not index zero).
+    queue[0] = start;
     visited[start] = 1;
     while (head < tail) {
       const p = queue[head++];
