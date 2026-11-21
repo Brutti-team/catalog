@@ -19,7 +19,7 @@
   overflow: hidden;
   border: 1px solid rgba(181,209,189,.66) !important;
   border-radius: 14px !important;
-  background: linear-gradient(145deg,#e6eee7,#f2f7f1) !important;
+  background: #e5eee7 !important;
   box-shadow: 0 8px 22px rgba(28,58,39,.09), inset 0 1px 0 rgba(255,255,255,.7) !important;
   transform: none !important;
   transition: border-color .22s ease, box-shadow .22s ease !important;
@@ -44,37 +44,32 @@
   outline: 3px solid #a7d5b1;
   outline-offset: -5px;
 }
-/* Reserve an image-only viewport ABOVE the glass information dock.
-   A real product must never sit beneath the frosted name/action panel.
-   Contain shows the complete source photo even for tall furniture. */
+/* Fill the category photograph, like Products; no additional image boxes. */
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card:not(.category-card--without-cover) .category-cover {
   position: absolute;
   z-index: 0;
-  inset: 0 0 auto 0;
-  display: block;
-  width: 100%;
-  height: calc(100% - var(--brutti-category-dock-height) - 13px);
-  min-height: 0;
-  padding: 0;
-  overflow: hidden;
-  border-radius: 13px 13px 0 0;
-  background: linear-gradient(140deg,#e0e8df,#f1f5f0) !important;
-}
-.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-cover > img.category-cover-image {
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain !important;
-  object-position: center center !important;
+  min-height: 100%;
+  padding: 0;
+  overflow: hidden;
+  background: #e0e8df !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-cover > img.category-cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   filter: none !important;
-  transform: none !important;
-  transition: none !important;
+  transform: scale(1) !important;
+  transition: transform .3s ease !important;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card:hover .category-cover > img.category-cover-image {
-  transform: none !important;
+  transform: scale(1.025) !important;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-cover::after {
-  background: linear-gradient(180deg,rgba(10,34,21,.08),transparent 35%,rgba(10,34,21,.04)) !important;
+  background: linear-gradient(180deg,rgba(10,34,21,.14),transparent 39%,rgba(10,34,21,.14)) !important;
   pointer-events: none;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-cover > span,
