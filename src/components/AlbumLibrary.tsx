@@ -724,120 +724,160 @@ export default function AlbumLibrary({
           </button>
         </div>
       </div>}
-      {preview && <Modal title={preview.name} eyebrow="BRUTTI CATALOG / PHOTO EDITOR" className="brutti-album-preview-modal brutti-album-editor-dialog" onClose={()=>setPreview(null)}>
+      {preview && <Modal title={detailsDraft.name || preview.name} eyebrow="BRUTTI CATALOG / PHOTO EDITOR" className="brutti-album-preview-modal brutti-album-editor-dialog" onClose={closePhotoEditor}>
         <div className="brutti-album__editor-canvas">
           <section className="brutti-album__editor-section">
             <header className="brutti-album__editor-section-heading">
               <span className="brutti-album__editor-step">01</span>
               <h3>Details</h3>
             </header>
-            <div className="brutti-album__detail-layout">
-          <div className="brutti-album__detail-visual">
-            <div className="brutti-album__preview-image">
-              <SafeImage src={preview.url} alt={preview.name} />
-            </div>
-            <div className="brutti-album__visual-caption">
-              <Images size={15} aria-hidden="true"/>
-              <span>Brutti Catalog media</span>
-            </div>
-          </div>
-          <div className="brutti-album__detail-content">
-            <div className="brutti-album__preview-info">
-              <span className="brutti-album__detail-label">PRODUCT PHOTO</span>
-              <h3>{preview.name}</h3>
-              <span className="brutti-album__photo-status">
-                <span className={preview.usedBy.length || preview.categoryCovers.length ? "is-in-use" : "is-available"} aria-hidden="true"/>
-                {preview.usedBy.length
-                  ? `Used in ${preview.usedBy.length} product${preview.usedBy.length===1?"":"s"}`
-                  : preview.categoryCovers.length ? "Used as category cover"
-                    : preview.sourceKind==="external" ? "Product Library · Available" : "Unassigned photo"}
-              </span>
-            </div>
-            {preview.usedBy.length>0 && <div className="brutti-album__detail-related">
-              <span className="brutti-album__detail-label">LINKED PRODUCTS</span>
-              {preview.usedBy.map(p=><button type="button" className="brutti-album__linked-product" key={p.id} onClick={()=>{setPreview(null);onEditProduct?.(p.id);}}>
-                <Package size={17} aria-hidden="true"/><span>{p.name}</span><ArrowUpRight size={16} aria-hidden="true"/>
-              </button>)}
-            </div>}
-            {!!preview.categoryCovers.length && <p className="brutti-album__category-note">Category cover: {preview.categoryCovers.join(", ")}</p>}
-            {preview.sourceKind === "external" && <div className="brutti-album__source-details">
-              <span className="brutti-album__detail-label">BRUTTI PRODUCT LIBRARY{preview.sourceCode ? ` · ${preview.sourceCode}` : ""}</span>
-              <dl>
-                {(["category","size","materials","colour","finishing"] as const).filter(field=>preview.sourceDetails[field]).map(field=>(
-                  <div key={field}><dt>{field==="colour"?"Colour":field==="size"?"Size":field==="materials"?"Materials":field==="finishing"?"Finishing":"Original category"}</dt>
-                    <dd>{preview.sourceDetails[field]}</dd></div>
-                ))}
-              </dl>
-              <p>Linked from the original source. The image file has not been copied into Catalog Storage.</p>
-            </div>}
-            {!picker && <div className="brutti-album__assign-category">
-              <span id="brutti-album-photo-category-label">Album category</span>
-              <AlbumCategorySelect
-                categories={categories}
-                value={preview.manualCategoryId || "none"}
-                disabled={categorising || !preview.id}
-                onChange={value=>void assignCategory(preview,value)}
-              />
-              <small>Organise this photo in Album. Product categories remain unchanged.</small>
-            </div>}
-            {downloadError && <p className="brutti-album__error" role="alert">{downloadError}</p>}
-            <div className="brutti-album__detail-download">
-              <span className="brutti-album__detail-label">DOWNLOAD PHOTO</span>
-              <div className="brutti-album__format-switch" role="group" aria-label="Download file format">
-                {(["jpg", "png", "webp"] as const).map(format => (
-                  <button
-                    key={format}
-                    type="button"
-                    className={downloadFormat === format ? "is-selected" : ""}
-                    aria-pressed={downloadFormat === format}
-                    disabled={downloading}
-                    onClick={() => setDownloadFormat(format)}
-                  >
-                    {format === "jpg" ? "JPG" : format === "png" ? "PNG" : "WebP"}
-                  </button>
-                ))}
+            <div className="brutti-album__editable-details">
+              <label className="brutti-album__editor-field">
+                <span>Name <b aria-hidden="true">*</b></span>
+                <input type="text" maxLength={120} required value={detailsDraft.name}
+                  placeholder="e.g. Sulob Shoe Rack"
+                  disabled={savingDetails}
+                  onChange={e => setDetailsDraft(current => ({...current,name:e.target.value}))}/>
+              </label>
+              <div className="brutti-album__field-pair">
+                <div className="brutti-album__editor-field">
+                  <span>Product ID</span>
+                  <output className="brutti-album__reference-id">
+                    <strong>{preview.sourceCode || "Assigned in Product Editor"}</strong>
+                    <LockKeyhole size={16} strokeWidth={1.8} aria-hidden="true"/>
+                  </output>
+                  <small>{preview.sourceCode
+                    ? "Original library reference · cannot be changed here"
+                    : "A unique Product ID is generated when you create the product"}</small>
+                </div>
+                <div className="brutti-album__editor-field">
+                  <span>Category</span>
+                  <AlbumCategorySelect
+                    categories={categories}
+                    value={detailsDraft.categoryId || "none"}
+                    disabled={savingDetails || !preview.id}
+                    onChange={value => setDetailsDraft(current => ({...current,categoryId:value === "none" ? null : value}))}
+                  />
+                  <small>Saved in Album; used as the initial category for a new product.</small>
+                </div>
               </div>
-              <button
-                type="button"
-                className="brutti-album__primary brutti-album__download-main"
-                disabled={downloading}
-                onClick={() => void download(preview)}
-              >
-                {downloading
-                  ? <LoaderCircle size={17} className="brutti-album__spin" aria-hidden="true"/>
-                  : <Download size={17} aria-hidden="true"/>}
-                {downloading ? "Preparing image…" : `Download ${downloadFormat.toUpperCase()}`}
-              </button>
-              <p className="brutti-album__download-help">
-                Saved as an image file, not an HTML page.
-              </p>
+              <label className="brutti-album__editor-field">
+                <span>Description <small>Optional until product publishing</small></span>
+                <textarea rows={4} maxLength={10000} value={detailsDraft.description}
+                  placeholder="Describe the furniture, materials, finish or important photo notes."
+                  disabled={savingDetails}
+                  onChange={e => setDetailsDraft(current => ({...current,description:e.target.value}))}/>
+              </label>
+              {detailsError && <p className="brutti-album__error" role="alert">{detailsError}</p>}
+              {!preview.id && <p className="brutti-album__details-note">This image has no Album record yet. You can open its linked product, but Album metadata cannot be saved until it is indexed.</p>}
             </div>
-            <div className="brutti-album__detail-bottom">
-              {!picker && (
-                preview.usedBy.length || preview.categoryCovers.length || !preview.id
-                  ? <span className="brutti-album__protected-photo">
-                      <Check size={15} aria-hidden="true"/> In use · Protected from deletion
-                    </span>
-                  : <button type="button" className="brutti-album__delete"
-                      disabled={deleting} onClick={() => requestDelete(preview)}>
-                      <Trash2 size={15} aria-hidden="true"/> Delete photo
+          </section>
+          <section className="brutti-album__editor-section">
+            <header className="brutti-album__editor-section-heading">
+              <span className="brutti-album__editor-step">02</span>
+              <h3>Media <small>(Photo)</small></h3>
+            </header>
+            <div className="brutti-album__editor-media">
+              <div className="brutti-album__editor-media-image">
+                <SafeImage src={preview.url} alt={preview.name}/>
+                <span><Images size={15} aria-hidden="true"/> Brutti Catalog media</span>
+              </div>
+              <div className="brutti-album__editor-media-tools">
+                <span className="brutti-album__photo-status">
+                  <span className={preview.usedBy.length || preview.categoryCovers.length ? "is-in-use" : "is-available"} aria-hidden="true"/>
+                  {preview.usedBy.length
+                    ? `Used in ${preview.usedBy.length} product${preview.usedBy.length===1?"":"s"}`
+                    : preview.categoryCovers.length ? "Used as category cover"
+                      : preview.sourceKind==="external" ? "Product Library · Available" : "Unassigned photo"}
+                </span>
+                <button type="button" className="brutti-album__edit-cover"
+                  disabled={savingDetails || busy}
+                  onClick={() => setEditingAlbumPhoto(preview)}>
+                  <Images size={16} aria-hidden="true"/> Edit cover · Cutout, background, crop & zoom
+                </button>
+                {preview.sourceKind === "external" && <div className="brutti-album__source-details">
+                  <span className="brutti-album__detail-label">ORIGINAL PRODUCT LIBRARY INFO</span>
+                  <dl>
+                    {(["category","size","materials","colour","finishing"] as const)
+                      .filter(field=>preview.sourceDetails[field]).map(field=>(
+                      <div key={field}><dt>{field==="colour"?"Colour":field==="size"?"Size":field==="materials"?"Materials":field==="finishing"?"Finishing":"Category"}</dt>
+                        <dd>{preview.sourceDetails[field]}</dd></div>
+                    ))}
+                  </dl>
+                  <p>Original source image is retained. Album changes do not alter the original file.</p>
+                </div>}
+                {!!preview.categoryCovers.length && <p className="brutti-album__category-note">Category cover: {preview.categoryCovers.join(", ")}</p>}
+                {!!preview.usedBy.length && <div className="brutti-album__detail-related">
+                  <span className="brutti-album__detail-label">USED IN PRODUCTS</span>
+                  {preview.usedBy.map(product => <button type="button" className="brutti-album__linked-product" key={product.id}
+                    onClick={()=>{setPreview(null);onEditProduct?.(product.id);}}>
+                    <Package size={17} aria-hidden="true"/><span>{product.name}</span><ArrowUpRight size={16} aria-hidden="true"/>
+                  </button>)}
+                </div>}
+                {!picker && onAttachPhotoToProduct && <div className="brutti-album__attach-product">
+                  <span className="brutti-album__detail-label">ADD TO EXISTING PRODUCT</span>
+                  <div className="brutti-album__attach-product-row">
+                    <select value={attachProductId} onChange={e => setAttachProductId(e.target.value)}
+                      aria-label="Choose product to attach photo">
+                      <option value="">Choose a product</option>
+                      {products.map(product=><option key={product.id} value={product.id}>{product.sku || "No ID"} · {product.name}</option>)}
+                    </select>
+                    <button type="button" disabled={!attachProductId || savingDetails}
+                      onClick={() => void startProductFromPhoto(preview,attachProductId)}>
+                      <Plus size={15} aria-hidden="true"/> Add photo
                     </button>
-              )}
-            </div>
-          </div>
+                  </div>
+                  <small>Opens Product Editor with this photo attached. Save the product there to confirm.</small>
+                </div>}
+                {downloadError && <p className="brutti-album__error" role="alert">{downloadError}</p>}
+                <div className="brutti-album__detail-download">
+                  <span className="brutti-album__detail-label">DOWNLOAD PHOTO</span>
+                  <div className="brutti-album__format-switch" role="group" aria-label="Download file format">
+                    {(["jpg","png","webp"] as const).map(format => (
+                      <button key={format} type="button"
+                        className={downloadFormat === format ? "is-selected" : ""}
+                        aria-pressed={downloadFormat === format}
+                        disabled={downloading} onClick={() => setDownloadFormat(format)}>
+                        {format === "jpg" ? "JPG" : format === "png" ? "PNG" : "WebP"}
+                      </button>
+                    ))}
+                  </div>
+                  <button type="button" className="brutti-album__primary brutti-album__download-main"
+                    disabled={downloading} onClick={()=>void download(preview)}>
+                    {downloading ? <LoaderCircle size={17} className="brutti-album__spin" aria-hidden="true"/> : <Download size={17} aria-hidden="true"/>}
+                    {downloading ? "Preparing image…" : `Download ${downloadFormat.toUpperCase()}`}
+                  </button>
+                </div>
+                <div className="brutti-album__detail-bottom">
+                  {preview.usedBy.length || preview.categoryCovers.length || !preview.id
+                    ? <span className="brutti-album__protected-photo"><Check size={15}/> In use · Protected from deletion</span>
+                    : <button type="button" className="brutti-album__delete"
+                        disabled={deleting} onClick={() => requestDelete(preview)}>
+                        <Trash2 size={15} aria-hidden="true"/> Delete photo
+                      </button>}
+                </div>
+              </div>
             </div>
           </section>
         </div>
         <footer className="brutti-album__editor-footer">
-          <span>Album category changes are saved automatically.</span>
+          <span>Changes are saved when you select Save details. Publishing happens in Product Editor.</span>
           <div className="brutti-album__editor-footer-actions">
-            <button type="button" className="brutti-album__editor-back" onClick={() => setPreview(null)}>
-              <ArrowLeft size={16} aria-hidden="true"/> Back to Album
+            <button type="button" className="brutti-album__editor-back"
+              disabled={savingDetails} onClick={closePhotoEditor}>
+              <ArrowLeft size={16} aria-hidden="true"/> Back
             </button>
-            <button type="button" className="brutti-album__editor-edit" disabled={downloading || busy}
-              onClick={() => setEditingAlbumPhoto(preview)}>
-              <Images size={16} aria-hidden="true"/> Edit cover
+            <button type="button" className="brutti-album__editor-edit"
+              disabled={savingDetails || !detailsDraft.name.trim() || !preview.id || !detailsDirty}
+              onClick={()=>void persistPhotoDetails(preview)}>
+              {savingDetails ? <LoaderCircle size={16} className="brutti-album__spin"/> : <Save size={16}/>}
+              {savingDetails ? "Saving…" : "Save details"}
             </button>
+            {onCreateProductFromPhoto && <button type="button" className="brutti-album__editor-create"
+              disabled={savingDetails || !detailsDraft.name.trim()}
+              onClick={()=>void startProductFromPhoto(preview)}>
+              <Plus size={16} aria-hidden="true"/> Create product
+            </button>}
           </div>
         </footer>
       </Modal>}
