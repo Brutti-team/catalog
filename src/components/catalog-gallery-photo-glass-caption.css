@@ -6,8 +6,9 @@
   isolation: isolate;
   display: block;
   width: 100%;
-  height: clamp(375px, 29vw, 455px);
-  min-height: 375px;
+  height: auto !important;
+  min-height: 0 !important;
+  aspect-ratio: 1.45 / 1;
   padding: 0 !important;
   overflow: hidden;
   border-radius: 19px;
@@ -156,20 +157,22 @@
 /* Responsive cards remain touch friendly, avoid text covering the entire image. */
 @media (max-width: 1199px) {
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card {
-    height: clamp(365px, 40vw, 450px);
-    min-height: 365px;
+    aspect-ratio: 1.4 / 1;
+    height: auto !important;
+    min-height: 0 !important;
   }
 }
 @media (max-width: 670px) {
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card {
-    height: clamp(350px, 105vw, 440px);
-    min-height: 350px;
+    aspect-ratio: 1.52 / 1;
+    height: auto !important;
+    min-height: 0 !important;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="products"] .catalog-products-panel .catalog-gallery-card .catalog-gallery-body {
     left: 9px;
     right: 9px;
     bottom: 9px;
-    min-height: 149px;
+    min-height: 138px;
     padding: 13px 14px 12px;
     border-radius: 14px;
   }
