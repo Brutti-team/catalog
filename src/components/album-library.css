@@ -1069,3 +1069,26 @@
     transform: none !important;
   }
 }
+
+
+/* Album desktop gallery: four photographs per row, preserve photo picker. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="album"]
+.brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+/* Fewer columns on smaller screens; the picker grid is unchanged. */
+@media (max-width: 1099px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="album"]
+  .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+  }
+}
+@media (max-width: 770px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="album"]
+  .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
