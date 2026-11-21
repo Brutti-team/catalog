@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import SafeImage from "./SafeImage";
 import Modal from "./Modal";
+import CustomerMetricDetail, { type CustomerMetricKey } from "./CustomerMetricDetail";
 import { loadCustomerInsights, loadCustomerSessionDetails, type CustomerInsightData, type CustomerSessionDetails, type InsightPeriod } from "../lib/customer-analytics";
 import type { Category, Product } from "../lib/types";
 
@@ -82,31 +83,40 @@ export default function CustomerInsights({ products, categories, loading: produc
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refresh, setRefresh] = useState(0);
-  const [sessionDetailsOpen, setSessionDetailsOpen] = useState(false);
+  const [activeMetric, setActiveMetric] = useState<CustomerMetricKey | null>(null);
   const [sessionDetails, setSessionDetails] = useState<CustomerSessionDetails | null>(null);
   const [sessionBusy, setSessionBusy] = useState(false);
   const [sessionError, setSessionError] = useState<string | null>(null);
   const sessionRequest = useRef(0);
-  function openSessionDetails() {
-    if (busy || !data?.visitorSessions) return;
+  function openMetricDetails(metric: CustomerMetricKey) {
+    if (busy || !data) return;
     const request = ++sessionRequest.current;
-    setSessionDetailsOpen(true);
-    setSessionBusy(true);
+    setActiveMetric(metric);
     setSessionError(null);
     setSessionDetails(null);
+    const count = metric === "views" ? data.totalViews : metric === "sessions" ? data.visitorSessions
+      : metric === "clicks" ? data.productClicks : data.productsViewed;
+    // Zero is still clickable. Show a real empty state without an unnecessary query.
+    if (!count || !data.visitorSessions) {
+      setSessionBusy(false);
+      setSessionDetails({ totalSessions: 0, sessions: [] });
+      return;
+    }
+    setSessionBusy(true);
     void loadCustomerSessionDetails(days).then(result => {
       if (request !== sessionRequest.current) return;
       setSessionDetails(result);
       setSessionBusy(false);
     }).catch((reason: unknown) => {
       if (request !== sessionRequest.current) return;
-      setSessionError(reason instanceof Error ? reason.message : "Unable to load session details.");
+      setSessionError(reason instanceof Error ? reason.message : "Unable to load analytics activity.");
       setSessionBusy(false);
     });
   }
+  function openSessionDetails() { openMetricDetails("sessions"); }
   function closeSessionDetails() {
     ++sessionRequest.current;
-    setSessionDetailsOpen(false);
+    setActiveMetric(null);
   }
   useEffect(() => {
     if (!enabled) return;
@@ -132,10 +142,10 @@ export default function CustomerInsights({ products, categories, loading: produc
   const clickRate = data?.totalViews ? (data.productClicks / data.totalViews * 100).toFixed(1) + "%" : "—";
   const viewsPerSession = data?.visitorSessions ? (data.totalViews / data.visitorSessions).toFixed(1) : "—";
   const totals = [
-    { name: "Total product views", value: data?.totalViews, Icon: Eye },
-    { name: "Visitor sessions", value: data?.visitorSessions, Icon: UsersRound },
-    { name: "Product clicks", value: data?.productClicks, Icon: MousePointerClick },
-    { name: "Products viewed", value: data?.productsViewed, Icon: Layers3 },
+    { key: "views" as const, name: "Total product views", value: data?.totalViews, Icon: Eye },
+    { key: "sessions" as const, name: "Visitor sessions", value: data?.visitorSessions, Icon: UsersRound },
+    { key: "clicks" as const, name: "Product clicks", value: data?.productClicks, Icon: MousePointerClick },
+    { key: "products" as const, name: "Products viewed", value: data?.productsViewed, Icon: Layers3 },
   ];
 
   return (
@@ -171,17 +181,15 @@ export default function CustomerInsights({ products, categories, loading: produc
                 <span className="customer-insights-kpi-icon"><item.Icon size={23} strokeWidth={1.7} aria-hidden="true" /></span>
                 <div><strong>{busy || !data ? "—" : compact(item.value ?? 0)}</strong><span>{compactLayout ? ({ "Total product views": "Views", "Visitor sessions": "Sessions", "Product clicks": "Clicks", "Products viewed": "Products" }[item.name] ?? item.name) : item.name}</span></div>
               </>;
-              return item.name === "Visitor sessions"
-                ? <button key={item.name} type="button"
-                    className="customer-insights-kpi customer-insights-kpi--sessions"
-                    disabled={busy || !data?.visitorSessions}
-                    aria-label={`View details for ${compact(item.value ?? 0)} anonymous visitor sessions`}
-                    title={data?.visitorSessions ? "View session details" : "No sessions recorded"}
-                    onClick={openSessionDetails}>
-                    {details}
-                    <ArrowUpRight className="customer-insights-kpi-link" size={15} aria-hidden="true" />
-                  </button>
-                : <div key={item.name} className="customer-insights-kpi">{details}</div>;
+              return <button key={item.key} type="button"
+                  className={`customer-insights-kpi customer-insights-kpi--interactive${item.key === "sessions" ? " customer-insights-kpi--sessions" : ""}`}
+                  disabled={busy || !data}
+                  aria-label={`View details for ${compact(item.value ?? 0)} ${item.name.toLowerCase()}`}
+                  title={`View ${item.name.toLowerCase()} details`}
+                  onClick={() => openMetricDetails(item.key)}>
+                  {details}
+                  <ArrowUpRight className="customer-insights-kpi-link" size={15} aria-hidden="true" />
+                </button>;
             })}
           </div>
           <div className="customer-insights-mid">
@@ -228,7 +236,7 @@ export default function CustomerInsights({ products, categories, loading: produc
           </p>
         </>
       )}
-      {sessionDetailsOpen && <Modal
+      {activeMetric === "sessions" && <Modal
         title="Visitor sessions"
         eyebrow="PRODUCT VIEW ANALYTICS"
         description={`Anonymous catalog visits · Last ${days} days (Malaysia time)`}
@@ -316,6 +324,19 @@ export default function CustomerInsights({ products, categories, loading: produc
               <p className="customer-session-limit">Showing the latest {sessionDetails?.sessions.length} sessions.</p>}
             <p className="customer-session-privacy">Sessions are anonymous and are not unique people. Names, emails, IPs and device fingerprints are not collected by these analytics; raw session IDs are not shown. Admin previews are excluded.</p>
           </div>}
+      </Modal>}
+      {activeMetric && activeMetric !== "sessions" && data && <Modal
+        title={activeMetric === "views" ? "Product views" : activeMetric === "clicks" ? "Product clicks" : "Products viewed"}
+        eyebrow="PRODUCT VIEW ANALYTICS"
+        description={`Public catalog activity · Last ${days} days (Malaysia time)`}
+        className="customer-session-dialog customer-metric-dialog"
+        onClose={closeSessionDetails}>
+        {sessionBusy ? <div className="customer-session-loading" role="status">Loading product activity…</div> :
+          sessionError ? <div className="customer-session-error" role="alert">
+            <p>{sessionError}</p>
+            <button type="button" onClick={() => openMetricDetails(activeMetric)}><RefreshCw size={14} /> Retry</button>
+          </div> :
+          <CustomerMetricDetail mode={activeMetric} summary={data} details={sessionDetails} products={products} />}
       </Modal>}
     </section>
   );
