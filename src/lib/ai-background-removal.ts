@@ -18,11 +18,15 @@ let nextRequestId = 0;
 let cancelPending: ((reason?: unknown) => void) | undefined;
 
 export function stopAICutout(): void {
+  // Closing an idle editor must NOT destroy a fully loaded model. Keeping
+  // the idle worker warm makes subsequent photos much faster. A running
+  // request is still terminated immediately when staff clicks Cancel.
+  const reject = cancelPending;
+  if (!reject) return;
   nextRequestId++;
   if (activeWorker) { activeWorker.terminate(); activeWorker = undefined; }
-  const reject = cancelPending;
   cancelPending = undefined;
-  if (reject) reject(new Error("AI processing cancelled. Original image retained."));
+  reject(new Error("AI processing cancelled. Original image retained."));
 }
 
 export async function aiFurnitureCutout(
