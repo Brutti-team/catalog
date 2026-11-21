@@ -978,7 +978,7 @@ export default function AlbumLibrary({
             <span className="tiny muted">Changes are saved when you select Save.</span>
             <div className="button-row brutti-album__editor-footer-actions">
               <button type="button" className="button primary brutti-album__editor-edit"
-                disabled={savingDetails || !detailsDraft.name.trim() || !preview.id || !detailsDirty}
+                disabled={savingDetails || !detailsDraft.name.trim() || !preview.id}
                 onClick={()=>void persistPhotoDetails(preview)}>
                 {savingDetails ? <LoaderCircle size={16} className="brutti-album__spin"/> : <Save size={16}/>}
                 {savingDetails ? "Saving…" : "Save details"}
