@@ -48,10 +48,9 @@ const modelPromises = new Map<CutoutQuality, Promise<ModelState>>();
  */
 async function model(quality: CutoutQuality): Promise<ModelState> {
   const cached = modelPromises.get(quality);
-  if (cached) {
-    notify(quality === "detail" ? "Using detailed furniture model…" : "Using fast AI model…", 56);
-    return cached;
-  }
+  // A cached Promise may still be DOWNLOADING after a tab preloads it.
+  // Do not report "model ready" or 56% until that promise actually resolves.
+  if (cached) return cached;
   const modelName = quality === "detail" ? "onnx-community/BEN2-ONNX" : "onnx-community/ormbg-ONNX";
   const dtype = quality === "detail" ? "fp16" : "uint8";
   const loading = (async () => {
