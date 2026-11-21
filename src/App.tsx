@@ -71,6 +71,7 @@ import Modal from "./components/Modal";
 import AccountCenter from "./components/AccountCenter";
 import CataloguePhotoImport from "./components/CataloguePhotoImport";
 import AlbumLibrary from "./components/AlbumLibrary";
+import { albumPhotoToProductImage } from "./lib/album";
 import LastChange from "./components/LastChange";
 import CategoryFilter from "./components/CategoryFilter";
 import CategoryCoverPicker from "./components/CategoryCoverPicker";
@@ -750,6 +751,29 @@ export default function App() {
               onEditProduct={(id) => {
                 const product = data.products.find(item => item.id === id);
                 if (product) setEditor(product);
+              }}
+              onCreateProductFromPhoto={(photo, details) => {
+                const draft = newProduct(details.categoryId || "");
+                setEditor({
+                  ...draft,
+                  name: details.name.trim(),
+                  description: details.description,
+                  images: [albumPhotoToProductImage({ ...photo, name: details.name.trim() })],
+                });
+              }}
+              onAttachPhotoToProduct={(productId, photo) => {
+                const product = data.products.find(item => item.id === productId);
+                if (!product) {
+                  setToast("That product could not be found. Refresh and try again.");
+                  return;
+                }
+                const alreadyAttached = product.images.some(image =>
+                  image.url === photo.url || (!!photo.storagePath && image.storagePath === photo.storagePath));
+                setEditor(alreadyAttached ? product : {
+                  ...product,
+                  images: [...product.images, albumPhotoToProductImage(photo)],
+                });
+                if (alreadyAttached) setToast("Photo already belongs to this product.");
               }} />
           )}
           {tab === "overview" && (
