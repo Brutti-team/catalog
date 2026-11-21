@@ -288,3 +288,297 @@
     transition: none;
   }
 }
+
+
+/* 21 Nov 2026 — editorial glass Latest Updates final refinement */
+/* Three balanced regions: update type, content, actual audited product image.
+   No duplicate title, inner card, or fake event / data. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-last-activity.catalog-latest-updates {
+  grid-template-columns: minmax(165px, 190px) minmax(0,1fr) 136px;
+  align-items: center;
+  gap: 19px;
+  box-sizing: border-box;
+  min-height: 138px;
+  margin: 0;
+  padding: 15px 20px 15px 22px;
+  border: 1px solid rgba(185,214,193,.82);
+  border-radius: 21px;
+  background:
+    radial-gradient(ellipse 55% 110% at 100% 0%,rgba(205,234,213,.44),transparent 85%),
+    linear-gradient(120deg,rgba(255,255,255,.91),rgba(246,251,246,.80)) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(128%);
+  backdrop-filter: blur(22px) saturate(128%);
+  box-shadow: 0 14px 34px rgba(32,76,46,.078),
+    0 2px 8px rgba(30,67,42,.035),inset 0 1px 0 rgba(255,255,255,.93);
+  transition: border-color .23s ease,box-shadow .23s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-last-activity.catalog-latest-updates:hover {
+  border-color: rgba(139,188,150,.80);
+  box-shadow: 0 18px 42px rgba(32,76,46,.115),
+    inset 0 1px 0 rgba(255,255,255,.96);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-last-activity-heading {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 7px 8px;
+  padding: 4px 14px 4px 0;
+  border-right: 1px solid rgba(130,165,137,.22);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-latest-title-icon {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  color: #236845;
+  background: linear-gradient(145deg,rgba(239,249,241,.93),rgba(216,238,223,.93));
+  border-color: rgba(172,207,181,.79);
+  box-shadow: inset 0 1px 0 #fff,0 3px 10px rgba(34,82,47,.045);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-last-activity-heading h2 {
+  font-family: "Plus Jakarta Sans","DM Sans",sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.036em;
+  color: #254d36;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-last-activity-heading > .catalog-latest-action {
+  margin: 0 0 0 44px;
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: rgba(214,239,222,.77);
+  color: #2d764a;
+  border: 1px solid rgba(157,206,169,.50);
+  font-size: 9px;
+  font-weight: 720;
+  white-space: nowrap;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates :is(.catalog-last-activity-details,.catalog-last-activity-placeholder) {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  gap: 7px;
+  padding-left: 0;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-latest-product {
+  margin: 0 0 1px;
+  font-family: "Plus Jakarta Sans","DM Sans",sans-serif;
+  font-size: clamp(13.5px,1.13vw,16px);
+  font-weight: 700;
+  letter-spacing: -.037em;
+  line-height: 1.4;
+  color: #234831;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates :is(.catalog-latest-actor,.catalog-latest-time) {
+  margin: 0;
+  font-family: "DM Sans",sans-serif;
+  font-size: 10.8px;
+  line-height: 1.35;
+  color: #678171;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-latest-time {
+  color: #85998a;
+  font-size: 10.5px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo.catalog-latest-photo-link {
+  grid-column: 3;
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  box-sizing: border-box;
+  width: 136px;
+  height: 108px;
+  min-width: 0;
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid rgba(186,211,193,.84);
+  background: linear-gradient(140deg,rgba(255,255,255,.83),rgba(226,242,230,.60));
+  box-shadow: 0 5px 17px rgba(31,76,46,.10),inset 0 1px 0 #fff;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+  transition: transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo.catalog-latest-photo-link:is(:hover,:focus-visible) {
+  transform: translateY(-3px);
+  border-color: #85b996;
+  box-shadow: 0 12px 24px rgba(30,79,45,.17),inset 0 1px 0 #fff;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo > img,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo.catalog-latest-photo-link > img {
+  width: 100%;
+  height: 100%;
+  border-radius: 9px;
+  object-fit: contain;
+  filter: none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-latest-photo-zoom {
+  right: 8px;
+  bottom: 8px;
+  width: 25px;
+  height: 25px;
+  border: 1px solid rgba(190,221,199,.8);
+  border-radius: 8px;
+  background: rgba(255,255,255,.87);
+  color: #2c6b46;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+/* The footer is close to this single activity strip, not a second giant section. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="overview"]
+.brutti-overview-audit {margin-bottom: 20px;}
+
+/* Dark graphite-green glass rather than opaque light panels. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"]
+.brutti-overview-audit .catalog-last-activity.catalog-latest-updates {
+  background: linear-gradient(125deg,rgba(39,54,47,.95),rgba(30,44,42,.93)) !important;
+  border-color: rgba(99,131,106,.70);
+  box-shadow: 0 14px 32px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.07);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-last-activity-heading h2,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-latest-product {color:#edf8ee;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-last-activity-heading {border-color:rgba(149,191,159,.24);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-last-activity-heading > .catalog-latest-action {
+  color:#d6f5df;
+  background:rgba(62,114,77,.56);
+  border-color:rgba(132,183,147,.30);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo {
+  background:rgba(43,64,49,.85);
+  border-color:rgba(128,166,140,.44);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates .catalog-latest-photo-zoom {
+  background:rgba(40,72,50,.88);
+  color:#e8f9ed;
+  border-color:rgba(141,194,156,.50);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"]
+.brutti-overview-audit .catalog-latest-updates :is(.catalog-latest-actor,.catalog-latest-time) {color:#b8ccbb;}
+
+/* Smaller screens: readable copy + photo, no side column or clipped metadata. */
+@media(max-width: 930px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-last-activity.catalog-latest-updates {
+    grid-template-columns:minmax(0,1fr) 112px;
+    grid-template-rows:auto auto;
+    align-items:center;
+    gap:7px 12px;
+    padding:14px 16px;
+    min-height:136px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-heading {
+    grid-column:1;
+    grid-row:1;
+    border-right:0;
+    padding:0;
+    align-self:end;
+    gap:6px 9px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-heading > .catalog-latest-action {
+    margin:0;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates :is(.catalog-last-activity-details,.catalog-last-activity-placeholder) {
+    grid-column:1;
+    grid-row:2;
+    gap:4px;
+    align-self:start;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo.catalog-latest-photo-link {
+    grid-column:2;
+    grid-row:1 / 3;
+    width:112px;
+    height:114px;
+  }
+}
+@media(max-width: 540px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-last-activity.catalog-latest-updates {
+    grid-template-columns:minmax(0,1fr) 78px;
+    gap:6px 9px;
+    padding:12px;
+    min-height:128px;
+    border-radius:16px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-heading {
+    gap:5px 7px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates .catalog-latest-title-icon {
+    flex-basis:29px;
+    width:29px;
+    height:29px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-heading h2 {
+    font-size:12px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-heading > .catalog-latest-action {
+    font-size:8px;
+    padding:3px 7px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates .catalog-latest-product {
+    font-size:11.7px;
+    line-height:1.35;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates :is(.catalog-latest-actor,.catalog-latest-time) {
+    font-size:9.5px;
+    line-height:1.35;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo.catalog-latest-photo-link {
+    width:78px;
+    height:91px;
+    padding:4px;
+    border-radius:10px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="overview"]
+  .brutti-overview-audit .catalog-last-activity.catalog-latest-updates,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="overview"]
+  .brutti-overview-audit .catalog-latest-updates .catalog-last-activity-photo {transition:none;transform:none!important;}
+}
