@@ -12,7 +12,9 @@ permissions:
 
 concurrency:
   group: brutti-catalog-pages
-  cancel-in-progress: true
+  # Finish the currently running build before switching to the newest pending push.
+  # Prevent rapid design commits from continuously cancelling Pages deployments.
+  cancel-in-progress: false
 
 jobs:
   deploy:
