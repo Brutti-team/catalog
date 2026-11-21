@@ -9,7 +9,7 @@ export interface ProductSpecification {
   /** Optional component count (e.g. Drawer × 2); separate from physical size. */
   quantity?: number;
   /** Section markers group following rows under their title. Legacy rows omit this. */
-  kind?: "section" | "measurement";
+  kind?: "section" | "measurement" | "quantity";
 }
 
 export interface ProductImage {
