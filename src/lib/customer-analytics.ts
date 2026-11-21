@@ -93,7 +93,7 @@ export async function loadCustomerSessionDetails(days: InsightPeriod): Promise<C
         if (action.kind !== "product_view" && action.kind !== "product_click") return [];
         if (typeof action.at !== "string" || !Number.isFinite(Date.parse(action.at))) return [];
         return [{
-          kind: action.kind,
+          kind: action.kind as CustomerSessionProductAction["kind"],
           at: action.at,
           productId: typeof action.productId === "string" ? action.productId : null,
           productName: typeof action.productName === "string" ? action.productName : null,
