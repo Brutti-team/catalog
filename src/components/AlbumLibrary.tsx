@@ -303,9 +303,17 @@ export default function AlbumLibrary({
   function openPhotoEditor(photo: AlbumPhoto) {
     setDownloadError("");
     setDownloadFormat("jpg");
-    if (!picker && onEditProduct && photo.usedBy.length === 1) {
+    // External Product Library photos may have a matching SKU even when their
+    // original URL was not attached to the Product's image array. Only route
+    // when the match is unambiguous; never create a fake Product record.
+    const matchingProducts = photo.usedBy.length
+      ? photo.usedBy
+      : photo.sourceCode
+        ? products.filter(product => product.sku?.trim().toLowerCase() === photo.sourceCode!.trim().toLowerCase())
+        : [];
+    if (!picker && onEditProduct && matchingProducts.length === 1) {
       setPreview(null);
-      onEditProduct(photo.usedBy[0].id);
+      onEditProduct(matchingProducts[0].id);
       return;
     }
     setPreview(photo);
