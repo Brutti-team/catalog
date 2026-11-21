@@ -1184,7 +1184,11 @@ export default function App() {
             else switchTab(target);
           }}
           onSave={persist}
-          onClose={(warning) => { setEditor(null); if (warning) setToast(warning); }}
+          onClose={(warning) => {
+            setEditor(null);
+            setPhotoOpenRequest(null);
+            if (warning) setToast(warning);
+          }}
         />
       )}{" "}
       {categoryToDelete && (
@@ -1314,6 +1318,9 @@ export default function App() {
           setToast("The source photo is no longer attached. You can still download the transparent PNG.");
           return false;
         }
+        // Return to the product workspace as well as reopening its exact
+        // Photo Studio image. Do not lose the AI Worker in another modal.
+        switchTab("products");
         setEditor(target);
         setPhotoOpenRequest(previous => ({
           productId, imageId, requestId: (previous?.requestId ?? 0) + 1,
