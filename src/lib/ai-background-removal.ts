@@ -1,11 +1,12 @@
 import type { CoverSource } from "./cover-studio-canvas";
 
-/** ORMBG/IS-Net, Apache-2.0. No paid API or product upload to a remote server:
+/** Local MIT BEN2 (detail) or Apache-2.0 ORMBG (fast). No paid API or photo upload:
  * computation runs in a dedicated browser Worker (WASM). Model files are
  * fetched only on first use, then cached by the browser.
  *
  * Worker and model: src/workers/ai-cutout.worker.ts
- * Model: https://huggingface.co/onnx-community/ormbg-ONNX
+ * Detailed model: https://huggingface.co/onnx-community/BEN2-ONNX
+ * Fast model: https://huggingface.co/onnx-community/ormbg-ONNX
  */
 export type AICutoutProgress = (message: string, percent?: number) => void;
 type WorkerMessage =
@@ -32,6 +33,7 @@ export function stopAICutout(): void {
 export async function aiFurnitureCutout(
   source: CoverSource,
   onProgress?: AICutoutProgress,
+  quality: "detail" | "fast" = "detail",
 ): Promise<HTMLCanvasElement> {
   // Reuse an idle worker so the ONNX model remains warm between edits.
   // A second request cancels only an actually pending inference.
@@ -80,6 +82,6 @@ export async function aiFurnitureCutout(
       event.preventDefault();
     };
     const rgba = sourcePixels.data.buffer as ArrayBuffer;
-    worker.postMessage({ width: source.width, height: source.height, rgba }, [rgba]);
+    worker.postMessage({ width: source.width, height: source.height, rgba, quality }, [rgba]);
   });
 }
