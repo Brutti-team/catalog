@@ -1,4 +1,5 @@
 import { applyAIAlpha } from "../lib/ai-alpha-matte";
+import { recoverEnclosedPanels } from "../lib/ai-panel-repair";
 
 /**
  * Apache-2.0 ORMBG local inference: no external cutout API, photo stays in
@@ -6,7 +7,7 @@ import { applyAIAlpha } from "../lib/ai-alpha-matte";
  * Images are never saved or uploaded by this worker.
  */
 type CutoutQuality = "detail" | "fast";
-type Job = { width: number; height: number; rgba: ArrayBuffer; quality?: CutoutQuality };
+type Job = { width: number; height: number; rgba: ArrayBuffer; quality?: CutoutQuality; protectPanels?: boolean };
 type Result =
   | { type: "progress"; message: string; percent: number }
   | { type: "done"; rgba: ArrayBuffer; width: number; height: number }
@@ -88,7 +89,7 @@ async function model(quality: CutoutQuality): Promise<ModelState> {
   }
 }
 async function process(job: Job) {
-  const { width, height, rgba } = job;
+  const { width, height, rgba, protectPanels = false } = job;
   const quality: CutoutQuality = job.quality === "fast" ? "fast" : "detail";
   if (width < 1 || height < 1 || width * height > 1400 * 1400 ||
     rgba.byteLength !== width * height * 4) {
@@ -112,7 +113,16 @@ async function process(job: Job) {
   }
   notify("Refining transparent edges…", 89);
   // Keep original RGB and use the predicted alpha instead of RGB brightness.
-  const output = applyAIAlpha(new Uint8ClampedArray(rgba), mask, width, height);
+  const original = new Uint8ClampedArray(rgba);
+  let output = applyAIAlpha(original, mask, width, height);
+  if (protectPanels) {
+    notify("Checking for enclosed cabinet faces that AI removed…", 91);
+    const recovered = recoverEnclosedPanels(original, output, width, height);
+    output = recovered.rgba;
+    notify(recovered.panelsRestored
+      ? "Recovered " + recovered.panelsRestored + " solid cabinet panel region(s). Review before saving."
+      : "No enclosed panels found automatically. Use Restore product for any missing white faces.", 94);
+  }
   const outputBuffer = output.buffer as ArrayBuffer;
   scope.postMessage({ type: "done", rgba: outputBuffer, width, height }, [outputBuffer]);
 }
