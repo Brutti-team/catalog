@@ -79,6 +79,7 @@ import "./components/product-editor-neutral-palette.css";
 import "./components/catalog-dark-mode-charcoal.css";
 import "./components/catalog-products-gallery-minimal.css";
 import "./components/photo-studio-premium.css";
+import "./components/catalog-products-table-glass.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
