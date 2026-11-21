@@ -833,6 +833,7 @@ export default function App() {
                   {loading ? Array.from({ length: 6 }, (_, index) => <div className="skeleton" key={index} />)
                     : filtered.map(p => (
                       <button className="catalog-gallery-card" type="button" key={p.id}
+                        data-product-sku={p.sku.trim().toUpperCase()}
                         onClick={() => setEditor(p)} aria-label={`Edit ${p.name}`}>
                         <div className="catalog-gallery-photo">
                           <SafeImage src={p.images[0]?.url || "/images/placeholder.svg"} alt="" style={photoCropStyle(p.images[0])} loading="lazy" decoding="async" />
