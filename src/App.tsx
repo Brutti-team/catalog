@@ -63,6 +63,8 @@ import {
 } from "./lib/catalog";
 import ProductEditor from "./components/ProductEditor";
 import BackgroundCutoutToast from "./components/BackgroundCutoutToast";
+import BackgroundGalleryOverlay from "./components/BackgroundGalleryOverlay";
+import { getBackgroundJobSnapshot } from "./lib/photo-background-jobs";
 import CatalogOverviewStudio from "./components/CatalogOverviewStudio";
 import PublicCatalog from "./components/PublicCatalog";
 import Modal from "./components/Modal";
@@ -576,6 +578,8 @@ export default function App() {
               <span className="catalog-search-shortcut" aria-hidden="true">Ctrl K</span>
               <button type="submit" className="catalog-search-submit" aria-label="Search products"><ArrowRight size={15} /></button>
             </form>
+            <div className="brutti-background-task-host" id="brutti-background-task-host"
+              aria-label="Photo background removal progress"/>
             <button type="button" className="theme-toggle" onClick={toggleTheme}
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               aria-pressed={theme === "dark"} title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
@@ -838,9 +842,21 @@ export default function App() {
                     : filtered.map(p => (
                       <button className="catalog-gallery-card" type="button" key={p.id}
                         data-product-sku={p.sku.trim().toUpperCase()}
-                        onClick={() => setEditor(p)} aria-label={`Edit ${p.name}`}>
+                        onClick={() => {
+                          const job = getBackgroundJobSnapshot();
+                          if (job.status === "running" && job.productId === p.id && job.image?.id) {
+                            setPhotoOpenRequest(previous => ({
+                              productId: p.id, imageId: job.image!.id,
+                              requestId: (previous?.requestId ?? 0) + 1,
+                            }));
+                          } else {
+                            setPhotoOpenRequest(null);
+                          }
+                          setEditor(p);
+                        }} aria-label={`Edit ${p.name}`}>
                         <div className="catalog-gallery-photo">
                           <SafeImage src={p.images[0]?.url || "/images/placeholder.svg"} alt="" style={photoCropStyle(p.images[0])} loading="lazy" decoding="async" />
+                          <BackgroundGalleryOverlay productId={p.id} coverImageId={p.images[0]?.id}/>
                           <span className={`status-badge status-${p.status}`}><i />{label(p.status)}</span>
                         </div>
                         <div className="catalog-gallery-body">
