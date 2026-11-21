@@ -875,3 +875,197 @@
     transition: none;
   }
 }
+
+
+/* 21 Nov 2026 — Album gallery visually matches the Product photo-first glass cards.
+   Gallery-only: leave photo picker, table/list, categories, uploads, and CRUD intact. */
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) {
+  align-items: stretch;
+  gap: 17px;
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 302px;
+  aspect-ratio: .88 / 1;
+  border-radius: 17px;
+  border: 1px solid rgba(185,210,193,.75);
+  background: #e6eee7;
+  box-shadow: 0 5px 14px rgba(33,68,46,.07),0 17px 32px rgba(26,62,39,.07);
+  overflow: hidden;
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card:is(:hover,:focus-within) {
+  transform: translateY(-3px);
+  border-color: rgba(110,162,121,.84);
+  box-shadow: 0 9px 19px rgba(33,68,46,.08),0 21px 43px rgba(31,79,50,.14);
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__thumb {
+  position: absolute;
+  inset: 0;
+  display: block;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: inherit;
+  background: #e5ede7;
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform .38s cubic-bezier(.2,.7,.2,1);
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card:is(:hover,:focus-within) .brutti-album__thumb img {
+  transform: scale(1.025);
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-info {
+  position: absolute;
+  z-index: 2;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  width: auto;
+  height: 112px;
+  min-width: 0;
+  padding: 10px 11px 9px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.80);
+  border-radius: 12px;
+  background: linear-gradient(135deg,rgba(255,255,255,.94),rgba(244,251,246,.85));
+  box-shadow: 0 10px 29px rgba(9,31,19,.15),inset 0 1px 0 rgba(255,255,255,.9);
+  -webkit-backdrop-filter: blur(20px) saturate(135%);
+  backdrop-filter: blur(20px) saturate(135%);
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-info strong {
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  color: #253d2f;
+  font-family: "Inter","DM Sans",system-ui,sans-serif;
+  font-size: 12px;
+  font-weight: 660;
+  line-height: 1.4;
+  letter-spacing: -.012em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-info > small {
+  display: block;
+  width: 100%;
+  color: #75877b;
+  font-family: "Inter","DM Sans",system-ui,sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+  padding-top: 7px;
+  border-top: 1px solid rgba(91,136,102,.17);
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 1 auto;
+  gap: 5px;
+  box-sizing: border-box;
+  min-height: 31px;
+  padding: 6px 8px;
+  margin: 0;
+  border: 1px solid rgba(127,169,138,.22);
+  border-radius: 9px;
+  background: rgba(235,247,238,.72);
+  color: #28593a;
+  font-family: "Inter","DM Sans",system-ui,sans-serif;
+  font-size: 10px;
+  font-weight: 660;
+  line-height: 1.25;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .2s ease,border-color .2s ease,transform .2s ease;
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions button:first-child {
+  background: #28563d;
+  border-color: #28563d;
+  color: #fff;
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions button:hover {
+  background: #dff0e4;
+  border-color: #9cc8a7;
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions button:first-child:hover {
+  background: #1c442e;
+  border-color: #1c442e;
+}
+.admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+/* OS dark mode: charcoal glass, not flat green boxes. */
+.admin-app[data-theme="dark"] .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card {
+  background: #222b27;
+  border-color: #405c4b;
+  box-shadow: 0 9px 29px rgba(0,0,0,.19);
+}
+.admin-app[data-theme="dark"] .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-info {
+  background: linear-gradient(135deg,rgba(32,40,36,.94),rgba(34,48,40,.85));
+  border-color: rgba(186,217,196,.24);
+  box-shadow: 0 11px 30px rgba(0,0,0,.30);
+}
+.admin-app[data-theme="dark"] .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-info strong { color: #eef5ef; }
+.admin-app[data-theme="dark"] .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-info > small { color: #bed0c3; }
+.admin-app[data-theme="dark"] .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions { border-top-color: rgba(197,222,201,.18); }
+.admin-app[data-theme="dark"] .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions button { background: rgba(75,113,88,.32);color:#e3f2e6;border-color:rgba(142,180,150,.28); }
+.admin-app[data-theme="dark"] .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions button:first-child { background: #37694b; border-color: #37694b; color:#fff; }
+@media (max-width: 980px) {
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card { min-height: 290px; }
+}
+@media (max-width: 600px) {
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) { gap: 11px; }
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card { min-height: 247px; aspect-ratio: auto; }
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-info { left: 7px;right: 7px;bottom: 7px;height: 108px;padding: 9px 8px 8px; }
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-info strong { font-size: 11px; }
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions { gap: 3px;padding-top: 6px; }
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions button { gap: 3px;padding: 5px 4px;font-size: 9px;min-height: 30px; }
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions svg { width: 12px;height:12px; }
+}
+@media (max-width: 390px) {
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions button:last-child {
+    font-size: 0;
+  }
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions button:last-child::after {
+    content: "Edit";
+    font-size: 9px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card,
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__thumb img {
+    transition: none;
+    transform: none !important;
+  }
+}
