@@ -845,8 +845,13 @@ export default function App() {
                         <div className="catalog-gallery-body">
                           <span className="catalog-gallery-category">{data.categories.find(c => c.id === p.categoryId)?.name || "Uncategorised"}</span>
                           <strong>{p.name}</strong>
-                          <span className="catalog-gallery-sku">{p.sku}</span>
-                          <div className="catalog-gallery-bottom"><span>{formatProductPrice(p)}</span><span><Pencil size={15} aria-hidden="true" /> Edit</span></div>
+                          <div className="catalog-gallery-bottom">
+                            <span className="catalog-gallery-product-id" title={p.sku || p.id}>
+                              <span className="catalog-gallery-id-label">Product ID</span>
+                              <span className="catalog-gallery-id-value">{p.sku || p.id}</span>
+                            </span>
+                            <span className="catalog-gallery-edit-action"><Pencil size={15} aria-hidden="true" /> Edit</span>
+                          </div>
                         </div>
                       </button>
                     ))}
