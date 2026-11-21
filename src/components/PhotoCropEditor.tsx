@@ -161,6 +161,9 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
   const [customColor, setCustomColor] = useState("#e5dfd3");
   const [previewOriginal, setPreviewOriginal] = useState(false);
   const [aiQuality, setAiQuality] = useState<"detail" | "fast">("detail");
+  const [protectPanels, setProtectPanels] = useState(
+    () => /cabinet|cupboard|wardrobe|door|drawer|dresser|counter|panel/i.test(image.alt || ""),
+  );
   const [aiBusy, setAiBusy] = useState(false);
   const [aiProgress, setAiProgress] = useState("");
   const [aiPercent, setAiPercent] = useState(0);
@@ -263,7 +266,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
         if (run !== aiRun.current) return;
         setAiProgress(message);
         if (typeof percent === "number") setAiPercent(current => Math.max(current, Math.min(95, percent)));
-      }, aiQuality);
+      }, aiQuality, protectPanels);
       if (run !== aiRun.current) return;
       const maskPixels = result.getContext("2d", { willReadFrequently: true })
         ?.getImageData(0, 0, result.width, result.height).data;
@@ -309,8 +312,8 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
       setBackground("transparent");
       setPreviewOriginal(false);
       setAiProgress(aiQuality === "detail"
-        ? "Detailed AI finished. Inspect white doors and fine frames before applying."
-        : "Fast AI finished. For thin or white furniture, switch to Detailed and select Remove again.");
+        ? "Detailed AI completed. Check white doors and fine frames; auto panel protection runs when enabled."
+        : "Fast AI finished. For thin white furniture, choose Detailed and Remove again.");
       setAiPercent(100);
     } catch (reason) {
       if (run !== aiRun.current) return;
@@ -633,6 +636,14 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                     It runs locally; results still need checking for complex products.
                   </p>
                 </div>
+                <label className="brutti-photo-studio-protect-option">
+                  <input type="checkbox" checked={protectPanels} disabled={locked}
+                    onChange={event => setProtectPanels(event.target.checked)}/>
+                  <span>
+                    <strong>Protect solid cabinet panels</strong>
+                    <small>Automatically recover enclosed door and drawer faces that AI mistakes for background. Turn off for open or glass furniture.</small>
+                  </span>
+                </label>
                 <button type="button" className="brutti-photo-studio-ai-button"
                   disabled={!source || locked} onClick={() => void removeBackground()}>
                   {aiBusy ? <LoaderCircle size={17} className="spin"/> : <Sparkles size={17}/>}
