@@ -1,6 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { Check, Download, Eye, LoaderCircle, Sparkles, X } from "lucide-react";
+import { ArrowUpRight, Check, Download, Eye, LoaderCircle, Sparkles, X } from "lucide-react";
 import Modal from "./Modal";
 import {
   cancelBackgroundJob, dismissBackgroundJob,
@@ -16,6 +16,7 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
   const [host, setHost] = useState<HTMLElement>(() => document.body);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewError, setPreviewError] = useState("");
+  const [toastError, setToastError] = useState("");
 
   // Native dialogs are in the browser's top layer. Place the toast inside
   // whichever editor dialog is on top so it remains visible at the top-left
@@ -37,8 +38,19 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
     if (job.status === "idle" || job.status === "running") {
       setPreviewOpen(false);
       setPreviewError("");
+      setToastError("");
     }
   }, [job.jobId, job.status]);
+
+  function openPhoto(): boolean {
+    if (!job.productId || !job.image || !onEditResult(job.productId, job.image.id)) {
+      setToastError("This photo is no longer attached to the product. You can download the result when it's ready.");
+      return false;
+    }
+    setToastError("");
+    setPreviewError("");
+    return true;
+  }
 
   const label = job.image?.alt || "Product photo";
   const visible = job.status !== "idle" && job.status !== "cancelled";
@@ -69,11 +81,14 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
               {running ? <LoaderCircle className="spin" size={17}/> :
                 job.status === "done" ? <Check size={17}/> : <X size={17}/>}
             </span>
-            <div className="brutti-background-task-toast-title">
+            <button type="button" className="brutti-background-task-toast-title brutti-background-task-title-link"
+              onClick={() => { if (openPhoto()) setPreviewOpen(false); }}
+              title="Return to the photo being edited"
+              aria-label={`Open Photo Studio for ${label}`}>
               <strong>{running ? "Removing background" :
                 job.status === "done" ? "Background ready" : "Background removal failed"}</strong>
               <small title={label}>{label}</small>
-            </div>
+            </button>
             {job.status !== "running" && (
               <button type="button" className="brutti-background-task-close"
                 onClick={dismissBackgroundJob} aria-label="Dismiss background task">
@@ -92,6 +107,10 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
               <p role="status">{job.message || "Preparing AI…"}</p>
               <div className="brutti-background-task-toast-actions">
                 <small>Estimated · Keep this browser tab open</small>
+                <button type="button" className="brutti-background-task-view"
+                  onClick={() => { if (openPhoto()) setPreviewOpen(false); }}>
+                  <ArrowUpRight size={14}/> Open photo
+                </button>
                 <button type="button" onClick={cancelBackgroundJob}>Cancel</button>
               </div>
             </>
@@ -100,8 +119,15 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
               <p>Photo cutout is ready to review. Your original is unchanged.</p>
               <div className="brutti-background-task-toast-actions">
                 <button type="button" className="brutti-background-task-open"
-                  onClick={() => setPreviewOpen(true)}>
-                  <Eye size={15}/> Open result
+                  onClick={() => {
+                    if (openPhoto()) setPreviewOpen(false);
+                    else setPreviewOpen(true);
+                  }}>
+                  <ArrowUpRight size={15}/> Open result
+                </button>
+                <button type="button" onClick={() => setPreviewOpen(true)}
+                  aria-label="Preview transparent result" title="Preview image">
+                  <Eye size={16}/>
                 </button>
                 <button type="button" onClick={() => void download()} aria-label="Download transparent PNG">
                   <Download size={16}/>
@@ -116,6 +142,7 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
               </div>
             </>
           )}
+          {toastError && <p role="alert" className="brutti-background-task-toast-error">{toastError}</p>}
         </aside>,
         host,
       )}
