@@ -98,6 +98,7 @@ import "./components/photo-background-task.css";
 import "./components/album-product-editor-parity.css";
 import "./components/catalog-latest-updates-refine.css";
 import "./components/catalog-spec-measurements.css";
+import "./components/catalog-spec-description-column.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
