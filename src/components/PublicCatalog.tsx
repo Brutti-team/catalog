@@ -203,6 +203,12 @@ export default function PublicCatalog({
   const showingModel = viewMode === '3d' && Boolean(selectedModel);
   const categoryName = (id: string) =>
     categories.find((item) => item.id === id)?.name || "Furniture";
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const item of published) counts.set(item.categoryId, (counts.get(item.categoryId) ?? 0) + 1);
+    return counts;
+  }, [published]);
+
   const filtered = useMemo(() => {
     const text = query.trim().toLowerCase();
     const list = published.filter(
@@ -456,68 +462,74 @@ export default function PublicCatalog({
               </div>
               <div className="pub-collection-tools">
                 <label className="pub-search">
-                  <Search size={18} />
+                  <Search size={19} aria-hidden="true" />
                   <span className="pub-sr-only">Search the catalog</span>
                   <input
                     type="search"
-                    placeholder="Search kiosks, counters, materials…"
+                    placeholder="Search projects, products or materials"
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                   />
                   {query && (
-                    <button
-                      onClick={() => setQuery("")}
-                      aria-label="Clear search"
-                    >
+                    <button type="button" onClick={() => setQuery("")} aria-label="Clear search">
                       <X size={15} />
                     </button>
                   )}
                 </label>
-                <div className="pub-sort" ref={sortRef}>
-                  <div className="pub-sort-control">
-                    <button
-                      type="button"
-                      className="pub-sort-trigger"
-                      aria-label="Sort products"
-                      aria-expanded={sortOpen}
-                      aria-controls="pub-sort-options"
-                      onClick={() => setSortOpen((isOpen) => !isOpen)}
-                    >
-                      <span className="pub-sort-caption">Sort:</span>
-                      <span className="pub-sort-current">
-                        {sort === "name" ? "Name A–Z" : sort === "price" ? "Price: low to high" : "Curated"}
-                      </span>
-                      <ChevronDown size={14} aria-hidden="true" />
-                    </button>
-                    {sortOpen && (
-                      <div id="pub-sort-options" className="pub-sort-menu" role="group" aria-label="Sort order">
-                        {([
-                          { value: "curated", label: "Curated selection" },
-                          { value: "name", label: "Name: A–Z" },
-                          { value: "price", label: "Price: low to high" },
-                        ] as const).map(option => (
-                          <button
-                            type="button"
-                            key={option.value}
-                            className={"pub-sort-option" + (sort === option.value ? " is-selected" : "")}
-                            aria-pressed={sort === option.value}
-                            onClick={() => { setSort(option.value); setSortOpen(false); }}
-                          >
-                            <span>{option.label}</span>
-                            {sort === option.value && <Check size={14} aria-hidden="true" />}
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                <div className="pub-collection-actions">
+                  <button
+                    type="button"
+                    className={`pub-featured-filter ${featuredOnly ? "pub-filter-featured-active" : ""}`}
+                    aria-pressed={featuredOnly}
+                    onClick={() => setFeaturedOnly(!featuredOnly)}
+                  >
+                    <Sparkles size={15} aria-hidden="true" />
+                    Featured only
+                  </button>
+                  <div className="pub-sort" ref={sortRef}>
+                    <div className="pub-sort-control">
+                      <button
+                        type="button"
+                        className="pub-sort-trigger"
+                        aria-label="Sort products"
+                        aria-expanded={sortOpen}
+                        aria-controls="pub-sort-options"
+                        onClick={() => setSortOpen((isOpen) => !isOpen)}
+                      >
+                        <span className="pub-sort-caption">Sort:</span>
+                        <span className="pub-sort-current">
+                          {sort === "name" ? "Name A–Z" : sort === "price" ? "Price: low to high" : "Curated"}
+                        </span>
+                        <ChevronDown size={14} aria-hidden="true" />
+                      </button>
+                      {sortOpen && (
+                        <div id="pub-sort-options" className="pub-sort-menu" role="group" aria-label="Sort order">
+                          {([
+                            { value: "curated", label: "Curated selection" },
+                            { value: "name", label: "Name: A–Z" },
+                            { value: "price", label: "Price: low to high" },
+                          ] as const).map(option => (
+                            <button
+                              type="button"
+                              key={option.value}
+                              className={"pub-sort-option" + (sort === option.value ? " is-selected" : "")}
+                              aria-pressed={sort === option.value}
+                              onClick={() => { setSort(option.value); setSortOpen(false); }}
+                            >
+                              <span>{option.label}</span>
+                              {sort === option.value && <Check size={14} aria-hidden="true" />}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
               <div className="pub-filter-row">
-                <div
-                  className="pub-category-filters"
-                  aria-label="Filter by category"
-                >
+                <div className="pub-category-filters" aria-label="Filter by category">
                   <button
+                    type="button"
                     aria-pressed={category === "all"}
                     className={category === "all" ? "pub-filter-active" : ""}
                     onClick={() => setCategory("all")}
@@ -526,24 +538,17 @@ export default function PublicCatalog({
                   </button>
                   {categories.map((item) => (
                     <button
+                      type="button"
                       key={item.id}
                       aria-pressed={category === item.id}
-                      className={
-                        category === item.id ? "pub-filter-active" : ""
-                      }
+                      className={category === item.id ? "pub-filter-active" : ""}
                       onClick={() => setCategory(item.id)}
                     >
                       {item.name}
+                      {Boolean(categoryCounts.get(item.id)) && <span className="pub-category-count">{categoryCounts.get(item.id)}</span>}
                     </button>
                   ))}
                 </div>
-                <button
-                  className={`pub-featured-filter ${featuredOnly ? "pub-filter-featured-active" : ""}`}
-                  aria-pressed={featuredOnly}
-                  onClick={() => setFeaturedOnly(!featuredOnly)}
-                >
-                  <Sparkles size={14} /> Featured only
-                </button>
               </div>
               <div className="pub-results-label" role="status">
                 {loading
@@ -579,20 +584,35 @@ export default function PublicCatalog({
                 </div>
               ) : filtered.length ? (
                 <div className="pub-products-grid">{filtered.map(card)}</div>
-              ) : (
-                <div className="pub-empty-state pub-empty-state--compact">
-                  <span className="pub-empty-icon" aria-hidden="true"><Search size={23} /></span>
-                  <h3>{!published.length && !query && category === "all" && !featuredOnly
-                    ? "Our collection is taking shape."
-                    : "No matching projects."}</h3>
-                  <p>{!published.length && !query && category === "all" && !featuredOnly
-                    ? "Published Brutti products will appear here by category."
-                    : "Try another search or choose a different category to explore our work."}</p>
-                  {(query || category !== "all" || featuredOnly) && (
-                    <button className="pub-primary-button" onClick={resetFilters}>
-                      View all projects <ArrowRight size={16} />
+              ) : published.length === 0 && !query && category === "all" && !featuredOnly ? (
+                <div className="pub-empty-state pub-empty-state--unpublished">
+                  <div className="pub-empty-editorial">
+                    <span className="pub-empty-eyebrow">BENUA BRUTTI · THE COLLECTION</span>
+                    <span className="pub-empty-icon" aria-hidden="true"><BoxIcon size={21} /></span>
+                    <h3>A collection in the making.</h3>
+                    <p>We're preparing our furniture and bespoke fit-out projects for this gallery. Explore the kinds of spaces we create in the meantime.</p>
+                    <button type="button" className="pub-empty-explore" onClick={browseShowroom}>
+                      Explore our categories <ArrowUpRight size={17} aria-hidden="true" />
                     </button>
-                  )}
+                  </div>
+                  <div className="pub-empty-visual">
+                    <img
+                      src="https://brutti.my/assets/what-we-build/built%20in%20cabinet.webp"
+                      alt="A built-in cabinet project by Benua Brutti"
+                      loading="lazy"
+                      onError={(event) => { event.currentTarget.closest(".pub-empty-visual")?.classList.add("is-image-unavailable"); }}
+                    />
+                    <span>THOUGHTFULLY MADE IN SABAH</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="pub-empty-state pub-empty-state--compact pub-empty-state--no-results">
+                  <span className="pub-empty-icon" aria-hidden="true"><Search size={20} /></span>
+                  <h3>No matching projects.</h3>
+                  <p>Try another search term or select a different category.</p>
+                  <button className="pub-primary-button" type="button" onClick={resetFilters}>
+                    View all projects <ArrowRight size={16} />
+                  </button>
                 </div>
               )}
             </section>
