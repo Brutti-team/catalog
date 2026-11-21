@@ -119,3 +119,190 @@
     font-size: 17px !important;
   }
 }
+
+/* UNIFIED BRUTTI GLASS PRODUCT EDITOR • 21 Nov 2026
+   This intentionally applies to the Edit Product dialog only. Subtle layered
+   surfaces, not a fully transparent interface; preserves readable controls.
+   A dedicated Media selector fixes its header being paler than Details/Specs. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+  background: linear-gradient(145deg,#eef4f0 0%,#e9f0eb 46%,#f1f4f0 100%) !important;
+  background-attachment: local;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card {
+  background: rgba(255,255,255,.79) !important;
+  border: 1px solid rgba(212,225,215,.9) !important;
+  box-shadow: 0 10px 28px rgba(28,65,39,.055),0 2px 8px rgba(29,67,41,.035),
+    inset 0 1px rgba(255,255,255,.94) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.08);
+  backdrop-filter: blur(16px) saturate(1.08);
+}
+
+/* All three header strips, including the Media div with its own legacy CSS.
+   The explicit #brutti-media-section > div selector defeats old gallery rules. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#product-editor-specs).brutti-editor-section-card
+> .product-editor-section-heading,
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> #brutti-media-section.brutti-editor-section-card
+> div.product-editor-section-heading.brutti-media-section-heading {
+  background: linear-gradient(103deg,rgba(208,229,214,.86) 0%,rgba(225,239,229,.79) 57%,rgba(240,247,241,.72) 100%) !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(188,210,194,.68) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.74) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.12) !important;
+  backdrop-filter: blur(18px) saturate(1.12) !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> #brutti-media-section.brutti-editor-section-card
+> div.product-editor-section-heading.brutti-media-section-heading {
+  width: calc(100% + 2 * var(--brutti-card-side,24px)) !important;
+  max-width: none !important;
+  margin: 0 calc(-1 * var(--brutti-card-side,24px)) 21px !important;
+  padding: 15px var(--brutti-card-side,24px) !important;
+  min-height: 72px !important;
+  border-radius: 14px 14px 0 0 !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> #brutti-media-section.brutti-editor-section-card
+> div.brutti-media-section-heading .product-editor-step {
+  background: rgba(255,255,255,.74) !important;
+  border-color: rgba(181,206,189,.86) !important;
+  color: #23583b !important;
+}
+
+/* Quiet glass controls: focus, readable text, and clear hit areas remain. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#product-editor-specs).brutti-editor-section-card
+:is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),textarea,select) {
+  background-color: rgba(255,255,255,.84) !important;
+  border-color: rgba(204,220,208,.86) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.67),0 1px 4px rgba(23,63,35,.025);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#product-editor-specs).brutti-editor-section-card
+:is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),textarea,select):focus {
+  border-color: #79a88a !important;
+  box-shadow: 0 0 0 3px rgba(77,139,94,.12) !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-tabs {
+  background: rgba(229,239,232,.64) !important;
+  border-color: rgba(195,214,200,.83) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-tabs button.is-active {
+  background: rgba(255,255,255,.91) !important;
+  box-shadow: 0 2px 6px rgba(27,64,38,.07) !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-add-tile {
+  background: rgba(235,244,237,.65) !important;
+  border-color: rgba(177,204,184,.88) !important;
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .product-model-upload--direct {
+  background: rgba(250,253,250,.68) !important;
+  border-color: rgba(186,209,191,.87) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+  background: rgba(250,253,250,.91) !important;
+  border-top: 1px solid rgba(211,224,214,.92) !important;
+  box-shadow: 0 -8px 25px rgba(34,67,42,.045),inset 0 1px rgba(255,255,255,.8) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+  backdrop-filter: blur(18px) saturate(1.1);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer .button.secondary {
+  background-color: rgba(248,252,248,.84);
+  border-color: rgba(199,215,203,.86);
+}
+
+/* Real dark glass: charcoal base, neutral surfaces, preserved Brutti accents. */
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary {
+  background: linear-gradient(140deg,#11181b,#1a2221 48%,#141b1e) !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card {
+  background: rgba(31,39,39,.84) !important;
+  border-color: rgba(91,112,101,.46) !important;
+  box-shadow: 0 9px 22px rgba(0,0,0,.17),inset 0 1px rgba(255,255,255,.045) !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#product-editor-specs).brutti-editor-section-card
+> .product-editor-section-heading,
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> #brutti-media-section.brutti-editor-section-card
+> div.product-editor-section-heading.brutti-media-section-heading {
+  background: linear-gradient(105deg,rgba(51,76,62,.85),rgba(43,57,53,.86) 64%,rgba(39,47,47,.86)) !important;
+  border-bottom-color: rgba(103,131,111,.42) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.06) !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> #brutti-media-section.brutti-editor-section-card
+> div.brutti-media-section-heading .product-editor-step {
+  background: rgba(65,95,74,.78) !important;
+  border-color: rgba(112,150,118,.56) !important;
+  color: #e1f1e4 !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+> :is(#product-editor-basics,#product-editor-specs).brutti-editor-section-card
+:is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),textarea,select) {
+  background-color: rgba(35,47,44,.93) !important;
+  border-color: rgba(93,118,104,.65) !important;
+  color: #eef4ef !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.03);
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-tabs {
+  background: rgba(40,53,47,.85) !important;
+  border-color: rgba(100,128,109,.51) !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-tabs button.is-active {
+  background: rgba(65,95,74,.85) !important;
+  color: #f2f6f3 !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-add-tile,
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .product-model-upload--direct {
+  background: rgba(42,59,49,.8) !important;
+  border-color: rgba(96,138,105,.66) !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer {
+  background: rgba(29,37,38,.93) !important;
+  border-top-color: rgba(92,113,102,.46) !important;
+  box-shadow: 0 -10px 26px rgba(0,0,0,.14) !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 > .editor-footer .button.secondary {
+  background: rgba(44,58,49,.91);
+  border-color: rgba(95,124,103,.67);
+}
+@media(max-width:760px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > #brutti-media-section.brutti-editor-section-card
+  > div.product-editor-section-heading.brutti-media-section-heading {
+    margin-bottom: 16px !important;
+    min-height: 61px !important;
+    padding: 12px var(--brutti-card-side,14px) !important;
+    border-radius: 12px 12px 0 0 !important;
+  }
+}
+@media(prefers-reduced-transparency: reduce) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card {
+    background: #fff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary
+  > :is(#product-editor-basics,#brutti-media-section,#product-editor-specs).brutti-editor-section-card {
+    background: #202729 !important;
+  }
+}
