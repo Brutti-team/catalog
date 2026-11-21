@@ -23,17 +23,17 @@ export default function AvailabilityPicker({ value, onChange, disabled = false }
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const current = choices.find(item => item.id === value) ?? choices[2];
 
-  // Render the menu into the same native dialog, outside the scrollable input row.
-  // This preserves the editor's top layer and avoids being hidden by its sticky footer.
-  const portalTarget = rootRef.current?.closest<HTMLElement>("#product-editor-specs");
+  // Portal directly to the native modal, NOT its scrolling Specifications card.
+  // The card clips descendants and can cut off the availability options.
+  const portalTarget = rootRef.current?.closest<HTMLDialogElement>("dialog") ?? null;
 
   const positionMenu = useCallback(() => {
     const trigger = triggerRef.current;
     const menu = menuRef.current;
-    if (!trigger || !menu) return;
+    if (!trigger || !menu || !portalTarget) return;
 
     const anchor = trigger.getBoundingClientRect();
-    const dialog = trigger.closest<HTMLDialogElement>("dialog");
+    const dialog = portalTarget;
     const dialogBox = dialog?.getBoundingClientRect();
     const footer = dialog?.querySelector<HTMLElement>(".editor-footer");
     const footerBox = footer?.getBoundingClientRect();
@@ -68,12 +68,22 @@ export default function AvailabilityPicker({ value, onChange, disabled = false }
 
     const usableLeft = Math.max(8, (dialogBox?.left ?? 0) + 8);
     const usableRight = Math.min(viewportWidth - 8, (dialogBox?.right ?? viewportWidth) - 8);
-    const width = Math.min(340, Math.max(180, Math.min(anchor.width, 340)), usableRight - usableLeft);
-    const left = Math.max(usableLeft, Math.min(anchor.right - width, usableRight - width));
-    const next = { top: Math.round(top), left: Math.round(left), width: Math.round(width), maxHeight };
+    // Prefer left alignment with the availability field, and flip inward at
+    // either dialog edge. Never allow the menu's right side to overflow.
+    const freeWidth = Math.max(1, usableRight - usableLeft);
+    const width = Math.min(340, Math.max(260, anchor.width), freeWidth);
+    const left = Math.min(Math.max(anchor.left, usableLeft), usableRight - width);
+    // Absolute coordinates are relative to the dialog: fixed coordinates here
+    // can be trapped by a transformed/scroll-clipped editor ancestor.
+    const next = {
+      top: Math.round(top - (dialogBox?.top ?? 0)),
+      left: Math.round(left - (dialogBox?.left ?? 0)),
+      width: Math.round(width),
+      maxHeight,
+    };
     setLayout(previous => previous && Object.keys(next).every(key =>
       previous[key as keyof MenuLayout] === next[key as keyof MenuLayout]) ? previous : next);
-  }, []);
+  }, [portalTarget]);
 
   useLayoutEffect(() => {
     if (!open) return;
@@ -135,7 +145,7 @@ export default function AvailabilityPicker({ value, onChange, disabled = false }
   }
 
   const menuStyle: CSSProperties = {
-    position: "fixed",
+    position: "absolute",
     top: layout?.top ?? 0,
     left: layout?.left ?? 0,
     right: "auto",
