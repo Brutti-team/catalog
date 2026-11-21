@@ -833,3 +833,242 @@
   .admin-app .product-editor-dialog--editing .brutti-media-gallery *,
   .admin-app .catalog-photo-crop-dialog--dark * {transition:none!important;animation:none!important;}
 }
+
+/* 3D Media refinement | compact, quiet, editorial. Deliberately scoped to
+   the Media island to avoid legacy Product Editor and dark-mode conflicts. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section.brutti-product-media {
+  padding-bottom: 23px;
+  margin-bottom: 22px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section > .brutti-media-section-heading {
+  margin-bottom: 16px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-section-heading > .product-editor-step {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  border: 1px solid #d4e4d7;
+  border-radius: 10px;
+  background: #f4f9f4;
+  color: #3a7650;
+  box-shadow: none;
+  font: 740 11px/1 "DM Sans",sans-serif;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-tabs {
+  gap: 3px;
+  padding: 4px;
+  border: 1px solid #dce8df;
+  border-radius: 11px;
+  background: #f3f6f2;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-tabs button {
+  min-height: 36px;
+  padding: 9px 15px;
+  border-radius: 8px;
+  color: #677d6d;
+  font: 710 11.5px/1.3 "DM Sans",sans-serif;
+  transition: background-color .14s ease,color .14s ease;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-tabs button.is-active {
+  border: 1px solid #d8e7db;
+  background: #fff;
+  color: #23513a;
+  box-shadow: 0 1px 5px rgba(27,72,40,.06);
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-tabs button:hover:not(.is-active) {
+  background: #eaf1e9;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-toolbar {
+  margin-bottom: 15px;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-section--upload-only {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload--direct {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 17px;
+  width: 100%;
+  height: auto;
+  min-height: 108px;
+  max-height: none;
+  margin: 0;
+  padding: 18px 22px;
+  border: 1px solid #dbe7dd;
+  border-radius: 14px;
+  background: #f9fbf9;
+  box-shadow: 0 3px 16px rgba(25,66,37,.025);
+  transition: border-color .18s ease,background-color .18s ease;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload--direct:hover {
+  border-color: #aecdb6;
+  background: #f6faf6;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  border: 1px solid #dceadf;
+  border-radius: 12px;
+  background: #eaf3ec;
+  color: #326c47;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload-copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  padding: 0;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload-copy strong {
+  color: #294c36;
+  font: 740 13px/1.4 "DM Sans",sans-serif;
+  letter-spacing: -.015em;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload-copy > span {
+  color: #77887a;
+  font: 510 11.5px/1.45 "DM Sans",sans-serif;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload-formats {
+  color: #8a9c8e;
+  font: 520 10px/1.4 "DM Sans",sans-serif;
+  letter-spacing: .005em;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: 9px;
+  min-width: 146px;
+  min-height: 42px;
+  margin: 0 0 0 auto;
+  padding: 10px 16px;
+  border: 1px solid #24573b;
+  border-radius: 10px;
+  background: #24573b;
+  color: white;
+  box-shadow: 0 3px 8px rgba(28,75,43,.08);
+  font: 730 11.5px/1.3 "DM Sans",sans-serif;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload-button:hover:not(:disabled) {
+  background: #1c492f;
+  border-color: #1c492f;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload-button:focus-visible {
+  outline: 2px solid #89bc97;
+  outline-offset: 3px;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-section-heading > .product-editor-step {
+  background: #304a37;
+  border-color: #53715c;
+  color: #cce3d0;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-tabs {
+  background: #304537;
+  border-color: #4c6854;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-tabs button.is-active {
+  color: #e5f4e7;
+  background: #3d6047;
+  border-color: #5a7a61;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload--direct {
+  border-color: #4c6853;
+  background: #293c2f;
+  box-shadow: none;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload--direct:hover {
+  border-color: #668b6f;
+  background: #304a38;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload-icon {
+  background: #385541;
+  border-color: #54745c;
+  color: #d3ead7;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload-copy strong {
+  color: #e4f0e5;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload-copy > span,
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#brutti-media-section .brutti-media-3d-panel .product-model-upload-formats {
+  color: #b1c7b6;
+}
+@media (max-width: 760px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #brutti-media-section .brutti-media-3d-panel .product-model-upload--direct {
+    flex-wrap: wrap;
+    gap: 12px;
+    min-height: 0;
+    padding: 15px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #brutti-media-section .brutti-media-3d-panel .product-model-upload-icon {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #brutti-media-section .brutti-media-3d-panel .product-model-upload-copy {
+    flex: 1 1 calc(100% - 60px);
+  }
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #brutti-media-section .brutti-media-3d-panel .product-model-upload-button {
+    min-width: 0;
+    width: 100%;
+    margin: 1px 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #brutti-media-section .product-model-upload--direct,
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2
+  #brutti-media-section .brutti-media-tabs button {transition:none;}
+}
