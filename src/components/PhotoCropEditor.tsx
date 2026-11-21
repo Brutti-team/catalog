@@ -7,11 +7,10 @@ import {
 import type { ProductImage } from "../lib/types";
 import Modal from "./Modal";
 import { publicAssetUrl } from "../lib/assets";
-import { aiFurnitureCutout, preloadDetailedCutout, stopAICutout } from "../lib/ai-background-removal";
-import type { CoverSource } from "../lib/cover-studio-canvas";
+import { stopAICutout } from "../lib/ai-background-removal";
 import {
-  backgroundResultFor, getBackgroundJobSnapshot, startBackgroundJob,
-  subscribeBackgroundJob,
+  backgroundResultFor, cancelBackgroundJob, getBackgroundJobSnapshot,
+  startBackgroundJob, subscribeBackgroundJob,
 } from "../lib/photo-background-jobs";
 
 type Props = {
@@ -178,7 +177,6 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const aiRun = useRef(0);
   const aiRevealTimeout = useRef<number | null>(null);
   const workingCutout = useRef<HTMLCanvasElement | null>(null);
   const previousBrushPoint = useRef<{ x: number; y: number } | null>(null);
@@ -215,14 +213,33 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
   }, [image.url]);
 
   useEffect(() => () => {
-    aiRun.current++;
+    // This cleanup only affects any unused shared-model preload. The real
+    // product cutout is now in an isolated worker managed outside the modal.
     stopAICutout();
     if (aiRevealTimeout.current !== null) window.clearTimeout(aiRevealTimeout.current);
   }, []);
 
+  // The same independent cutout job powers foreground processing AND
+  // "Continue in background"; leaving the modal never restarts inference.
   useEffect(() => {
-    if (tool === "background" && source && !aiBusy) preloadDetailedCutout();
-  }, [tool, source, aiBusy]);
+    if (!source || backgroundTask.productId !== productId ||
+      backgroundTask.image?.id !== image.id) return;
+    if (backgroundTask.status === "running") {
+      setAiBusy(true);
+      setAiProgress(backgroundTask.message);
+      setAiPercent(backgroundTask.percent);
+      setAiStage(backgroundTask.phase);
+    } else if (backgroundTask.status === "error") {
+      setAiBusy(false);
+      setAiPercent(null);
+      setAiProgress("");
+      setError(backgroundTask.error || "Background removal failed.");
+    } else if (backgroundTask.status === "cancelled") {
+      setAiBusy(false);
+      setAiPercent(null);
+      setAiProgress("");
+    }
+  }, [backgroundTask, image.id, productId, source]);
 
   // A background result can finish while this modal is CLOSED. Reopening the
   // original photo restores the completed transparent cutout for editing.
@@ -284,27 +301,44 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
     }
   }, [source, refinedCutout, background, customColor, totalAngle, zoom, pan, mirror, previewOriginal, width, height]);
 
-  function runBackgroundRemoval() {
+  function removeBackground() {
     if (!source || saving || aiBusy) return;
     if (backgroundTask.status === "running") {
-      setError("Another background removal is already running. See the top-left status.");
+      setError("Another photo is already processing. Check the top-left progress notification.");
+      return;
+    }
+    setError("");
+    setShowAiReveal(false);
+    if (!startBackgroundJob(image, source, productId)) {
+      setError("Unable to start background removal. Check that the image is fully loaded.");
+    }
+  }
+
+  function runBackgroundRemoval() {
+    if (!source || saving) return;
+    const matching = backgroundTask.status === "running" &&
+      backgroundTask.productId === productId && backgroundTask.image?.id === image.id;
+    if (matching) {
+      // Same Worker, same progress, no restart. Keep this browser tab open.
+      onClose();
+      return;
+    }
+    if (backgroundTask.status === "running") {
+      setError("Another background removal is running. See the top-left notification.");
       return;
     }
     if (!startBackgroundJob(image, source, productId)) {
-      setError("Unable to start background removal. Check that this photo has loaded.");
+      setError("Unable to start background removal. Check that the photo has loaded.");
       return;
     }
-    // Only close this editor; the isolated Worker belongs to the Catalog tab
-    // and remains active until completion or explicit cancellation.
     onClose();
   }
 
   function cancelAI() {
-    aiRun.current++;
-    if (aiRevealTimeout.current !== null) window.clearTimeout(aiRevealTimeout.current);
-    aiRevealTimeout.current = null;
-    setShowAiReveal(false);
-    stopAICutout();
+    if (backgroundTask.status === "running" &&
+      backgroundTask.productId === productId && backgroundTask.image?.id === image.id) {
+      cancelBackgroundJob();
+    }
     setAiBusy(false);
     setAiProgress("");
     setAiPercent(null);
@@ -320,104 +354,6 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
     setCustomColor("#e5dfd3"); setPreviewOriginal(false);
     setRatio(source && source.naturalHeight > source.naturalWidth ? "3:4" : "4:3");
     setError("");
-  }
-
-  async function removeBackground() {
-    if (!source || aiBusy || saving) return;
-    const run = ++aiRun.current;
-    setAiBusy(true);
-    if (aiRevealTimeout.current !== null) window.clearTimeout(aiRevealTimeout.current);
-    aiRevealTimeout.current = null;
-    setShowAiReveal(false);
-    setAiProgress("Preparing local AI model…");
-    setAiStage("preparing");
-    setAiPercent(1);
-    setError("");
-    try {
-      // Keep detailed AI but reduce pre-processing pixels, while preserving
-      // original-resolution RGB for export and fine furniture details.
-      const maxAIWidth = 1024;
-      const factor = Math.min(1, maxAIWidth / Math.max(source.naturalWidth, source.naturalHeight));
-      const w = Math.max(1, Math.round(source.naturalWidth * factor));
-      const h = Math.max(1, Math.round(source.naturalHeight * factor));
-      const sourceCanvas = document.createElement("canvas");
-      sourceCanvas.width = w; sourceCanvas.height = h;
-      const context = sourceCanvas.getContext("2d", { willReadFrequently: true });
-      if (!context) throw new Error("The browser cannot process this photo.");
-      context.drawImage(source, 0, 0, w, h);
-      // A cross-origin photo can display but may forbid pixel extraction.
-      try { context.getImageData(0, 0, 1, 1); }
-      catch { throw new Error("This photo host blocks background removal. Re-upload the image to Brutti Album."); }
-      const localSource: CoverSource = { canvas: sourceCanvas, width: w, height: h };
-      const result = await aiFurnitureCutout(localSource, (message, _filePercent, phase) => {
-        if (run !== aiRun.current) return;
-        setAiProgress(message);
-        setAiStage(phase ?? "processing");
-        // A model file's byte count is not the cutout's total progress.
-        // Keep the global, monotonic estimate even when files change.
-      }, "detail", protectPanels);
-      if (run !== aiRun.current) return;
-      const maskPixels = result.getContext("2d", { willReadFrequently: true })
-        ?.getImageData(0, 0, result.width, result.height).data;
-      if (!maskPixels) throw new Error("The AI mask could not be read.");
-      let clearPixels = 0;
-      for (let i = 3; i < maskPixels.length; i += 4) {
-        if (maskPixels[i] < 32) clearPixels++;
-      }
-      if (clearPixels / (result.width * result.height) < .02) {
-        throw new Error("AI could not clear the white background reliably. Try a photo with more contrast; the original has been kept.");
-      }
-
-      // Use the AI alpha channel with the higher-resolution original. This
-      // avoids a blurry exported photo after CPU-efficient segmentation.
-      const detailScale = Math.min(1, 1800 / Math.max(source.naturalWidth, source.naturalHeight));
-      const detailWidth = Math.max(1, Math.round(source.naturalWidth * detailScale));
-      const detailHeight = Math.max(1, Math.round(source.naturalHeight * detailScale));
-      const editable = document.createElement("canvas");
-      editable.width = detailWidth; editable.height = detailHeight;
-      const detailContext = editable.getContext("2d", { willReadFrequently: true });
-      const maskCanvas = document.createElement("canvas");
-      maskCanvas.width = detailWidth; maskCanvas.height = detailHeight;
-      const resizedMaskContext = maskCanvas.getContext("2d", { willReadFrequently: true });
-      if (!detailContext || !resizedMaskContext) throw new Error("The browser cannot refine this cutout.");
-      detailContext.drawImage(source, 0, 0, detailWidth, detailHeight);
-      resizedMaskContext.drawImage(result, 0, 0, detailWidth, detailHeight);
-      const detailPixels = detailContext.getImageData(0, 0, detailWidth, detailHeight);
-      const resizedMask = resizedMaskContext.getImageData(0, 0, detailWidth, detailHeight);
-      for (let i = 3; i < detailPixels.data.length; i += 4) {
-        detailPixels.data[i] = Math.round(detailPixels.data[i] * resizedMask.data[i] / 255);
-      }
-      detailContext.putImageData(detailPixels, 0, 0);
-      // Keep a separate pristine AI cutout. Manual erasing must be reversible.
-      const baseline = document.createElement("canvas");
-      baseline.width = detailWidth; baseline.height = detailHeight;
-      baseline.getContext("2d")?.drawImage(editable, 0, 0);
-      workingCutout.current = editable;
-      setMaskRevision(v => v + 1);
-      setBrushMode(null);
-      setCutout(baseline);
-      // First show true transparency with a checkerboard. Pale cream is an
-      // intentional optional colour, never an automatic background replacement.
-      setBackground("transparent");
-      setPreviewOriginal(false);
-      setAiProgress("Cutout finished. Review any remaining edges before applying.");
-      setAiPercent(100);
-      setAiStage("processing");
-      // Visual-only transition. Never baked into photo pixels or exported files.
-      setShowAiReveal(true);
-      aiRevealTimeout.current = window.setTimeout(() => {
-        setShowAiReveal(false);
-        aiRevealTimeout.current = null;
-      }, 920);
-    } catch (reason) {
-      if (run !== aiRun.current) return;
-      setAiProgress("");
-      setAiPercent(null);
-      setAiStage("preparing");
-      setError(reason instanceof Error ? reason.message : "Could not remove this background.");
-    } finally {
-      if (run === aiRun.current) setAiBusy(false);
-    }
   }
 
   function paintAt(event: PointerEvent<HTMLDivElement>) {
@@ -729,16 +665,17 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
                   {aiBusy ? <LoaderCircle size={17} className="spin"/> : <Sparkles size={17}/>}
                   {aiBusy ? "Removing background…" : hasCutout ? "Remove again" : "Remove background"}
                 </button>
-                {!aiBusy && (
-                  <button type="button" className="brutti-photo-studio-background-button"
-                    disabled={!source || saving || backgroundTask.status === "running"}
-                    onClick={runBackgroundRemoval}>
-                    <Layers3 size={16}/> Remove in background
-                  </button>
-                )}
-                {!aiBusy && <small className="brutti-photo-studio-background-note">
-                  Continues while this Catalog tab stays open. Track it from the top-left pop-up.
-                </small>}
+                <button type="button" className="brutti-photo-studio-background-button"
+                  disabled={!source || saving ||
+                    (backgroundTask.status === "running" &&
+                      (backgroundTask.productId !== productId || backgroundTask.image?.id !== image.id))}
+                  onClick={runBackgroundRemoval}>
+                  <Layers3 size={16}/>
+                  {aiBusy ? "Continue in background" : "Remove in background"}
+                </button>
+                <small className="brutti-photo-studio-background-note">
+                  Runs while this Catalog tab stays open. Follow progress at the top left.
+                </small>
                 {aiBusy && <button type="button" className="brutti-photo-studio-cancel-ai"
                   onClick={cancelAI}>Cancel processing</button>}
                 {(aiBusy || (hasCutout && aiPercent === 100)) && (
