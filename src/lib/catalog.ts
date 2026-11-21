@@ -244,6 +244,7 @@ export function validateProduct(product: Product): void {
     !row || typeof row.id !== "string" || !row.id ||
     typeof row.name !== "string" || !row.name.trim() || row.name.length > 80 ||
     typeof row.value !== "string" || row.value.length > 400 ||
+    (row.description !== undefined && (typeof row.description !== "string" || row.description.length > 400)) ||
     (row.kind !== undefined && row.kind !== "section" && row.kind !== "measurement") ||
     (row.kind !== "section" && !row.value.trim()) ||
     (row.kind === "section" && Boolean(row.value.trim())) ||
@@ -388,8 +389,9 @@ export async function saveProduct(product: Product, modelChange?: ProductModelCh
     sku: product.sku.trim().toUpperCase(),
     description: product.description.trim(),
     materials: product.materials.trim(),
-    specifications: (product.specifications ?? []).map(({ id, name, value, kind }) => ({
+    specifications: (product.specifications ?? []).map(({ id, name, value, description, kind }) => ({
       id, name: name.trim(), value: value.trim(),
+      ...(description?.trim() ? { description: description.trim() } : {}),
       ...(kind === "section" || kind === "measurement" ? { kind } : {}),
     })),
     updatedAt: new Date().toISOString(),
