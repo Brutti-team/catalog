@@ -67,8 +67,9 @@ async function model(quality: CutoutQuality): Promise<ModelState> {
       progress_callback: (progress: { status?: string; loaded?: number; total?: number }) => {
         if (progress.status === "progress" && progress.total && progress.loaded !== undefined) {
           const downloadPercent = Math.min(100, Math.round(100 * progress.loaded / progress.total));
-          notify("Downloading " + (quality === "detail" ? "detailed" : "fast") +
-            " AI model… " + downloadPercent + "%", 10 + downloadPercent * .43);
+          // A per-file percentage is not total progress; display only the
+          // single overall stage estimate in the Photo Studio progress card.
+          notify("Downloading and caching AI model files…", 10 + downloadPercent * .43);
         } else if (progress.status === "initiate") {
           notify("Preparing local model files…", 10);
         } else if (progress.status === "done") {
