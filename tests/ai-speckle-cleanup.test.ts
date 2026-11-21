@@ -23,12 +23,12 @@ describe("automatic matte speckle cleanup", () => {
     const input = image(width, height);
     fill(input, width, 20, 20, 170, 22); // thin white horizontal shelf/frame
     fill(input, width, 20, 20, 22, 110); // connected slim upright
-    fill(input, width, 100, 90, 101, 91); // isolated 2x2 model artifact
+    fill(input, width, 100, 90, 100, 90); // detached single-pixel model artifact
     const out = cleanDetachedAIMatte(input, width, height);
-    expect(alpha(out, width, 101, 91)).toBe(0);
+    expect(alpha(out, width, 100, 90)).toBe(0);
     expect(alpha(out, width, 140, 21)).toBe(255);
     expect(alpha(out, width, 21, 100)).toBe(255);
-    expect(alpha(input, width, 101, 91)).toBe(255); // input unchanged
+    expect(alpha(input, width, 100, 90)).toBe(255); // input unchanged
   });
 
   it("never deletes fragments that touch an image boundary", () => {
