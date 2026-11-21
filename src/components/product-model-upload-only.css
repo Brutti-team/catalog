@@ -1,0 +1,127 @@
+/* Brutti Catalog — upload-only 3D model editor.
+   Keeps preview and model-save pipeline, hides no real data. */
+.admin-app .product-editor-v2 .product-model-section--upload-only {
+  min-width: 0;
+}
+.admin-app .product-editor-v2 .product-model-section--upload-only .product-model-upload--direct {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 20px 21px;
+  border: 1px dashed #b8d2bf;
+  border-radius: 13px;
+  background: #f4f9f5;
+  color: #385b42;
+  box-shadow: none;
+}
+.admin-app .product-model-section--upload-only .product-model-upload-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: #e4f0e7;
+  color: #35724b;
+}
+.admin-app .product-model-section--upload-only .product-model-upload-copy {
+  display: flex;
+  flex: 1 1 230px;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.admin-app .product-model-section--upload-only .product-model-upload-copy strong {
+  color: #2b5139;
+  font: 720 13px/1.5 "DM Sans", sans-serif;
+  letter-spacing: -.01em;
+}
+.admin-app .product-model-section--upload-only .product-model-upload-copy > span {
+  color: #718578;
+  font: 480 11px/1.55 "DM Sans", sans-serif;
+}
+.admin-app .product-model-section--upload-only .product-model-upload-button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 41px;
+  padding: 9px 15px;
+  border: 1px solid #285e3f;
+  border-radius: 10px;
+  background: #285e3f;
+  color: #fff;
+  box-shadow: 0 3px 9px rgba(28,75,43,.10);
+  font: 710 11.5px/1.4 "DM Sans", sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.admin-app .product-model-section--upload-only .product-model-upload-button:hover:not(:disabled) {
+  background: #1f4d34;
+}
+.admin-app .product-model-section--upload-only .product-model-upload-button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+.admin-app .product-model-section--upload-only .product-model-upload-button:focus-visible {
+  outline: 3px solid #8abc98;
+  outline-offset: 3px;
+}
+.admin-app .product-model-section--upload-only .product-model-formats {
+  margin: 10px 2px 0;
+  color: #647c6a;
+}
+.admin-app .product-model-section--upload-only .product-model-option-note {
+  margin: 12px 2px 15px;
+  max-width: none;
+  color: #788b7c;
+  font: 500 11px/1.55 "DM Sans",sans-serif;
+}
+.admin-app .product-model-section--upload-only .product-model-file {
+  margin-top: 13px;
+  border: 1px solid #dbe8de;
+  background: #fff;
+  border-radius: 10px;
+  padding: 11px 12px;
+}
+.admin-app[data-theme="dark"] .product-editor-v2 .product-model-section--upload-only .product-model-upload--direct {
+  background: #294535;
+  border-color: #5b8065;
+  color: #e7f1e8;
+}
+.admin-app[data-theme="dark"] .product-model-section--upload-only .product-model-upload-icon {
+  background: #365a40;
+  color: #c3e4cb;
+}
+.admin-app[data-theme="dark"] .product-model-section--upload-only .product-model-upload-copy strong {
+  color: #e1f0e4;
+}
+.admin-app[data-theme="dark"] .product-model-section--upload-only .product-model-upload-copy > span,
+.admin-app[data-theme="dark"] .product-model-section--upload-only .product-model-option-note {
+  color: #adc4b4;
+}
+.admin-app[data-theme="dark"] .product-model-section--upload-only .product-model-file {
+  background: #2b4735;
+  border-color: #567560;
+}
+@media(max-width:700px) {
+  .admin-app .product-editor-v2 .product-model-section--upload-only .product-model-upload--direct {
+    gap: 10px;
+    padding: 16px;
+  }
+  .admin-app .product-model-section--upload-only .product-model-upload-icon {
+    width: 42px;
+    height: 42px;
+  }
+  .admin-app .product-model-section--upload-only .product-model-upload-copy {
+    flex-basis: calc(100% - 58px);
+  }
+  .admin-app .product-model-section--upload-only .product-model-upload-button {
+    width: 100%;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .admin-app .product-model-section--upload-only .product-model-upload-button {transition:none;}
+}
