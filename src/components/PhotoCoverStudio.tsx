@@ -94,7 +94,7 @@ export default function PhotoCoverStudio({
     setAiBusy(true);
     setPreviewOriginal(false);
     try {
-      const result = await aiFurnitureCutout(source, message => setAiMessage(message));
+      const result = await aiFurnitureCutout(source, message => setAiMessage(message), "fast");
       setMask(result);
       setCutoutMode("ai");
       patch({ cutout: true });
