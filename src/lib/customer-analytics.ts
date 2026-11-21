@@ -44,6 +44,13 @@ export async function loadCustomerInsights(days: InsightPeriod): Promise<Custome
   };
 }
 
+export type CustomerSessionProductAction = {
+  kind: "product_view" | "product_click";
+  at: string;
+  productId: string | null;
+  productName: string | null;
+  productSku: string | null;
+};
 export type CustomerSessionSummary = {
   number: number;
   firstSeen: string;
@@ -51,6 +58,7 @@ export type CustomerSessionSummary = {
   catalogOpens: number;
   productViews: number;
   productClicks: number;
+  productActions: CustomerSessionProductAction[];
 };
 export type CustomerSessionDetails = {
   totalSessions: number;
@@ -79,6 +87,19 @@ export async function loadCustomerSessionDetails(days: InsightPeriod): Promise<C
       catalogOpens: count(item.catalogOpens),
       productViews: count(item.productViews),
       productClicks: count(item.productClicks),
+      productActions: Array.isArray(item.productActions) ? item.productActions.flatMap((event: unknown) => {
+        if (!event || typeof event !== "object" || Array.isArray(event)) return [];
+        const action = event as Record<string, unknown>;
+        if (action.kind !== "product_view" && action.kind !== "product_click") return [];
+        if (typeof action.at !== "string" || !Number.isFinite(Date.parse(action.at))) return [];
+        return [{
+          kind: action.kind,
+          at: action.at,
+          productId: typeof action.productId === "string" ? action.productId : null,
+          productName: typeof action.productName === "string" ? action.productName : null,
+          productSku: typeof action.productSku === "string" ? action.productSku : null,
+        }];
+      }) : [],
     }];
   }) : [];
   return { totalSessions: count(raw.totalSessions), sessions };
