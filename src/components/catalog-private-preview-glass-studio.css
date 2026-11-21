@@ -1,0 +1,529 @@
+/* Brutti Catalog — 21 Nov 2026: private preview glass studio.
+   Presentation-only layer. The real product details, image contain behaviour,
+   3D state, close action and WhatsApp enquiry remain unchanged. */
+.admin-app dialog.modal.catalog-private-preview-dialog[open] {
+  box-sizing: border-box;
+  width: min(1420px, calc(100vw - 44px)) !important;
+  max-width: calc(100vw - 44px) !important;
+  height: min(89dvh, 860px) !important;
+  max-height: calc(100dvh - 32px) !important;
+  padding: 0 !important;
+  border: 1px solid rgba(255,255,255,.8) !important;
+  border-radius: 23px !important;
+  background: linear-gradient(145deg,rgba(255,255,255,.93),rgba(242,248,243,.91)) !important;
+  box-shadow: 0 32px 90px rgba(18,42,28,.27), 0 6px 26px rgba(18,45,27,.09), inset 0 1px 0 rgba(255,255,255,.98) !important;
+  overflow: hidden !important;
+  scrollbar-width: none;
+  -webkit-backdrop-filter: blur(28px) saturate(125%);
+  backdrop-filter: blur(28px) saturate(125%);
+}
+.admin-app dialog.modal.catalog-private-preview-dialog::backdrop {
+  background: rgba(12,31,21,.56) !important;
+  -webkit-backdrop-filter: blur(9px) saturate(90%);
+  backdrop-filter: blur(9px) saturate(90%);
+}
+/* Compact toolbar with a clear close target. */
+.admin-app .catalog-private-preview-dialog > .modal-heading {
+  position: relative;
+  z-index: 6;
+  flex: 0 0 66px;
+  min-height: 66px !important;
+  padding: 12px clamp(17px,2vw,28px) !important;
+  background: linear-gradient(115deg,rgba(255,255,255,.92),rgba(239,248,242,.73)) !important;
+  border-bottom: 1px solid rgba(168,196,175,.34) !important;
+  box-shadow: 0 4px 18px rgba(26,72,40,.035) !important;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+.admin-app .catalog-private-preview-dialog > .modal-heading h2 {
+  color: #264936 !important;
+  font-family: "Inter","DM Sans",system-ui,sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: -.025em !important;
+}
+.admin-app .catalog-private-preview-dialog > .modal-heading > .icon-button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 40px;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  border: 1px solid rgba(164,197,173,.43) !important;
+  border-radius: 13px !important;
+  background: rgba(255,255,255,.68) !important;
+  color: #436b50 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.93), 0 3px 12px rgba(20,58,36,.045) !important;
+  transition: border-color .2s ease, background-color .2s ease, transform .2s ease;
+}
+.admin-app .catalog-private-preview-dialog > .modal-heading > .icon-button:hover {
+  border-color: #99baa3 !important;
+  background: rgba(220,240,226,.9) !important;
+  transform: rotate(90deg);
+}
+/* The privacy reminder is a single slim glass notice, not a second full-width toolbar. */
+.admin-app .catalog-private-preview-dialog > .catalog-private-preview-note {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+  width: auto;
+  max-width: none;
+  min-height: 34px !important;
+  margin: 13px 22px 2px !important;
+  padding: 8px 12px !important;
+  border: 1px solid rgba(174,205,180,.48) !important;
+  border-radius: 11px !important;
+  background: rgba(230,243,234,.61) !important;
+  color: #668372 !important;
+  font-family: "Inter","DM Sans",sans-serif !important;
+  font-size: 10.5px !important;
+  font-weight: 520 !important;
+  line-height: 1.45 !important;
+  text-align: left !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.admin-app .catalog-private-preview-dialog > .catalog-private-preview-note::before {
+  content: "";
+  display: block;
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  margin-right: 9px;
+  border-radius: 50%;
+  background: #63a578;
+  box-shadow: 0 0 0 3px rgba(111,174,129,.12);
+}
+/* Full-height two-column workspace with a small perimeter gap. */
+.admin-app .catalog-private-preview-dialog > .pub-private-preview,
+.admin-app .catalog-private-preview-dialog .pub-private-preview > main,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-section {
+  min-height: 0;
+  width: 100%;
+  background: transparent !important;
+  overflow: hidden;
+}
+.admin-app .catalog-private-preview-dialog > .pub-private-preview {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto !important;
+  padding: 13px 20px 20px !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-section {
+  height: 100%;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-product-detail {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0,48%) minmax(0,52%);
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  gap: 15px !important;
+  background: transparent !important;
+  overflow: hidden;
+}
+/* Restrained museum-like photographic stage. Do not crop images or modify image transforms. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  padding: 15px !important;
+  overflow: hidden;
+  border: 1px solid rgba(192,215,198,.50) !important;
+  border-radius: 18px !important;
+  background: radial-gradient(ellipse 80% 70% at 48% 42%,rgba(249,253,250,.84),transparent 100%),linear-gradient(135deg,rgba(223,234,226,.73),rgba(241,246,242,.84)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.75),0 8px 22px rgba(31,63,43,.055);
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image {
+  position: relative;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100% !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(181,201,187,.38) !important;
+  border-radius: 14px !important;
+  background: rgba(230,237,231,.7) !important;
+  box-shadow: 0 11px 29px rgba(29,51,35,.07), inset 0 1px 0 rgba(255,255,255,.7) !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image > img {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: transparent !important;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs {
+  top: 26px !important;
+  right: 26px !important;
+  display: flex;
+  gap: 3px;
+  padding: 4px !important;
+  border: 1px solid rgba(245,255,248,.7) !important;
+  border-radius: 12px !important;
+  background: rgba(250,254,251,.78) !important;
+  box-shadow: 0 5px 18px rgba(23,55,34,.13) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs button {
+  min-height: 36px;
+  border-radius: 9px !important;
+  font-family: "Inter","DM Sans",sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 660 !important;
+  transition: background-color .17s ease, color .17s ease;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs button.is-active {
+  background: #27573c !important;
+  box-shadow: 0 3px 10px rgba(22,65,36,.22) !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-photo-caption {
+  bottom: 26px !important;
+  left: 26px !important;
+  padding: 8px 10px !important;
+  border: 1px solid rgba(255,255,255,.8) !important;
+  border-radius: 10px !important;
+  background: rgba(253,255,253,.83) !important;
+  box-shadow: 0 6px 17px rgba(17,38,25,.11) !important;
+  color: #4a6e55 !important;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-gallery-thumbnails {
+  flex: 0 0 auto;
+  max-height: 72px;
+  padding-top: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+/* The content panel is glass too, with clear hierarchy and no surplus blank space. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  padding: clamp(23px,2.6vw,36px) clamp(23px,2.6vw,38px) 24px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  border: 1px solid rgba(218,233,220,.81);
+  border-radius: 18px;
+  background: linear-gradient(145deg,rgba(255,255,255,.80),rgba(248,252,249,.70)) !important;
+  box-shadow: 0 10px 30px rgba(30,64,41,.047),inset 0 1px 0 rgba(255,255,255,.9);
+  color: #284332 !important;
+  text-align: left !important;
+  -webkit-backdrop-filter: blur(21px) saturate(125%);
+  backdrop-filter: blur(21px) saturate(125%);
+  scrollbar-width: none;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy::-webkit-scrollbar { display: none; }
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {
+  flex: 0 0 auto;
+  width: 100%;
+  margin: 0 0 12px !important;
+  color: #6c9478 !important;
+  font-family: "Inter","DM Sans",sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: .12em !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 24ch !important;
+  margin: 0 0 17px !important;
+  color: #253f30 !important;
+  font-family: "Inter","DM Sans",sans-serif !important;
+  font-size: clamp(27px,2.5vw,37px) !important;
+  font-weight: 680 !important;
+  line-height: 1.22 !important;
+  letter-spacing: -.044em !important;
+  text-wrap: balance;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 63ch !important;
+  margin: 0 0 21px !important;
+  color: #6c7f71 !important;
+  font-family: "Inter","DM Sans",sans-serif !important;
+  font-size: clamp(12px,.94vw,13.3px) !important;
+  line-height: 1.67 !important;
+  letter-spacing: -.006em !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+  box-sizing: border-box;
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  justify-content: center;
+  width: 100%;
+  margin: 0 0 20px !important;
+  padding: 16px 18px !important;
+  min-height: 85px !important;
+  border: 1px solid rgba(193,218,200,.62) !important;
+  border-radius: 14px !important;
+  background: linear-gradient(120deg,rgba(231,244,233,.66),rgba(248,252,249,.74)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.83) !important;
+  color: #235b3c !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price::before {
+  color: #7c9483 !important;
+  font-size: 9px !important;
+  letter-spacing: .12em !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-current,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price > .catalog-price-current {
+  color: #23593d !important;
+  font-family: "Inter","DM Sans",sans-serif !important;
+  font-size: clamp(23px,1.85vw,28px) !important;
+  font-weight: 700 !important;
+  letter-spacing: -.036em !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications {
+  flex: 0 0 auto;
+  margin: 0 0 18px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl {
+  border: 1px solid rgba(185,209,192,.47) !important;
+  border-radius: 12px !important;
+  background: rgba(248,252,248,.63) !important;
+  overflow: hidden;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-spec-section dl > div {
+  border-color: rgba(181,209,186,.42) !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry {
+  align-self: flex-start !important;
+  flex: 0 0 auto;
+  min-height: 46px !important;
+  margin: 0 0 9px !important;
+  padding: 12px 20px !important;
+  border: 1px solid #285b40 !important;
+  border-radius: 12px !important;
+  background: linear-gradient(125deg,#2b6647,#21533a) !important;
+  color: #fff !important;
+  box-shadow: 0 7px 17px rgba(31,92,52,.15),inset 0 1px 0 rgba(255,255,255,.16) !important;
+  font-family: "Inter","DM Sans",sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 660 !important;
+  transition: transform .19s ease,box-shadow .19s ease,background-color .19s ease;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: linear-gradient(125deg,#337754,#235c40) !important;
+  box-shadow: 0 10px 22px rgba(31,92,52,.23),inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-note {
+  align-self: flex-start !important;
+  max-width: 60ch !important;
+  margin: 0 !important;
+  color: #8a9a8e !important;
+  font-size: 10px !important;
+  line-height: 1.55 !important;
+  text-align: left !important;
+}
+
+/* Use graphite neutral dark glass rather than a large solid green panel. */
+.admin-app[data-theme="dark"] dialog.modal.catalog-private-preview-dialog[open] {
+  background: linear-gradient(145deg,rgba(32,39,37,.96),rgba(22,29,27,.94)) !important;
+  border-color: rgba(132,164,141,.32) !important;
+  box-shadow: 0 32px 90px rgba(0,0,0,.48), inset 0 1px 0 rgba(255,255,255,.045) !important;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog > .modal-heading {
+  background: linear-gradient(120deg,rgba(43,54,48,.97),rgba(30,41,35,.93)) !important;
+  border-bottom-color: rgba(121,153,131,.23) !important;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog > .modal-heading h2 { color: #ecf5ee !important; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog > .modal-heading > .icon-button {
+  color: #c7e7d1 !important;
+  background: rgba(74,99,79,.32) !important;
+  border-color: rgba(132,176,144,.28) !important;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog > .catalog-private-preview-note {
+  color: #b5cbb9 !important;
+  border-color: rgba(138,175,148,.27) !important;
+  background: rgba(65,91,71,.34) !important;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery {
+  background: radial-gradient(ellipse 80% 70% at 45% 40%,rgba(79,94,82,.24),transparent 95%),linear-gradient(125deg,rgba(43,54,47,.95),rgba(33,45,39,.92)) !important;
+  border-color: rgba(138,164,146,.3) !important;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image {
+  background: #303b34 !important;
+  border-color: rgba(126,155,134,.28) !important;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+  color: #e6f2e8 !important;
+  background: linear-gradient(145deg,rgba(46,58,51,.88),rgba(37,48,42,.83)) !important;
+  border-color: rgba(141,172,149,.26) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.045),0 9px 23px rgba(0,0,0,.1);
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow { color: #9dc7aa !important; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 { color: #f0f9f1 !important; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description { color: #c2d4c5 !important; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+  background: rgba(73,106,80,.26) !important;
+  border-color: rgba(140,187,151,.26) !important;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-current,
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-price > .catalog-price-current { color: #def3e4 !important; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-price::before { color: #acbfb0 !important; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl { background: rgba(38,58,44,.64) !important; border-color: rgba(143,186,152,.24) !important; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-note { color: #a9c0af !important; }
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs {
+  background: rgba(41,52,45,.79) !important;
+  border-color: rgba(162,199,170,.22) !important;
+}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .catalog-preview-photo-caption {
+  background: rgba(42,57,47,.85) !important;
+  border-color: rgba(145,178,151,.22) !important;
+  color: #d8f0dd !important;
+}
+
+/* Tablet and phone: vertical flow with scrolling instead of clipped detail panels. */
+@media (max-width: 899px) {
+  .admin-app dialog.modal.catalog-private-preview-dialog[open] {
+    display: block;
+    width: calc(100vw - 18px) !important;
+    max-width: calc(100vw - 18px) !important;
+    height: auto !important;
+    max-height: calc(100dvh - 16px) !important;
+    border-radius: 18px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+  .admin-app .catalog-private-preview-dialog > .modal-heading {
+    position: sticky;
+    top: 0;
+    min-height: 60px !important;
+    padding: 10px 15px !important;
+  }
+  .admin-app .catalog-private-preview-dialog > .catalog-private-preview-note {
+    margin: 10px 12px 1px !important;
+    font-size: 10px !important;
+  }
+  .admin-app .catalog-private-preview-dialog > .pub-private-preview,
+  .admin-app .catalog-private-preview-dialog .pub-private-preview > main,
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-section {
+    width: 100%;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  .admin-app .catalog-private-preview-dialog > .pub-private-preview { padding: 12px !important; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-product-detail {
+    grid-template-columns: minmax(0,1fr);
+    height: auto !important;
+    min-height: 0;
+    gap: 12px !important;
+    overflow: visible !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery {
+    height: auto !important;
+    min-height: 0;
+    padding: 11px !important;
+    border-radius: 15px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image {
+    flex: 0 0 auto;
+    width: 100%;
+    height: clamp(230px,42dvh,385px) !important;
+    min-height: 230px !important;
+    max-height: 385px !important;
+    border-radius: 12px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    height: auto !important;
+    max-height: none !important;
+    padding: 22px 19px 25px !important;
+    overflow: visible !important;
+    border-radius: 15px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    max-width: 100% !important;
+    font-size: clamp(25px,5.1vw,34px) !important;
+    margin-bottom: 12px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+    font-size: 12.5px !important;
+    margin-bottom: 16px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+    min-height: 75px !important;
+    padding: 13px 15px !important;
+    margin-bottom: 16px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs {
+    top: 20px !important;
+    right: 20px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-photo-caption {
+    bottom: 20px !important;
+    left: 20px !important;
+  }
+}
+@media (max-width: 480px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+    padding: 19px 15px 21px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+    font-size: 25px !important;
+  }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry {
+    width: 100%;
+    justify-content: center;
+  }
+}
+@media (min-width: 900px) and (max-height: 700px) {
+  .admin-app dialog.modal.catalog-private-preview-dialog[open] {
+    height: calc(100dvh - 18px) !important;
+    max-height: calc(100dvh - 18px) !important;
+  }
+  .admin-app .catalog-private-preview-dialog > .modal-heading {
+    min-height: 54px !important;
+    flex-basis: 54px;
+    padding: 8px 20px !important;
+  }
+  .admin-app .catalog-private-preview-dialog > .catalog-private-preview-note {
+    margin-top: 7px !important;
+    min-height: 27px !important;
+    padding: 5px 10px !important;
+  }
+  .admin-app .catalog-private-preview-dialog > .pub-private-preview { padding: 9px 13px 12px !important; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy { padding: 16px 24px 18px !important; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 { font-size: clamp(24px,2.1vw,31px) !important; margin-bottom: 10px !important; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description { margin-bottom: 12px !important; }
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price { min-height: 70px !important; margin-bottom: 13px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .catalog-private-preview-dialog > .modal-heading > .icon-button,
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry {
+    transition: none;
+    transform: none !important;
+  }
+}
