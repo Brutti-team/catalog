@@ -95,15 +95,8 @@ export default function ProductModelEditor({ productName, status, model, poster,
   }
 
   return (
-    <section className="form-section product-editor-section product-model-section product-model-section--upload-only"
-      id="product-editor-model" aria-labelledby="product-model-heading">
-      <div className="product-editor-section-heading">
-        <span className="product-editor-step"><Box size={15} aria-hidden="true" /></span>
-        <div>
-          <h3 id="product-model-heading">Upload 3D model</h3>
-          <p>Add an existing 3D file for this product, then preview and save it.</p>
-        </div>
-      </div>
+    <div className="product-model-section product-model-section--upload-only"
+      id="product-editor-model" aria-label="Upload 3D model">
       {modelEnabled ? (
         <>
           <div className="product-model-upload product-model-upload--direct" onDragOver={event => {
@@ -114,8 +107,8 @@ export default function ProductModelEditor({ productName, status, model, poster,
               onChange={event => void selectFiles(event.currentTarget.files)} />
             <span className="product-model-upload-icon"><Upload size={23} aria-hidden="true" /></span>
             <div className="product-model-upload-copy">
-              <strong>Drop a 3D file here, or browse your files</strong>
-              <span>GLB, glTF, OBJ, FBX, STL and other supported 3D formats · Maximum 50 MB</span>
+              <strong>Upload 3D model</strong>
+              <span>Drag & drop a model, or choose a file · GLB, OBJ, FBX, STL, ZIP and more · Max 50 MB</span>
             </div>
             <button type="button" className="button secondary product-model-upload-button"
               onClick={() => input.current?.click()} disabled={disabled || preparing}>
@@ -123,18 +116,9 @@ export default function ProductModelEditor({ productName, status, model, poster,
               {preparing ? 'Preparing model…' : label ? 'Replace 3D file' : 'Choose 3D file'}
             </button>
           </div>
-          <details className="product-model-formats">
-            <summary>Supported file formats</summary>
-            <p>GLB, glTF, OBJ, FBX, STL, PLY, 3MF, 3DS, DAE, USD, USDZ, DRC, VRML and XYZ.</p>
-            <p>STEP, IGES, BREP and Rhino 3DM with a render mesh. For textured multi-file models, upload the model with its textures or a ZIP.</p>
-          </details>
-          <p className="product-model-option-note">
-            {status === 'published'
-              ? 'After Save Product, the uploaded model can be viewed on the public product page.'
-              : 'Save Product first. The 3D model will be visible to customers when the product is published.'}
-          </p>
+
         </>
-      ) : <p className="product-model-option-note">3D model uploads are not enabled for this catalog.</p>}
+      ) : <p className="product-model-option-note">3D model upload is not available for this catalog.</p>}
       {label && (
         <div className="product-model-file">
           <Box size={17} aria-hidden="true" />
@@ -155,6 +139,6 @@ export default function ProductModelEditor({ productName, status, model, poster,
       {previewFailed && <p className="product-model-editor-error" role="status">
         This model could not be previewed. Choose another file or remove this selection before saving.
       </p>}
-    </section>
+    </div>
   );
 }
