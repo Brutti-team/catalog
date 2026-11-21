@@ -5,7 +5,7 @@ export interface ProductSpecification {
   name: string;
   value: string;
   /** Section markers group following rows under their title. Legacy rows omit this. */
-  kind?: "section";
+  kind?: "section" | "measurement";
 }
 
 export interface ProductImage {
