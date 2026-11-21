@@ -47,6 +47,7 @@ export default function ProductEditor({
   isNewProduct,
   orderingEnabled = false,
   modelEditingEnabled = false,
+  photoOpenRequest,
   onNavigate,
   onSave,
   onClose,
@@ -57,6 +58,7 @@ export default function ProductEditor({
   isNewProduct: boolean;
   orderingEnabled?: boolean;
   modelEditingEnabled?: boolean;
+  photoOpenRequest?: { productId: string; imageId: string; requestId: number } | null;
   showCategories?: boolean;
   showUsers?: boolean;
   productCount?: number;
@@ -89,6 +91,11 @@ export default function ProductEditor({
   const [previewPhotoId, setPreviewPhotoId] = useState<string | null>(null);
   const [showAlbumPicker, setShowAlbumPicker] = useState(false);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
+  useEffect(() => {
+    if (!photoOpenRequest || photoOpenRequest.productId !== product.id) return;
+    // Keeps existing unsaved product edits: open the PHOTO overlay only.
+    setEditingPhotoId(photoOpenRequest.imageId);
+  }, [photoOpenRequest, product.id]);
   const [editingCoverId, setEditingCoverId] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const [modelPending, setModelPending] = useState(false);
@@ -1051,6 +1058,7 @@ export default function ProductEditor({
         <PhotoCropEditor
           key={editingPhotoId}
           image={draft.images.find(image => image.id === editingPhotoId)!}
+          productId={product.id}
           onClose={() => setEditingPhotoId(null)}
           onApply={async file => {
             if (busy || uploadLock.current) throw new Error("Another upload is in progress.");
