@@ -617,13 +617,13 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                 {(aiBusy || (hasCutout && aiPercent === 100)) && (
                   <div className="brutti-photo-studio-progress" aria-label="AI progress estimate">
                     <div className="brutti-photo-studio-progress-head">
-                      <strong>{aiBusy ? "Processing AI cutout" : "Cutout completed"}</strong>
+                      <strong>{aiBusy ? "Processing AI cutout" : "AI processing finished"}</strong>
                       <output>{aiPercent}%</output>
                     </div>
                     <progress max={100} value={aiPercent} aria-label="AI processing estimated percent"/>
                     <small>{aiBusy
                       ? "Estimated by processing stage; inference speed depends on your device."
-                      : "You can now refine edges, erase leftovers or choose a background colour."}</small>
+                      : "100% means the AI pass is finished, not that every edge is correct. Use Restore product if panels disappeared."}</small>
                   </div>
                 )}
                 {aiProgress && <p role="status" className="brutti-photo-studio-ai-status">{aiProgress}</p>}
