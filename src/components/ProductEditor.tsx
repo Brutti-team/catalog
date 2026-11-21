@@ -699,7 +699,7 @@ export default function ProductEditor({
                   </button>
                   {show3DTools && (
                     <div className="catalog-photo-model-content">
-                      <p>Photo-to-3D generation is paused. Manage existing approved 3D files here; original photos remain unchanged.</p>
+                      <p>Upload an existing 3D model file, preview it and save your product. Product photos remain unchanged.</p>
                       <ProductModelEditor
                         productName={draft.name || "this product"}
                         productId={product.id}
@@ -1013,7 +1013,7 @@ export default function ProductEditor({
                 </button>
                 {show3DTools && (
                   <div id="product-editor-deferred-content">
-                    <p className="product-editor-deferred-note">3D generation is paused while we refine the catalog. Existing model files can still be reviewed or managed here.</p>
+                    <p className="product-editor-deferred-note">Upload an existing 3D model file, then preview it before saving the product.</p>
                     <ProductModelEditor productName={draft.name || "this product"} productId={product.id} saved={isEditing} status={draft.status} model={product.model}
                       photos={draft.images} savedPhotoIds={product.images.map(image => image.id)} modelEnabled={modelEditingEnabled} poster={cover?.url} disabled={busy}
                       onChange={setModelChange} onPending={setModelLoading} />
