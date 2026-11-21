@@ -125,3 +125,40 @@
 @media(prefers-reduced-motion:reduce) {
   .admin-app .product-model-section--upload-only .product-model-upload-button {transition:none;}
 }
+
+/* No separate 3D heading/card: one quiet upload control directly in Photos. */
+.admin-app .product-editor-v2 .product-model-section--upload-only {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin: 19px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-app .product-editor-v2 .product-model-section--upload-only .product-model-upload--direct {
+  margin: 0;
+  padding: 16px 19px;
+  border: 1px dashed #bfd6c4;
+  border-radius: 12px;
+  background: #f8fbf8;
+  box-shadow: none;
+}
+.admin-app .product-editor-v2 .product-model-section--upload-only .product-model-upload-icon {
+  width: 44px;
+  height: 44px;
+}
+.admin-app .product-editor-v2 .product-model-section--upload-only .product-model-upload-copy strong {
+  font-size: 12.5px;
+}
+@media(max-width:700px) {
+  .admin-app .product-editor-v2 .product-model-section--upload-only {
+    margin-top: 14px;
+  }
+  .admin-app .product-editor-v2 .product-model-section--upload-only .product-model-upload--direct {
+    padding: 14px 13px;
+  }
+}
