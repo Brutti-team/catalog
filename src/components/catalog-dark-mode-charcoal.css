@@ -995,3 +995,184 @@ body:has(.admin-app.catalog-os-layout[data-theme="dark"]) {
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-overview-audit .catalog-last-activity::before {
   background: none !important;
 }
+
+
+
+/* BRUTTI OS-INSPIRED COLOUR RESTORATION — 21 NOV 2026 */
+/* Brutti OS uses a matte-black canvas with emerald, mint, cyan and amber
+   indicators. Restore meaningful colour INSIDE components without turning
+   the entire panel green or changing its geometry. Paint properties only. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] {
+  --brutti-os-emerald: #59d594;
+  --brutti-os-mint: #9be9bd;
+  --brutti-os-cyan: #82cbe5;
+  --brutti-os-amber: #edc37c;
+  --brutti-os-violet: #b4a6ef;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-editorial-hero.catalog-command .catalog-command-eyebrow {
+  color: #9be9bd !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-editorial-hero.catalog-command .catalog-hero-primary {
+  background: #75dba5 !important;
+  color: #11281d !important;
+  border-color: #75dba5 !important;
+  box-shadow: 0 3px 14px rgba(68,197,126,.12) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-editorial-hero.catalog-command .catalog-hero-primary:hover:not(:disabled) {
+  background: #9aebbc !important;
+  color: #10231a !important;
+  border-color: #9aebbc !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-editorial-hero.catalog-command :is(.catalog-hero-secondary,.catalog-hero-tertiary) {
+  color: #d3eee0 !important;
+  border-color: #4a5b53 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-editorial-hero.catalog-command .catalog-command-art > img {
+  opacity: 1 !important;
+  filter: brightness(1.08) saturate(1.12) !important;
+  mix-blend-mode: normal !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-editorial-hero.catalog-command .catalog-command-art::after {
+  background: linear-gradient(90deg,#191b1f 0%,rgba(25,27,31,.32) 27%,transparent 61%),
+              linear-gradient(0deg,rgba(8,10,12,.12),transparent 48%) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-kpi-featured .brutti-glass-kpi-photo {
+  opacity: .91 !important;
+  filter: brightness(1.11) saturate(1.13) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-kpi-featured .brutti-glass-icon {
+  color: var(--brutti-os-mint) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-kpi-featured .brutti-glass-kpi-caption svg {
+  color: var(--brutti-os-mint) !important;
+}
+/* Distinct OS-style indicators; their cards stay neutral charcoal. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi:nth-child(1) {
+  --metric-color: var(--brutti-os-cyan);
+  --metric-tint: rgba(69,163,200,.14);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi:nth-child(2) {
+  --metric-color: var(--brutti-os-amber);
+  --metric-tint: rgba(214,166,90,.13);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi:nth-child(3) {
+  --metric-color: var(--brutti-os-mint);
+  --metric-tint: rgba(68,190,116,.15);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi:nth-child(4) {
+  --metric-color: var(--brutti-os-violet);
+  --metric-tint: rgba(161,140,218,.12);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi.overview-stat .brutti-glass-icon {
+  color: var(--metric-color, #9be9bd) !important;
+  background: var(--metric-tint, transparent) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi.overview-stat > strong {
+  color: #f2f5f4 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi.overview-stat:hover:not(:disabled) .brutti-glass-icon,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-metric-tray > .brutti-glass-kpi.overview-stat:focus-visible .brutti-glass-icon {
+  color: #f2fff5 !important;
+  background: rgba(79,181,129,.2) !important;
+}
+/* Overview analytics: four coloured, restrained icon highlights. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-heading > svg {
+  color: #71dba0 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:nth-child(1) {
+  --insight-colour: var(--brutti-os-mint);
+  --insight-tint: rgba(57,175,107,.17);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:nth-child(2) {
+  --insight-colour: var(--brutti-os-cyan);
+  --insight-tint: rgba(79,155,195,.16);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:nth-child(3) {
+  --insight-colour: var(--brutti-os-amber);
+  --insight-tint: rgba(212,163,90,.15);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:nth-child(4) {
+  --insight-colour: var(--brutti-os-violet);
+  --insight-tint: rgba(156,136,214,.16);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi .customer-insights-kpi-icon {
+  color: var(--insight-colour, #9be9bd) !important;
+  background: var(--insight-tint, rgba(79,181,129,.12)) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi .customer-insights-kpi-icon svg {
+  color: inherit !important;
+  stroke: currentColor !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi > div > strong {
+  color: #f4f5f5 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi > div > span {
+  color: #b4c3c7 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart-dot {
+  background: #66dda0 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient stop:first-child {
+  stop-color: #32bf81 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient stop:last-child {
+  stop-color: #a5f0c8 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-gridline line {
+  stroke: #49545a !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-zero {
+  fill: #677a76 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-x-label,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-gridline text {
+  fill: #bac5c8 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact :is(.customer-insights-chart-heading strong,.customer-insights-bar-number) {
+  color: #def8e9 !important;
+  fill: #def8e9 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-footer-icon {
+  color: #8ee4ad !important;
+  background: rgba(61,154,98,.14) !important;
+}
+/* Category progress bars remain lively even against dark graphite cards. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-category-row .atelier-category-track {
+  background: #35413e !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-category-row .atelier-category-track > span {
+  background: linear-gradient(90deg,#35aa73,#8de9b0) !important;
+  box-shadow: 0 0 9px rgba(73,206,134,.14) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-category-row > svg,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-category-manage,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-all-categories,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panel-title > svg {
+  color: #9bdfb9 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-category-count {
+  color: #f0f3f2 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-category-row:hover {
+  background: #242c29 !important;
+  border-bottom-color: #3e5d4a !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-category-image img {
+  filter: brightness(1.08) saturate(1.11) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-category-image {
+  border-color: #46564a !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels :is(.customer-insights-panel,.brutti-category-panel) {
+  border-color: #3a4540 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025),0 12px 30px rgba(0,0,0,.13) !important;
+}
+/* Accessible focus indication that doesn't resize or shift cards. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview :is(.overview-stat,.atelier-category-row,.brutti-category-manage,.brutti-all-categories):focus-visible {
+  outline-color: #80dfaa !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview * {
+    animation-duration: .01ms !important;
+  }
+}
