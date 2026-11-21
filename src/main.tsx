@@ -92,6 +92,7 @@ import "./components/product-editor-masthead-color.css";
 import "./components/customer-insights-kpi-drilldowns.css";
 import "./components/catalog-private-preview-glass-studio.css";
 import "./components/product-editor-corners-refined.css";
+import "./components/product-editor-details-premium.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
