@@ -510,17 +510,17 @@ html:has(.admin-app.catalog-os-layout) {
 body:has(.admin-app.catalog-os-layout[data-theme="dark"]) {
   background-color: #0b0d10;
 }
-.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] {
-  /* Identical to the existing light-mode sidebar width (workshop edition). */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] {
+  /* Same geometry in both modes. Changing theme never changes main margin. */
   --catalog-nav-width: 280px;
 }
 @media (min-width: 801px) {
-  .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme="dark"][data-active-tab] {
+  .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] {
     --catalog-nav-width: 74px;
   }
 }
 @media (max-width: 800px) {
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] {
     --catalog-nav-width: 280px;
   }
 }
