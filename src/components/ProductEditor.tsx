@@ -15,7 +15,6 @@ import {
   Circle,
   Upload,
   Download,
-  ChevronDown,
   Crop,
 } from "lucide-react";
 import type { Product, Category, ProductImage } from "../lib/types";
@@ -86,7 +85,6 @@ export default function ProductEditor({
   const [showAlbumPicker, setShowAlbumPicker] = useState(false);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingCoverId, setEditingCoverId] = useState<string | null>(null);
-  const [show3DTools, setShow3DTools] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [modelPending, setModelPending] = useState(false);
   const [modelInvalid, setModelInvalid] = useState(false);
@@ -686,37 +684,20 @@ export default function ProductEditor({
                 Use Adjust image to crop, drag and zoom how customers see each photo. The original upload stays intact.
               </p>
               {isEditing && (
-                <section className="catalog-photo-model-inline" aria-label="3D model management">
-                  <button
-                    type="button"
-                    className="catalog-photo-model-toggle"
-                    aria-expanded={show3DTools}
-                    onClick={() => setShow3DTools(open => !open)}
-                  >
-                    <Box size={18} aria-hidden="true" />
-                    <span><strong>3D model</strong><small>{product.model ? "Model on file" : "Not yet available · optional"}</small></span>
-                    <ChevronDown size={17} aria-hidden="true" />
-                  </button>
-                  {show3DTools && (
-                    <div className="catalog-photo-model-content">
-                      <p>Upload an existing 3D model file, preview it and save your product. Product photos remain unchanged.</p>
-                      <ProductModelEditor
-                        productName={draft.name || "this product"}
-                        productId={product.id}
-                        saved={isEditing}
-                        status={draft.status}
-                        model={product.model}
-                        photos={draft.images}
-                        savedPhotoIds={product.images.map(image => image.id)}
-                        modelEnabled={modelEditingEnabled}
-                        poster={cover?.url}
-                        disabled={busy}
-                        onChange={setModelChange}
-                        onPending={setModelLoading}
-                      />
-                    </div>
-                  )}
-                </section>
+                <ProductModelEditor
+                  productName={draft.name || "this product"}
+                  productId={product.id}
+                  saved={isEditing}
+                  status={draft.status}
+                  model={product.model}
+                  photos={draft.images}
+                  savedPhotoIds={product.images.map(image => image.id)}
+                  modelEnabled={modelEditingEnabled}
+                  poster={cover?.url}
+                  disabled={busy}
+                  onChange={setModelChange}
+                  onPending={setModelLoading}
+                />
               )}
             </section>
             {isEditing ? (
@@ -1000,26 +981,20 @@ export default function ProductEditor({
           </div>
           {!isEditing && (
             <aside className="editor-side product-editor-aside">
-              <section className="product-editor-deferred" id="product-editor-model" aria-label="3D model manager">
-                <button
-                  type="button"
-                  className="product-editor-deferred-toggle"
-                  aria-expanded={show3DTools}
-                  aria-controls="product-editor-deferred-content"
-                  onClick={() => setShow3DTools(value => !value)}
-                >
-                  <span><strong>3D model</strong><small>{product.model ? "Model available" : "No 3D model"}</small></span>
-                  <ChevronDown size={17} aria-hidden="true" />
-                </button>
-                {show3DTools && (
-                  <div id="product-editor-deferred-content">
-                    <p className="product-editor-deferred-note">Upload an existing 3D model file, then preview it before saving the product.</p>
-                    <ProductModelEditor productName={draft.name || "this product"} productId={product.id} saved={isEditing} status={draft.status} model={product.model}
-                      photos={draft.images} savedPhotoIds={product.images.map(image => image.id)} modelEnabled={modelEditingEnabled} poster={cover?.url} disabled={busy}
-                      onChange={setModelChange} onPending={setModelLoading} />
-                  </div>
-                )}
-              </section>
+              <ProductModelEditor
+                productName={draft.name || "this product"}
+                productId={product.id}
+                saved={isEditing}
+                status={draft.status}
+                model={product.model}
+                photos={draft.images}
+                savedPhotoIds={product.images.map(image => image.id)}
+                modelEnabled={modelEditingEnabled}
+                poster={cover?.url}
+                disabled={busy}
+                onChange={setModelChange}
+                onPending={setModelLoading}
+              />
               {publishingControls}
               <button type="button" className="button secondary full" aria-expanded={preview} onClick={() => setPreview(open => !open)}>
                 <Eye size={16} /> {preview ? "Hide preview" : "Preview product"}
