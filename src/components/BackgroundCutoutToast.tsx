@@ -118,8 +118,10 @@ export default function BackgroundCutoutToast({ onEditResult }: Props) {
                 {job.status === "done" ? <Eye size={15}/> : <X size={14}/>}
               </button>
             )}
-          </div>
-        ,
+            {toastError && (
+              <span className="brutti-background-sidebar-error" role="alert">{toastError}</span>
+            )}
+          </div>,
         host,
       )}
       {previewOpen && job.status === "done" && job.result && (
