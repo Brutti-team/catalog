@@ -105,15 +105,16 @@ export default function ProductModelEditor({ productName, model, poster, modelEn
             <input type="file" ref={input} multiple accept={acceptedFiles}
               aria-label="Upload 3D model files" hidden disabled={disabled || preparing}
               onChange={event => void selectFiles(event.currentTarget.files)} />
-            <span className="product-model-upload-icon"><Upload size={23} aria-hidden="true" /></span>
+            <span className="product-model-upload-icon"><Box size={21} strokeWidth={1.8} aria-hidden="true" /></span>
             <div className="product-model-upload-copy">
-              <strong>Upload 3D model</strong>
-              <span>Drag & drop a model, or choose a file · GLB, OBJ, FBX, STL, ZIP and more · Max 50 MB</span>
+              <strong>{label ? 'Replace 3D model' : 'Upload 3D model'}</strong>
+              <span>Drag and drop a model or choose a file from your device.</span>
+              <small className="product-model-upload-formats">GLB · OBJ · FBX · STL · ZIP & more <span aria-hidden="true">·</span> Max 50 MB</small>
             </div>
             <button type="button" className="button secondary product-model-upload-button"
               onClick={() => input.current?.click()} disabled={disabled || preparing}>
               <Upload size={16} aria-hidden="true" />
-              {preparing ? 'Preparing model…' : label ? 'Replace 3D file' : 'Choose 3D file'}
+              {preparing ? 'Preparing…' : label ? 'Replace file' : 'Choose 3D file'}
             </button>
           </div>
 
