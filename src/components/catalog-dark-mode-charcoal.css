@@ -773,6 +773,10 @@ body:has(.admin-app.catalog-os-layout[data-theme="dark"]) {
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-editorial-hero.catalog-command .catalog-command-art {
   background: #1b1e22 !important;
 }
+/* Use actual furniture colours; prior hero applied a sepia filter. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-editorial-hero.catalog-command .catalog-command-art > img {
+  filter: none !important;
+}
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-editorial-hero.catalog-command .catalog-command-art::after {
   background: linear-gradient(90deg, #191b1f 0%, rgba(25,27,31,.52) 20%, rgba(12,13,16,.09) 60%),
               linear-gradient(0deg,rgba(10,12,15,.20),transparent 50%) !important;
