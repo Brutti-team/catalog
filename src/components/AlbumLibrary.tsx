@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import {
   Images, Upload, Download, Search, Check, Trash2, LoaderCircle, Eye,
   Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Crop, Grid2X2, Table2, AlertTriangle, LockKeyhole, Save, X,
@@ -10,6 +9,7 @@ import {
   removeUnassignedAlbumPhoto, saveAlbumPhotoDetails, albumDetailSpec, uploadAlbumPhotos,
   type AlbumPhoto, type AlbumRecord, type AlbumPhotoDetailsUpdate,
 } from "../lib/album";
+import EditorCategoryPicker from "./EditorCategoryPicker";
 import Modal from "./Modal";
 import SafeImage from "./SafeImage";
 import { AlbumCategoryTable, AlbumPhotoTable } from "./AlbumTableView";
@@ -29,144 +29,6 @@ type Props = {
   maxSelect?: number;
   excludedUrls?: string[];
 };
-
-type AlbumCategorySelectProps = {
-  categories: Category[];
-  value: string;
-  disabled?: boolean;
-  onChange: (value: string) => void;
-};
-
-/** The menu is placed inside the native dialog's top layer (rather than inside
- * its scrollable content). That prevents the category list being clipped. */
-function AlbumCategorySelect({ categories, value, disabled, onChange }: AlbumCategorySelectProps) {
-  const [open, setOpen] = useState(false);
-  const [portalRoot, setPortalRoot] = useState<HTMLDialogElement | null>(null);
-  const [position, setPosition] = useState<{
-    left: number; width: number; maxHeight: number;
-    top?: number; bottom?: number;
-  } | null>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const choices = [
-    { id: "none", name: "Automatic / Uncategorised" },
-    ...categories.map(item => ({ id: item.id, name: item.name })),
-  ];
-  const selected = choices.find(item => item.id === value) || choices[0];
-  function closeMenu(restoreFocus = false) {
-    setOpen(false);
-    if (restoreFocus) triggerRef.current?.focus({ preventScroll: true });
-  }
-  function openMenu() {
-    if (disabled || !triggerRef.current) return;
-    const trigger = triggerRef.current;
-    const dialog = trigger.closest("dialog") as HTMLDialogElement | null;
-    if (!dialog) return;
-    const anchor = trigger.getBoundingClientRect();
-    const bounds = dialog.getBoundingClientRect();
-    const header = dialog.querySelector(".modal-heading")?.getBoundingClientRect();
-    const aboveSpace = Math.max(0, anchor.top - (header?.bottom ?? bounds.top) - 14);
-    const belowSpace = Math.max(0, bounds.bottom - anchor.bottom - 16);
-    const above = belowSpace < 285 && aboveSpace > belowSpace;
-    const available = above ? aboveSpace : belowSpace;
-    const maxHeight = Math.max(75, Math.min(365, available - 5));
-    setPosition({
-      left: Math.max(13, Math.min(anchor.left - bounds.left, bounds.width - anchor.width - 13)),
-      width: Math.min(anchor.width, bounds.width - 26),
-      maxHeight,
-      ...(above
-        ? { bottom: bounds.bottom - anchor.top + 7 }
-        : { top: anchor.bottom - bounds.top + 7 }),
-    });
-    setPortalRoot(dialog);
-    setOpen(true);
-  }
-  useEffect(() => {
-    if (!open) return;
-    const onOutside = (event: PointerEvent) => {
-      const target = event.target as Node;
-      if (triggerRef.current?.contains(target) || menuRef.current?.contains(target)) return;
-      closeMenu();
-    };
-    const onEscape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      event.preventDefault();
-      event.stopPropagation();
-      closeMenu(true);
-    };
-    const onScroll = (event: Event) => {
-      if (menuRef.current?.contains(event.target as Node)) return;
-      closeMenu();
-    };
-    const onResize = () => closeMenu();
-    document.addEventListener("pointerdown", onOutside, true);
-    window.addEventListener("keydown", onEscape, true);
-    window.addEventListener("scroll", onScroll, true);
-    window.addEventListener("resize", onResize);
-    return () => {
-      document.removeEventListener("pointerdown", onOutside, true);
-      window.removeEventListener("keydown", onEscape, true);
-      window.removeEventListener("scroll", onScroll, true);
-      window.removeEventListener("resize", onResize);
-    };
-  }, [open]);
-  useEffect(() => {
-    if (!open) return;
-    menuRef.current?.querySelector<HTMLButtonElement>('[aria-selected="true"]')
-      ?.focus({ preventScroll: true });
-  }, [open, portalRoot]);
-  return (
-    <div className="brutti-album__detail-category-picker">
-      <button ref={triggerRef} type="button"
-        className={`brutti-album__detail-category-trigger${open ? " is-open" : ""}`}
-        disabled={disabled} aria-label="Assign photo to Album category"
-        aria-haspopup="listbox" aria-expanded={open}
-        onClick={() => open ? closeMenu() : openMenu()}
-        onKeyDown={event => {
-          if (["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key) && !open) {
-            event.preventDefault(); openMenu();
-          }
-        }}>
-        <Folder size={17} aria-hidden="true"/>
-        <span>{selected.name}</span>
-        <ChevronDown size={16} aria-hidden="true"/>
-      </button>
-      {open && portalRoot && position && createPortal(
-        <div ref={menuRef} className="brutti-album__detail-category-popover"
-          role="listbox" aria-label="Album category options"
-          style={{
-            left: position.left, width: position.width, maxHeight: position.maxHeight,
-            top: position.top, bottom: position.bottom,
-          }}
-          onKeyDown={event => {
-            if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
-            event.preventDefault();
-            const options = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="option"]'));
-            if (!options.length) return;
-            const index = options.indexOf(document.activeElement as HTMLButtonElement);
-            const next = event.key === "Home" ? 0 :
-              event.key === "End" ? options.length - 1 :
-              event.key === "ArrowDown" ? (index + 1) % options.length :
-              (index + options.length - 1) % options.length;
-            options[next].focus({ preventScroll: true });
-            options[next].scrollIntoView({ block: "nearest" });
-          }}>
-          <p className="brutti-album__detail-category-menu-title">ORGANISE PHOTO</p>
-          <div className="brutti-album__detail-category-options">
-            {choices.map(item => (
-              <button type="button" role="option" aria-selected={item.id === value}
-                className={item.id === value ? "is-selected" : ""}
-                key={item.id}
-                onClick={() => { onChange(item.id); closeMenu(true); }}>
-                <span>{item.name}</span>
-                {item.id === value && <Check size={16} aria-hidden="true"/>}
-              </button>
-            ))}
-          </div>
-        </div>, portalRoot)}
-    </div>
-  );
-}
 
 export default function AlbumLibrary({
   products, categories, onSelect, onEditProduct, onCreateProductFromPhoto, onAttachPhotoToProduct, onAddCategory, onClose,
@@ -798,9 +660,10 @@ export default function AlbumLibrary({
                 </div>
                 <div className="catalog-editor-category-field brutti-album__editor-field">
                   <span className="catalog-editor-category-label">Category</span>
-                  <AlbumCategorySelect
+                  <EditorCategoryPicker
                     categories={categories}
                     value={detailsDraft.categoryId || "none"}
+                    allowUncategorised
                     disabled={savingDetails || !preview.id}
                     onChange={value => setDetailsDraft(current => ({...current,categoryId:value === "none" ? null : value}))}
                   />
