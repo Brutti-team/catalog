@@ -10,8 +10,9 @@ import { cleanDetachedAIMatte } from "../lib/ai-speckle-cleanup";
 type CutoutQuality = "detail" | "fast";
 type Job = { width: number; height: number; rgba: ArrayBuffer; quality?: CutoutQuality; protectPanels?: boolean };
 type Warm = { type: "warm"; quality: CutoutQuality };
+type ProgressPhase = "preparing" | "download" | "processing";
 type Result =
-  | { type: "progress"; message: string; percent: number }
+  | { type: "progress"; message: string; phase: ProgressPhase; percent?: number }
   | { type: "done"; rgba: ArrayBuffer; width: number; height: number }
   | { type: "error"; message: string };
 type Mask = {
@@ -31,12 +32,13 @@ const scope = self as unknown as {
   postMessage: (message: Result, transfer?: Transferable[]) => void;
   onmessage: ((event: MessageEvent<Job | Warm>) => void) | null;
 };
-let latestProgress = 0;
-const notify = (message: string, percent: number) => {
-  // Stage-based estimate, not a timer. Never claim completion until the
-  // alpha image is actually returned; submodel downloads may report 0-100.
-  latestProgress = Math.min(95, Math.max(latestProgress, Math.round(percent)));
-  scope.postMessage({ type: "progress", message, percent: latestProgress });
+// Only download progress is measurable (loaded bytes / total bytes for that
+// particular file). ONNX/WASM inference has no fractional progress API:
+// report an indeterminate operation rather than inventing 63%, 68%, 89%, etc.
+const notify = (message: string, phase: ProgressPhase, percent?: number) => {
+  const safePercent = phase === "download" && typeof percent === "number"
+    && Number.isFinite(percent) ? Math.max(0, Math.min(100, Math.round(percent))) : undefined;
+  scope.postMessage({ type: "progress", message, phase, percent: safePercent });
 };
 type ModelState = { segmenter: Segmenter; RawImage: TransformPackage["RawImage"] };
 const modelPromises = new Map<CutoutQuality, Promise<ModelState>>();
@@ -54,28 +56,29 @@ async function model(quality: CutoutQuality): Promise<ModelState> {
   const modelName = quality === "detail" ? "onnx-community/BEN2-ONNX" : "onnx-community/ormbg-ONNX";
   const dtype = quality === "detail" ? "fp16" : "uint8";
   const loading = (async () => {
-    notify(quality === "detail" ? "Preparing detailed furniture model…" : "Preparing fast AI model…", 5);
+    notify(quality === "detail" ? "Preparing detailed furniture model…" : "Preparing fast AI model…", "preparing");
     const moduleUrl: string = "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
     const mod = await import(/* @vite-ignore */ moduleUrl) as TransformPackage;
     mod.env.allowLocalModels = false;
     mod.env.useBrowserCache = true;
-    notify("Loading AI model (first use downloads model files)…", 10);
+    notify("Loading local model files (first use only)…", "preparing");
     const segmenter = await mod.pipeline("background-removal", modelName, {
       device: "wasm",
       dtype,
       progress_callback: (progress: { status?: string; loaded?: number; total?: number }) => {
         if (progress.status === "progress" && progress.total && progress.loaded !== undefined) {
           const downloadPercent = Math.min(100, Math.round(100 * progress.loaded / progress.total));
-          // A per-file percentage is not total progress; display only the
-          // single overall stage estimate in the Photo Studio progress card.
-          notify("Downloading and caching AI model files…", 10 + downloadPercent * .43);
+          // This is the real byte progress of the CURRENT file, not the
+          // percentage of the whole background-removal job.
+          notify("Downloading AI model file…", "download", downloadPercent);
         } else if (progress.status === "initiate") {
-          notify("Preparing local model files…", 10);
+          notify("Preparing another AI model file…", "preparing");
         } else if (progress.status === "done") {
-          notify("AI model ready. Detecting furniture…", 56);
+          notify("Model file downloaded. Preparing AI…", "preparing");
         }
       },
     });
+    notify("Detailed AI model is ready.", "preparing");
     return { segmenter, RawImage: mod.RawImage };
   })();
   modelPromises.set(quality, loading);
@@ -97,13 +100,11 @@ async function process(job: Job) {
     rgba.byteLength !== width * height * 4) {
     throw new Error("Invalid photo data. Close and reopen Cover Studio.");
   }
-  latestProgress = 0;
-  notify("Preparing image for local AI…", 4);
+  notify("Preparing image for local AI…", "preparing");
   const { segmenter, RawImage } = await model(quality);
-  notify("AI model loaded. Segmenting furniture…", 63);
   notify(quality === "detail"
-    ? "Tracing fine furniture details and cabinet panels on this device…"
-    : "Identifying the furniture silhouette on this device…", 68);
+    ? "Identifying furniture and tracing fine cabinet details…"
+    : "Identifying the furniture silhouette on this device…", "processing");
   // RawImage is passed in memory; the original pixels stay on the device.
   const picture = new RawImage(new Uint8ClampedArray(rgba.slice(0)), width, height, 4);
   const result = await segmenter([picture]);
@@ -113,21 +114,21 @@ async function process(job: Job) {
   if (mask.width !== width || mask.height !== height) {
     throw new Error("AI mask size does not match original photograph.");
   }
-  notify("Refining transparent edges…", 89);
+  notify("Refining transparent edges…", "processing");
   // Keep original RGB and use the predicted alpha instead of RGB brightness.
   const original = new Uint8ClampedArray(rgba);
   let output = applyAIAlpha(original, mask, width, height);
   if (protectPanels) {
-    notify("Checking for enclosed cabinet faces that AI removed…", 91);
+    notify("Checking enclosed cabinet panels…", "processing");
     const recovered = recoverEnclosedPanels(original, output, width, height);
     output = recovered.rgba;
     notify(recovered.panelsRestored
-      ? "Recovered " + recovered.panelsRestored + " solid cabinet panel region(s). Review before saving."
-      : "No enclosed panels found automatically. Use Restore product for any missing white faces.", 94);
+      ? "Recovered " + recovered.panelsRestored + " cabinet panel region(s)."
+      : "Preserving cabinet details and finishing the cutout…", "processing");
   }
   // Only trim isolated, tiny leftover matte speckles. Do not erode connected
   // cabinet frames or white surfaces merely to get a sharper edge.
-  notify("Removing tiny detached background leftovers…", 94);
+  notify("Removing tiny background leftovers…", "processing");
   output = cleanDetachedAIMatte(output, width, height);
   const outputBuffer = output.buffer as ArrayBuffer;
   scope.postMessage({ type: "done", rgba: outputBuffer, width, height }, [outputBuffer]);
