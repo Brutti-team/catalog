@@ -58,7 +58,7 @@ function SpecificationRowFields({
   label: string;
   namePlaceholder: string;
   valuePlaceholder: string;
-  onChange: (id: string, field: "name" | "value", value: string) => void;
+  onChange: (id: string, field: "name" | "value" | "description", value: string) => void;
   onRemove: (id: string) => void;
 }) {
   const measurement = row.kind === "measurement";
@@ -109,6 +109,15 @@ function SpecificationRowFields({
           onChange={(event) => onChange(row.id, "value", event.target.value)}
         />
       )}
+      <input
+        className="catalog-spec-row-description"
+        aria-label={label + " description"}
+        title="Description (optional)"
+        placeholder="e.g. Materials, finish or additional notes"
+        maxLength={400}
+        value={row.description ?? ""}
+        onChange={(event) => onChange(row.id, "description", event.target.value)}
+      />
       <button
         type="button"
         className="catalog-reference-remove-row"
@@ -302,7 +311,7 @@ export default function ProductEditor({
     const next = specifications.findIndex((item, index) => index > start && item.kind === "section");
     const end = next < 0 ? specifications.length : next;
     const members = specifications.slice(start, end);
-    if (members.some(item => item.value.trim() || (item.kind !== "section" && item.name.trim())) &&
+    if (members.some(item => item.value.trim() || item.description?.trim() || (item.kind !== "section" && item.name.trim())) &&
         !window.confirm("Remove this section and all its rows? This cannot be undone after saving.")) return;
     setDraft(current => ({
       ...current,
@@ -313,7 +322,7 @@ export default function ProductEditor({
   };
   const { primary: primarySpecificationRows, sections: specificationSections } =
     splitSpecifications(draft.specifications);
-  const changeSpecification = (id: string, field: "name" | "value", value: string) =>
+  const changeSpecification = (id: string, field: "name" | "value" | "description", value: string) =>
     setDraft((current) => ({
       ...current,
       specifications: (current.specifications ?? []).map((row) =>
