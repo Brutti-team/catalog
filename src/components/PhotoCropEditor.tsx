@@ -211,6 +211,22 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     if (tool === "background" && source && !aiBusy) preloadDetailedCutout();
   }, [tool, source, aiBusy]);
 
+  // BEN2 does not expose an end-to-end inference percentage. Give staff a
+  // smooth, clearly labelled ETA-style estimate instead of frozen/absent
+  // progress or fabricated jumps to 68%. Never show 100% before completion.
+  useEffect(() => {
+    if (!aiBusy) return;
+    const startedAt = Date.now();
+    const updateEstimate = () => {
+      const elapsedMs = Date.now() - startedAt;
+      const predicted = Math.min(95,
+        Math.floor(1 + 94 * (1 - Math.exp(-elapsedMs / 55000))));
+      setAiPercent(current => Math.min(95, Math.max(current ?? 1, predicted)));
+    };
+    const interval = window.setInterval(updateEstimate, 180);
+    return () => window.clearInterval(interval);
+  }, [aiBusy]);
+
   useEffect(() => {
     if (!source || !canvasRef.current) return;
     try {
@@ -250,7 +266,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     setAiBusy(true);
     setAiProgress("Preparing local AI model…");
     setAiStage("preparing");
-    setAiPercent(null);
+    setAiPercent(1);
     setError("");
     try {
       // Keep detailed AI but reduce pre-processing pixels, while preserving
@@ -268,12 +284,12 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
       try { context.getImageData(0, 0, 1, 1); }
       catch { throw new Error("This photo host blocks background removal. Re-upload the image to Brutti Album."); }
       const localSource: CoverSource = { canvas: sourceCanvas, width: w, height: h };
-      const result = await aiFurnitureCutout(localSource, (message, percent, phase) => {
+      const result = await aiFurnitureCutout(localSource, (message, _filePercent, phase) => {
         if (run !== aiRun.current) return;
         setAiProgress(message);
         setAiStage(phase ?? "processing");
-        // File byte progress is measurable, but ONNX inference is not.
-        setAiPercent(phase === "download" && typeof percent === "number" ? percent : null);
+        // A model file's byte count is not the cutout's total progress.
+        // Keep the global, monotonic estimate even when files change.
       }, "detail", protectPanels);
       if (run !== aiRun.current) return;
       const maskPixels = result.getContext("2d", { willReadFrequently: true })
@@ -533,6 +549,15 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                 <canvas ref={canvasRef} width={width} height={height}
                   style={{ aspectRatio: aspectRatios[ratio] }}
                   aria-label="Live crop and background preview" />
+                {aiBusy && (
+                  <div className="brutti-photo-studio-ai-preview" aria-hidden="true">
+                    <div className="brutti-photo-studio-ai-preview-indicator">
+                      <Sparkles size={13}/>
+                      <span>AI scanning</span>
+                      <strong>{aiPercent ?? 1}%</strong>
+                    </div>
+                  </div>
+                )}
                 {tool === "crop" && (
                   <div className="brutti-photo-crop-selection"
                     style={{
@@ -636,32 +661,24 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                     <div className="brutti-photo-studio-progress-head">
                       <strong>
                         {aiBusy
-                          ? aiStage === "download" ? "Downloading AI model"
+                          ? aiStage === "download" ? "Loading AI model"
                             : aiStage === "preparing" ? "Preparing AI" : "Removing background"
                           : "Background removal finished"}
                       </strong>
-                      <output>
-                        {aiBusy
-                          ? aiStage === "download" && aiPercent !== null
-                            ? `${aiPercent}% of file`
-                            : <LoaderCircle size={17} className="spin" aria-label="Working"/>
-                          : "100%"}
+                      <output aria-label={aiBusy ? "Estimated completion" : "Completed"}>
+                        {aiPercent ?? 1}%
                       </output>
                     </div>
-                    {aiBusy && (aiStage !== "download" || aiPercent === null) ? (
-                      <div className="brutti-photo-studio-indeterminate" role="progressbar"
-                        aria-label="AI is actively processing the photo">
-                        <span aria-hidden="true"/>
-                      </div>
-                    ) : (
-                      <progress max={100} value={aiBusy ? aiPercent ?? 0 : 100}
-                        aria-label={aiBusy ? "Current model file downloaded" : "Background removal complete"}/>
-                    )}
+                    <progress max={100} value={aiPercent ?? 1}
+                      aria-label={aiBusy ? "Estimated background removal progress" : "Background removal complete"}/>
                     <small role="status" aria-live="polite">
                       {aiBusy
-                        ? aiProgress || "Preparing background removal…"
+                        ? (aiProgress || "Preparing background removal…")
                         : "Cutout complete. Inspect furniture edges before saving."}
                     </small>
+                    {aiBusy && <span className="brutti-photo-studio-ai-estimate-note">
+                      Estimated progress · completes at 100% when the image is ready
+                    </span>}
                   </div>
                 )}
                 {hasCutout && (
