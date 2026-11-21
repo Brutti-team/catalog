@@ -2,13 +2,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Images, Upload, Download, Search, Check, Trash2, LoaderCircle, Eye,
-  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Crop, Grid2X2, Table2, AlertTriangle,
+  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Crop, Grid2X2, Table2, AlertTriangle, LockKeyhole, Save,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import {
   albumPhotoCategoryIds, combineAlbumPhotos, listAlbumRecords,
-  removeUnassignedAlbumPhoto, setAlbumPhotoCategory, uploadAlbumPhotos,
-  type AlbumPhoto, type AlbumRecord,
+  removeUnassignedAlbumPhoto, saveAlbumPhotoDetails, uploadAlbumPhotos,
+  type AlbumPhoto, type AlbumRecord, type AlbumPhotoDetailsUpdate,
 } from "../lib/album";
 import Modal from "./Modal";
 import SafeImage from "./SafeImage";
@@ -22,6 +22,8 @@ type Props = {
   categories: Category[];
   onSelect?: (photos: AlbumPhoto[]) => void;
   onEditProduct?: (id: string) => void;
+  onCreateProductFromPhoto?: (photo: AlbumPhoto, details: AlbumPhotoDetailsUpdate) => void;
+  onAttachPhotoToProduct?: (productId: string, photo: AlbumPhoto, details: AlbumPhotoDetailsUpdate) => void;
   onAddCategory?: () => void;
   onClose?: () => void;
   maxSelect?: number;
@@ -167,7 +169,7 @@ function AlbumCategorySelect({ categories, value, disabled, onChange }: AlbumCat
 }
 
 export default function AlbumLibrary({
-  products, categories, onSelect, onEditProduct, onAddCategory, onClose,
+  products, categories, onSelect, onEditProduct, onCreateProductFromPhoto, onAttachPhotoToProduct, onAddCategory, onClose,
   maxSelect = 8, excludedUrls = [],
 }: Props) {
   const picker = Boolean(onSelect);
@@ -183,7 +185,12 @@ export default function AlbumLibrary({
   const categoryTriggerRef = useRef<HTMLButtonElement>(null);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [uploadCategory, setUploadCategory] = useState("none");
-  const [categorising, setCategorising] = useState(false);
+  const [savingDetails, setSavingDetails] = useState(false);
+  const [detailsError, setDetailsError] = useState("");
+  const [detailsDraft, setDetailsDraft] = useState<AlbumPhotoDetailsUpdate>({
+    name: "", description: "", categoryId: null,
+  });
+  const [attachProductId, setAttachProductId] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [preview, setPreview] = useState<AlbumPhoto | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AlbumPhoto | null>(null);
@@ -316,7 +323,25 @@ export default function AlbumLibrary({
       onEditProduct(matchingProducts[0].id);
       return;
     }
+    setDetailsDraft({
+      name: photo.name,
+      description: photo.sourceDetails.description || "",
+      categoryId: photo.manualCategoryId,
+    });
+    setAttachProductId("");
+    setDetailsError("");
     setPreview(photo);
+  }
+  const detailsDirty = !!preview && (
+    detailsDraft.name !== preview.name ||
+    detailsDraft.description !== (preview.sourceDetails.description || "") ||
+    detailsDraft.categoryId !== preview.manualCategoryId
+  );
+  function closePhotoEditor() {
+    if (savingDetails) return;
+    if (detailsDirty && !window.confirm("Discard unsaved Album details?")) return;
+    setPreview(null);
+    setDetailsError("");
   }
   const busy = progress!==null;
   async function upload(files: FileList|null) {
@@ -357,26 +382,62 @@ export default function AlbumLibrary({
       return [...ids,photo.key];
     });
   }
-  async function assignCategory(photo: AlbumPhoto, next: string) {
-    if (!photo.id || categorising) {
-      setDownloadError("This photo needs an Album record first. Refresh and retry.");
+  // Saving Album details changes only media-library metadata, never Product.
+  // Product publishing always happens through the existing Product Editor.
+  async function persistPhotoDetails(photo: AlbumPhoto): Promise<AlbumPhoto | null> {
+    if (savingDetails) return null;
+    if (!photo.id) {
+      setDetailsError("This photo has no Album record yet. Refresh Album before saving its details.");
+      return null;
+    }
+    setSavingDetails(true);
+    setDetailsError("");
+    try {
+      const saved = await saveAlbumPhotoDetails(photo, detailsDraft);
+      const updated: AlbumPhoto = {
+        ...photo,
+        name: saved.name,
+        manualCategoryId: saved.categoryId,
+        sourceDetails: saved.sourceDetails,
+      };
+      setRecords(old => old.map(item => item.id === photo.id
+        ? { ...item, name: saved.name, category_id: saved.categoryId, source_details: saved.sourceDetails }
+        : item,
+      ));
+      setPreview(current => current?.id === photo.id ? updated : current);
+      setDetailsDraft({
+        name: saved.name,
+        description: saved.sourceDetails.description || "",
+        categoryId: saved.categoryId,
+      });
+      setNotice("Album details saved.");
+      return updated;
+    } catch (error) {
+      setDetailsError(error instanceof Error ? error.message : "Could not save Album details.");
+      return null;
+    } finally {
+      setSavingDetails(false);
+    }
+  }
+  async function startProductFromPhoto(photo: AlbumPhoto, targetProductId?: string) {
+    if (!detailsDraft.name.trim()) {
+      setDetailsError("Name is required before using this photo in a product.");
       return;
     }
-    setCategorising(true); setDownloadError("");
-    try {
-      const chosen = next === "none" ? null : next;
-      const saved = await setAlbumPhotoCategory(photo.id, chosen);
-      setRecords(old => old.map(item =>
-        item.id === photo.id ? { ...item, category_id: saved } : item
-      ));
-      setPreview(current =>
-        current && current.id === photo.id ? { ...current, manualCategoryId: saved } : current
-      );
-      setNotice("Photo category updated.");
-    } catch (error) {
-      setDownloadError(error instanceof Error ? error.message : "Could not save the category.");
-    } finally {
-      setCategorising(false);
+    // Save first so the Album and the product draft display identical metadata.
+    // Unindexed linked images still open the Product Editor without fake saves.
+    const savedPhoto = photo.id && detailsDirty ? await persistPhotoDetails(photo) : photo;
+    if (!savedPhoto) return;
+    const details: AlbumPhotoDetailsUpdate = {
+      name: detailsDraft.name.trim(),
+      categoryId: detailsDraft.categoryId,
+      description: detailsDraft.description,
+    };
+    setPreview(null);
+    if (targetProductId) {
+      onAttachPhotoToProduct?.(targetProductId, savedPhoto, details);
+    } else {
+      onCreateProductFromPhoto?.(savedPhoto, details);
     }
   }
   async function download(photo: AlbumPhoto) {
