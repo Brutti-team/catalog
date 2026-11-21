@@ -16,6 +16,8 @@ import {
   Upload,
   Download,
   Crop,
+  MoreHorizontal,
+  Image as ImageIcon,
 } from "lucide-react";
 import type { Product, Category, ProductImage } from "../lib/types";
 import { uploadImage, validateProduct, cleanupAbandonedImages, type ProductModelChange } from "../lib/catalog";
@@ -81,7 +83,9 @@ export default function ProductEditor({
     });
     return () => cancelAnimationFrame(frame);
   }, [showLivePreview]);
-  const [showPhotoOptions, setShowPhotoOptions] = useState(false);
+  const [mediaTab, setMediaTab] = useState<"photos" | "3d">("photos");
+  const [photoMenuId, setPhotoMenuId] = useState<string | null>(null);
+  const [previewPhotoId, setPreviewPhotoId] = useState<string | null>(null);
   const [showAlbumPicker, setShowAlbumPicker] = useState(false);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingCoverId, setEditingCoverId] = useState<string | null>(null);
@@ -533,186 +537,124 @@ export default function ProductEditor({
                 />
               </label>
             </section>
-            <section className={`form-section product-editor-section product-photos-count-${Math.min(draft.images.length, 3)}`} id="product-editor-photos">
-              <div className="product-editor-section-heading">
+            <section className="form-section product-editor-section brutti-product-media" id="product-editor-photos">
+              <div className="product-editor-section-heading brutti-media-section-heading">
                 <span className="product-editor-step">02</span>
                 <div>
-                  <h3>Photos <span className="product-editor-photo-count">{draft.images.length}/8</span></h3>
-                  <p>First photo is the cover · add up to 8 images.</p>
-                  {isEditing && <button type="button" className="catalog-reference-manage-photos" onClick={() => setShowPhotoOptions(value => !value)}>{showPhotoOptions ? "Hide photo options" : "Manage photos"}</button>}
+                  <h3>Media <small>(Photos &amp; 3D)</small></h3>
                 </div>
+                <p>Add up to 8 photos and an optional 3D model.</p>
               </div>
-              <div className="brutti-album-editor-toolbar">
-                <button type="button" onClick={() => setShowAlbumPicker(true)}
-                  disabled={busy || uploading || draft.images.length >= 8}>
-                  <ImagePlus size={17} aria-hidden="true" /> Choose from Album
-                </button>
-                <span>Reuse saved Brutti photos without uploading them again.</span>
-              </div>
-              <input
-                ref={fileRef}
-                type="file"
-                multiple
-                accept="image/jpeg,image/png,image/webp"
-                hidden
-                disabled={uploading || busy}
-                onChange={(e) => void addImages(e.target.files)}
-              />
-              <button
-                type="button"
-                className={`upload-zone ${dragging ? "is-dragging" : ""}`}
-                aria-label="Add product photos"
-                disabled={uploading || busy || draft.images.length >= 8}
-                onClick={() => fileRef.current?.click()}
-                onDragOver={(event) => { event.preventDefault(); if (!busy && !uploading) setDragging(true); }}
-                onDragLeave={(event) => { event.preventDefault(); setDragging(false); }}
-                onDrop={(event) => {
-                  event.preventDefault();
-                  setDragging(false);
-                  if (!busy && !uploading) void addImages(event.dataTransfer.files);
-                }}
-              >
-                {uploading ? <LoaderCircle className="spin" /> : <UploadIcon size={27} />}
-                <strong>
-                  {uploading
-                    ? "Uploading photos…"
-                    : draft.images.length >= 8
-                      ? "Maximum 8 photos added"
-                      : isEditing ? "Drop photos or click to upload" : "Add product photos"}
-                </strong>
-                <span>{isEditing ? "JPG, PNG or WebP" : "Choose files or drag photos here · JPG, PNG, WebP"}</span>
-              </button>
-              <div className={`image-editor-grid ${isEditing && showPhotoOptions ? "is-managing-photos" : ""}`}>
-                {draft.images.map((img, index) => (
-                  <div className="image-editor-item" key={img.id}>
-                    <div className="image-editor-photo">
-                      <SafeImage src={img.url} alt={img.alt || draft.name} style={photoCropStyle(img)} />
-                      {index === 0 && <span>Cover</span>}
-                      <button
-                        type="button"
-                        className="image-remove"
-                        aria-label={`Remove image ${index + 1}`}
-                        onClick={() =>
-                          update(
-                            "images",
-                            draft.images.filter((i) => i.id !== img.id),
-                          )
-                        }
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                    <button
-                      type="button"
-                      className="catalog-photo-crop-open"
-                      aria-label={`Adjust crop, position and zoom for photo ${index + 1}`}
-                      disabled={busy || uploading}
-                      onClick={() => setEditingPhotoId(img.id)}
-                    >
-                      <Crop size={14} aria-hidden="true" /> Adjust image
-                    </button>
-                    <button
-                      type="button"
-                      className="catalog-photo-crop-open brutti-cover-studio-open"
-                      aria-label={"Edit cover, cutout, background and size for photo " + (index + 1)}
-                      disabled={busy || uploading}
-                      onClick={() => {
-                        if (draft.images.length >= 8) {
-                          setError("To keep the original photo safe, first free one photo slot (maximum 8), then create an edited cover.");
-                          return;
-                        }
-                        setEditingCoverId(img.id);
-                      }}
-                    >
-                      <Crop size={14} aria-hidden="true" /> Cover Studio
-                    </button>
-                    <button
-                      type="button"
-                      className="catalog-photo-download"
-                      aria-label={`Download photo ${index + 1} as JPG`}
-                      title="Download actual JPG image, not an HTML file"
-                      disabled={busy || uploading}
-                      onClick={() => {
-                        void downloadCatalogPhoto({
-                          url: img.url,
-                          storagePath: img.storagePath,
-                          name: img.alt || draft.name,
-                        }, "jpg").catch(downloadError => {
-                          setError(downloadError instanceof Error
-                            ? downloadError.message : "Photo download failed.");
-                        });
-                      }}
-                    ><Download size={14} aria-hidden="true" /> Download JPG</button>
-                    <input
-                      aria-label={`Image ${index + 1} description`}
-                      placeholder="Image description"
-                      value={img.alt}
-                      onChange={(e) =>
-                        update(
-                          "images",
-                          draft.images.map((i) =>
-                            i.id === img.id ? { ...i, alt: e.target.value } : i,
-                          ),
-                        )
-                      }
-                    />
-                    <div className="image-order">
-                      <button
-                        type="button"
-                        disabled={index === 0}
-                        aria-label={`Move image ${index + 1} earlier`}
-                        onClick={() => move(index, -1)}
-                      >
-                        <ArrowLeft size={14} />
-                      </button>
-                      <span>
-                        {index + 1} of {draft.images.length}
-                      </span>
-                      <button
-                        type="button"
-                        disabled={index === draft.images.length - 1}
-                        aria-label={`Move image ${index + 1} later`}
-                        onClick={() => move(index, 1)}
-                      >
-                        <ArrowRight size={14} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="tiny muted">
-                Use Adjust image to crop, drag and zoom how customers see each photo. The original upload stays intact.
-              </p>
-            </section>
-            <section className="form-section product-editor-section product-model-independent"
-              id="product-editor-3d" aria-labelledby="product-editor-3d-heading">
-              <div className="product-editor-section-heading">
-                <span className="product-editor-step">03</span>
-                <div>
-                  <h3 id="product-editor-3d-heading">3D Model</h3>
-                  <p>Optional · Upload and preview a model file.</p>
+              <div className="brutti-media-toolbar">
+                <div className="brutti-media-tabs" role="tablist" aria-label="Product media type">
+                  <button type="button" role="tab" id="brutti-media-photos-tab" aria-controls="brutti-media-photos-panel"
+                    aria-selected={mediaTab==="photos"} className={mediaTab==="photos"?"is-active":""}
+                    onClick={()=>{setMediaTab("photos");setPhotoMenuId(null);}}>
+                    <ImageIcon size={15} aria-hidden="true"/> Photos <span>({draft.images.length})</span>
+                  </button>
+                  <button type="button" role="tab" id="brutti-media-3d-tab" aria-controls="brutti-media-3d-panel"
+                    aria-selected={mediaTab==="3d"} className={mediaTab==="3d"?"is-active":""}
+                    onClick={()=>{setMediaTab("3d");setPhotoMenuId(null);}}>
+                    <Box size={15} aria-hidden="true"/> 3D Model <span>({product.model || modelDirty ? 1 : 0})</span>
+                  </button>
                 </div>
+                {mediaTab==="photos" && <div className="brutti-media-actions">
+                  <button type="button" className="brutti-media-album-button"
+                    onClick={()=>setShowAlbumPicker(true)} disabled={busy || uploading || draft.images.length>=8}>
+                    <ImagePlus size={15} aria-hidden="true"/> Choose from Album
+                  </button>
+                  <button type="button" className="brutti-media-upload-button"
+                    onClick={()=>fileRef.current?.click()} disabled={busy || uploading || draft.images.length>=8}>
+                    {uploading?<LoaderCircle size={16} className="spin"/>:<Upload size={16} aria-hidden="true"/>}
+                    {uploading?"Uploading…":"Upload Photos"}
+                  </button>
+                </div>}
               </div>
-                <ProductModelEditor
-                  productName={draft.name || "this product"}
-                  productId={product.id}
-                  saved={isEditing}
-                  status={draft.status}
-                  model={product.model}
-                  photos={draft.images}
-                  savedPhotoIds={product.images.map(image => image.id)}
-                  modelEnabled={modelEditingEnabled}
-                  poster={cover?.url}
-                  disabled={busy}
-                  onChange={setModelChange}
-                  onPending={setModelLoading}
-                />
+              <input ref={fileRef} type="file" multiple accept="image/jpeg,image/png,image/webp"
+                hidden disabled={uploading||busy} onChange={event=>void addImages(event.target.files)} />
+
+              <div role="tabpanel" id="brutti-media-photos-panel" aria-labelledby="brutti-media-photos-tab"
+                className="brutti-media-gallery-panel" hidden={mediaTab!=="photos"}>
+                <div className="image-editor-grid brutti-media-gallery" aria-label="Product photos">
+                  {draft.images.map((img,index)=>(
+                    <div className="image-editor-item brutti-media-photo-item" key={img.id}>
+                      <button type="button" className="brutti-media-thumbnail"
+                        aria-label={`View photo ${index+1} of ${draft.images.length}`}
+                        onClick={()=>{setPreviewPhotoId(img.id);setPhotoMenuId(null);}}>
+                        <SafeImage src={img.url} alt={img.alt||draft.name} style={photoCropStyle(img)}/>
+                        {index===0 && <span className="brutti-media-cover-badge"><CheckCircle2 size={12} aria-hidden="true"/> Cover</span>}
+                      </button>
+                      <button type="button" className="brutti-media-quick-edit"
+                        aria-label={`Edit photo ${index+1}`}
+                        disabled={busy||uploading} title="Crop and rotate"
+                        onClick={()=>{setEditingPhotoId(img.id);setPhotoMenuId(null);}}>
+                        <Crop size={17} aria-hidden="true"/>
+                      </button>
+                      <button type="button" className="brutti-media-more"
+                        aria-expanded={photoMenuId===img.id}
+                        aria-label={`More actions for photo ${index+1}`}
+                        title="Photo options"
+                        onClick={()=>setPhotoMenuId(current=>current===img.id?null:img.id)}>
+                        <MoreHorizontal size={19} aria-hidden="true"/>
+                      </button>
+                      {photoMenuId===img.id && <div className="brutti-media-photo-menu">
+                        <button type="button" onClick={()=>{setPreviewPhotoId(img.id);setPhotoMenuId(null);}}><Eye size={15}/> View photo</button>
+                        <button type="button" disabled={busy||uploading}
+                          onClick={()=>{setEditingPhotoId(img.id);setPhotoMenuId(null);}}><Crop size={15}/> Crop &amp; rotate</button>
+                        <button type="button" disabled={busy||uploading||draft.images.length>=8}
+                          onClick={()=>{setEditingCoverId(img.id);setPhotoMenuId(null);}}><ImagePlus size={15}/> Cover Studio</button>
+                        {index!==0 && <button type="button" onClick={()=>{
+                          update("images",[img,...draft.images.filter(item=>item.id!==img.id)]);setPhotoMenuId(null);
+                        }}><CheckCircle2 size={15}/> Set as cover</button>}
+                        <button type="button" disabled={index===0} onClick={()=>{move(index,-1);setPhotoMenuId(null);}}><ArrowLeft size={15}/> Move earlier</button>
+                        <button type="button" disabled={index===draft.images.length-1} onClick={()=>{move(index,1);setPhotoMenuId(null);}}><ArrowRight size={15}/> Move later</button>
+                        <button type="button" disabled={busy||uploading} onClick={()=>{
+                          setPhotoMenuId(null);
+                          void downloadCatalogPhoto({url:img.url,storagePath:img.storagePath,name:img.alt||draft.name},"jpg")
+                            .catch(cause=>setError(cause instanceof Error?cause.message:"Photo download failed."));
+                        }}><Download size={15}/> Download JPG</button>
+                        <label className="brutti-media-photo-caption-label">
+                          Description
+                          <input aria-label={`Photo ${index+1} description`} value={img.alt}
+                            maxLength={160} onChange={event=>update("images",draft.images.map(item=>item.id===img.id?{...item,alt:event.target.value}:item))}/>
+                        </label>
+                        <button type="button" className="is-danger" disabled={busy||uploading} onClick={()=>{
+                          update("images",draft.images.filter(item=>item.id!==img.id));setPhotoMenuId(null);
+                        }}><X size={15}/> Remove photo</button>
+                      </div>}
+                    </div>
+                  ))}
+                  {draft.images.length<8 && <button type="button"
+                    className={`brutti-media-add-tile${dragging?" is-dragging":""}`}
+                    aria-label="Add a product photo" disabled={uploading||busy}
+                    onClick={()=>fileRef.current?.click()}
+                    onDragOver={event=>{event.preventDefault();if(!busy&&!uploading)setDragging(true);}}
+                    onDragLeave={event=>{event.preventDefault();setDragging(false);}}
+                    onDrop={event=>{
+                      event.preventDefault();setDragging(false);
+                      if(!busy&&!uploading)void addImages(event.dataTransfer.files);
+                    }}>
+                    <Plus size={24} aria-hidden="true"/>
+                    <span>Add Photo</span>
+                  </button>}
+                </div>
+                <p className="brutti-media-gallery-help">Select a photo to preview it; use the crop icon to edit. The original file stays in Album.</p>
+              </div>
+
+              <div role="tabpanel" id="brutti-media-3d-panel" aria-labelledby="brutti-media-3d-tab"
+                className="brutti-media-3d-panel" hidden={mediaTab!=="3d"}>
+                <ProductModelEditor productName={draft.name||"this product"} productId={product.id}
+                  saved={isEditing} status={draft.status} model={product.model}
+                  photos={draft.images} savedPhotoIds={product.images.map(image=>image.id)}
+                  modelEnabled={modelEditingEnabled} poster={cover?.url}
+                  disabled={busy} onChange={setModelChange} onPending={setModelLoading}/>
+              </div>
             </section>
             {isEditing ? (
 
             <section className="form-section product-editor-section catalog-reference-specifications" id="product-editor-specs">
               <div className="product-editor-section-heading">
-                <span className="product-editor-step">04</span>
+                <span className="product-editor-step">03</span>
                 <div>
                   <h3>Specifications</h3>
                   <p>Measurements, materials and finishing details.</p>
@@ -910,7 +852,7 @@ export default function ProductEditor({
             ) : (
             <section className="form-section product-editor-section" id="product-editor-specs">
               <div className="product-editor-section-heading">
-                <span className="product-editor-step">04</span>
+                <span className="product-editor-step">03</span>
                 <div>
                   <h3>Specifications</h3>
                   <p>Materials, measurements and pricing.</p>
@@ -1070,21 +1012,58 @@ export default function ProductEditor({
           }}
         />
       )}
+      {previewPhotoId && draft.images.some(image => image.id===previewPhotoId) && (
+        <Modal title="Photo preview" eyebrow="BRUTTI / MEDIA"
+          className="brutti-media-preview-dialog" onClose={()=>setPreviewPhotoId(null)}>
+          {(()=> {
+            const img = draft.images.find(item=>item.id===previewPhotoId)!;
+            return <div className="brutti-media-preview-body">
+              <div className="brutti-media-preview-image">
+                <SafeImage src={img.url} alt={img.alt||draft.name} style={photoCropStyle(img)}/>
+                <button type="button" className="brutti-media-preview-edit"
+                  aria-label="Crop and rotate photo" title="Crop and rotate"
+                  disabled={busy||uploading}
+                  onClick={()=>{setPreviewPhotoId(null);setEditingPhotoId(img.id);}}>
+                  <Crop size={23} aria-hidden="true"/>
+                </button>
+              </div>
+              <div className="brutti-media-preview-footer">
+                <span>{img.alt||draft.name}</span>
+                <button type="button" onClick={()=>{setPreviewPhotoId(null);setEditingPhotoId(img.id);}}
+                  disabled={busy||uploading}><Crop size={16}/> Edit photo</button>
+              </div>
+            </div>;
+          })()}
+        </Modal>
+      )}
       {editingPhotoId && draft.images.some(image => image.id === editingPhotoId) && (
         <PhotoCropEditor
           key={editingPhotoId}
           image={draft.images.find(image => image.id === editingPhotoId)!}
           onClose={() => setEditingPhotoId(null)}
-          onApply={crop => {
-            setDraft(current => ({
-              ...current,
-              images: current.images.map(image =>
-                image.id === editingPhotoId
-                  ? { ...image, crop }
-                  : image,
-              ),
-            }));
-            setEditingPhotoId(null);
+          onApply={async file => {
+            if (busy || uploadLock.current) throw new Error("Another upload is in progress.");
+            uploadLock.current = true;
+            setUploading(true);
+            try {
+              const edited = await uploadImage(file);
+              uploadedImages.current.set(edited.id,edited);
+              if (!mounted.current) {
+                await cleanupAbandonedImages([edited]);
+                return;
+              }
+              // Replace just this product slot. Its original source file remains untouched.
+              setDraft(current=>({
+                ...current,
+                images:current.images.map(image=>image.id===editingPhotoId
+                  ? {...edited,alt:image.alt||current.name}:image),
+              }));
+              setEditingPhotoId(null);
+              setError("");
+            } finally {
+              uploadLock.current = false;
+              if (mounted.current) setUploading(false);
+            }
           }}
         />
       )}
