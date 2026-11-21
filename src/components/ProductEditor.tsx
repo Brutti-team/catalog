@@ -41,6 +41,8 @@ import { albumPhotoToProductImage, type AlbumPhoto } from "../lib/album";
 import { photoCropStyle } from "../lib/photo-crop";
 import { splitSpecifications } from "../lib/specification-groups";
 
+const MEASUREMENT_NAME_OPTIONS = ["Width", "Height", "Length", "Depth", "Diameter", "Thickness", "Radius"] as const;
+
 type SpecificationRowType = "detail" | "measurement" | "quantity";
 
 function parseMeasurementValue(value: string): { amount: string; unit: DimensionUnit } {
@@ -65,16 +67,54 @@ function SpecificationRowFields({
 }) {
   const measurement = row.kind === "measurement";
   const quantityRow = row.kind === "quantity";
+  const [customMeasurement, setCustomMeasurement] = useState(false);
+  const recognisedMeasurement = MEASUREMENT_NAME_OPTIONS.find(
+    option => option.toLowerCase() === row.name.trim().toLowerCase(),
+  );
+  // Existing specifications may contain bespoke names (e.g. "Pipe diameter").
+  // Keep those names editable and never overwrite them when opening the editor.
+  const isCustomMeasurement = measurement && (
+    customMeasurement || (row.name.trim().length > 0 && !recognisedMeasurement)
+  );
   const { amount, unit } = measurement ? parseMeasurementValue(row.value) : { amount: "", unit: "cm" as DimensionUnit };
   return (
     <div className={"catalog-reference-custom-row" + (measurement ? " catalog-spec-measurement-row" : "") + (quantityRow ? " catalog-spec-quantity-row" : "")}>
-      <input
-        aria-label={label + " name"}
-        placeholder={measurement ? "e.g. Pipe diameter" : quantityRow ? "e.g. Drawer" : namePlaceholder}
-        maxLength={80}
-        value={row.name}
-        onChange={(event) => onChange(row.id, "name", event.target.value)}
-      />
+      {measurement ? (
+        <div className="catalog-spec-measurement-name">
+          <select
+            aria-label={label + " measurement type"}
+            title="Choose measurement type"
+            value={isCustomMeasurement ? "__custom__" : recognisedMeasurement ?? ""}
+            onChange={event => {
+              const next = event.target.value;
+              setCustomMeasurement(next === "__custom__");
+              onChange(row.id, "name", next === "__custom__" ? "" : next);
+            }}
+          >
+            <option value="" disabled>Select measurement</option>
+            {MEASUREMENT_NAME_OPTIONS.map(option => <option key={option} value={option}>{option}</option>)}
+            <option value="__custom__">Custom measurement…</option>
+          </select>
+          {isCustomMeasurement && (
+            <input
+              type="text"
+              aria-label={label + " custom measurement name"}
+              placeholder="e.g. Pipe diameter"
+              maxLength={80}
+              value={row.name}
+              onChange={event => onChange(row.id, "name", event.target.value)}
+            />
+          )}
+        </div>
+      ) : (
+        <input
+          aria-label={label + " name"}
+          placeholder={quantityRow ? "e.g. Drawer" : namePlaceholder}
+          maxLength={80}
+          value={row.name}
+          onChange={event => onChange(row.id, "name", event.target.value)}
+        />
+      )}
       {quantityRow ? (
         <div className="catalog-spec-row-quantity" role="group" aria-label={label + " quantity"}>
           <input
