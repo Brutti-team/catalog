@@ -26,6 +26,8 @@ import {
   ArrowRight,
   ArrowLeft,
   Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
   X,
   LogOut,
   LoaderCircle,
@@ -478,7 +480,10 @@ export default function App() {
           <button type="button" className="catalog-sidebar-toggle" onClick={toggleSidebar}
             aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}>
-            <Menu size={19} aria-hidden="true" />
+            {sidebarCollapsed ? <PanelLeftOpen size={18} aria-hidden="true" /> : <PanelLeftClose size={18} aria-hidden="true" />}
+          </button>
+          <button type="button" className="catalog-sidebar-mobile-close" aria-label="Close navigation" title="Close navigation" onClick={() => setMobileNav(false)}>
+            <X size={19} aria-hidden="true" />
           </button>
         </div>
         <nav aria-label="Admin navigation">
@@ -495,6 +500,7 @@ export default function App() {
               key={n.id}
               className={`nav-item ${tab === n.id ? "active" : ""}`}
               aria-current={tab === n.id ? "page" : undefined}
+              title={n.text}
               onClick={() => switchTab(n.id)}
             >
               <span className="nav-icon" aria-hidden="true"><n.icon size={19} strokeWidth={1.9} /></span>
@@ -512,6 +518,7 @@ export default function App() {
           {auth.isAdmin && (
             <button className={`nav-item ${tab === "activity" ? "active" : ""}`}
               aria-current={tab === "activity" ? "page" : undefined}
+              title="Activity log"
               onClick={() => switchTab("activity")}>
               <span className="nav-icon" aria-hidden="true"><History size={19} strokeWidth={1.9} /></span> Activity log
             </button>
@@ -527,7 +534,7 @@ export default function App() {
         </nav>
         <div className="sidebar-utility">
           <button type="button" className="sidebar-public-link catalog-photo-link"
-            onClick={() => navigate("/catalog")} aria-label="View public catalog">
+            onClick={() => navigate("/catalog")} aria-label="View public catalog" title="View public catalog">
             <SafeImage
               className="catalog-sidebar-product-photo"
               src="/reference/sofa.jpg"
