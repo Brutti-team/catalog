@@ -247,7 +247,14 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
     if (event.button !== 0 || saving || aiBusy || !source) return;
     event.preventDefault();
-    gesture.current = { id: event.pointerId, x: event.clientX, y: event.clientY, px: pan.x, py: pan.y };
+    const el = event.target as HTMLElement;
+    const requested = el.closest<HTMLElement>("[data-crop-handle]")?.dataset.cropHandle as CropHandle | undefined;
+    const handle = requested && cropHandles.includes(requested) && tool === "crop" ? requested : undefined;
+    gesture.current = {
+      id: event.pointerId, x: event.clientX, y: event.clientY,
+      px: pan.x, py: pan.y, mode: handle ? "crop" : "pan",
+      handle, startCrop: crop,
+    };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
   function onPointerMove(event: PointerEvent<HTMLDivElement>) {
@@ -255,10 +262,21 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     if (!start || start.id !== event.pointerId) return;
     const bounds = event.currentTarget.getBoundingClientRect();
     if (!bounds.width || !bounds.height) return;
-    setPan({
-      x: start.px + (event.clientX - start.x) / bounds.width,
-      y: start.py + (event.clientY - start.y) / bounds.height,
-    });
+    const dx = (event.clientX - start.x) / bounds.width;
+    const dy = (event.clientY - start.y) / bounds.height;
+    if (start.mode === "crop" && start.handle) {
+      const current = start.startCrop;
+      const minSize = 0.12;
+      let left = current.x, right = current.x + current.w;
+      let top = current.y, bottom = current.y + current.h;
+      if (start.handle.includes("w")) left = clamp(current.x + dx, 0, right - minSize);
+      if (start.handle.includes("e")) right = clamp(current.x + current.w + dx, left + minSize, 1);
+      if (start.handle.includes("n")) top = clamp(current.y + dy, 0, bottom - minSize);
+      if (start.handle.includes("s")) bottom = clamp(current.y + current.h + dy, top + minSize, 1);
+      setCrop({ x: left, y: top, w: right - left, h: bottom - top });
+      return;
+    }
+    setPan({ x: start.px + dx, y: start.py + dy });
   }
   function onPointerUp(event: PointerEvent<HTMLDivElement>) {
     if (gesture.current?.id !== event.pointerId) return;
@@ -273,12 +291,23 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
     setSaving(true);
     setError("");
     try {
+      const full = document.createElement("canvas");
+      full.width = ratio === "3:4" || ratio === "9:16" ? 1050 : 1440;
+      full.height = Math.round(full.width / aspectRatios[ratio]);
+      // Export EXACTLY what the draggable crop handles enclose. "Before"
+      // remains preview-only; edits never change the original Album file.
+      drawPhoto(full, source, cutout, background, customColor,
+        totalAngle, zoom, pan, mirror, false, edgeStrength);
       const output = document.createElement("canvas");
-      output.width = ratio === "3:4" || ratio === "9:16" ? 1050 : 1440;
-      output.height = Math.round(output.width / aspectRatios[ratio]);
-      // Saving is always the selected edit, never the temporary "Before" preview.
-      drawPhoto(output, source, cutout, background, customColor,
-        totalAngle, zoom, pan, mirror, false);
+      output.width = Math.max(64, Math.round(full.width * crop.w));
+      output.height = Math.max(64, Math.round(full.height * crop.h));
+      const outputCtx = output.getContext("2d");
+      if (!outputCtx) throw new Error("The browser cannot crop this image.");
+      outputCtx.drawImage(
+        full, full.width * crop.x, full.height * crop.y,
+        full.width * crop.w, full.height * crop.h,
+        0, 0, output.width, output.height,
+      );
       const blob = await new Promise<Blob>((resolve, reject) => {
         try {
           output.toBlob(value => value ? resolve(value) :
@@ -342,11 +371,21 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                 <canvas ref={canvasRef} width={width} height={height}
                   style={{ aspectRatio: aspectRatios[ratio] }}
                   aria-label="Live crop and background preview" />
-                <span className="brutti-photo-crop-grid-guide" aria-hidden="true" />
-                <span className="brutti-photo-crop-corner tl" aria-hidden="true" />
-                <span className="brutti-photo-crop-corner tr" aria-hidden="true" />
-                <span className="brutti-photo-crop-corner bl" aria-hidden="true" />
-                <span className="brutti-photo-crop-corner br" aria-hidden="true" />
+                {tool === "crop" && (
+                  <div className="brutti-photo-crop-selection"
+                    style={{
+                      left: `${crop.x * 100}%`, top: `${crop.y * 100}%`,
+                      width: `${crop.w * 100}%`, height: `${crop.h * 100}%`,
+                    }} aria-label="Resize the crop by dragging corners or edges">
+                    <span className="brutti-photo-crop-grid-guide" aria-hidden="true"/>
+                    {cropHandles.map(handle => (
+                      <span key={handle}
+                        className={`brutti-photo-crop-handle handle-${handle}`}
+                        data-crop-handle={handle}
+                        aria-hidden="true"/>
+                    ))}
+                  </div>
+                )}
                 {!source && <span className="brutti-photo-crop-loading">{error || "Loading photo…"}</span>}
               </div>
             </div>
@@ -372,7 +411,7 @@ export default function PhotoCropEditor({ image, onApply, onClose }: Props) {
                     {(["4:3", "1:1", "3:4", "9:16"] as Ratio[]).map(item => (
                       <button type="button" key={item} className={ratio === item ? "is-active" : ""}
                         aria-pressed={ratio === item} disabled={locked}
-                        onClick={() => setRatio(item)}>{item}</button>
+                        onClick={() => { setRatio(item); setCrop(initialCrop()); setPan({ x: 0, y: 0 }); }}>{item}</button>
                     ))}
                   </div>
                 </div>
