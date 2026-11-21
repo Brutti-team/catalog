@@ -7,7 +7,7 @@ import {
 import type { Category, Product } from "../lib/types";
 import {
   albumPhotoCategoryIds, combineAlbumPhotos, listAlbumRecords,
-  removeUnassignedAlbumPhoto, saveAlbumPhotoDetails, uploadAlbumPhotos,
+  removeUnassignedAlbumPhoto, saveAlbumPhotoDetails, albumDetailSpec, uploadAlbumPhotos,
   type AlbumPhoto, type AlbumRecord, type AlbumPhotoDetailsUpdate,
 } from "../lib/album";
 import Modal from "./Modal";
@@ -188,8 +188,9 @@ export default function AlbumLibrary({
   const [savingDetails, setSavingDetails] = useState(false);
   const [detailsError, setDetailsError] = useState("");
   const [detailsDraft, setDetailsDraft] = useState<AlbumPhotoDetailsUpdate>({
-    name: "", description: "", categoryId: null,
+    name: "", description: "", categoryId: null, size: "", materials: "", colour: "", finishing: "",
   });
+  const editorCanvasRef = useRef<HTMLDivElement>(null);
   const [attachProductId, setAttachProductId] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [preview, setPreview] = useState<AlbumPhoto | null>(null);
@@ -327,6 +328,10 @@ export default function AlbumLibrary({
       name: photo.name,
       description: photo.sourceDetails.description || "",
       categoryId: photo.manualCategoryId,
+      size: albumDetailSpec(photo, "size"),
+      materials: albumDetailSpec(photo, "materials"),
+      colour: albumDetailSpec(photo, "colour"),
+      finishing: albumDetailSpec(photo, "finishing"),
     });
     setAttachProductId("");
     setDetailsError("");
@@ -335,7 +340,9 @@ export default function AlbumLibrary({
   const detailsDirty = !!preview && (
     detailsDraft.name !== preview.name ||
     detailsDraft.description !== (preview.sourceDetails.description || "") ||
-    detailsDraft.categoryId !== preview.manualCategoryId
+    detailsDraft.categoryId !== preview.manualCategoryId ||
+    (["size", "materials", "colour", "finishing"] as const)
+      .some(field => detailsDraft[field] !== albumDetailSpec(preview, field))
   );
   function closePhotoEditor() {
     if (savingDetails) return;
@@ -409,6 +416,10 @@ export default function AlbumLibrary({
         name: saved.name,
         description: saved.sourceDetails.description || "",
         categoryId: saved.categoryId,
+        size: saved.sourceDetails.album_size ?? saved.sourceDetails.size ?? "",
+        materials: saved.sourceDetails.album_materials ?? saved.sourceDetails.materials ?? "",
+        colour: saved.sourceDetails.album_colour ?? saved.sourceDetails.colour ?? "",
+        finishing: saved.sourceDetails.album_finishing ?? saved.sourceDetails.finishing ?? "",
       });
       setNotice("Album details saved.");
       return updated;
@@ -432,6 +443,10 @@ export default function AlbumLibrary({
       name: detailsDraft.name.trim(),
       categoryId: detailsDraft.categoryId,
       description: detailsDraft.description,
+      size: detailsDraft.size,
+      materials: detailsDraft.materials,
+      colour: detailsDraft.colour,
+      finishing: detailsDraft.finishing,
     };
     setPreview(null);
     if (targetProductId) {
