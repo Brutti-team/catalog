@@ -179,3 +179,71 @@
   color: #21583a !important;
   box-shadow: inset 0 0 0 1px rgba(38,102,61,.08);
 }
+
+/* Keep Reset readable in both themes; legacy crop CSS made the label dark on
+   a dark button. Match the clean Photo Studio header rather than error colours. */
+.admin-app .catalog-photo-crop-dialog--dark.brutti-photo-studio-v2
+  .brutti-photo-crop-topbar > button.brutti-photo-crop-reset {
+  background: #edf4ee !important;
+  border: 1px solid #cadccc !important;
+  color: #24583c !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+}
+.admin-app .catalog-photo-crop-dialog--dark.brutti-photo-studio-v2
+  .brutti-photo-crop-topbar > button.brutti-photo-crop-reset:hover:not(:disabled) {
+  background: #deede1 !important;
+  border-color: #a9cbb2 !important;
+  color: #15482e !important;
+}
+.admin-app .catalog-photo-crop-dialog--dark.brutti-photo-studio-v2
+  .brutti-photo-crop-topbar > button.brutti-photo-crop-reset:focus-visible {
+  outline: 3px solid #87bb99 !important;
+  outline-offset: 2px;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-brush-controls {
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid #d7e4d8;
+  border-radius: 12px;
+  background: #f1f7f1;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-brush-modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-brush-modes button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 9px 8px;
+  border: 1px solid #cadbcc;
+  border-radius: 10px;
+  color: #28573c;
+  background: #fff;
+  font: 700 11px/1.35 "DM Sans", sans-serif;
+  cursor: pointer;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-brush-modes button:hover:not(:disabled),
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-brush-modes button.is-active {
+  background: #28583c;
+  border-color: #28583c;
+  color: #fff;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-brush-modes button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-crop-image-frame.is-erasing {
+  cursor: crosshair !important;
+}
+@media (max-width: 400px) {
+  .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-brush-modes {
+    grid-template-columns: 1fr;
+  }
+}
