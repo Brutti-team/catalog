@@ -1080,7 +1080,12 @@ export default function App() {
                   return (
                     <article className={`category-card${cover.src ? "" : " category-card--without-cover"}`} key={c.id}>
                       {cover.src && (
-                        <div className="category-cover">
+                        <button
+                          type="button"
+                          className="category-cover"
+                          aria-label={`View products in ${c.name}`}
+                          onClick={() => { switchTab("products"); setCategory(c.id); }}
+                        >
                           <SafeImage
                             className="category-cover-image"
                             src={cover.src}
@@ -1090,7 +1095,7 @@ export default function App() {
                             style={{ objectPosition: cover.position }}
                           />
                           <span>0{index + 1}</span>
-                        </div>
+                        </button>
                       )}
                       <div className="category-card-body">
                         {!cover.src && <span className="category-card-index">0{index + 1}</span>}
