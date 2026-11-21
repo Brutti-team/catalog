@@ -10,15 +10,17 @@
   min-height: 86px;
   padding-block: 16px;
   overflow: hidden;
+  /* Keep the Brutti forest-green palette, but let scrolled form content
+     show through the frosted glass surface (without making text transparent). */
   background:
-    radial-gradient(ellipse 56% 155% at 88% -30%, rgba(169,217,178,.26), transparent 84%),
-    radial-gradient(ellipse 35% 170% at 18% 160%, rgba(122,175,131,.20), transparent 83%),
-    linear-gradient(110deg, #204a34 0%, #2e6245 48%, #497b56 100%) !important;
+    radial-gradient(ellipse 56% 155% at 88% -30%, rgba(169,217,178,.18), transparent 84%),
+    radial-gradient(ellipse 35% 170% at 18% 160%, rgba(122,175,131,.14), transparent 83%),
+    linear-gradient(110deg, rgba(32,74,52,.78) 0%, rgba(46,98,69,.76) 48%, rgba(73,123,86,.72) 100%) !important;
   color: #fff !important;
   border-bottom: 1px solid rgba(201,239,210,.25) !important;
   box-shadow: 0 10px 28px rgba(18,64,36,.17), inset 0 1px 0 rgba(255,255,255,.11) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(125%);
-  backdrop-filter: blur(22px) saturate(125%);
+  -webkit-backdrop-filter: blur(26px) saturate(135%);
+  backdrop-filter: blur(26px) saturate(135%);
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .catalog-editor-actionbar::before {
   content: "";
@@ -107,8 +109,8 @@
 /* Preserve the same header geometry in OS dark mode, with a richer graphite green. */
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .catalog-editor-actionbar {
   background:
-    radial-gradient(ellipse 52% 170% at 93% -30%, rgba(102,153,119,.18),transparent 84%),
-    linear-gradient(110deg,#1d3029 0%,#294437 53%,#355344 100%) !important;
+    radial-gradient(ellipse 52% 170% at 93% -30%, rgba(102,153,119,.15),transparent 84%),
+    linear-gradient(110deg,rgba(29,48,41,.82) 0%,rgba(41,68,55,.80) 53%,rgba(53,83,68,.78) 100%) !important;
   border-bottom-color: rgba(147,191,160,.29) !important;
   box-shadow: 0 9px 25px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.075) !important;
 }
@@ -146,6 +148,24 @@
   .admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing :is(.catalog-editor-back-icon,.catalog-editor-header-close) {
     transition: none !important;
     transform: none !important;
+  }
+}
+
+/* Frosted surface remains on top during scroll. Content underneath is visible
+   as a soft silhouette while labels, badges and controls stay fully opaque. */
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+  -webkit-backdrop-filter: blur(26px) saturate(135%);
+  backdrop-filter: blur(26px) saturate(135%);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .catalog-editor-actionbar::before {
+  opacity: .8;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+    background: linear-gradient(110deg,#204a34,#2e6245 48%,#497b56) !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .catalog-editor-actionbar {
+    background: linear-gradient(110deg,#1d3029,#294437 53%,#355344) !important;
   }
 }
 
