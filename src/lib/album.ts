@@ -148,7 +148,17 @@ export type AlbumPhotoDetailsUpdate = {
   name: string;
   description: string;
   categoryId: string | null;
+  /** Album-only specification drafts; original imported source metadata is kept. */
+  size: string;
+  materials: string;
+  colour: string;
+  finishing: string;
 };
+
+/** Prefer staff edits, then untouched source catalog metadata. */
+export function albumDetailSpec(photo: AlbumPhoto, field: "size" | "materials" | "colour" | "finishing"): string {
+  return photo.sourceDetails[`album_${field}`] ?? photo.sourceDetails[field] ?? "";
+}
 
 /** Persist Album metadata independently of Product records. Editing an Album
  * photo must never update or publish a product automatically. Keeps imported
@@ -164,6 +174,12 @@ export async function saveAlbumPhotoDetails(
   const description = details.description.trim();
   if (description.length > 10000) throw new Error("Description must be 10,000 characters or fewer.");
   const sourceDetails = { ...photo.sourceDetails, description };
+  for (const field of ["size", "materials", "colour", "finishing"] as const) {
+    const value = details[field].trim();
+    if (value.length > 2000) throw new Error(`${field} must be 2,000 characters or fewer.`);
+    // Imported originals remain at their original keys.
+    sourceDetails[`album_${field}`] = value;
+  }
   const db = catalogClient();
   const { data, error } = await db.from("catalog_media_assets")
     .update({ name, category_id: details.categoryId, source_details: sourceDetails })
