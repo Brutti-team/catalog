@@ -4,6 +4,8 @@ export interface ProductSpecification {
   id: string;
   name: string;
   value: string;
+  /** Optional staff description for a custom detail or measurement row. */
+  description?: string;
   /** Section markers group following rows under their title. Legacy rows omit this. */
   kind?: "section" | "measurement";
 }
