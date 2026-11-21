@@ -13,10 +13,10 @@
   display: block;
   box-sizing: border-box;
   width: 100%;
-  /* Balanced photo-first tile: between the original tall card and compact version. */
-  height: 398px !important;
-  min-height: 398px !important;
-  max-height: 398px !important;
+  /* Balanced, compact photo-first tile: preserve the glass dock and all actions. */
+  height: 376px !important;
+  min-height: 376px !important;
+  max-height: 376px !important;
   aspect-ratio: auto !important;
   overflow: hidden;
   border: 1px solid rgba(181,209,189,.66) !important;
@@ -313,9 +313,9 @@
 @media (max-width: 1120px) {
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
     --brutti-category-dock-height: 122px;
-    height: 400px !important;
-    min-height: 400px !important;
-    max-height: 400px !important;
+    height: 382px !important;
+    min-height: 382px !important;
+    max-height: 382px !important;
     aspect-ratio: auto !important;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions {
@@ -329,9 +329,9 @@
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
     --brutti-category-dock-height: 114px;
-    height: 400px !important;
-    min-height: 400px !important;
-    max-height: 400px !important;
+    height: 382px !important;
+    min-height: 382px !important;
+    max-height: 382px !important;
     aspect-ratio: auto !important;
     border-radius: 13px !important;
   }
@@ -356,9 +356,9 @@
 @media (max-width: 430px) {
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
     --brutti-category-dock-height: 164px;
-    height: 425px !important;
-    min-height: 425px !important;
-    max-height: 425px !important;
+    height: 408px !important;
+    min-height: 408px !important;
+    max-height: 408px !important;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions .category-view-products {
     flex: 1 1 100%;
