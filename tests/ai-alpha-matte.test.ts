@@ -38,6 +38,13 @@ describe("AI Cutout alpha handling", () => {
     expect(out[7]).toBe(0);
   });
 
+  it("rejects RGB-only outputs that would leave a white background", () => {
+    const original = new Uint8ClampedArray([255, 255, 255, 255]);
+    const rgbOnly = new Uint8Array([255, 255, 255]);
+    expect(() => applyAIAlpha(original, { data: rgbOnly, channels: 3 }, 1, 1))
+      .toThrow(/mask dimensions/);
+  });
+
   it("rejects masks that erase the whole product", () => {
     const input = new Uint8ClampedArray([10, 20, 30, 255]);
     expect(() => applyAIAlpha(input, { data: new Uint8Array([0]), channels: 1 }, 1, 1))
