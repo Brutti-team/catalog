@@ -460,7 +460,8 @@ export default function PublicCatalog({
             </div>
             <ShowroomSections onExplore={exploreShowroom} onCategorySelect={(categoryId) => { setQuery(""); setCategory(categoryId); browseCollection(false); }} categories={categories} publishedProducts={published} loading={loading} />
             <section id="pub-collection" className="pub-collection">
-              <div className="pub-section-heading">
+              <div className="pub-collection-green-header">
+                <div className="pub-section-heading">
                 <div>
                   <p className="pub-eyebrow">EXPLORE THE COLLECTION</p>
                   <h2>
@@ -562,6 +563,7 @@ export default function PublicCatalog({
                     </button>
                   ))}
                 </div>
+              </div>
               </div>
               <div className="pub-results-label" role="status">
                 {loading
