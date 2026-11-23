@@ -443,3 +443,113 @@
     transition: none;
   }
 }
+
+
+/* Keep the real product photo visible while customers read long specification
+   sections. Previously the photo scrolled away and left a blank left column.
+   The 118px offset clears the floating Brutti navigation at the top. */
+@media (min-width: 851px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail {
+    align-items: stretch;
+    overflow: visible;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-gallery {
+    position: sticky;
+    top: 118px;
+    z-index: 1;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    max-height: calc(100dvh - 132px);
+    overflow: visible;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-main-image {
+    flex: 0 0 auto;
+    height: min(640px, calc(100dvh - 230px), 52vw);
+    min-height: 290px;
+    max-height: none;
+    aspect-ratio: auto;
+    padding: clamp(9px, 1.3vw, 18px);
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-thumbnails {
+    flex: 0 0 auto;
+    margin-top: 10px;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 3px 2px 5px;
+    scrollbar-width: thin;
+    scrollbar-color: #b7c5b6 transparent;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-thumbnails > button {
+    flex: 0 0 66px;
+    width: 66px;
+    height: 66px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-gallery .pub-media-switch {
+    flex: 0 0 auto;
+  }
+}
+@media (min-width: 851px) and (max-height: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-gallery {
+    top: 102px;
+    max-height: calc(100dvh - 110px);
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-main-image {
+    height: max(190px, calc(100dvh - 220px));
+    min-height: 0;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-thumbnails > button {
+    flex-basis: 54px;
+    width: 54px;
+    height: 54px;
+  }
+}
+
+/* Clear, compact groups rather than long undifferentiated rows. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-copy > .pub-specifications {
+  padding-bottom: 22px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-specifications dl > div {
+  padding-top: 11px;
+  padding-bottom: 11px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-specifications .pub-spec-section {
+  margin-top: 14px;
+  padding: 16px 17px 12px;
+  border: 1px solid #e5e9e0;
+  border-radius: 11px;
+  background: #f6f8f3;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-specifications .pub-spec-section > h3 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-specifications .pub-spec-section dl > div {
+  padding: 9px 0;
+  border-bottom-color: #e4e9e0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-specifications .pub-spec-section dl > div:last-child {
+  border-bottom: 0;
+}
+@media (max-width: 850px) {
+  /* On smaller screens a pinned gallery would obscure the specification text. */
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-gallery {
+    position: static;
+    max-height: none;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail {
+    align-items: start;
+  }
+}
+@media (max-width: 520px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-specifications .pub-spec-section {
+    padding: 13px 12px 9px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-specifications .pub-spec-section dl > div {
+    padding: 8px 0;
+  }
+}
