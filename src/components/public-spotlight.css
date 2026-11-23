@@ -1344,3 +1344,151 @@
     transform: none !important;
   }
 }
+
+
+/* PRICE EMPHASIS · Brutti forest-glass price block.
+   Keep price on the right on roomy cards, move below the product summary only
+   when the card is genuinely narrow. Existing amounts and sale calculations
+   are untouched. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__pricing {
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  flex: 0 0 auto;
+  align-self: start;
+  min-width: 130px;
+  max-width: 100%;
+  margin: 0;
+  padding: 12px 14px 13px !important;
+  overflow: hidden;
+  border: 1px solid rgba(24,78,44,.3) !important;
+  border-radius: 14px;
+  background: linear-gradient(140deg,#397a54 0%,#24593d 47%,#153e2c 100%) !important;
+  box-shadow:
+    0 7px 19px rgba(25,79,46,.19),
+    inset 0 1px 0 rgba(255,255,255,.21),
+    inset 0 -1px 0 rgba(13,51,30,.1) !important;
+  color: #fff;
+  text-align: right;
+  transition: transform .22s cubic-bezier(.2,.8,.3,1),
+    box-shadow .22s ease,
+    border-color .22s ease !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__pricing::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(128deg,rgba(255,255,255,.16),transparent 44%,rgba(255,255,255,.03) 100%);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__pricing .pub-catalog-tile__price {
+  margin: 0;
+  color: #fff !important;
+  text-align: right;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-current {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #fff !important;
+  font: 760 17px/1.24 "Manrope","DM Sans",system-ui,sans-serif;
+  text-align: right;
+  letter-spacing: -.025em;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-basis {
+  margin: 0;
+  color: rgba(255,255,255,.81) !important;
+  font: 570 11px/1.35 "DM Sans",system-ui,sans-serif;
+  letter-spacing: .005em;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-amount {
+  color: #fff !important;
+  font: 790 18px/1.23 "Manrope","DM Sans",system-ui,sans-serif;
+  letter-spacing: -.035em;
+  white-space: nowrap;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-line {
+  align-items: flex-end;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-old {
+  color: rgba(255,255,255,.73) !important;
+  font-size: 11px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-discount,
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__pricing .pub-catalog-tile__save {
+  color: #e6f8df !important;
+  background: rgba(255,255,255,.13) !important;
+  border-color: rgba(255,255,255,.2) !important;
+  box-shadow: none !important;
+}
+@media (hover:hover) and (pointer:fine) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile:hover .pub-catalog-tile__pricing {
+    transform: translateY(-2px);
+    border-color: rgba(150,221,172,.72) !important;
+    box-shadow:
+      0 10px 23px rgba(20,83,45,.26),
+      0 0 0 3px rgba(114,181,131,.1),
+      inset 0 1px 0 rgba(255,255,255,.28) !important;
+  }
+}
+@container (max-width:365px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__pricing {
+    align-items: flex-start;
+    align-self: flex-start;
+    min-width: 0;
+    width: fit-content;
+    max-width: 100%;
+    padding: 10px 13px 11px !important;
+    border: 1px solid rgba(24,78,44,.3) !important;
+    text-align: left;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-current,
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-line {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+@media (max-width:650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-amount {
+    font-size: 16px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-basis {
+    font-size: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__pricing {
+    transition: none !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile:hover .pub-catalog-tile__pricing {
+    transform: none;
+  }
+}
