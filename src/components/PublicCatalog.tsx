@@ -24,6 +24,7 @@ import { recordCatalogEvent } from "../lib/customer-analytics";
 import { BRUTTI_WHATSAPP_NUMBER, productWhatsAppUrl } from "../lib/whatsapp-enquiry";
 import ShowroomSections from "./ShowroomSections";
 import BestSellingSection from "./BestSellingSection";
+import PublicCollectionSpotlight from "./PublicCollectionSpotlight";
 import "./public.css";
 import "./brutti-3d.css";
 import "./public-reference.css";
@@ -592,6 +593,8 @@ export default function PublicCatalog({
                     Try again <ArrowRight size={16} />
                   </button>
                 </div>
+              ) : filtered.length === 1 && filtered[0] ? (
+                <PublicCollectionSpotlight product={filtered[0]} categoryName={categoryName(filtered[0].categoryId)} />
               ) : filtered.length ? (
                 <div className="pub-products-grid">{filtered.map(card)}</div>
               ) : published.length === 0 && !query && category === "all" && !featuredOnly ? (
