@@ -34,6 +34,7 @@ import ProductPrice from "./ProductPrice";
 import { nextProductId } from "../lib/product-ids";
 import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
 import DimensionUnitPicker from "./DimensionUnitPicker";
+import MeasurementTypePicker from "./MeasurementTypePicker";
 import PhotoCropEditor from "./PhotoCropEditor";
 import PhotoCoverStudio from "./PhotoCoverStudio";
 import AlbumLibrary from "./AlbumLibrary";
@@ -82,15 +83,13 @@ function SpecificationRowFields({
     <div className={"catalog-reference-custom-row" + (measurement ? " catalog-spec-measurement-row" : "") + (quantityRow ? " catalog-spec-quantity-row" : "")}>
       {measurement ? (
         <div className="catalog-spec-measurement-name">
-          <select
-            aria-label={label + " measurement type"}
-            title="Choose measurement type"
+          <MeasurementTypePicker
+            label={label + " measurement type"}
             value={isCustomMeasurement ? "__custom__" : recognisedMeasurement ?? ""}
-            onChange={event => {
-              const next = event.target.value;
+            customName={isCustomMeasurement ? row.name : undefined}
+            options={MEASUREMENT_NAME_OPTIONS}
+            onChange={next => {
               if (next === "__custom__") {
-                // Only show the bespoke-name input after explicitly choosing Other.
-                // The dropdown remains the main first-column control.
                 if (!isCustomMeasurement) onChange(row.id, "name", "");
                 setEditingCustomMeasurement(true);
               } else {
@@ -98,11 +97,7 @@ function SpecificationRowFields({
                 onChange(row.id, "name", next);
               }
             }}
-          >
-            <option value="" disabled>Select measurement</option>
-            {MEASUREMENT_NAME_OPTIONS.map(option => <option key={option} value={option}>{option}</option>)}
-            <option value="__custom__">{isCustomMeasurement ? `Other: ${row.name}` : "Other measurement…"}</option>
-          </select>
+          />
           {isCustomMeasurement && !editingCustomMeasurement && (
             <button
               type="button"
