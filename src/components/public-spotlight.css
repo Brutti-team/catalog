@@ -526,3 +526,100 @@
   .pub-app .pub-products-grid.pub-products-grid--catalog {grid-template-columns:minmax(0,1fr);}
   .pub-app .pub-catalog-tile {max-width:226px;}
 }
+
+
+/* Public collection typography refresh — clear, confident sans-serif instead
+   of tiny category labels and low-contrast display type. Card/photo geometry
+   remains unchanged; only the text hierarchy and its breathing room improve. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__copy {
+  padding: 14px 11px 8px;
+  gap: 0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__category {
+  gap: 9px;
+  color: #8f745b;
+  font: 750 10.5px/1.45 "DM Sans", system-ui, sans-serif;
+  letter-spacing: .095em;
+  text-transform: uppercase;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__category::after {
+  width: 19px;
+  background: rgba(142,118,90,.42);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__title {
+  width: 100%;
+  margin-top: 7px;
+  color: #234431;
+  text-decoration: none;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__title h3 {
+  margin: 0;
+  font: 650 clamp(21px, 1.75vw, 25px)/1.22 "Manrope", "DM Sans", system-ui, sans-serif;
+  letter-spacing: -.042em;
+  color: inherit;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__title:is(:hover,:focus-visible) {
+  color: #477653;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__price {
+  max-width: 100%;
+  margin-top: 12px;
+  color: #254a36;
+  font: 700 13px/1.3 "DM Sans", system-ui, sans-serif;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__price .catalog-price-current {
+  max-width: 100%;
+  padding: 10px 14px;
+  color: #fff;
+  font: 710 12.5px/1.4 "DM Sans", system-ui, sans-serif;
+  letter-spacing: -.01em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-results-label {
+  font: 640 14px/1.5 "DM Sans", system-ui, sans-serif;
+  color: #727e74;
+  letter-spacing: -.01em;
+}
+@media (max-width: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__copy { padding: 12px 8px 6px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__category {
+    font-size: 9.5px;
+    letter-spacing: .06em;
+    gap: 6px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__title h3 {
+    font-size: clamp(18px, 4.3vw, 22px);
+    line-height: 1.24;
+    letter-spacing: -.035em;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__price {
+    margin-top: 10px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__price .catalog-price-current {
+    font-size: 11px;
+    padding: 9px 11px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-results-label {
+    font-size: 12.5px;
+  }
+}
+@media (max-width: 380px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__title h3 { font-size: 21px; }
+}
