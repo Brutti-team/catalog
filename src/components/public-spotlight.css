@@ -733,3 +733,46 @@
     row-gap: 7px;
   }
 }
+
+
+/* Final compact pricing alignment: lighter pill and tighter footer. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile {
+  padding-bottom: 8px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__copy {
+  padding: 11px 10px 4px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__details-row {
+  margin-top: 5px;
+  column-gap: 8px;
+  row-gap: 6px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-current {
+  padding: 8px 12px;
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+@media (max-width: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile {
+    padding-bottom: 7px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__copy {
+    padding: 10px 7px 3px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__details-row {
+    column-gap: 6px;
+    row-gap: 6px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-current {
+    padding: 7px 9px;
+    font-size: 10.5px;
+  }
+}
