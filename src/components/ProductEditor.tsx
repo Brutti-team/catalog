@@ -1238,20 +1238,32 @@ export default function ProductEditor({
           onClose={() => setConfirmStatus(null)}
         >
           <div className="catalog-publish-confirm-body">
-            <div className={`catalog-publish-confirm-icon ${confirmStatus === "published" ? "is-publish" : "is-draft"}`}>
-              {confirmStatus === "published"
-                ? <Globe2 size={22} strokeWidth={1.85} aria-hidden="true" />
-                : <EyeOff size={22} strokeWidth={1.85} aria-hidden="true" />}
+            <div className="catalog-publish-confirm-intro">
+              <div className={`catalog-publish-confirm-icon ${confirmStatus === "published" ? "is-publish" : "is-draft"}`}>
+                {confirmStatus === "published"
+                  ? <Globe2 size={21} strokeWidth={1.85} aria-hidden="true" />
+                  : <EyeOff size={21} strokeWidth={1.85} aria-hidden="true" />}
+              </div>
+              <p className="catalog-publish-confirm-description">
+                {confirmStatus === "published"
+                  ? "This product will appear in the public Brutti Catalog and customers will be able to view it."
+                  : "This product will be removed from the public catalog. Its details and photos will remain saved for editing."}
+              </p>
             </div>
-            <p className="catalog-publish-confirm-description">
-              {confirmStatus === "published"
-                ? "This product will appear in the public Brutti Catalog and customers will be able to view it."
-                : "This product will be removed from the public catalog. Its details and photos will remain saved for editing."}
-            </p>
             <div className="catalog-publish-confirm-product">
-              <span className="catalog-publish-confirm-product-label">PRODUCT</span>
-              <strong>{draft.name.trim() || "Untitled product"}</strong>
-              <span className="catalog-publish-confirm-product-sku">{draft.sku}</span>
+              <div className="catalog-publish-confirm-thumbnail" aria-hidden="true">
+                {draft.images[0]?.url
+                  ? <SafeImage src={draft.images[0].url} alt="" style={photoCropStyle(draft.images[0])} />
+                  : <Box size={22} strokeWidth={1.6} />}
+              </div>
+              <div className="catalog-publish-confirm-product-details">
+                <span className="catalog-publish-confirm-product-label">PRODUCT</span>
+                <strong>{draft.name.trim() || "Untitled product"}</strong>
+                <span className="catalog-publish-confirm-product-sku">{draft.sku}</span>
+              </div>
+              <span className={`catalog-publish-confirm-status ${confirmStatus === "published" ? "is-publish" : "is-draft"}`}>
+                {confirmStatus === "published" ? "Public" : "Draft"}
+              </span>
             </div>
             <div className="catalog-publish-confirm-actions">
               <button type="button" className="catalog-publish-confirm-cancel"
