@@ -192,3 +192,51 @@
     transition: none;
   }
 }
+
+
+/* Keep all category filters on a single horizontal row.
+   Slightly tighter chip spacing fits the full set at desktop widths;
+   when there isn't enough room, users can horizontally scroll/swipe. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-collection-green-header .pub-filter-row {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-collection-green-header .pub-category-filters {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  gap: 6px;
+  padding: 2px 0 5px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-collection-green-header .pub-category-filters::-webkit-scrollbar {
+  display: none;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-collection-green-header .pub-category-filters button {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 8px 10px;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+@media (max-width: 760px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-collection-green-header .pub-category-filters {
+    padding-bottom: 7px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-collection-green-header .pub-category-filters button {
+    padding-inline: 11px;
+  }
+}
