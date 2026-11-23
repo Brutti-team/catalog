@@ -41,7 +41,10 @@ import { albumPhotoToProductImage, type AlbumPhoto } from "../lib/album";
 import { photoCropStyle } from "../lib/photo-crop";
 import { splitSpecifications } from "../lib/specification-groups";
 
-const MEASUREMENT_NAME_OPTIONS = ["Width", "Height", "Length", "Depth", "Diameter", "Thickness", "Radius"] as const;
+const MEASUREMENT_NAME_OPTIONS = [
+  "Width", "Height", "Depth", "Length", "Diameter", "Thickness", "Radius",
+  "Inner Diameter", "Outer Diameter", "Seat Height", "Seat Depth", "Arm Height",
+] as const;
 
 type SpecificationRowType = "detail" | "measurement" | "quantity";
 
@@ -67,15 +70,13 @@ function SpecificationRowFields({
 }) {
   const measurement = row.kind === "measurement";
   const quantityRow = row.kind === "quantity";
-  const [customMeasurement, setCustomMeasurement] = useState(false);
+  const [editingCustomMeasurement, setEditingCustomMeasurement] = useState(false);
   const recognisedMeasurement = MEASUREMENT_NAME_OPTIONS.find(
     option => option.toLowerCase() === row.name.trim().toLowerCase(),
   );
-  // Existing specifications may contain bespoke names (e.g. "Pipe diameter").
-  // Keep those names editable and never overwrite them when opening the editor.
-  const isCustomMeasurement = measurement && (
-    customMeasurement || (row.name.trim().length > 0 && !recognisedMeasurement)
-  );
+  // Keep legacy/bespoke names intact. They appear as the selected option
+  // rather than replacing the measurement dropdown with a text field.
+  const isCustomMeasurement = measurement && row.name.trim().length > 0 && !recognisedMeasurement;
   const { amount, unit } = measurement ? parseMeasurementValue(row.value) : { amount: "", unit: "cm" as DimensionUnit };
   return (
     <div className={"catalog-reference-custom-row" + (measurement ? " catalog-spec-measurement-row" : "") + (quantityRow ? " catalog-spec-quantity-row" : "")}>
@@ -87,22 +88,45 @@ function SpecificationRowFields({
             value={isCustomMeasurement ? "__custom__" : recognisedMeasurement ?? ""}
             onChange={event => {
               const next = event.target.value;
-              setCustomMeasurement(next === "__custom__");
-              onChange(row.id, "name", next === "__custom__" ? "" : next);
+              if (next === "__custom__") {
+                // Only show the bespoke-name input after explicitly choosing Other.
+                // The dropdown remains the main first-column control.
+                if (!isCustomMeasurement) onChange(row.id, "name", "");
+                setEditingCustomMeasurement(true);
+              } else {
+                setEditingCustomMeasurement(false);
+                onChange(row.id, "name", next);
+              }
             }}
           >
             <option value="" disabled>Select measurement</option>
             {MEASUREMENT_NAME_OPTIONS.map(option => <option key={option} value={option}>{option}</option>)}
-            <option value="__custom__">Custom measurement…</option>
+            <option value="__custom__">{isCustomMeasurement ? `Other: ${row.name}` : "Other measurement…"}</option>
           </select>
-          {isCustomMeasurement && (
+          {isCustomMeasurement && !editingCustomMeasurement && (
+            <button
+              type="button"
+              className="catalog-spec-custom-name-edit"
+              aria-label={label + " edit custom measurement name"}
+              onClick={() => setEditingCustomMeasurement(true)}
+            ><Pencil size={12} aria-hidden="true" /> Edit custom name</button>
+          )}
+          {editingCustomMeasurement && (
             <input
               type="text"
+              autoFocus
               aria-label={label + " custom measurement name"}
               placeholder="e.g. Pipe diameter"
               maxLength={80}
               value={row.name}
               onChange={event => onChange(row.id, "name", event.target.value)}
+              onBlur={() => { if (row.name.trim()) setEditingCustomMeasurement(false); }}
+              onKeyDown={event => {
+                if (event.key === "Enter" && row.name.trim()) {
+                  event.preventDefault();
+                  setEditingCustomMeasurement(false);
+                }
+              }}
             />
           )}
         </div>
