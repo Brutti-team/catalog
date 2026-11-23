@@ -1,0 +1,226 @@
+/* Publish / unpublish confirmation: a small in-app dialog, never browser
+   window.confirm. It appears above the fullscreen editor's native dialog. */
+.admin-app dialog.modal.catalog-publish-confirm-dialog {
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(440px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  max-height: min(560px, calc(100dvh - 36px));
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid rgba(182,207,187,.8);
+  border-radius: 18px;
+  background: #fcfefc;
+  box-shadow: 0 28px 90px rgba(19,42,26,.3), 0 5px 17px rgba(19,42,26,.09);
+  color: #294433;
+  scrollbar-width: none;
+}
+.admin-app dialog.modal.catalog-publish-confirm-dialog::-webkit-scrollbar { display: none; }
+.admin-app dialog.modal.catalog-publish-confirm-dialog::backdrop {
+  background: rgba(14,32,22,.49);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+.admin-app dialog.modal.catalog-publish-confirm-dialog > .modal-heading {
+  box-sizing: border-box;
+  position: relative;
+  top: auto;
+  display: flex;
+  align-items: center;
+  min-height: 83px;
+  padding: 22px 25px 17px;
+  border-bottom: 1px solid #e6eee7;
+  background: transparent;
+}
+.admin-app dialog.modal.catalog-publish-confirm-dialog > .modal-heading .eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  color: #779283;
+  font: 700 10px/1.2 "DM Sans",sans-serif;
+  letter-spacing: .11em;
+}
+.admin-app dialog.modal.catalog-publish-confirm-dialog > .modal-heading h2 {
+  margin: 0;
+  color: #294733;
+  font: 740 20px/1.3 "Manrope","DM Sans",sans-serif;
+  letter-spacing: -.025em;
+}
+.admin-app dialog.modal.catalog-publish-confirm-dialog > .modal-heading .icon-button {
+  display: grid;
+  flex: 0 0 32px;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #dce8df;
+  border-radius: 9px;
+  background: #f5f9f5;
+  color: #54715d;
+  cursor: pointer;
+}
+.admin-app dialog.modal.catalog-publish-confirm-dialog > .modal-heading .icon-button:hover {
+  color: #234b33;
+  background: #edf5ee;
+}
+.admin-app .catalog-publish-confirm-body {
+  padding: 23px 25px 24px;
+}
+.admin-app .catalog-publish-confirm-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 15px;
+  border: 1px solid #d9e8dc;
+  border-radius: 14px;
+  background: #eaf4ec;
+  color: #2a6540;
+}
+.admin-app .catalog-publish-confirm-icon.is-draft {
+  color: #966b34;
+  border-color: #f0e2c6;
+  background: #fff5e6;
+}
+.admin-app .catalog-publish-confirm-description {
+  margin: 0 0 19px;
+  color: #617768;
+  font: 500 13px/1.65 "DM Sans",sans-serif;
+}
+.admin-app .catalog-publish-confirm-product {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 23px;
+  padding: 14px 15px;
+  border: 1px solid #e1ebe2;
+  border-radius: 12px;
+  background: #f5f9f5;
+}
+.admin-app .catalog-publish-confirm-product-label {
+  color: #819786;
+  font: 700 10px/1.3 "DM Sans",sans-serif;
+  letter-spacing: .11em;
+}
+.admin-app .catalog-publish-confirm-product strong {
+  overflow-wrap: anywhere;
+  color: #284b34;
+  font: 720 15px/1.4 "Manrope","DM Sans",sans-serif;
+}
+.admin-app .catalog-publish-confirm-product-sku {
+  color: #6f8574;
+  font: 600 11px/1.3 "DM Sans",sans-serif;
+}
+.admin-app .catalog-publish-confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.admin-app .catalog-publish-confirm-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  margin: 0;
+  padding: 11px 13px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font: 690 12px/1.3 "DM Sans",sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+.admin-app .catalog-publish-confirm-actions .catalog-publish-confirm-cancel {
+  flex: 0 0 38%;
+  color: #486551;
+  background: #fff;
+  border-color: #d8e5da;
+}
+.admin-app .catalog-publish-confirm-actions .catalog-publish-confirm-cancel:hover {
+  background: #f1f6f1;
+}
+.admin-app .catalog-publish-confirm-actions .catalog-publish-confirm-submit {
+  background: #28533f;
+  border-color: #28533f;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(37,83,57,.14);
+}
+.admin-app .catalog-publish-confirm-actions .catalog-publish-confirm-submit:not(.is-draft):hover {
+  background: #1b4631;
+  border-color: #1b4631;
+}
+.admin-app .catalog-publish-confirm-actions .catalog-publish-confirm-submit.is-draft {
+  color: #6d5129;
+  background: #f7e9cd;
+  border-color: #e9d5ac;
+  box-shadow: none;
+}
+.admin-app .catalog-publish-confirm-actions .catalog-publish-confirm-submit.is-draft:hover {
+  background: #f2dfb8;
+}
+.admin-app .catalog-publish-confirm-actions button:focus-visible,
+.admin-app dialog.modal.catalog-publish-confirm-dialog > .modal-heading .icon-button:focus-visible {
+  outline: 2px solid #4b9664;
+  outline-offset: 2px;
+}
+.admin-app[data-theme="dark"] dialog.modal.catalog-publish-confirm-dialog {
+  color: #e8f3e9;
+  background: #26382d;
+  border-color: #4c7157;
+}
+.admin-app[data-theme="dark"] dialog.modal.catalog-publish-confirm-dialog > .modal-heading {
+  border-color: #4b644f;
+}
+.admin-app[data-theme="dark"] dialog.modal.catalog-publish-confirm-dialog > .modal-heading h2,
+.admin-app[data-theme="dark"] .catalog-publish-confirm-product strong {
+  color: #e8f3e9;
+}
+.admin-app[data-theme="dark"] dialog.modal.catalog-publish-confirm-dialog > .modal-heading .eyebrow,
+.admin-app[data-theme="dark"] .catalog-publish-confirm-product-label {
+  color: #b0c8b6;
+}
+.admin-app[data-theme="dark"] dialog.modal.catalog-publish-confirm-dialog > .modal-heading .icon-button {
+  color: #c6decb;
+  border-color: #52745a;
+  background: #314c39;
+}
+.admin-app[data-theme="dark"] .catalog-publish-confirm-description,
+.admin-app[data-theme="dark"] .catalog-publish-confirm-product-sku {
+  color: #bcd0c1;
+}
+.admin-app[data-theme="dark"] .catalog-publish-confirm-product {
+  background: #2e4635;
+  border-color: #4d6b54;
+}
+.admin-app[data-theme="dark"] .catalog-publish-confirm-icon.is-publish {
+  background: #31533e;
+  color: #c6edce;
+  border-color: #4e7a5b;
+}
+.admin-app[data-theme="dark"] .catalog-publish-confirm-icon.is-draft {
+  background: #4f412b;
+  color: #f8dbab;
+  border-color: #776240;
+}
+.admin-app[data-theme="dark"] .catalog-publish-confirm-actions .catalog-publish-confirm-cancel {
+  background: #324b38;
+  color: #d6e8d9;
+  border-color: #59705d;
+}
+.admin-app[data-theme="dark"] .catalog-publish-confirm-actions .catalog-publish-confirm-submit:not(.is-draft) {
+  background: #407b55;
+  border-color: #529466;
+}
+@media (max-width: 480px) {
+  .admin-app dialog.modal.catalog-publish-confirm-dialog > .modal-heading { padding: 21px 17px 17px; }
+  .admin-app .catalog-publish-confirm-body { padding: 21px 17px 19px; }
+  .admin-app .catalog-publish-confirm-actions { gap: 8px; }
+  .admin-app .catalog-publish-confirm-actions button { font-size: 11.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .catalog-publish-confirm-actions button { transition: none; }
+}
