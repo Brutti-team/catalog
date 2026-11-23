@@ -593,10 +593,16 @@ export default function PublicCatalog({
                     Try again <ArrowRight size={16} />
                   </button>
                 </div>
-              ) : filtered.length === 1 && filtered[0] ? (
-                <PublicCollectionSpotlight product={filtered[0]} categoryName={categoryName(filtered[0].categoryId)} />
               ) : filtered.length ? (
-                <div className="pub-products-grid">{filtered.map(card)}</div>
+                <div className="pub-products-grid pub-products-grid--catalog">
+                  {filtered.map(item => (
+                    <PublicCollectionSpotlight
+                      key={item.id}
+                      product={item}
+                      categoryName={categoryName(item.categoryId)}
+                    />
+                  ))}
+                </div>
               ) : published.length === 0 && !query && category === "all" && !featuredOnly ? (
                 <div className="pub-empty-state pub-empty-state--unpublished">
                   <div className="pub-empty-editorial">
