@@ -888,3 +888,164 @@
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
   .pub-products-grid--catalog .pub-catalog-tile__eye:hover {transform:none;}
 }
+
+
+/* Product-card balance pass: category/status separation and refined information area.
+   Explicit two-column metadata prevents "RACKS & SHELVESAvailable" collisions,
+   including at different browser zoom levels and on narrow product cards. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  padding: 13px 12px 11px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__meta {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) max-content;
+  align-items: center;
+  column-gap: 14px;
+  row-gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__category {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  color: #92765e;
+  font: 750 10px/1.45 "DM Sans",system-ui,sans-serif;
+  letter-spacing: .075em;
+  overflow-wrap: anywhere;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__meta .pub-catalog-tile__availability {
+  display: inline-flex;
+  justify-self: end;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 5px 9px;
+  border: 1px solid rgba(114,154,121,.18);
+  border-radius: 999px;
+  background: rgba(92,139,99,.105);
+  color: #486d50;
+  font: 650 10px/1.3 "DM Sans",system-ui,sans-serif;
+  white-space: nowrap;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__availability .pub-catalog-tile__dot {
+  display: block;
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #628d68;
+  box-shadow: 0 0 0 2px rgba(98,141,104,.12);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__availability .pub-catalog-tile__dot--made-to-order {
+  background: #b39258;
+  box-shadow: 0 0 0 2px rgba(179,146,88,.12);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__availability .pub-catalog-tile__dot--unavailable {
+  background: #92968e;
+  box-shadow: 0 0 0 2px rgba(146,150,142,.12);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__details-row {
+  align-items: center;
+  width: 100%;
+  margin-top: 9px;
+  column-gap: 12px;
+  row-gap: 6px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__details-row .pub-catalog-tile__title {
+  flex: 1 1 100px;
+  min-width: 0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__title h3 {
+  font: 700 clamp(20px,1.65vw,24px)/1.2 "Manrope","DM Sans",system-ui,sans-serif;
+  letter-spacing: -.04em;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__description {
+  width: 100%;
+  margin: 7px 0 0;
+  color: #738174;
+  font: 450 12px/1.5 "DM Sans",system-ui,sans-serif;
+  -webkit-line-clamp: 1;
+  text-overflow: ellipsis;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile__pricing .catalog-price-current {
+  box-shadow: 0 3px 8px rgba(28,64,40,.10), inset 0 1px 0 rgba(255,255,255,.12);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+.pub-products-grid--catalog .pub-catalog-tile {
+  border-color: rgba(255,255,255,.99);
+  background:
+    radial-gradient(circle at 90% 95%,rgba(193,209,190,.25),transparent 65%),
+    linear-gradient(150deg,rgba(255,255,255,.69),rgba(244,239,229,.4));
+  box-shadow:
+    0 14px 31px rgba(36,51,37,.105),
+    0 3px 9px rgba(36,51,37,.035),
+    inset 0 1px 0 rgba(255,255,255,.98);
+}
+@media (hover:hover) and (pointer:fine) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile:hover {
+    box-shadow:
+      0 25px 46px rgba(31,52,35,.17),
+      0 9px 19px rgba(31,52,35,.09),
+      inset 0 1px 0 #fff;
+  }
+}
+@media (max-width:650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__copy {padding:11px 8px 9px;}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__meta {
+    grid-template-columns:minmax(0,1fr) max-content;
+    column-gap:7px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__category {font-size:8.5px;letter-spacing:.045em;}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__meta .pub-catalog-tile__availability {
+    gap:4px;
+    padding:4px 6px;
+    font-size:8.5px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__details-row {
+    margin-top:8px;
+    column-gap:8px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__title h3 {
+    font-size:clamp(16px,4vw,20px);
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__description {font-size:10.5px;}
+}
+/* Long status labels stack on genuinely narrow cards rather than touch category text. */
+@container (max-width: 230px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__meta {
+    grid-template-columns:1fr;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
+  .pub-products-grid--catalog .pub-catalog-tile__meta .pub-catalog-tile__availability {
+    justify-self:start;
+  }
+}
