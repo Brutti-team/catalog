@@ -57,6 +57,18 @@
   transform: rotate(180deg);
 }
 
+/* Place the dropdown in the browser's top layer above the editor dialog.
+   Popover UA defaults centre it; explicitly reset them so the measured
+   trigger coordinates are respected in scrolling modal layouts. */
+.admin-app .product-editor-dialog .catalog-measure-type-menu[popover] {
+  inset: auto;
+  margin: 0;
+  position: fixed;
+}
+.admin-app .product-editor-dialog .catalog-measure-type-menu[popover]:popover-open {
+  display: flex;
+}
+
 /* Positioned inside the native dialog top layer. Never use a browser-native
    full-height select: it hides the rest of the editor. */
 .admin-app .product-editor-dialog .catalog-measure-type-menu {
