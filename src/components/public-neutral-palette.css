@@ -1,0 +1,35 @@
+/* Brutti Catalog public palette: replace the old warm/pink-beige paper
+   inherited from public-reference.css with neutral cool off-white.
+   Scoped to public site only; product records, staff portal and previews stay intact. */
+.pub-app.pub-refined:not(.pub-private-preview) {
+  --pub-cream: #f7faf8;
+  --pub-border: #dfe9e1;
+  --home-paper: #f7faf8;
+  background: #f7faf8;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection.pub-collection,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-curated-showroom {
+  background: transparent;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-search,
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-sort-trigger {
+  background: rgba(255,255,255,.94);
+  border-color: #dbe5dd;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-category-filters button:not(.pub-filter-active) {
+  background: rgba(255,255,255,.53);
+  border-color: #dfe6df;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-category-filters button:not(.pub-filter-active):hover {
+  background: #ecf4ee;
+  border-color: #b5cfbb;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-filter-row {
+  border-bottom-color: #dfe7df;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-products-grid--catalog > .pub-catalog-tile {
+  background:
+    radial-gradient(ellipse at 90% 100%,rgba(203,228,210,.20),transparent 60%),
+    linear-gradient(145deg,rgba(255,255,255,.89),rgba(243,249,245,.69));
+  border-color: rgba(255,255,255,.95);
+}
