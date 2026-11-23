@@ -150,7 +150,6 @@ export default function PublicCatalog({
       setCategory("all");
     }
   }, [category, categories, loading]);
-  const [featuredOnly, setFeaturedOnly] = useState(false);
   const [sort, setSort] = useState("curated");
   const [sortOpen, setSortOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
@@ -227,7 +226,6 @@ export default function PublicCatalog({
     const list = published.filter(
       (item) =>
         (category === "all" || item.categoryId === category) &&
-        (!featuredOnly || item.featured) &&
         (!text ||
           `${item.name} ${item.sku} ${item.description} ${item.materials}`
             .toLowerCase()
@@ -240,9 +238,8 @@ export default function PublicCatalog({
           ? (a.price ?? Infinity) - (b.price ?? Infinity)
           : Number(b.featured) - Number(a.featured) || (a.displayOrder ?? 0) - (b.displayOrder ?? 0),
     );
-  }, [published, query, category, featuredOnly, sort]);
-  const browseCollection = (featured = false) => {
-    setFeaturedOnly(featured);
+  }, [published, query, category, sort]);
+  const browseCollection = () => {
     setMobileMenu(false);
     if (productId !== null) {
       window.location.hash = "/catalog";
@@ -261,8 +258,7 @@ export default function PublicCatalog({
   const exploreShowroom = (keyword: string) => {
     setQuery(keyword);
     setCategory("all");
-    setFeaturedOnly(false);
-    browseCollection(false);
+    browseCollection();
   };
   const browseShowroom = () => {
     setMobileMenu(false);
@@ -291,7 +287,6 @@ export default function PublicCatalog({
   const resetFilters = () => {
     setQuery("");
     setCategory("all");
-    setFeaturedOnly(false);
   };
   const related = product
     ? published
@@ -458,7 +453,7 @@ export default function PublicCatalog({
                 BENUA BRUTTI SDN. BHD. <ArrowDown size={14} />
               </span>
             </div>
-            <ShowroomSections onExplore={exploreShowroom} onCategorySelect={(categoryId) => { setQuery(""); setCategory(categoryId); browseCollection(false); }} categories={categories} publishedProducts={published} loading={loading} />
+            <ShowroomSections onExplore={exploreShowroom} onCategorySelect={(categoryId) => { setQuery(""); setCategory(categoryId); browseCollection(); }} categories={categories} publishedProducts={published} loading={loading} />
             <section id="pub-collection" className="pub-collection">
               <div className="pub-collection-green-header">
                 <div className="pub-section-heading">
@@ -491,37 +486,28 @@ export default function PublicCatalog({
                   )}
                 </label>
                 <div className="pub-collection-actions">
-                  <button
-                    type="button"
-                    className={`pub-featured-filter ${featuredOnly ? "pub-filter-featured-active" : ""}`}
-                    aria-pressed={featuredOnly}
-                    onClick={() => setFeaturedOnly(!featuredOnly)}
-                  >
-                    <Sparkles size={15} aria-hidden="true" />
-                    Featured only
-                  </button>
                   <div className="pub-sort" ref={sortRef}>
                     <div className="pub-sort-control">
                       <button
                         type="button"
                         className="pub-sort-trigger"
-                        aria-label="Sort products"
+                        aria-label="Sort products by"
                         aria-expanded={sortOpen}
                         aria-controls="pub-sort-options"
                         onClick={() => setSortOpen((isOpen) => !isOpen)}
                       >
-                        <span className="pub-sort-caption">Sort:</span>
+                        <span className="pub-sort-caption">Sort by:</span>
                         <span className="pub-sort-current">
-                          {sort === "name" ? "Name A–Z" : sort === "price" ? "Price: low to high" : "Curated"}
+                          {sort === "name" ? "Name A–Z" : sort === "price" ? "Lowest price" : "Recommended"}
                         </span>
                         <ChevronDown size={14} aria-hidden="true" />
                       </button>
                       {sortOpen && (
                         <div id="pub-sort-options" className="pub-sort-menu" role="group" aria-label="Sort order">
                           {([
-                            { value: "curated", label: "Curated selection" },
-                            { value: "name", label: "Name: A–Z" },
-                            { value: "price", label: "Price: low to high" },
+                            { value: "curated", label: "Recommended" },
+                            { value: "name", label: "Name A–Z" },
+                            { value: "price", label: "Lowest price" },
                           ] as const).map(option => (
                             <button
                               type="button"
@@ -569,7 +555,7 @@ export default function PublicCatalog({
                 {loading
                   ? "Loading the collection…"
                   : `${filtered.length} ${filtered.length === 1 ? "project" : "projects"}${query ? ` matching “${query}”` : " in the collection"}`}
-                {(query || category !== "all" || featuredOnly) && (
+                {(query || category !== "all") && (
                   <button onClick={resetFilters}>
                     Clear filters <X size={12} />
                   </button>
@@ -607,7 +593,7 @@ export default function PublicCatalog({
                     />
                   ))}
                 </div>
-              ) : published.length === 0 && !query && category === "all" && !featuredOnly ? (
+              ) : published.length === 0 && !query && category === "all" ? (
                 <div className="pub-empty-state pub-empty-state--unpublished">
                   <div className="pub-empty-editorial">
                     <span className="pub-empty-eyebrow">BENUA BRUTTI · THE COLLECTION</span>
