@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cmToUnit, unitMax, unitToCm, type DimensionUnit } from "../src/lib/dimensions";
+import { cmToUnit, unitMax, unitToCm, normalizeDimensionUnits, formatProductDimensions, type DimensionUnit } from "../src/lib/dimensions";
 
 describe("Brutti catalog dimension display units", () => {
   it("converts each selectable unit to canonical centimetres", () => {
@@ -22,6 +22,28 @@ describe("Brutti catalog dimension display units", () => {
     for (const unit of units) {
       expect(unitToCm(cmToUnit(245.75, unit), unit)).toBeCloseTo(245.75, 2);
     }
+  });
+
+  it("normalizes old products to centimetres independently", () => {
+    expect(normalizeDimensionUnits(undefined)).toEqual({ width: "cm", depth: "cm", height: "cm" });
+    expect(normalizeDimensionUnits({ width: "ft", depth: "cm", height: "banana" }))
+      .toEqual({ width: "ft", depth: "cm", height: "cm" });
+  });
+
+  it("formats different display units for width depth and height", () => {
+    expect(formatProductDimensions({
+      width: 167.64,
+      depth: 1.5,
+      height: 182.88,
+      dimensionUnits: { width: "ft", depth: "cm", height: "ft" },
+    })).toBe("5.5 ft W × 1.5 cm D × 6 ft H");
+  });
+
+  it("does not display unspecified sizes as zero measurements", () => {
+    expect(formatProductDimensions({
+      width: 0, depth: 45.72, height: 0,
+      dimensionUnits: { width: "cm", depth: "ft", height: "in" },
+    })).toBe("1.5 ft D");
   });
 
   it("keeps the existing maximum limit in centimetres", () => {
