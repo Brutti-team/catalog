@@ -734,6 +734,22 @@ export default function PublicCatalog({
                         ))}
                       </div>
                     )}
+                    {!previewProduct && (
+                      <div className="pub-gallery-enquiry">
+                        <a
+                          className="pub-primary-button pub-enquiry-button pub-whatsapp-enquiry"
+                          href={productWhatsAppUrl(product)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Enquire about ${product.name} on WhatsApp`}
+                        >
+                          Enquire about this piece <ArrowUpRight size={16} aria-hidden="true" />
+                        </a>
+                        <p className="pub-enquiry-note">
+                          Opens WhatsApp with a ready-to-send message about this product. You can review it before sending.
+                        </p>
+                      </div>
+                    )}
                   </div>
                   <div className="pub-detail-copy">
                     <p className="pub-eyebrow">
@@ -759,6 +775,8 @@ export default function PublicCatalog({
                         </small>
                       )}
                     </p>
+                    {previewProduct && (
+                      <>
                     <a
                       className="pub-primary-button pub-enquiry-button pub-whatsapp-enquiry"
                       href={productWhatsAppUrl(product)}
@@ -771,6 +789,8 @@ export default function PublicCatalog({
                     <p className="pub-enquiry-note">
                       Opens WhatsApp with a ready-to-send message about this product. You can review it before sending.
                     </p>
+                      </>
+                    )}
                     {(!previewProduct ||
                       Boolean(product.materials?.trim()) ||
                       [product.width, product.depth, product.height].every(value => Number.isFinite(value) && value > 0) ||
