@@ -40,6 +40,7 @@ import { nextProductId } from "../lib/product-ids";
 import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
 import DimensionUnitPicker from "./DimensionUnitPicker";
 import MeasurementTypePicker from "./MeasurementTypePicker";
+import MaterialsEditor from "./MaterialsEditor";
 import PhotoCropEditor from "./PhotoCropEditor";
 import PhotoCoverStudio from "./PhotoCoverStudio";
 import AlbumLibrary from "./AlbumLibrary";
@@ -960,16 +961,14 @@ export default function ProductEditor({
                     <DimensionUnitPicker value={dimensionUnit} onChange={setDimensionUnit} disabled={busy || uploading} />
                   </div>
                 </div>
-                <label className="catalog-reference-spec-row">
+                <div className="catalog-reference-spec-row catalog-materials-spec-row">
                   <span className="catalog-reference-spec-key">Materials <small>Optional · primary materials</small></span>
-                  <input
-                    aria-label="Materials"
-                    maxLength={2000}
+                  <MaterialsEditor
                     value={draft.materials}
-                    placeholder="e.g. Walnut veneer, timber, brass"
-                    onChange={(e) => update("materials", e.target.value)}
+                    onChange={value => update("materials", value)}
+                    disabled={busy}
                   />
-                </label>
+                </div>
                 <div className="catalog-reference-spec-row catalog-reference-pricing-row">
                   <span className="catalog-reference-spec-key">Pricing <small>In Malaysian Ringgit</small></span>
                   <div className="catalog-pricing-fields">
@@ -1101,16 +1100,14 @@ export default function ProductEditor({
                   <p>Materials, measurements and pricing.</p>
                 </div>
               </div>
-              <label>
-                Materials <span className="product-editor-publish-hint">Optional</span>
-                <input
-                  aria-label="Materials"
-                  maxLength={2000}
+              <div className="catalog-materials-new-field">
+                <span>Materials <span className="product-editor-publish-hint">Optional</span></span>
+                <MaterialsEditor
                   value={draft.materials}
-                  placeholder="e.g. Reclaimed timber, natural oil finish"
-                  onChange={(e) => update("materials", e.target.value)}
+                  onChange={value => update("materials", value)}
+                  disabled={busy}
                 />
-              </label>
+              </div>
               <div className="section-label">
                 Dimensions <span className="muted">Optional</span>
               </div>
