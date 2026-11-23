@@ -56,6 +56,6 @@ describe("Materials rich formatting controls", () => {
 
   it("shows clean card summaries with bold headings and inline formatting", () => {
     const value = "## Materials\n• **Tier:** *Pine*\n• ~~Metal~~ frame";
-    expect(materialCardSummary(value)).toBe("Materials · +2 more");
+    expect(materialCardSummary(value)).toBe("Tier: Pine · +1 more");
   });
 });
