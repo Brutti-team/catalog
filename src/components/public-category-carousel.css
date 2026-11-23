@@ -260,3 +260,38 @@
   -webkit-user-drag: none;
   user-drag: none;
 }
+
+
+/* Brutti forest-green background: category gallery only.
+   Keep the white/glass category tiles, photography, carousel interactions,
+   page background and other catalogue sections unchanged. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-category-marquee {
+  background:
+    radial-gradient(ellipse at 88% 15%, rgba(78,135,98,.32), transparent 53%),
+    linear-gradient(128deg, #0d3224 0%, #154832 55%, #20583e 100%);
+  border-color: rgba(224,244,228,.2);
+  box-shadow:
+    0 17px 46px rgba(19,52,32,.19),
+    inset 0 1px 0 rgba(255,255,255,.14);
+  color: #f4f8f3;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-category-marquee::before {
+  background: linear-gradient(135deg,rgba(255,255,255,.07),transparent 40%,rgba(255,255,255,.035));
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-category-marquee-heading h2 {
+  color: #f7fbf7;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-category-marquee-eyebrow {
+  color: #d3c2a7;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-category-marquee-all {
+  color: #e5f3e7;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-category-marquee-empty {
+  color: #d0e0d3;
+}
+@media (hover:hover) and (pointer:fine) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-category-marquee-all:hover {
+    color: #fff;
+  }
+}
