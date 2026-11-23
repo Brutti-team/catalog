@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type SyntheticEvent } from "react";
 import { ArrowRight, ArrowUpRight, Eye, X } from "lucide-react";
 import type { Product } from "../lib/types";
 import { photoCropStyle } from "../lib/photo-crop";
@@ -40,10 +40,10 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
     recordCatalogEvent("product_click", product.id);
     setQuickViewOpen(false);
   };
-  const fallbackImage = (event: React.SyntheticEvent<HTMLImageElement>) => {
+  const fallbackImage = (event: SyntheticEvent<HTMLImageElement>) => {
     const target = event.currentTarget;
     const fallback = publicAssetUrl("/images/placeholder.svg");
-    if (target.src !== fallback) target.src = fallback;
+    if (!target.src.endsWith("/images/placeholder.svg")) target.src = fallback;
   };
 
   return (
