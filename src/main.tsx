@@ -105,6 +105,7 @@ import "./components/catalog-overall-dimension-units.css";
 import "./components/catalog-materials-richtext.css";
 import "./components/catalog-overview-categories-motion.css";
 import "./components/public-neutral-palette.css";
+import "./components/public-collection-green-header.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
