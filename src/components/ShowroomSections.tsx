@@ -150,7 +150,7 @@ export default function ShowroomSections({
       }
     }
     dragState.current = null;
-    pointerPaused.current = false;
+    pointerPaused.current = Boolean(viewport?.matches(":hover, :focus-within"));
     manualUntil.current = performance.now() + 4000;
   };
 
