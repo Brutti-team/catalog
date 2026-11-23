@@ -1,14 +1,16 @@
 /**
  * A small plain-text list format stored in the existing products.materials field.
- * No HTML or markdown is persisted, so older materials remain compatible.
+ * Optional inline markers are saved as plain text. No HTML is interpreted.
  */
 export type MaterialListStyle = "plain" | "bullet" | "numbered";
-export type MaterialBlock = { style: MaterialListStyle; items: string[] };
+export type MaterialBlock = { style: MaterialListStyle | "heading"; items: string[] };
 const BULLET = /^(?:•|[-*])\s+(.*)$/;
 const NUMBERED = /^\d{1,3}[.)]\s+(.*)$/;
 
 function readLine(raw: string): { style: MaterialListStyle; text: string } {
   const line = raw.trim();
+  const heading = line.match(/^##\s+(.+)$/);
+  if (heading) return { style: "heading" as const, text: heading[1].trim() };
   const bullet = line.match(BULLET);
   if (bullet) return { style: "bullet", text: bullet[1].trim() };
   const numbered = line.match(NUMBERED);
@@ -18,7 +20,9 @@ function readLine(raw: string): { style: MaterialListStyle; text: string } {
 
 export function materialListStyle(value: string): MaterialListStyle {
   const first = value.split(/\r?\n/).find(line => line.trim());
-  return first ? readLine(first).style : "plain";
+  if (!first) return "plain";
+  const style = readLine(first).style;
+  return style === "heading" ? "plain" : style;
 }
 
 export function formatMaterialsList(value: string, style: MaterialListStyle): string {
@@ -45,8 +49,18 @@ export function parseMaterials(value: string): MaterialBlock[] {
   return blocks;
 }
 
+/** Strip supported inline markers when displaying short product card snippets. */
+export function stripMaterialFormatting(value: string): string {
+  let text = value;
+  for (const pattern of [/\*\*([^*]+)\*\*/g, /~~([^~]+)~~/g, /\+\+([^+]+)\+\+/g,
+    /==([^=]+)==/g, /\*([^*]+)\*/g]) {
+    text = text.replace(pattern, "$1");
+  }
+  return text;
+}
+
 export function materialCardSummary(value: string): string {
-  const items = parseMaterials(value).flatMap(block => block.items);
+  const items = parseMaterials(value).flatMap(block => block.items).map(stripMaterialFormatting);
   if (!items.length) return "";
   return items.length === 1 ? items[0] : `${items[0]} · +${items.length - 1} more`;
 }
