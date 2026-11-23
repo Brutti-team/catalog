@@ -159,6 +159,16 @@
   color: #274b36;
   font: 650 14px/1.45 "Karla",system-ui,sans-serif;
 }
+.pub-app .pub-catalog-tile__dot {
+  display: inline-block;
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #668d6b;
+}
+.pub-app .pub-catalog-tile__dot--made-to-order {background: #bf9c69;}
+.pub-app .pub-catalog-tile__dot--unavailable {background: #a0a49c;}
 .pub-app .pub-catalog-tile__price .catalog-price-line {
   display: flex;
   align-items: baseline;
