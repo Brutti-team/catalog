@@ -1,7 +1,8 @@
 import type { Product } from "../lib/types";
+import InlineDimensionUnitMenu from "./InlineDimensionUnitMenu";
 import {
   cmToUnit, unitToCm, unitMax, normalizeDimensionUnits,
-  OVERALL_DIMENSION_KEYS, DIMENSION_UNIT_OPTIONS,
+  OVERALL_DIMENSION_KEYS,
   type DimensionKey, type DimensionUnit,
 } from "../lib/dimensions";
 
@@ -12,9 +13,8 @@ type Props = {
   disabled?: boolean;
 };
 
-/** Reliable native select per measurement. It opens above modal content on
- * desktop and mobile without a clipped portal or hidden custom dropdown.
- * Database measurements remain canonical centimetres. */
+/** Each measurement has an independently saved unit and a compact top-layer
+ * menu. The numeric values still persist as canonical centimetres. */
 export default function OverallDimensionFields({
   product, onValueChange, onUnitChange, disabled = false,
 }: Props) {
@@ -47,17 +47,12 @@ export default function OverallDimensionFields({
                   key, event.target.value === "" ? 0 : unitToCm(Number(event.target.value), unit),
                 )}
               />
-              <select
-                aria-label={`${label} unit`}
-                title={`Choose unit for ${label}`}
+              <InlineDimensionUnitMenu
+                label={label}
                 value={unit}
                 disabled={disabled}
-                onChange={event => onUnitChange(key, event.target.value as DimensionUnit)}
-              >
-                {DIMENSION_UNIT_OPTIONS.map(option => (
-                  <option key={option.value} value={option.value}>{option.label}</option>
-                ))}
-              </select>
+                onChange={next => onUnitChange(key, next)}
+              />
             </div>
           </div>
         );
