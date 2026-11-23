@@ -103,6 +103,7 @@ import "./components/public-product-detail-studio.css";
 import "./components/catalog-materials-formatting.css";
 import "./components/catalog-overall-dimension-units.css";
 import "./components/catalog-materials-richtext.css";
+import "./components/catalog-overview-categories-motion.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
