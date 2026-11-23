@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type PointerEvent as ReactPointerEvent, type MouseEvent as ReactMouseEvent } from "react";
 import { ArrowLeft, ArrowRight, DraftingCompass, Hammer, Layers3 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import { publicAssetUrl } from "../lib/assets";
@@ -36,6 +36,14 @@ export default function ShowroomSections({
   const viewportRef = useRef<HTMLDivElement>(null);
   const pointerPaused = useRef(false);
   const manualUntil = useRef(0);
+  const dragState = useRef<{
+    pointerId: number;
+    startX: number;
+    scrollStart: number;
+    loopWidth: number;
+    dragging: boolean;
+  } | null>(null);
+  const suppressClickUntil = useRef(0);
   // Includes names and selected covers, not only the number of rows: renames,
   // additions, deletions and new Admin cover selections all resync the carousel.
   const categorySignature = categories
@@ -77,6 +85,82 @@ export default function ShowroomSections({
       window.removeEventListener("resize", measure);
     };
   }, [categorySignature, section]);
+
+  // Mouse / trackpad drag on desktop. Touch is left to native horizontal
+  // scrolling for smooth iOS/Android swipes and normal vertical page scroll.
+  const startCategoryDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "touch" || event.button !== 0 || !event.isPrimary) return;
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    pointerPaused.current = true;
+    dragState.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      scrollStart: viewport.scrollLeft,
+      loopWidth: viewport.querySelector<HTMLElement>(".pub-category-rail-group")?.offsetWidth ?? 0,
+      dragging: false,
+    };
+  };
+
+  const moveCategoryDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const drag = dragState.current;
+    const viewport = viewportRef.current;
+    if (!drag || !viewport || event.pointerId !== drag.pointerId) return;
+    const distance = event.clientX - drag.startX;
+    if (!drag.dragging && Math.abs(distance) < 7) return;
+    if (!drag.dragging) {
+      drag.dragging = true;
+      // Clone groups make the rail seamless even when dragged to the left
+      // from its initial position. Reposition by one identical loop.
+      if (drag.loopWidth > 0 && viewport.scrollLeft < drag.loopWidth * .65) {
+        viewport.scrollLeft += drag.loopWidth;
+        drag.scrollStart += drag.loopWidth;
+      }
+      viewport.classList.add("is-dragging");
+      try { viewport.setPointerCapture(event.pointerId); } catch { /* no capture support */ }
+    }
+    event.preventDefault();
+    let next = drag.scrollStart - distance;
+    if (drag.loopWidth > 0) {
+      // Keep interaction in the middle clones without reaching a hard edge.
+      if (next < drag.loopWidth * .3) {
+        next += drag.loopWidth;
+        drag.scrollStart += drag.loopWidth;
+      } else if (next > drag.loopWidth * 2.4) {
+        next -= drag.loopWidth;
+        drag.scrollStart -= drag.loopWidth;
+      }
+    }
+    viewport.scrollLeft = next;
+    manualUntil.current = performance.now() + 3500;
+  };
+
+  const stopCategoryDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const drag = dragState.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const viewport = viewportRef.current;
+    if (drag.dragging) {
+      // Do not navigate to a category when the user only meant to drag it.
+      suppressClickUntil.current = performance.now() + 400;
+    }
+    if (viewport) {
+      viewport.classList.remove("is-dragging");
+      if (viewport.hasPointerCapture?.(event.pointerId)) {
+        viewport.releasePointerCapture(event.pointerId);
+      }
+    }
+    dragState.current = null;
+    pointerPaused.current = false;
+    manualUntil.current = performance.now() + 4000;
+  };
+
+  const preventDragClick = (event: ReactMouseEvent<HTMLDivElement>) => {
+    // Keyboard activation remains available immediately after a drag.
+    if (event.detail > 0 && performance.now() < suppressClickUntil.current) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  };
 
   const moveCategories = (direction: -1 | 1) => {
     const viewport = viewportRef.current;
@@ -150,6 +234,7 @@ export default function ShowroomSections({
                 <img
                   src={card.image}
                   alt=""
+                  draggable={false}
                   loading="lazy"
                   decoding="async"
                   style={photoCropStyle(card.photo)}
@@ -189,13 +274,19 @@ export default function ShowroomSections({
             <div
               className="pub-category-marquee-viewport"
               ref={viewportRef}
+              onPointerDown={startCategoryDrag}
+              onPointerMove={moveCategoryDrag}
+              onPointerUp={stopCategoryDrag}
+              onPointerCancel={stopCategoryDrag}
+              onClickCapture={preventDragClick}
+              onDragStart={event => event.preventDefault()}
               onMouseEnter={() => { pointerPaused.current = true; }}
               onMouseLeave={() => { pointerPaused.current = false; }}
               onFocusCapture={() => { pointerPaused.current = true; }}
               onBlurCapture={() => { pointerPaused.current = false; }}
               onTouchStart={() => { pointerPaused.current = true; }}
               onTouchEnd={() => { pointerPaused.current = false; manualUntil.current = performance.now() + 1800; }}
-              aria-label="Furniture and project categories"
+              aria-label="Furniture and project categories; drag horizontally to browse"
             >
               <div className="pub-category-marquee-track">
                 {[0, 1, 2, 3].map(group)}
