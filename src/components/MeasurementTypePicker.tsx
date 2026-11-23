@@ -23,7 +23,10 @@ export default function MeasurementTypePicker({ value, options, onChange, label,
   const menuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const portalTarget = rootRef.current?.closest<HTMLDialogElement>("dialog");
+  // Popover remains a descendant of the active modal but renders in the browser's
+  // top layer, avoiding clipping by the dialog's scroll and sticky sections.
+  const portalTarget = rootRef.current?.closest<HTMLDialogElement>("dialog")
+    ?? rootRef.current?.closest<HTMLElement>("#product-editor-specs");
 
   const filtered = options.filter(option => option.toLowerCase().includes(query.trim().toLowerCase()));
   const showCustom = !query.trim() || "other measurement custom".includes(query.trim().toLowerCase()) ||
@@ -67,12 +70,30 @@ export default function MeasurementTypePicker({ value, options, onChange, label,
 
   useLayoutEffect(() => {
     if (!open) return;
+    const menu = menuRef.current;
+    if (!menu) return;
+    // Ordinary fixed portal content may be hidden by the fullscreen
+    // editor dialog's scrolling box. A descendant manual popover is promoted
+    // above the dialog in the top layer without dismissing the editor.
+    if (typeof menu.showPopover === "function") {
+      try {
+        if (!menu.matches(":popover-open")) menu.showPopover();
+      } catch {
+        // Fall back to a visible fixed menu on browsers that reject popovers.
+        menu.removeAttribute("popover");
+      }
+    } else {
+      menu.removeAttribute("popover");
+    }
     positionMenu();
+    const frame = requestAnimationFrame(positionMenu);
     document.addEventListener("scroll", positionMenu, true);
     window.addEventListener("resize", positionMenu);
     return () => {
+      cancelAnimationFrame(frame);
       document.removeEventListener("scroll", positionMenu, true);
       window.removeEventListener("resize", positionMenu);
+      if (menu.matches(":popover-open")) menu.hidePopover();
     };
   }, [open, positionMenu]);
 
@@ -162,7 +183,7 @@ export default function MeasurementTypePicker({ value, options, onChange, label,
         <ChevronDown size={16} strokeWidth={1.8} className="catalog-measure-type-chevron" aria-hidden="true" />
       </button>
       {open && portalTarget && createPortal(
-        <div className="catalog-measure-type-menu" ref={menuRef} style={menuStyle} onKeyDown={onMenuKeyDown}>
+        <div popover="manual" className="catalog-measure-type-menu" ref={menuRef} style={menuStyle} onKeyDown={onMenuKeyDown}>
           <div className="catalog-measure-type-search">
             <Search size={15} strokeWidth={1.9} aria-hidden="true" />
             <input
