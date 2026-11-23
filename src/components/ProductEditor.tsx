@@ -23,6 +23,7 @@ import {
   Pencil,
   Trash2,
   Image as ImageIcon,
+  AlertCircle,
 } from "lucide-react";
 import type { Product, Category, ProductImage, ProductSpecification } from "../lib/types";
 import { uploadImage, validateProduct, cleanupAbandonedImages, type ProductModelChange } from "../lib/catalog";
@@ -41,7 +42,7 @@ import PhotoCoverStudio from "./PhotoCoverStudio";
 import AlbumLibrary from "./AlbumLibrary";
 import { albumPhotoToProductImage, type AlbumPhoto } from "../lib/album";
 import { photoCropStyle } from "../lib/photo-crop";
-import { splitSpecifications } from "../lib/specification-groups";
+import { splitSpecifications, compactSpecifications } from "../lib/specification-groups";
 
 const MEASUREMENT_NAME_OPTIONS = [
   "Width", "Height", "Depth", "Length", "Diameter", "Thickness", "Radius",
@@ -434,15 +435,30 @@ export default function ProductEditor({
       specifications: (current.specifications ?? []).filter((row) => row.id !== id),
     }));
   async function commit(status: Product["status"] = draft.status) {
-    if (uploadLock.current || modelLocked.current || busy) return;
+    if (busy) return;
+    // Never silently ignore a click. Explain temporary upload/model blockers
+    // in the sticky footer where the user clicked.
+    if (uploadLock.current || uploading) {
+      setError("An image is still uploading. Complete the upload before saving or publishing.");
+      return;
+    }
+    if (modelLocked.current) {
+      setError(modelInvalid
+        ? "The 3D model preview failed. Replace or remove the selected 3D file before publishing."
+        : "The 3D model is still processing. Finish or cancel it before publishing.");
+      return;
+    }
     if (status === "draft" && product.status === "published" && !window.confirm("Saving as draft will unpublish this product from the public catalogue. Continue?")) return;
     setError("");
+    // Newly added but untouched rows should not prevent a completed product
+    // from being published. Partially filled rows remain subject to validation.
+    const candidate = { ...draft, specifications: compactSpecifications(draft.specifications), status };
     try {
-      validateProduct({ ...draft, status });
+      validateProduct(candidate);
       if (status === "published" && product.status !== "published" &&
           !window.confirm("Publish " + (draft.name.trim() || "this product") + " to the public catalog? Customers will be able to view it.")) return;
       setBusy(true);
-      const saved = await onSave({ ...draft, sku: isNewProduct ? draft.sku : product.sku, status, updatedAt: new Date().toISOString() }, modelChange.current, isNewProduct);
+      const saved = await onSave({ ...candidate, sku: isNewProduct ? draft.sku : product.sku, updatedAt: new Date().toISOString() }, modelChange.current, isNewProduct);
       const savedImages = saved?.images ?? draft.images;
       const retained = new Set(savedImages.map(image => image.url));
       const preservedOriginalPaths = new Set(savedImages.flatMap(image => image.preservedOriginalPaths ?? []));
@@ -1156,12 +1172,22 @@ export default function ProductEditor({
             </aside>
           )}
         </div>
-        {error && (
+        {!isEditing && error && (
           <div className="notice error" role="alert">
             {error}
           </div>
         )}
         <footer className="editor-footer">
+          {isEditing && error && (
+            <div className="catalog-editor-save-error" role="alert">
+              <AlertCircle size={18} aria-hidden="true" />
+              <span>{error}</span>
+              <button type="button" aria-label="Dismiss publishing error"
+                title="Dismiss message" onClick={() => setError("")}>
+                <X size={16} aria-hidden="true" />
+              </button>
+            </div>
+          )}
           <span className="tiny muted">
             Changes are saved when you select Save.
           </span>
@@ -1169,7 +1195,7 @@ export default function ProductEditor({
             <button
               className={isEditing && draft.status !== "published"
                 ? "button secondary catalog-editor-footer-save-draft" : "button primary"}
-              disabled={busy || uploading || modelPending || modelInvalid}
+              disabled={busy}
               type="submit"
             >
               {busy ? (
@@ -1183,7 +1209,7 @@ export default function ProductEditor({
               <button
                 type="button"
                 className="button primary catalog-editor-footer-publish"
-                disabled={busy || uploading || modelPending || modelInvalid}
+                disabled={busy}
                 onClick={() => void commit("published")}
                 title="Save changes and publish this product to the public catalog"
               >
@@ -1194,7 +1220,7 @@ export default function ProductEditor({
               <button
                 type="button"
                 className="button secondary catalog-editor-footer-unpublish"
-                disabled={busy || uploading || modelPending || modelInvalid}
+                disabled={busy}
                 onClick={() => void commit("draft")}
                 title="Save changes and remove this product from the public catalog"
               >
