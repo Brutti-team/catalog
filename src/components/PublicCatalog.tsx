@@ -20,6 +20,7 @@ import ProductPrice from "./ProductPrice";
 import MaterialsContent from "./MaterialsContent";
 import { materialCardSummary } from "../lib/material-list";
 import { splitSpecifications } from "../lib/specification-groups";
+import { formatProductDimensions } from "../lib/dimensions";
 import { productIdFromHash } from "../lib/routes";
 import { recordCatalogEvent } from "../lib/customer-analytics";
 import { BRUTTI_WHATSAPP_NUMBER, productWhatsAppUrl } from "../lib/whatsapp-enquiry";
@@ -791,7 +792,7 @@ export default function PublicCatalog({
                     )}
                     {(!previewProduct ||
                       Boolean(product.materials?.trim()) ||
-                      [product.width, product.depth, product.height].every(value => Number.isFinite(value) && value > 0) ||
+                      [product.width, product.depth, product.height].some(value => Number.isFinite(value) && value > 0) ||
                       specificationGroups.primary.some(item => specificationHasContent(item)) ||
                       specificationGroups.sections.some(section => section.rows.some(item => specificationHasContent(item)))
                     ) && <div className="pub-specifications">
@@ -803,13 +804,10 @@ export default function PublicCatalog({
                             <dd><MaterialsContent value={product.materials} /></dd>
                           </div>
                         )}
-                        {[product.width, product.depth, product.height].every(value => Number.isFinite(value) && value > 0) && (
+                        {[product.width, product.depth, product.height].some(value => Number.isFinite(value) && value > 0) && (
                           <div>
                             <dt>Dimensions</dt>
-                            <dd>
-                              {product.width} W × {product.depth} D ×{" "}
-                              {product.height} H cm
-                            </dd>
+                            <dd>{formatProductDimensions(product)}</dd>
                           </div>
                         )}
                         <div className={previewProduct ? "catalog-preview-hidden-meta" : ""}>
