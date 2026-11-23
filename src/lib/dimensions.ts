@@ -30,3 +30,30 @@ export function unitToCm(value: number, unit: DimensionUnit): number {
 export function unitMax(unit: DimensionUnit): number {
   return Math.floor((99999.99 / DIMENSION_UNIT_TO_CM[unit]) * 10000) / 10000;
 }
+
+
+export const OVERALL_DIMENSION_KEYS = ["width", "depth", "height"] as const;
+export type DimensionKey = typeof OVERALL_DIMENSION_KEYS[number];
+export type DimensionUnits = Record<DimensionKey, DimensionUnit>;
+export const DEFAULT_DIMENSION_UNITS: Readonly<DimensionUnits> = Object.freeze({
+  width: "cm", depth: "cm", height: "cm",
+});
+
+export function normalizeDimensionUnits(value: unknown): DimensionUnits {
+  if (!value || typeof value !== "object") return { ...DEFAULT_DIMENSION_UNITS };
+  const saved = value as Record<string, unknown>;
+  const allowed: ReadonlyArray<string> = DIMENSION_UNIT_OPTIONS.map(option => option.value);
+  const valid = (raw: unknown): DimensionUnit =>
+    typeof raw === "string" && allowed.includes(raw) ? raw as DimensionUnit : "cm";
+  return { width: valid(saved.width), depth: valid(saved.depth), height: valid(saved.height) };
+}
+
+/** Readable mixed-unit dimensions; missing overall sizes stay hidden. */
+export function formatProductDimensions(product: Pick<Record<DimensionKey, number>, DimensionKey> & { dimensionUnits?: DimensionUnits }): string {
+  const units = normalizeDimensionUnits(product.dimensionUnits);
+  const suffix: Record<DimensionKey, string> = { width: "W", depth: "D", height: "H" };
+  return OVERALL_DIMENSION_KEYS
+    .filter(key => Number.isFinite(product[key]) && product[key] > 0)
+    .map(key => `${cmToUnit(product[key], units[key])} ${units[key]} ${suffix[key]}`)
+    .join(" × ");
+}
