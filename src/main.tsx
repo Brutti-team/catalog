@@ -101,6 +101,7 @@ import "./components/catalog-spec-measurements.css";
 import "./components/catalog-spec-description-column.css";
 import "./components/public-product-detail-studio.css";
 import "./components/catalog-materials-formatting.css";
+import "./components/catalog-overall-dimension-units.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
