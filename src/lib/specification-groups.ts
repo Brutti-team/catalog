@@ -30,3 +30,26 @@ export function splitSpecifications(specifications: ProductSpecification[] = [])
   }
   return { primary, sections };
 }
+
+
+/** Ignore untouched placeholder rows when saving. An incomplete row with any
+ * user-entered information is deliberately kept so validation can explain it. */
+export function compactSpecifications(specifications: ProductSpecification[] = []): ProductSpecification[] {
+  const isFilled = (row: ProductSpecification): boolean => {
+    if (row.kind === "section") return Boolean(row.name.trim());
+    const hasNumber = row.kind === "measurement"
+      ? /^[0-9]/.test(row.value.trim())
+      : Boolean(row.value.trim());
+    return Boolean(row.name.trim() || row.description?.trim() || row.quantity || hasNumber);
+  };
+  return specifications.filter((row, index) => {
+    if (row.kind !== "section") return isFilled(row);
+    if (isFilled(row)) return true;
+    const after = specifications.slice(index + 1);
+    const nextSection = after.findIndex(item => item.kind === "section");
+    const children = nextSection < 0 ? after : after.slice(0, nextSection);
+    // Keep an untitled section if it contains entered details, so the
+    // title requirement still produces a useful validation error.
+    return children.some(isFilled);
+  });
+}
