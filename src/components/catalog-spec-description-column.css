@@ -260,3 +260,33 @@
   border-color:#53705b !important;
   color-scheme:dark;
 }
+
+
+/* Measurement types use a dropdown as the primary first-column field.
+   Bespoke labels can be edited on demand without permanently showing two inputs. */
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-specs .catalog-spec-measurement-name > .catalog-spec-custom-name-edit {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  margin: 0;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #3d7050;
+  font: 600 11px/1.4 "DM Sans", sans-serif;
+  cursor: pointer;
+}
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-specs .catalog-spec-custom-name-edit:is(:hover,:focus-visible) {
+  background: rgba(61,112,80,.08);
+  outline: 2px solid transparent;
+  color: #205737;
+}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2
+#product-editor-specs .catalog-spec-measurement-name > .catalog-spec-custom-name-edit {
+  color: #b1d7b9;
+}
