@@ -114,16 +114,24 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
             title="Quick view"
           >
             <Eye size={17} aria-hidden="true" />
-            <span>Quick view</span>
           </button>
         </div>
 
         <div className="pub-catalog-tile__copy">
-          <span className="pub-catalog-tile__category">{categoryName}</span>
+          <div className="pub-catalog-tile__meta">
+            <span className="pub-catalog-tile__category">{categoryName}</span>
+            <span className="pub-catalog-tile__availability">
+              <span className={"pub-catalog-tile__dot pub-catalog-tile__dot--" + product.availability} aria-hidden="true" />
+              {availabilityLabels[product.availability]}
+            </span>
+          </div>
           <div className="pub-catalog-tile__details-row">
-            <a className="pub-catalog-tile__title" href={detailUrl} onClick={openDetails}>
-              <h3>{product.name}</h3>
-            </a>
+            <div className="pub-catalog-tile__identity">
+              <a className="pub-catalog-tile__title" href={detailUrl} onClick={openDetails}>
+                <h3>{product.name}</h3>
+              </a>
+              {description && <p className="pub-catalog-tile__description" title={description}>{description}</p>}
+            </div>
             <div className="pub-catalog-tile__pricing">
               <div className="pub-catalog-tile__price"><ProductPrice product={product} /></div>
               {sale && <span className="pub-catalog-tile__save">SAVE {saving}%</span>}
