@@ -1,5 +1,13 @@
 import { parseMaterials } from "../lib/material-list";
 
+/** Optional short labels such as "Tier:", "Structure:" and "Facade:"
+ * from older Brutti catalogues stand out without storing rich HTML. */
+function MaterialItem({ text }: { text: string }) {
+  const labelled = text.match(/^([^:\n]{2,28}):\s+(.+)$/);
+  if (!labelled) return <>{text}</>;
+  return <><strong>{labelled[1]}:</strong> {labelled[2]}</>;
+}
+
 /** Render plain text, bullet lists or numbered lines without raw HTML. */
 export default function MaterialsContent({ value }: { value: string }) {
   const blocks = parseMaterials(value);
@@ -7,12 +15,12 @@ export default function MaterialsContent({ value }: { value: string }) {
     <div className="catalog-materials-content">
       {blocks.map((block, index) => {
         if (block.style === "bullet") {
-          return <ul key={index}>{block.items.map((item, i) => <li key={i}>{item}</li>)}</ul>;
+          return <ul key={index}>{block.items.map((item, i) => <li key={i}><MaterialItem text={item} /></li>)}</ul>;
         }
         if (block.style === "numbered") {
-          return <ol key={index}>{block.items.map((item, i) => <li key={i}>{item}</li>)}</ol>;
+          return <ol key={index}>{block.items.map((item, i) => <li key={i}><MaterialItem text={item} /></li>)}</ol>;
         }
-        return block.items.map((item, i) => <p key={`${index}-${i}`}>{item}</p>);
+        return block.items.map((item, i) => <p key={`${index}-${i}`}><MaterialItem text={item} /></p>);
       })}
     </div>
   );
