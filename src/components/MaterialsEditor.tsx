@@ -1,9 +1,8 @@
 import { useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import {
   AlignLeft, List, ListOrdered, Bold, Italic, Underline, Strikethrough,
-  Highlighter, Heading2, Eye, Pencil, RemoveFormatting, type LucideIcon,
+  Highlighter, Heading2, RemoveFormatting, type LucideIcon,
 } from "lucide-react";
-import MaterialsContent from "./MaterialsContent";
 import { materialListStyle, type MaterialListStyle } from "../lib/material-list";
 import {
   toggleMaterialInline, toggleMaterialHeading, clearMaterialFormatting,
@@ -32,15 +31,13 @@ const inlineOptions: { value: InlineMaterialFormat; label: string; shortcut: str
 ];
 
 /** Rich text-style controls with a safe plain-text storage format.
- * Selection formatting uses compact markers and the Preview uses exactly
- * the same React renderer used by the public Brutti Catalog.
+ * Selection formatting uses compact markers, rendered safely in the public Brutti Catalog.
  */
 export default function MaterialsEditor({
   value, onChange, disabled = false, placeholder,
 }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [warning, setWarning] = useState("");
-  const [preview, setPreview] = useState(false);
   const mode = materialListStyle(value);
   const help = "Select text, then choose a format. Enter continues your list.";
 
@@ -58,7 +55,6 @@ export default function MaterialsEditor({
     }
     setWarning("");
     onChange(edit.value);
-    setPreview(false);
     requestAnimationFrame(() => {
       const el = textareaRef.current;
       if (!el) return;
@@ -132,7 +128,7 @@ export default function MaterialsEditor({
   // Mouse clicks should not steal the textarea's selected text. Keyboard
   // access to formatting buttons is still fully supported.
   const preserveSelection = (event: MouseEvent<HTMLDivElement>) => {
-    if (event.target instanceof Element && event.target.closest("button:not(.catalog-materials-preview-toggle)")) {
+    if (event.target instanceof Element && event.target.closest("button")) {
       event.preventDefault();
     }
   };
@@ -147,10 +143,10 @@ export default function MaterialsEditor({
               key={style}
               type="button"
               aria-label={label === "Plain" ? "Plain text" : label}
-              aria-pressed={!preview && mode === style}
+              aria-pressed={mode === style}
               title={label === "Plain" ? "Plain text" : label}
-              disabled={disabled || preview}
-              className={!preview && mode === style ? "is-active" : ""}
+              disabled={disabled}
+              className={mode === style ? "is-active" : ""}
               onClick={() => chooseStyle(style)}
             >
               <Icon size={15} strokeWidth={1.85} aria-hidden="true" />
@@ -166,57 +162,35 @@ export default function MaterialsEditor({
               type="button"
               aria-label={label}
               title={shortcut ? `${label} (${shortcut})` : label}
-              disabled={disabled || preview}
+              disabled={disabled}
               onClick={() => formatInline(format)}
             >
               <Icon size={16} strokeWidth={1.85} aria-hidden="true" />
             </button>
           ))}
           <button type="button" title="Section heading" aria-label="Heading"
-            disabled={disabled || preview} onClick={formatHeading}>
+            disabled={disabled} onClick={formatHeading}>
             <Heading2 size={16} strokeWidth={1.8} aria-hidden="true" />
           </button>
           <button type="button" title="Clear text formatting" aria-label="Clear formatting"
-            disabled={disabled || preview} onClick={clearFormat}>
+            disabled={disabled} onClick={clearFormat}>
             <RemoveFormatting size={16} strokeWidth={1.85} aria-hidden="true" />
           </button>
         </div>
-        <div className="catalog-materials-toolbar-end">
-          <button
-            type="button"
-            className={`catalog-materials-preview-toggle${preview ? " is-active" : ""}`}
-            aria-label={preview ? "Edit materials" : "Preview materials formatting"}
-            aria-pressed={preview}
-            title={preview ? "Back to editing" : "Preview how materials will appear in the catalog"}
-            onClick={() => setPreview(current => !current)}
-          >
-            {preview ? <Pencil size={15} aria-hidden="true" /> : <Eye size={15} aria-hidden="true" />}
-            <span>{preview ? "Edit" : "Preview"}</span>
-          </button>
-        </div>
       </div>
-      {preview ? (
-        <div className="catalog-materials-preview" aria-label="Materials formatted preview" aria-live="polite">
-          {value.trim()
-            ? <MaterialsContent value={value} />
-            : <p className="catalog-materials-preview-empty">Your formatted materials will appear here.</p>}
-        </div>
-      ) : (
-        <textarea
-          ref={textareaRef}
-          aria-label="Materials"
-          rows={4}
-          maxLength={MAX_LENGTH}
-          disabled={disabled}
-          value={value}
-          onKeyDown={onKeyDown}
-          onChange={event => { setWarning(""); onChange(event.target.value); }}
-          placeholder={placeholder ?? "Tier: Solid pine wood with clear satin finishing\nStructure: Steel hollow with anti-rust white finishing\nFacade: White finished plywood"}
-        />
-      )}
+      <textarea
+        ref={textareaRef}
+        aria-label="Materials"
+        rows={4}
+        maxLength={MAX_LENGTH}
+        disabled={disabled}
+        value={value}
+        onKeyDown={onKeyDown}
+        onChange={event => { setWarning(""); onChange(event.target.value); }}
+        placeholder={placeholder ?? "Tier: Solid pine wood with clear satin finishing\nStructure: Steel hollow with anti-rust white finishing\nFacade: White finished plywood"}
+      />
       <div className="catalog-materials-helper">
-        <span>{warning || (preview ? "Preview matches the public catalog. Select Edit to change." : help)}</span>
-        <span>{value.length.toLocaleString("en-MY")} / {MAX_LENGTH.toLocaleString("en-MY")}</span>
+        <span>{warning || help}</span>
       </div>
     </div>
   );
