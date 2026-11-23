@@ -140,11 +140,11 @@
   max-width: 19ch;
   margin: 0 0 17px;
   color: #2d332a;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(45px, 4.15vw, 63px);
-  font-weight: 500;
-  letter-spacing: -.032em;
-  line-height: 1.06;
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-size: clamp(35px, 3.25vw, 48px);
+  font-weight: 650;
+  letter-spacing: -.046em;
+  line-height: 1.18;
   text-wrap: balance;
   overflow-wrap: anywhere;
 }
@@ -655,5 +655,57 @@
 @media (prefers-reduced-motion: reduce) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-enquiry > .pub-enquiry-button.pub-whatsapp-enquiry {
     transition: none;
+  }
+}
+
+
+/* Remove the dead back-link spacing and use one coherent sans-serif product
+   typography system. The homepage/header and private preview are unchanged. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section {
+  padding-top: clamp(24px, 2.8vw, 41px);
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > h1 {
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-size: clamp(35px, 3.25vw, 48px);
+  font-weight: 650;
+  line-height: 1.18;
+  letter-spacing: -.046em;
+  text-wrap: balance;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-eyebrow,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-description,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-availability,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-price > small,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-specifications :is(dt,dd),
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-gallery-enquiry {
+  font-family: "DM Sans", system-ui, sans-serif;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-price,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-price .catalog-price-current {
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-weight: 710;
+  letter-spacing: -.035em;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-specifications :is(h2,h3) {
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-weight: 680;
+  letter-spacing: -.025em;
+}
+@media (max-width: 850px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section {
+    padding-top: 24px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > h1 {
+    font-size: clamp(33px, 5.3vw, 42px);
+    line-height: 1.2;
+  }
+}
+@media (max-width: 520px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section {
+    padding-top: 17px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > h1 {
+    font-size: clamp(30px, 7.6vw, 38px);
+    letter-spacing: -.035em;
   }
 }
