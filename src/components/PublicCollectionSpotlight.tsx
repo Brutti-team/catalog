@@ -76,8 +76,8 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
     <>
       <article className="pub-catalog-tile" aria-label={product.name}>
         <div className="pub-catalog-tile__visual">
-          <button
-            type="button"
+          <a
+            href={detailUrl}
             className="pub-catalog-tile__preview"
             onClick={openDetails}
             aria-label={"View details for " + product.name}
@@ -90,7 +90,7 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
               loading="lazy"
               onError={handleImageError}
             />
-          </button>
+          </a>
           <button
             type="button"
             className={"pub-catalog-tile__favourite" + (isFavourite ? " is-saved" : "")}
