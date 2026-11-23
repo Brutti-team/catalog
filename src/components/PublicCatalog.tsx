@@ -17,6 +17,8 @@ import type { Category, Product, ProductImage, ProductSpecification } from "../l
 import { photoCropStyle } from "../lib/photo-crop";
 import { publicAssetUrl } from "../lib/assets";
 import ProductPrice from "./ProductPrice";
+import MaterialsContent from "./MaterialsContent";
+import { materialCardSummary } from "../lib/material-list";
 import { splitSpecifications } from "../lib/specification-groups";
 import { productIdFromHash } from "../lib/routes";
 import { recordCatalogEvent } from "../lib/customer-analytics";
@@ -331,7 +333,7 @@ export default function PublicCatalog({
         <h3>{item.name}</h3>
         <span className="pub-card-price"><ProductPrice product={item} /></span>
       </div>
-      {item.materials.trim() && <p className="pub-card-material">{item.materials}</p>}
+      {item.materials.trim() && <p className="pub-card-material">{materialCardSummary(item.materials)}</p>}
     </a>
   );
 
@@ -798,7 +800,7 @@ export default function PublicCatalog({
                         {Boolean(product.materials?.trim()) && (
                           <div>
                             <dt>Materials</dt>
-                            <dd>{product.materials}</dd>
+                            <dd><MaterialsContent value={product.materials} /></dd>
                           </div>
                         )}
                         {[product.width, product.depth, product.height].every(value => Number.isFinite(value) && value > 0) && (
