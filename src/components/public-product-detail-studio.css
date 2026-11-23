@@ -553,3 +553,107 @@
     padding: 8px 0;
   }
 }
+
+
+/* Enquiry is intentionally below the photo (and any thumbnails), NOT in the
+   product-information column. The same destination and WhatsApp text are kept.
+   Only the public page moves it; admin private preview keeps its own layout. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-enquiry {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  width: 100%;
+  margin-top: 15px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-enquiry > .pub-enquiry-button.pub-whatsapp-enquiry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  min-height: 54px;
+  padding: 14px 19px;
+  border: 1px solid #245039;
+  border-radius: 12px;
+  background: #28513a;
+  box-shadow: 0 6px 16px rgba(30,71,45,.10);
+  color: #fff !important;
+  font: 690 13px/1.45 "DM Sans",system-ui,sans-serif;
+  text-decoration: none;
+  text-align: left;
+  transition: background .17s ease, box-shadow .17s ease, transform .17s ease;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-enquiry > .pub-enquiry-button.pub-whatsapp-enquiry > svg {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.85;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-enquiry > .pub-enquiry-button.pub-whatsapp-enquiry:is(:hover,:focus-visible) {
+  border-color: #1d402e;
+  background: #1d402e;
+  box-shadow: 0 9px 22px rgba(30,71,45,.18);
+  transform: translateY(-1px);
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-enquiry > .pub-enquiry-button.pub-whatsapp-enquiry:focus-visible {
+  outline: 2px solid #7cac89;
+  outline-offset: 3px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-enquiry > .pub-enquiry-note {
+  max-width: 65ch;
+  margin: 10px 3px 0 !important;
+  color: #899288;
+  font: 480 11px/1.6 "DM Sans",system-ui,sans-serif !important;
+}
+@media (min-width: 851px) {
+  /* Reserve visible space for the CTA when the image column is sticky. */
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-gallery {
+    max-height: calc(100dvh - 128px);
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-main-image {
+    height: min(600px, calc(100dvh - 315px), 48vw);
+    min-height: 220px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-gallery:has(.pub-gallery-thumbnails) .pub-detail-main-image {
+    height: min(590px, calc(100dvh - 370px), 46vw);
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-gallery:has(.pub-media-switch) .pub-detail-main-image {
+    height: min(590px, calc(100dvh - 355px), 46vw);
+  }
+}
+@media (min-width: 851px) and (max-height: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-main-image {
+    height: max(175px, calc(100dvh - 300px));
+    min-height: 0;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-gallery:has(.pub-gallery-thumbnails) .pub-detail-main-image {
+    height: max(170px, calc(100dvh - 365px));
+  }
+}
+@media (max-width: 850px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-enquiry {
+    margin-top: 14px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-enquiry > .pub-enquiry-note {
+    margin-top: 9px !important;
+  }
+}
+@media (max-width: 520px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-enquiry > .pub-enquiry-button.pub-whatsapp-enquiry {
+    min-height: 51px;
+    padding: 13px 15px;
+    font-size: 12.5px;
+    border-radius: 11px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-enquiry > .pub-enquiry-note {
+    font-size: 10.5px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-gallery-enquiry > .pub-enquiry-button.pub-whatsapp-enquiry {
+    transition: none;
+  }
+}
