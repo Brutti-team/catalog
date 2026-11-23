@@ -445,7 +445,9 @@ export default function ProductEditor({
     if (modelLocked.current) {
       setError(modelInvalid
         ? "The 3D model preview failed. Replace or remove the selected 3D file before publishing."
-        : "The 3D model is still processing. Finish or cancel it before publishing.");
+        : modelPending
+          ? "The 3D model is still processing. Finish or cancel it before publishing."
+          : "Complete or cancel the 3D model operation before saving or publishing.");
       return;
     }
     if (status === "draft" && product.status === "published" && !window.confirm("Saving as draft will unpublish this product from the public catalogue. Continue?")) return;
