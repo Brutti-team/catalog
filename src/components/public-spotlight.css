@@ -418,3 +418,111 @@
   from {opacity:0;transform:translateY(10px) scale(.99);}
   to {opacity:1;transform:translateY(0) scale(1);}
 }
+
+
+/* Brutti compact clear-glass revision, 23 November 2026 */
+/* 200–226px wide product tiles, regardless of how few pieces are published. */
+.pub-app .pub-products-grid.pub-products-grid--catalog {
+  grid-template-columns: repeat(auto-fill, minmax(196px, 226px));
+  gap: 23px 16px;
+  justify-content: start;
+}
+.pub-app .pub-catalog-tile {
+  isolation: isolate;
+  padding: 7px 7px 10px;
+  border: 1px solid rgba(255,255,255,.97);
+  border-radius: 15px;
+  background:
+    radial-gradient(ellipse at 95% 97%, rgba(168,193,172,.28), transparent 59%),
+    radial-gradient(ellipse at 6% 3%, rgba(255,255,255,.84), transparent 62%),
+    linear-gradient(145deg,rgba(255,255,255,.61),rgba(240,233,221,.33));
+  -webkit-backdrop-filter: blur(30px) saturate(155%);
+  backdrop-filter: blur(30px) saturate(155%);
+  box-shadow:
+    0 10px 28px rgba(33,52,36,.13),
+    0 2px 7px rgba(33,52,36,.04),
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -1px 0 rgba(255,255,255,.55);
+}
+.pub-app .pub-catalog-tile::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(125deg,rgba(255,255,255,.49),transparent 34%,transparent 73%,rgba(255,255,255,.24));
+  pointer-events: none;
+}
+.pub-app .pub-catalog-tile__visual,
+.pub-app .pub-catalog-tile__copy {z-index: 2;}
+.pub-app .pub-catalog-tile__visual {
+  aspect-ratio: 1.31;
+  border: 1px solid rgba(255,255,255,.92);
+  border-radius: 10px;
+  box-shadow: 0 3px 13px rgba(62,51,40,.08), 0 0 0 2px rgba(255,255,255,.2);
+}
+.pub-app .pub-catalog-tile__favourite {
+  top: 7px;
+  left: 7px;
+  width: 31px;
+  height: 31px;
+  border-radius: 11px;
+  background: rgba(255,255,255,.43);
+  border-color: rgba(255,255,255,.95);
+  -webkit-backdrop-filter: blur(20px) saturate(165%);
+  backdrop-filter: blur(20px) saturate(165%);
+  box-shadow: 0 4px 11px rgba(31,50,33,.14), inset 0 1px 0 rgba(255,255,255,1);
+}
+.pub-app .pub-catalog-tile__copy {padding: 10px 7px 2px;}
+.pub-app .pub-catalog-tile__category {
+  font-size: 8px;
+  gap: 8px;
+  letter-spacing: 1.05px;
+}
+.pub-app .pub-catalog-tile__category::after {width: 18px;}
+/* Replace the previous display-serif product heading with a clean modern font. */
+.pub-app .pub-catalog-tile__title {margin-top: 6px;}
+.pub-app .pub-catalog-tile__title h3 {
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.045em;
+}
+.pub-app .pub-catalog-tile__price {
+  margin-top: 9px;
+  font-size: 10px;
+}
+.pub-app .pub-catalog-tile__price .catalog-price-current {
+  padding: 8px 11px;
+  box-shadow: 0 4px 10px rgba(22,63,39,.18), inset 0 1px 0 rgba(255,255,255,.18);
+}
+.pub-app .pub-catalog-tile__eye {
+  min-height: 30px;
+  padding: 6px 9px;
+  background: rgba(255,255,255,.56);
+  -webkit-backdrop-filter: blur(17px) saturate(150%);
+  backdrop-filter: blur(17px) saturate(150%);
+}
+@media (hover:hover) and (pointer:fine) {
+  .pub-app .pub-catalog-tile:hover {
+    box-shadow: 0 16px 32px rgba(33,52,36,.15), inset 0 1px 0 #fff;
+  }
+}
+@media (max-width:650px) {
+  .pub-app .pub-products-grid.pub-products-grid--catalog {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 15px 11px;
+  }
+  .pub-app .pub-catalog-tile {padding:6px 6px 9px;border-radius:12px;}
+  .pub-app .pub-catalog-tile__visual {border-radius:9px;}
+  .pub-app .pub-catalog-tile__copy {padding:9px 5px 1px;}
+  .pub-app .pub-catalog-tile__title h3 {font-size:clamp(14px,3.8vw,16px);}
+  .pub-app .pub-catalog-tile__price {font-size:9px;}
+  .pub-app .pub-catalog-tile__price .catalog-price-current {padding:7px 8px;}
+  .pub-app .pub-catalog-tile__favourite {top:6px;left:6px;width:29px;height:29px;border-radius:10px;}
+}
+@media (max-width:365px) {
+  .pub-app .pub-products-grid.pub-products-grid--catalog {grid-template-columns:minmax(0,1fr);}
+  .pub-app .pub-catalog-tile {max-width:226px;}
+}
