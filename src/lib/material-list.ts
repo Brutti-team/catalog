@@ -4,8 +4,8 @@
  */
 export type MaterialListStyle = "plain" | "bullet" | "numbered";
 export type MaterialBlock = { style: MaterialListStyle; items: string[] };
-const BULLET = /^(?:•|[-*])\s+(.+)$/;
-const NUMBERED = /^\d{1,3}[.)]\s+(.+)$/;
+const BULLET = /^(?:•|[-*])\s+(.*)$/;
+const NUMBERED = /^\d{1,3}[.)]\s+(.*)$/;
 
 function readLine(raw: string): { style: MaterialListStyle; text: string } {
   const line = raw.trim();
@@ -37,6 +37,7 @@ export function parseMaterials(value: string): MaterialBlock[] {
   for (const raw of value.split(/\r?\n/)) {
     if (!raw.trim()) continue;
     const line = readLine(raw);
+    if (!line.text) continue;
     const last = blocks[blocks.length - 1];
     if (last?.style === line.style) last.items.push(line.text);
     else blocks.push({ style: line.style, items: [line.text] });
