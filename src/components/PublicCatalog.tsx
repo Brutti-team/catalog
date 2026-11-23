@@ -331,7 +331,7 @@ export default function PublicCatalog({
         <h3>{item.name}</h3>
         <span className="pub-card-price"><ProductPrice product={item} /></span>
       </div>
-      <p className="pub-card-material">{item.materials}</p>
+      {item.materials.trim() && <p className="pub-card-material">{item.materials}</p>}
     </a>
   );
 
@@ -770,13 +770,13 @@ export default function PublicCatalog({
                     ) && <div className="pub-specifications">
                       <h2>The details</h2>
                       <dl>
-                        {(!previewProduct || Boolean(product.materials?.trim())) && (
+                        {Boolean(product.materials?.trim()) && (
                           <div>
                             <dt>Materials</dt>
                             <dd>{product.materials}</dd>
                           </div>
                         )}
-                        {(!previewProduct || [product.width, product.depth, product.height].every(value => Number.isFinite(value) && value > 0)) && (
+                        {[product.width, product.depth, product.height].every(value => Number.isFinite(value) && value > 0) && (
                           <div>
                             <dt>Dimensions</dt>
                             <dd>
