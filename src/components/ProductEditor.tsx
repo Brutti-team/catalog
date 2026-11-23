@@ -531,8 +531,7 @@ export default function ProductEditor({
   const publishChecks = [
     { label: "Name, Product ID & category", done: draft.name.trim().length >= 2 && !!draft.sku.trim() && !!draft.categoryId },
     { label: "Cover photo", done: draft.images.length > 0 },
-    { label: "Description & materials", done: !!draft.description.trim() && !!draft.materials.trim() },
-    { label: "All dimensions", done: draft.width > 0 && draft.depth > 0 && draft.height > 0 },
+    { label: "Description", done: !!draft.description.trim() },
   ];
   const readyCount = publishChecks.filter((item) => item.done).length;
   function jumpTo(id: string) {
@@ -933,7 +932,7 @@ export default function ProductEditor({
               </div>
               <div className="catalog-reference-spec-rows">
                 <div className="catalog-reference-spec-row">
-                  <span className="catalog-reference-spec-key">Dimensions <small>Overall size</small></span>
+                  <span className="catalog-reference-spec-key">Dimensions <small>Optional · overall size</small></span>
                   <div className="catalog-reference-dimension-inputs catalog-unified-dimensions" role="group" aria-label="Product dimensions">
                     {(["width", "depth", "height"] as const).map((key) => (
                       <label key={key}>
@@ -944,7 +943,8 @@ export default function ProductEditor({
                           min={0}
                           max={unitMax(dimensionUnit)}
                           step="any"
-                          value={cmToUnit(draft[key], dimensionUnit)}
+                          value={draft[key] === 0 ? "" : cmToUnit(draft[key], dimensionUnit)}
+                          placeholder="Optional"
                           onChange={(e) => update(key, unitToCm(Number(e.target.value), dimensionUnit))}
                         />
                       </label>
@@ -953,7 +953,7 @@ export default function ProductEditor({
                   </div>
                 </div>
                 <label className="catalog-reference-spec-row">
-                  <span className="catalog-reference-spec-key">Materials <small>Primary materials</small></span>
+                  <span className="catalog-reference-spec-key">Materials <small>Optional · primary materials</small></span>
                   <input
                     aria-label="Materials"
                     maxLength={2000}
@@ -1094,7 +1094,7 @@ export default function ProductEditor({
                 </div>
               </div>
               <label>
-                Materials <span className="product-editor-publish-hint">Required to publish</span>
+                Materials <span className="product-editor-publish-hint">Optional</span>
                 <input
                   aria-label="Materials"
                   maxLength={2000}
@@ -1104,7 +1104,7 @@ export default function ProductEditor({
                 />
               </label>
               <div className="section-label">
-                Dimensions <span className="muted">Required to publish</span>
+                Dimensions <span className="muted">Optional</span>
               </div>
               <div className="field-trio catalog-unified-dimensions" role="group" aria-label="Product dimensions">
                 {(["width", "depth", "height"] as const).map((key) => (
@@ -1116,7 +1116,8 @@ export default function ProductEditor({
                       min={0}
                       max={unitMax(dimensionUnit)}
                       step="any"
-                      value={cmToUnit(draft[key], dimensionUnit)}
+                      value={draft[key] === 0 ? "" : cmToUnit(draft[key], dimensionUnit)}
+                          placeholder="Optional"
                       onChange={(e) => update(key, unitToCm(Number(e.target.value), dimensionUnit))}
                     />
                   </label>
