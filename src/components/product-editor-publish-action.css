@@ -80,3 +80,76 @@
   .admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer
   .catalog-editor-footer-publish { transition: none; }
 }
+
+
+/* A publish click must always explain why saving is blocked. Keep feedback
+   attached to the visible sticky action bar, not buried behind the footer. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-footer
+.catalog-editor-save-error {
+  box-sizing: border-box;
+  position: absolute;
+  bottom: calc(100% + 9px);
+  right: clamp(16px,3vw,42px);
+  z-index: 80;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: min(580px,calc(100% - 32px));
+  margin: 0;
+  padding: 13px 14px;
+  border: 1px solid #dfbda7;
+  border-left: 3px solid #b77942;
+  border-radius: 11px;
+  background: #fffaf4;
+  box-shadow: 0 10px 30px rgba(59,42,24,.16);
+  color: #62472d;
+  font: 580 12.5px/1.55 "DM Sans",sans-serif;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer
+.catalog-editor-save-error > svg {
+  flex: 0 0 18px;
+  color: #a46b36;
+  margin-top: 1px;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer
+.catalog-editor-save-error > span {
+  flex: 1;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer
+.catalog-editor-save-error > button {
+  flex: 0 0 24px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.admin-app .product-editor-dialog--editing .product-editor-v2 .editor-footer
+.catalog-editor-save-error > button:is(:hover,:focus-visible) {
+  background: rgba(164,107,54,.11);
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-footer
+.catalog-editor-save-error {
+  background: #3e352b;
+  border-color: #926d4b;
+  border-left-color: #cea173;
+  color: #f2e0c9;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog--editing .product-editor-v2 .editor-footer
+.catalog-editor-save-error > svg { color: #e4b78c; }
+@media(max-width:760px) {
+  .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-footer
+  .catalog-editor-save-error {
+    left: 10px;
+    right: 10px;
+    width: auto;
+    padding: 11px 12px;
+    font-size: 12px;
+  }
+}
