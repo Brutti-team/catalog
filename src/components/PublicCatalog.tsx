@@ -1,7 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDown,
-  ArrowLeft,
   ArrowRight,
   ArrowUpRight,
   ArrowUp,
@@ -639,9 +638,6 @@ export default function PublicCatalog({
         )}
         {productId !== null && (
           <section className="pub-detail-section">
-            {!previewProduct && <a href="#/catalog" className="pub-back-link">
-              <ArrowLeft size={16} /> Back to the collection
-            </a>}
             {loading ? (
               <div className="pub-detail-loading" aria-busy="true">
                 <div className="pub-skeleton-card">
