@@ -1,63 +1,65 @@
-/* Brutti Catalog — independent unit per overall dimension. Native select
-   deliberately replaces the clipped portal dropdown inside the editor modal. */
+/* BRUTTI CATALOG / OVERALL DIMENSIONS
+   Three balanced measurements with their own compact floating unit selector.
+   The styled dropdown is a native top-layer popover, preventing dialog clipping. */
+
 .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
 .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field {
-  box-sizing: border-box;
   display: grid !important;
+  box-sizing: border-box;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  align-items: stretch;
   gap: 12px !important;
   width: 100%;
   max-width: none;
   min-width: 0;
+  align-items: stretch;
   overflow: visible;
 }
 .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
 .catalog-dimension-single {
-  box-sizing: border-box;
-  position: relative;
   display: block;
-  min-width: 0;
+  position: relative;
+  box-sizing: border-box;
   width: 100%;
-  height: 55px;
-  min-height: 55px;
+  min-width: 0;
+  min-height: 62px;
+  height: 62px;
   margin: 0;
   padding: 0;
 }
 .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
 .catalog-dimension-single > .catalog-dimension-single-label {
   pointer-events: none;
+  display: block;
   position: absolute;
   z-index: 2;
-  top: 7px;
+  top: 9px;
   left: 14px;
-  display: block;
   margin: 0;
   padding: 0;
-  color: #6a8572;
-  font: 680 10.5px/1.2 "DM Sans", sans-serif;
-  letter-spacing: .006em;
+  color: #698473;
+  font: 700 11px/1.25 "DM Sans", sans-serif;
+  letter-spacing: .005em;
 }
 .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
 .catalog-dimension-single-control {
-  box-sizing: border-box;
   display: flex;
   align-items: stretch;
-  min-width: 0;
+  box-sizing: border-box;
   width: 100%;
-  height: 55px;
-  min-height: 55px;
+  min-width: 0;
+  min-height: 62px;
+  height: 62px;
   overflow: hidden;
-  border: 1px solid #cadecf;
-  border-radius: 12px;
-  background: rgba(255,255,255,.94);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.91);
-  transition: border-color .16s ease, box-shadow .16s ease;
+  border: 1px solid #d5e3d8;
+  border-radius: 13px;
+  background: linear-gradient(125deg,rgba(255,255,255,.97),rgba(249,252,249,.9));
+  box-shadow: 0 2px 7px rgba(32,73,44,.025), inset 0 1px 0 rgba(255,255,255,.9);
+  transition: border-color .17s ease, box-shadow .17s ease, background .17s ease;
 }
 .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
-.catalog-dimension-single-control:focus-within {
-  border-color: #629574;
-  box-shadow: 0 0 0 3px rgba(73,139,91,.12);
+.catalog-dimension-single-control:is(:hover,:focus-within) {
+  border-color: #91b79a;
+  box-shadow: 0 0 0 3px rgba(79,144,99,.09), 0 3px 10px rgba(33,74,45,.04);
 }
 .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
 .catalog-dimension-single-control > input {
@@ -65,116 +67,291 @@
   flex: 1 1 auto;
   min-width: 0;
   width: 100%;
-  height: 53px !important;
-  min-height: 53px !important;
-  max-height: 53px !important;
+  height: 60px !important;
+  min-height: 60px !important;
+  max-height: 60px !important;
   margin: 0 !important;
-  padding: 21px 11px 5px 13px !important;
+  padding: 25px 8px 8px 14px !important;
   border: 0 !important;
-  outline: 0 !important;
   border-radius: 0 !important;
+  outline: none !important;
   background: transparent !important;
   box-shadow: none !important;
-  color: #294534;
-  font: 680 14px/1.3 "DM Sans", sans-serif !important;
+  color: #2b4a36;
+  font: 680 15px/1.3 "DM Sans", sans-serif !important;
   font-variant-numeric: tabular-nums;
 }
 .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
 .catalog-dimension-single-control > input::placeholder {
-  color: #9dab9f;
+  color: #a3b1a6;
+  opacity: 1;
   font-size: 11px;
-  font-weight: 480;
+  font-weight: 450;
 }
 .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
-.catalog-dimension-single-control > select {
+.catalog-dimension-single-control > input::-webkit-inner-spin-button,
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-dimension-single-control > input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-dimension-single-control > input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/* Unit chip is integrated in the field, without a heavy double-outline box. */
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-dimension-inline-unit {
+  display: flex;
+  flex: 0 0 82px;
+  align-items: center;
   box-sizing: border-box;
-  flex: 0 0 72px;
-  width: 72px;
-  min-width: 72px;
-  max-width: 72px;
-  height: 53px !important;
-  min-height: 53px !important;
-  max-height: 53px !important;
-  padding: 0 7px !important;
-  margin: 0 !important;
-  border: 0 !important;
-  border-left: 1px solid #d4e6d8 !important;
-  border-radius: 0 !important;
-  outline: 0 !important;
-  background: #eef7f0 !important;
-  color: #2c6340 !important;
-  font: 750 12px/1.3 "DM Sans", sans-serif !important;
+  width: 82px;
+  min-width: 82px;
+  min-height: 0;
+  margin: 0;
+  padding: 5px;
+}
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-dimension-inline-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 47px;
+  min-height: 47px;
+  margin: 0;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: #edf5ee;
+  color: #326447;
+  font: 750 12px/1.3 "DM Sans", sans-serif;
+  text-align: left;
   cursor: pointer;
-  box-shadow: none !important;
-  appearance: auto !important;
-  -webkit-appearance: menulist !important;
+  transition: background .15s ease, box-shadow .15s ease, color .15s ease;
 }
 .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
-.catalog-dimension-single-control > select:is(:hover,:focus-visible) {
-  background: #dff0e3 !important;
-  color: #1f5333 !important;
+.catalog-dimension-inline-trigger svg {
+  flex: 0 0 15px;
+  color: #5c7e64;
+  transition: transform .18s ease;
 }
 .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
-.catalog-dimension-single-control > select option {
-  color: #234b33;
-  background: #fff;
+.catalog-dimension-inline-trigger:is(:hover,:focus-visible),
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-dimension-inline-unit.is-open .catalog-dimension-inline-trigger {
+  outline: none;
+  background: #dfefe3;
+  color: #225e37;
+  box-shadow: inset 0 0 0 1px #c2dcc9;
 }
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-dimension-inline-unit.is-open .catalog-dimension-inline-trigger svg {
+  transform: rotate(180deg);
+}
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-dimension-inline-trigger:disabled {
+  opacity: .62;
+  cursor: not-allowed;
+}
+
+/* Manual popover is a direct descendant of the dialog, not of the scrolling
+   dimensions row. Reset browser popover centering: precise fixed coordinates
+   are calculated from the clicked unit trigger. */
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-menu[popover] {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 92px;
+  padding: 7px;
+  overflow: hidden;
+  border: 1px solid rgba(190,212,196,.96);
+  border-radius: 13px;
+  background: rgba(253,255,253,.985);
+  box-shadow: 0 19px 45px rgba(26,54,36,.17),0 4px 12px rgba(26,54,36,.055);
+  color: #2b4636;
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+}
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-menu[popover]:not(:popover-open) {
+  display: none;
+}
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-menu[popover]:popover-open {
+  display: flex;
+}
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-menu-title {
+  flex: 0 0 auto;
+  padding: 8px 10px 7px;
+  color: #8aa08f;
+  font: 750 10px/1.3 "DM Sans", sans-serif;
+  letter-spacing: .12em;
+}
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-menu-options {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #c5d8ca transparent;
+}
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-menu-options > button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 38px;
+  margin: 1px 0;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #364b3b;
+  font-family: "DM Sans",sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-menu-options > button:is(:hover,:focus-visible) {
+  background: #f1f7f0;
+  border-color: #e1ebe2;
+  outline: none;
+}
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-menu-options > button.is-selected {
+  border-color: #d6e8da;
+  background: #e9f3ea;
+  color: #265e3b;
+}
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-unit-code {
+  flex: 0 0 29px;
+  font: 750 12.5px/1.3 "DM Sans", sans-serif;
+}
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-unit-description {
+  flex: 1;
+  min-width: 0;
+  color: #718675;
+  font: 530 11.5px/1.3 "DM Sans",sans-serif;
+}
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-menu-options > button.is-selected
+.catalog-dimension-inline-unit-description {
+  color: #527e5c;
+}
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-menu-options > button svg {
+  flex: 0 0 15px;
+  color: #3f8054;
+}
+
+/* Dim and soften the same controls, without changing their dimensions. */
 .admin-app[data-theme="dark"] .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
 .catalog-dimension-single > .catalog-dimension-single-label {
-  color: #b0d1b8;
+  color: #b3cdb9;
 }
 .admin-app[data-theme="dark"] .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
 .catalog-dimension-single-control {
-  background: #2c4435;
-  border-color: #51745a;
+  border-color: #52735b;
+  background: linear-gradient(135deg,#2e4737,#314b3a);
   box-shadow: none;
 }
 .admin-app[data-theme="dark"] .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
 .catalog-dimension-single-control > input {
-  color: #f0f8ef !important;
+  color: #eef9ef !important;
 }
 .admin-app[data-theme="dark"] .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
 .catalog-dimension-single-control > input::placeholder {
-  color: #acc6b4 !important;
+  color: #a9c3ae;
 }
 .admin-app[data-theme="dark"] .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
-.catalog-dimension-single-control > select {
-  border-left-color: #577c62 !important;
-  background: #3a5b45 !important;
-  color: #ecf9ef !important;
+.catalog-dimension-inline-trigger {
+  color: #ddf1e0;
+  background: #405e49;
 }
 .admin-app[data-theme="dark"] .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
-.catalog-dimension-single-control > select:is(:hover,:focus-visible) {
-  background: #476f53 !important;
-  color: #fff !important;
+.catalog-dimension-inline-trigger:is(:hover,:focus-visible),
+.admin-app[data-theme="dark"] .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-dimension-inline-unit.is-open .catalog-dimension-inline-trigger {
+  background: #4c7457;
+  color: #fff;
+  box-shadow: inset 0 0 0 1px #78a083;
 }
-@media (max-width: 1050px) {
+.admin-app[data-theme="dark"] .modal.product-editor-dialog .catalog-dimension-inline-menu[popover] {
+  color: #e7f3e8;
+  background: rgba(37,58,44,.985);
+  border-color: #547b5d;
+  box-shadow: 0 19px 45px rgba(0,0,0,.32);
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog .catalog-dimension-inline-menu-title {
+  color: #b0c4b5;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog .catalog-dimension-inline-menu-options > button {
+  color: #e9f6ea;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog .catalog-dimension-inline-menu-options > button:is(:hover,:focus-visible) {
+  background: #365943;
+  border-color: #527b5b;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog .catalog-dimension-inline-menu-options > button.is-selected {
+  background: #3a6348;
+  border-color: #61916e;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog .catalog-dimension-inline-unit-description {
+  color: #bdd4c2;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog .catalog-dimension-inline-menu-options > button.is-selected
+.catalog-dimension-inline-unit-description {
+  color: #e2f2e4;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog .catalog-dimension-inline-menu-options > button svg {
+  color: #c9e6ce;
+}
+
+@media (max-width: 1080px) {
   .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
   .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field {
     gap: 9px !important;
   }
   .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
-  .catalog-dimension-single-control > select {
-    flex-basis: 65px;
-    min-width: 65px;
-    width: 65px;
-    max-width: 65px;
+  .catalog-dimension-inline-unit {
+    flex-basis: 77px;
+    width: 77px;
+    min-width: 77px;
+    padding: 4px;
   }
 }
-@media (max-width: 680px) {
+@media (max-width: 740px) {
   .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
   .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field {
     grid-template-columns: repeat(2,minmax(0,1fr)) !important;
     gap: 10px !important;
   }
+  .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-dimension-single:last-child {
+    grid-column: 1 / -1;
+  }
 }
-@media (max-width: 430px) {
+@media (max-width: 460px) {
   .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
   .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field {
     grid-template-columns: minmax(0,1fr) !important;
   }
+  .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-dimension-single:last-child {
+    grid-column: auto;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
-  .catalog-dimension-single-control { transition: none; }
+  .catalog-dimension-single-control,
+  .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-dimension-inline-trigger,
+  .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-dimension-inline-trigger svg {
+    transition: none;
+  }
 }
