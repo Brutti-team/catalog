@@ -1,0 +1,200 @@
+/* Materials typography controls — compact and familiar, not a heavy editor.
+   Works with the existing plain-text materials storage, and preview uses the
+   exact same React renderer as the public catalog. */
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar {
+  flex-wrap: wrap;
+  column-gap: 7px;
+  row-gap: 6px;
+  padding: 8px 10px;
+  min-height: 47px;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-tool-group,
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar-end {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 3px;
+  min-width: 0;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar-divider {
+  flex: 0 0 1px;
+  height: 22px;
+  margin-inline: 2px;
+  background: #dce9df;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar .catalog-materials-inline-tools button {
+  min-width: 32px;
+  width: 32px;
+  min-height: 32px;
+  padding: 7px;
+  border-radius: 8px;
+  color: #526e5a;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar .catalog-materials-inline-tools button:is(:hover,:focus-visible) {
+  color: #27603d;
+  background: #e6f2e9;
+  border-color: #cde3d1;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar .catalog-materials-toolbar-end {
+  margin-left: auto;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar button.catalog-materials-preview-toggle {
+  min-height: 32px;
+  padding-inline: 10px;
+  color: #2b6740;
+  border: 1px solid #d2e3d6;
+  background: rgba(255,255,255,.82);
+  border-radius: 8px;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar button.catalog-materials-preview-toggle:hover,
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar button.catalog-materials-preview-toggle.is-active {
+  background: #e0f1e5;
+  border-color: #b5d6bd;
+  color: #215a36;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview {
+  box-sizing: border-box;
+  min-height: 136px;
+  width: 100%;
+  padding: 15px 18px 17px;
+  background: #fff;
+  color: #344e3b;
+  font: 490 13px/1.7 "DM Sans",sans-serif;
+  overflow-wrap: anywhere;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview-empty {
+  color: #98a69c;
+  font-style: italic;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview .catalog-materials-content > :is(ol,ul) {
+  margin: 0 0 12px;
+  padding: 0 0 0 22px;
+  list-style-position: outside;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview .catalog-materials-content > ol {
+  list-style-type: decimal;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview .catalog-materials-content > ul {
+  list-style-type: disc;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview .catalog-materials-content li {
+  display: list-item;
+  padding-bottom: 6px;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview .catalog-materials-content p {
+  margin: 0 0 8px;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview .catalog-materials-content strong {
+  font-weight: 760;
+  color: #244f33;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview .catalog-materials-content :is(s,del) {
+  color: #8d9b90;
+  text-decoration: line-through;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview .catalog-materials-content :is(u) {
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+.catalog-materials-content h4 {
+  margin: 16px 0 9px;
+  font: 730 14px/1.4 "Manrope","DM Sans",sans-serif;
+  letter-spacing: -.018em;
+  color: #2b5037;
+}
+.catalog-materials-content h4:first-child { margin-top: 0; }
+.catalog-materials-content mark {
+  padding: 0 .15em;
+  border-radius: 3px;
+  background: #fff1b7;
+  color: #4d4224;
+  box-decoration-break: clone;
+}
+.catalog-materials-content :is(ul,ol) li > strong,
+.catalog-materials-content :is(ul,ol) li > em,
+.catalog-materials-content > p > strong {
+  color: inherit;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar-divider { background: #58725f; }
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar .catalog-materials-inline-tools button {
+  color: #d1e4d5;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar .catalog-materials-inline-tools button:is(:hover,:focus-visible) {
+  background: #44684d;
+  color: #fff;
+  border-color: #6f9177;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-toolbar button.catalog-materials-preview-toggle {
+  background: #385841;
+  border-color: #608169;
+  color: #e2f3e5;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview {
+  background: #2b4032;
+  color: #edf5ee;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview .catalog-materials-content strong,
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-specs
+.catalog-materials-preview .catalog-materials-content h4 {
+  color: #e4f7e7;
+}
+.admin-app[data-theme="dark"] .catalog-materials-content mark {
+  background: #746039;
+  color: #fff2cf;
+}
+@media (max-width: 800px) {
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-materials-toolbar {
+    gap: 6px;
+    justify-content: space-between;
+  }
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-materials-toolbar-divider { display: none; }
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-materials-list-tools { order: 0; }
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-materials-inline-tools { order: 2; }
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-materials-toolbar-end { order: 1; }
+}
+@media (max-width: 500px) {
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-materials-toolbar .catalog-materials-inline-tools {
+    flex-wrap: wrap;
+  }
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-materials-toolbar .catalog-materials-inline-tools button {
+    min-width: 30px;
+    width: 30px;
+    min-height: 30px;
+    padding: 6px;
+  }
+  .admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
+  .catalog-materials-preview { padding: 13px 14px; }
+}
