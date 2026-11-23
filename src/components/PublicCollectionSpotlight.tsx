@@ -130,7 +130,12 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
               <h3>{product.name}</h3>
             </a>
             <div className="pub-catalog-tile__pricing">
-              <div className="pub-catalog-tile__price"><ProductPrice product={product} /></div>
+              <div className="pub-catalog-tile__price">
+                {product.price !== null && product.priceBasis === "starting-from" && (
+                  <span className="pub-catalog-tile__price-prefix">Starting from</span>
+                )}
+                <ProductPrice product={product.priceBasis === "starting-from" ? { ...product, priceBasis: "fixed" } : product} />
+              </div>
               {sale && <span className="pub-catalog-tile__save">SAVE {saving}%</span>}
             </div>
           </div>
