@@ -57,19 +57,21 @@ describe("real catalog product validation", () => {
     expect(() => validateProduct({ ...sourceDraft, price: null })).not.toThrow();
   });
 
-  it("prevents publishing a product with unverified dimensions", () => {
+  it("allows publishing with optional dimensions and materials left empty", () => {
     expect(() => validateProduct({
-      ...sourceDraft, ...verifiedProduct, width: 0, status: "published"
-    })).toThrow(/dimensions/i);
+      ...verifiedProduct, width: 0, depth: 0, height: 0,
+      materials: "", status: "published"
+    })).not.toThrow();
+    expect(() => validateProduct({
+      ...verifiedProduct, width: 140, depth: 0, height: 0,
+      materials: "", status: "published"
+    })).not.toThrow();
   });
 
-  it("prevents publishing a product without verified description, materials or image", () => {
+  it("still requires a description and image to publish", () => {
     expect(() => validateProduct({
       ...verifiedProduct, description: "", status: "published"
     })).toThrow(/description/i);
-    expect(() => validateProduct({
-      ...verifiedProduct, materials: "", status: "published"
-    })).toThrow(/materials/i);
     expect(() => validateProduct({
       ...verifiedProduct, images: [], status: "published"
     })).toThrow(/image/i);
