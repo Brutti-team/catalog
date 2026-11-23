@@ -37,8 +37,8 @@ import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
 import ProductPrice from "./ProductPrice";
 import { nextProductId } from "../lib/product-ids";
-import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
-import DimensionUnitPicker from "./DimensionUnitPicker";
+import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, normalizeDimensionUnits, type DimensionKey, type DimensionUnit } from "../lib/dimensions";
+import OverallDimensionFields from "./OverallDimensionFields";
 import MeasurementTypePicker from "./MeasurementTypePicker";
 import MaterialsEditor from "./MaterialsEditor";
 import PhotoCropEditor from "./PhotoCropEditor";
@@ -307,7 +307,6 @@ export default function ProductEditor({
     ...structuredClone(product),
     sku: isNewProduct ? nextProductId(product.categoryId, categories, existingProducts) : product.sku,
   }));
-  const [dimensionUnit, setDimensionUnit] = useState<DimensionUnit>("cm");
   const [error, setError] = useState("");
   const [confirmStatus, setConfirmStatus] = useState<"published" | "draft" | null>(null);
   const [busy, setBusy] = useState(false);
@@ -942,24 +941,15 @@ export default function ProductEditor({
               <div className="catalog-reference-spec-rows">
                 <div className="catalog-reference-spec-row">
                   <span className="catalog-reference-spec-key">Dimensions <small>Optional · overall size</small></span>
-                  <div className="catalog-reference-dimension-inputs catalog-unified-dimensions" role="group" aria-label="Product dimensions">
-                    {(["width", "depth", "height"] as const).map((key) => (
-                      <label key={key}>
-                        <span>{key === "width" ? "Width" : key === "depth" ? "Depth" : "Height"}</span>
-                        <input
-                          aria-label={`${key} in ${dimensionUnit}`}
-                          type="number"
-                          min={0}
-                          max={unitMax(dimensionUnit)}
-                          step="any"
-                          value={draft[key] === 0 ? "" : cmToUnit(draft[key], dimensionUnit)}
-                          placeholder="Optional"
-                          onChange={(e) => update(key, unitToCm(Number(e.target.value), dimensionUnit))}
-                        />
-                      </label>
-                    ))}
-                    <DimensionUnitPicker value={dimensionUnit} onChange={setDimensionUnit} disabled={busy || uploading} />
-                  </div>
+                  <OverallDimensionFields
+                    product={draft}
+                    disabled={busy || uploading}
+                    onValueChange={(key, value) => update(key, value)}
+                    onUnitChange={(key, unit) => setDraft(current => ({
+                      ...current,
+                      dimensionUnits: { ...normalizeDimensionUnits(current.dimensionUnits), [key]: unit },
+                    }))}
+                  />
                 </div>
                 <div className="catalog-reference-spec-row catalog-materials-spec-row">
                   <span className="catalog-reference-spec-key">Materials <small>Optional · primary materials</small></span>
@@ -1111,24 +1101,15 @@ export default function ProductEditor({
               <div className="section-label">
                 Dimensions <span className="muted">Optional</span>
               </div>
-              <div className="field-trio catalog-unified-dimensions" role="group" aria-label="Product dimensions">
-                {(["width", "depth", "height"] as const).map((key) => (
-                  <label key={key}>
-                    <span>{key === "width" ? "Width" : key === "depth" ? "Depth" : "Height"}</span>
-                    <input
-                      aria-label={`${key} in ${dimensionUnit}`}
-                      type="number"
-                      min={0}
-                      max={unitMax(dimensionUnit)}
-                      step="any"
-                      value={draft[key] === 0 ? "" : cmToUnit(draft[key], dimensionUnit)}
-                          placeholder="Optional"
-                      onChange={(e) => update(key, unitToCm(Number(e.target.value), dimensionUnit))}
-                    />
-                  </label>
-                ))}
-                <DimensionUnitPicker value={dimensionUnit} onChange={setDimensionUnit} disabled={busy || uploading} />
-              </div>
+              <OverallDimensionFields
+                product={draft}
+                disabled={busy || uploading}
+                onValueChange={(key, value) => update(key, value)}
+                onUnitChange={(key, unit) => setDraft(current => ({
+                  ...current,
+                  dimensionUnits: { ...normalizeDimensionUnits(current.dimensionUnits), [key]: unit },
+                }))}
+              />
               <div className="catalog-new-pricing-fields" role="group" aria-label="Product pricing">
                 <label className="catalog-pricing-field">
                   <span>{draft.priceBasis === "starting-from" ? "Starting price" : "Current price"} <em>RM</em></span>
