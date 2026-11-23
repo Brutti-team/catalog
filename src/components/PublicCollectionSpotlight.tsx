@@ -133,7 +133,7 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
               {description && <p className="pub-catalog-tile__description" title={description}>{description}</p>}
             </div>
             <div className="pub-catalog-tile__pricing">
-              <div className="pub-catalog-tile__price"><ProductPrice product={product} /></div>
+              <div className="pub-catalog-tile__price"><ProductPrice product={product} stackedBasis /></div>
               {sale && <span className="pub-catalog-tile__save">SAVE {saving}%</span>}
             </div>
           </div>
