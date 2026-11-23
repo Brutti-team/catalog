@@ -60,7 +60,10 @@ export function stripMaterialFormatting(value: string): string {
 }
 
 export function materialCardSummary(value: string): string {
-  const items = parseMaterials(value).flatMap(block => block.items).map(stripMaterialFormatting);
+  const items = parseMaterials(value)
+    .filter(block => block.style !== "heading")
+    .flatMap(block => block.items)
+    .map(stripMaterialFormatting);
   if (!items.length) return "";
   return items.length === 1 ? items[0] : `${items[0]} · +${items.length - 1} more`;
 }
