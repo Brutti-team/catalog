@@ -210,12 +210,8 @@ export function validateProduct(product: Product): void {
     )
   )
     throw new Error("Dimensions must be valid numbers below 100,000 centimetres.");
-  // Incomplete dimensions from the PDF are allowed in Draft, not in live listings.
-  if (
-    product.status === "published" &&
-    [product.width, product.depth, product.height].some((value) => value <= 0)
-  )
-    throw new Error("Confirm all three product dimensions before publishing.");
+  // Overall dimensions are optional for Draft and Published products.
+  // Zero represents an unspecified measurement, not a real dimension.
   if (
     product.price !== null &&
     (!Number.isFinite(product.price) ||
@@ -285,8 +281,7 @@ export function validateProduct(product: Product): void {
       throw new Error("Add at least one image before publishing.");
     if (!product.description.trim())
       throw new Error("Add a description before publishing.");
-    if (!product.materials.trim())
-      throw new Error("Add materials before publishing.");
+    // Materials are optional; an empty string is a valid published product.
   }
 }
 
