@@ -1,0 +1,236 @@
+/* Premium, restrained measurement picker. The menu portals into the editor
+   dialog so its height never expands the specification rows. */
+.admin-app .product-editor-dialog #product-editor-specs .catalog-measure-type {
+  width: 100%;
+  min-width: 0;
+}
+
+.admin-app .product-editor-dialog #product-editor-specs .catalog-measure-type-trigger {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  height: 46px;
+  min-height: 46px;
+  min-width: 0;
+  margin: 0;
+  padding: 0 13px;
+  border: 1px solid #d1e1d5;
+  border-radius: 11px;
+  background: rgba(255,255,255,.94);
+  color: #8a9d90;
+  box-shadow: 0 1px 2px rgba(28,65,38,.04);
+  font: 570 12px/1.4 "DM Sans", sans-serif;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .17s ease, background .17s ease, box-shadow .17s ease;
+}
+
+.admin-app .product-editor-dialog #product-editor-specs .catalog-measure-type-trigger.has-value {
+  color: #294733;
+}
+.admin-app .product-editor-dialog #product-editor-specs .catalog-measure-type-trigger:is(:hover, :focus-visible),
+.admin-app .product-editor-dialog #product-editor-specs .catalog-measure-type.is-open .catalog-measure-type-trigger {
+  border-color: #70a481;
+  background: #fff;
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(91,150,107,.12);
+}
+.admin-app .product-editor-dialog #product-editor-specs .catalog-measure-type-ruler {
+  flex: 0 0 15px;
+  color: #729b7c;
+}
+.admin-app .product-editor-dialog #product-editor-specs .catalog-measure-type-value {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.admin-app .product-editor-dialog #product-editor-specs .catalog-measure-type-chevron {
+  flex: 0 0 16px;
+  color: #567361;
+  transition: transform .17s ease;
+}
+.admin-app .product-editor-dialog #product-editor-specs .catalog-measure-type.is-open .catalog-measure-type-chevron {
+  transform: rotate(180deg);
+}
+
+/* Positioned inside the native dialog top layer. Never use a browser-native
+   full-height select: it hides the rest of the editor. */
+.admin-app .product-editor-dialog .catalog-measure-type-menu {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 110px;
+  padding: 7px;
+  border: 1px solid rgba(190,211,194,.95);
+  border-radius: 14px;
+  background: rgba(255,255,255,.985);
+  box-shadow: 0 18px 45px rgba(27,52,34,.2), 0 3px 9px rgba(27,52,34,.06);
+  overflow: hidden;
+  color: #294733;
+}
+
+.admin-app .product-editor-dialog .catalog-measure-type-search {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 0 0 39px;
+  box-sizing: border-box;
+  min-height: 39px;
+  padding: 0 10px;
+  border: 1px solid #e1eae1;
+  border-radius: 9px;
+  background: #f6f9f5;
+  color: #738d79;
+}
+.admin-app .product-editor-dialog .catalog-measure-type-search:focus-within {
+  border-color: #91b69b;
+  box-shadow: 0 0 0 2px rgba(90,145,101,.1);
+}
+.admin-app .product-editor-dialog .catalog-measure-type-search input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  box-shadow: none;
+  background: transparent;
+  color: #2a4834;
+  font: 500 12px/1.4 "DM Sans", sans-serif;
+}
+.admin-app .product-editor-dialog .catalog-measure-type-search input::placeholder {
+  color: #849a89;
+}
+
+.admin-app .product-editor-dialog .catalog-measure-type-options {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #bdd3c2 transparent;
+  padding: 5px 1px 4px;
+}
+.admin-app .product-editor-dialog .catalog-measure-type-options::-webkit-scrollbar { width: 5px; }
+.admin-app .product-editor-dialog .catalog-measure-type-options::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: #bdd3c2;
+}
+.admin-app .product-editor-dialog .catalog-measure-type-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 35px;
+  padding: 8px 11px;
+  margin: 1px 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #344d3b;
+  text-align: left;
+  font: 560 12px/1.4 "DM Sans", sans-serif;
+  cursor: pointer;
+}
+.admin-app .product-editor-dialog .catalog-measure-type-option span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.admin-app .product-editor-dialog .catalog-measure-type-option:is(:hover, :focus-visible) {
+  background: #f0f6ef;
+  border-color: #e1ebe1;
+  outline: none;
+}
+.admin-app .product-editor-dialog .catalog-measure-type-option.is-selected {
+  background: #e8f3e9;
+  border-color: #d2e4d6;
+  color: #26603d;
+}
+.admin-app .product-editor-dialog .catalog-measure-type-option.is-custom {
+  margin-top: 5px;
+  border-top: 1px solid #e8eee7;
+  border-radius: 0 0 8px 8px;
+  color: #3a7050;
+}
+.admin-app .product-editor-dialog .catalog-measure-type-hint {
+  flex: 0 0 auto;
+  padding: 7px 7px 2px;
+  border-top: 1px solid #ebf0ea;
+  color: #819588;
+  font: 500 10px/1.3 "DM Sans", sans-serif;
+}
+.admin-app .product-editor-dialog .catalog-measure-type-empty {
+  margin: 12px 5px;
+  color: #819588;
+  font: 500 12px/1.4 "DM Sans", sans-serif;
+}
+
+.admin-app[data-theme="dark"] .product-editor-dialog #product-editor-specs .catalog-measure-type-trigger {
+  color: #afc7b5;
+  background: #294434;
+  border-color: #53705b;
+  box-shadow: none;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog #product-editor-specs .catalog-measure-type-trigger.has-value {
+  color: #e3f0e6;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog #product-editor-specs .catalog-measure-type-trigger:is(:hover, :focus-visible),
+.admin-app[data-theme="dark"] .product-editor-dialog #product-editor-specs .catalog-measure-type.is-open .catalog-measure-type-trigger {
+  border-color: #80ae8c;
+  background: #2d4a37;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-measure-type-menu {
+  background: #263d2e;
+  border-color: #53715b;
+  color: #e6f1e6;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-measure-type-search {
+  background: #304b38;
+  border-color: #55725d;
+  color: #bcd3bf;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-measure-type-search input {
+  color: #e6f1e6;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-measure-type-search input::placeholder {
+  color: #acbeae;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-measure-type-option {
+  color: #e3efe5;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-measure-type-option:is(:hover, :focus-visible) {
+  background: #345640;
+  border-color: #557b61;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-measure-type-option.is-selected {
+  background: #365f43;
+  border-color: #5e8467;
+  color: #e0f3e1;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-measure-type-option.is-custom {
+  color: #b3d9bd;
+  border-top-color: #53715b;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-measure-type-hint {
+  color: #b0c5b6;
+  border-top-color: #53715b;
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-measure-type-empty {
+  color: #b0c5b6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-app .product-editor-dialog .catalog-measure-type-trigger,
+  .admin-app .product-editor-dialog .catalog-measure-type-chevron { transition: none !important; }
+}
