@@ -1,6 +1,7 @@
 import SafeImage from "./SafeImage";
 import "./product-media-whatsapp-studio.css";
 import "./product-editor-publish-action.css";
+import "./product-editor-confirm-dialog.css";
 import { useState, useRef, useEffect, useCallback, type FormEvent } from "react";
 import {
   ImagePlus,
@@ -24,6 +25,8 @@ import {
   Trash2,
   Image as ImageIcon,
   AlertCircle,
+  Globe2,
+  EyeOff,
 } from "lucide-react";
 import type { Product, Category, ProductImage, ProductSpecification } from "../lib/types";
 import { uploadImage, validateProduct, cleanupAbandonedImages, type ProductModelChange } from "../lib/catalog";
@@ -305,6 +308,7 @@ export default function ProductEditor({
   }));
   const [dimensionUnit, setDimensionUnit] = useState<DimensionUnit>("cm");
   const [error, setError] = useState("");
+  const [confirmStatus, setConfirmStatus] = useState<"published" | "draft" | null>(null);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(false);
@@ -434,7 +438,7 @@ export default function ProductEditor({
       ...current,
       specifications: (current.specifications ?? []).filter((row) => row.id !== id),
     }));
-  async function commit(status: Product["status"] = draft.status) {
+  async function commit(status: Product["status"] = draft.status, confirmed = false) {
     if (busy) return;
     // Never silently ignore a click. Explain temporary upload/model blockers
     // in the sticky footer where the user clicked.
@@ -450,15 +454,19 @@ export default function ProductEditor({
           : "Complete or cancel the 3D model operation before saving or publishing.");
       return;
     }
-    if (status === "draft" && product.status === "published" && !window.confirm("Saving as draft will unpublish this product from the public catalogue. Continue?")) return;
     setError("");
     // Newly added but untouched rows should not prevent a completed product
     // from being published. Partially filled rows remain subject to validation.
     const candidate = { ...draft, specifications: compactSpecifications(draft.specifications), status };
     try {
       validateProduct(candidate);
-      if (status === "published" && product.status !== "published" &&
-          !window.confirm("Publish " + (draft.name.trim() || "this product") + " to the public catalog? Customers will be able to view it.")) return;
+      if (!confirmed && (
+        (status === "published" && product.status !== "published") ||
+        (status === "draft" && product.status === "published")
+      )) {
+        setConfirmStatus(status === "published" ? "published" : "draft");
+        return;
+      }
       setBusy(true);
       const saved = await onSave({ ...candidate, sku: isNewProduct ? draft.sku : product.sku, updatedAt: new Date().toISOString() }, modelChange.current, isNewProduct);
       const savedImages = saved?.images ?? draft.images;
@@ -1244,6 +1252,47 @@ export default function ProductEditor({
           </div>
         </footer>
       </form>
+      {confirmStatus && (
+        <Modal
+          title={confirmStatus === "published" ? "Publish this product?" : "Move product to Draft?"}
+          eyebrow="BRUTTI CATALOG / CONFIRM ACTION"
+          className="catalog-publish-confirm-dialog"
+          onClose={() => setConfirmStatus(null)}
+        >
+          <div className="catalog-publish-confirm-body">
+            <div className={`catalog-publish-confirm-icon ${confirmStatus === "published" ? "is-publish" : "is-draft"}`}>
+              {confirmStatus === "published"
+                ? <Globe2 size={22} strokeWidth={1.85} aria-hidden="true" />
+                : <EyeOff size={22} strokeWidth={1.85} aria-hidden="true" />}
+            </div>
+            <p className="catalog-publish-confirm-description">
+              {confirmStatus === "published"
+                ? "This product will appear in the public Brutti Catalog and customers will be able to view it."
+                : "This product will be removed from the public catalog. Its details and photos will remain saved for editing."}
+            </p>
+            <div className="catalog-publish-confirm-product">
+              <span className="catalog-publish-confirm-product-label">PRODUCT</span>
+              <strong>{draft.name.trim() || "Untitled product"}</strong>
+              <span className="catalog-publish-confirm-product-sku">{draft.sku}</span>
+            </div>
+            <div className="catalog-publish-confirm-actions">
+              <button type="button" className="catalog-publish-confirm-cancel"
+                onClick={() => setConfirmStatus(null)}>Cancel</button>
+              <button type="button" className={`catalog-publish-confirm-submit ${confirmStatus === "draft" ? "is-draft" : ""}`}
+                onClick={() => {
+                  const nextStatus = confirmStatus;
+                  setConfirmStatus(null);
+                  void commit(nextStatus, true);
+                }}>
+                {confirmStatus === "published"
+                  ? <Globe2 size={17} strokeWidth={1.85} aria-hidden="true" />
+                  : <EyeOff size={17} strokeWidth={1.85} aria-hidden="true" />}
+                {confirmStatus === "published" ? "Publish Product" : "Move to Draft"}
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
       {editingCoverId && draft.images.some(image => image.id === editingCoverId) && (
         <PhotoCoverStudio
           key={editingCoverId}
