@@ -7,7 +7,7 @@ export type MaterialBlock = { style: MaterialListStyle | "heading"; items: strin
 const BULLET = /^(?:•|[-*])\s+(.*)$/;
 const NUMBERED = /^\d{1,3}[.)]\s+(.*)$/;
 
-function readLine(raw: string): { style: MaterialListStyle; text: string } {
+function readLine(raw: string): { style: MaterialBlock["style"]; text: string } {
   const line = raw.trim();
   const heading = line.match(/^##\s+(.+)$/);
   if (heading) return { style: "heading" as const, text: heading[1].trim() };
