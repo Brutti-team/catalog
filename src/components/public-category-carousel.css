@@ -232,3 +232,31 @@
     transform: none;
   }
 }
+
+
+/* Drag-to-browse affordance: desktop mouse can grab anywhere on the rail,
+   while touch screens retain fast native swipe + momentum scrolling. */
+@media (hover: hover) and (pointer: fine) {
+  .pub-app.pub-refined .pub-category-marquee-viewport,
+  .pub-app.pub-refined .pub-category-marquee-viewport .pub-category-rail-item {
+    cursor: grab;
+  }
+  .pub-app.pub-refined .pub-category-marquee-viewport.is-dragging,
+  .pub-app.pub-refined .pub-category-marquee-viewport.is-dragging *,
+  .pub-app.pub-refined .pub-category-marquee-viewport.is-dragging .pub-category-rail-item {
+    cursor: grabbing !important;
+  }
+}
+.pub-app.pub-refined .pub-category-marquee-viewport.is-dragging,
+.pub-app.pub-refined .pub-category-marquee-viewport.is-dragging * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+.pub-app.pub-refined .pub-category-marquee-viewport.is-dragging {
+  scroll-behavior: auto !important;
+  scroll-snap-type: none !important;
+}
+.pub-app.pub-refined .pub-category-marquee-viewport img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
