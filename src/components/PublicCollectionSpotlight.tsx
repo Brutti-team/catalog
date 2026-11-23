@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type SyntheticEvent } from "react";
-import { ArrowRight, ArrowUpRight, Eye, Sparkles, X } from "lucide-react";
+import { ArrowRight, Eye, Heart, Sparkles, X } from "lucide-react";
 import type { Product } from "../lib/types";
 import { photoCropStyle } from "../lib/photo-crop";
 import { publicAssetUrl } from "../lib/assets";
 import { recordCatalogEvent } from "../lib/customer-analytics";
 import ProductPrice from "./ProductPrice";
+import { discountPercent, hasProductDiscount } from "../lib/discount-price";
 import "./public-spotlight.css";
 
 interface Props {
@@ -25,6 +26,29 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
   const photo = product.images[0];
   const detailUrl = "#/product/" + encodeURIComponent(product.id);
   const description = product.description?.trim();
+  const sale = hasProductDiscount(product);
+  const saving = sale ? discountPercent(product) : 0;
+  const [isFavourite, setIsFavourite] = useState(() => {
+    try {
+      const saved: unknown = JSON.parse(window.localStorage.getItem("brutti-catalog-favourites") || "[]");
+      return Array.isArray(saved) && saved.includes(product.id);
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleFavourite = () => {
+    const next = !isFavourite;
+    setIsFavourite(next);
+    try {
+      const saved: unknown = JSON.parse(window.localStorage.getItem("brutti-catalog-favourites") || "[]");
+      const ids = Array.isArray(saved) ? saved.filter((value): value is string => typeof value === "string") : [];
+      const updated = next ? [...new Set([...ids, product.id])] : ids.filter(id => id !== product.id);
+      window.localStorage.setItem("brutti-catalog-favourites", JSON.stringify(updated));
+    } catch {
+      // Local storage may be disabled; the visible toggle still works for this session.
+    }
+  };
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -55,8 +79,8 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
           <button
             type="button"
             className="pub-catalog-tile__preview"
-            onClick={openQuickView}
-            aria-label={"Quick view of " + product.name}
+            onClick={openDetails}
+            aria-label={"View details for " + product.name}
           >
             <img
               src={publicAssetUrl(photo?.url)}
@@ -67,7 +91,21 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
               onError={handleImageError}
             />
           </button>
-          {product.featured && <span className="pub-catalog-tile__featured"><Sparkles size={12} /> Featured</span>}
+          <button
+            type="button"
+            className={"pub-catalog-tile__favourite" + (isFavourite ? " is-saved" : "")}
+            aria-label={(isFavourite ? "Remove " : "Save ") + product.name + (isFavourite ? " from" : " to") + " favourites"}
+            aria-pressed={isFavourite}
+            title={isFavourite ? "Remove from favourites" : "Save to favourites"}
+            onClick={toggleFavourite}
+          >
+            <Heart size={20} fill={isFavourite ? "currentColor" : "none"} strokeWidth={1.7} />
+          </button>
+          {sale ? (
+            <span className="pub-catalog-tile__sale">SALE</span>
+          ) : product.featured ? (
+            <span className="pub-catalog-tile__featured"><Sparkles size={12} /> Featured</span>
+          ) : null}
           <button
             type="button"
             className="pub-catalog-tile__eye"
@@ -75,27 +113,18 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
             aria-label={"Open quick view for " + product.name}
             title="Quick view"
           >
-            <Eye size={15} aria-hidden="true" />
+            <Eye size={17} aria-hidden="true" />
             <span>Quick view</span>
           </button>
         </div>
 
         <div className="pub-catalog-tile__copy">
-          <div className="pub-catalog-tile__meta">
-            <span className="pub-catalog-tile__category">{categoryName}</span>
-            <span className="pub-catalog-tile__availability">
-              <span className={"pub-catalog-tile__dot pub-catalog-tile__dot--" + product.availability} />
-              {availabilityLabels[product.availability]}
-            </span>
-          </div>
+          <span className="pub-catalog-tile__category">{categoryName}</span>
           <a className="pub-catalog-tile__title" href={detailUrl} onClick={openDetails}>
             <h3>{product.name}</h3>
-            <ArrowUpRight size={17} aria-hidden="true" />
           </a>
-          {description && <p className="pub-catalog-tile__description">{description}</p>}
-          <div className="pub-catalog-tile__footer">
-            <span className="pub-catalog-tile__price"><ProductPrice product={product} /></span>
-          </div>
+          <div className="pub-catalog-tile__price"><ProductPrice product={product} /></div>
+          {sale && <span className="pub-catalog-tile__save">SAVE {saving}%</span>}
         </div>
       </article>
 
