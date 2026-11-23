@@ -1,5 +1,6 @@
 import SafeImage from "./SafeImage";
 import "./product-media-whatsapp-studio.css";
+import "./product-editor-publish-action.css";
 import { useState, useRef, useEffect, useCallback, type FormEvent } from "react";
 import {
   ImagePlus,
@@ -438,6 +439,8 @@ export default function ProductEditor({
     setError("");
     try {
       validateProduct({ ...draft, status });
+      if (status === "published" && product.status !== "published" &&
+          !window.confirm("Publish " + (draft.name.trim() || "this product") + " to the public catalog? Customers will be able to view it.")) return;
       setBusy(true);
       const saved = await onSave({ ...draft, sku: isNewProduct ? draft.sku : product.sku, status, updatedAt: new Date().toISOString() }, modelChange.current, isNewProduct);
       const savedImages = saved?.images ?? draft.images;
@@ -681,7 +684,8 @@ export default function ProductEditor({
             <div className="catalog-editor-header-actions">
               <div className="catalog-editor-header-meta" aria-label="Product information">
                 <span className="catalog-editor-header-sku">{draft.sku || "New product"}</span>
-                <span className={`catalog-editor-header-status catalog-editor-header-status--${draft.status}`}>
+                <span className={`catalog-editor-header-status catalog-editor-header-status--${draft.status}`}
+                  aria-label={`Current product status: ${draft.status}`}>
                   {draft.status === "published" ? "Published" : draft.status === "archived" ? "Archived" : "Draft"}
                 </span>
               </div>
@@ -1163,7 +1167,8 @@ export default function ProductEditor({
           </span>
           <div className="button-row">
             <button
-              className="button primary"
+              className={isEditing && draft.status !== "published"
+                ? "button secondary catalog-editor-footer-save-draft" : "button primary"}
               disabled={busy || uploading || modelPending || modelInvalid}
               type="submit"
             >
@@ -1174,6 +1179,28 @@ export default function ProductEditor({
               )}{" "}
               {busy ? "Saving…" : "Save product"}
             </button>
+            {isEditing && draft.status !== "published" && (
+              <button
+                type="button"
+                className="button primary catalog-editor-footer-publish"
+                disabled={busy || uploading || modelPending || modelInvalid}
+                onClick={() => void commit("published")}
+                title="Save changes and publish this product to the public catalog"
+              >
+                <Upload size={16} aria-hidden="true" /> Publish product
+              </button>
+            )}
+            {isEditing && draft.status === "published" && (
+              <button
+                type="button"
+                className="button secondary catalog-editor-footer-unpublish"
+                disabled={busy || uploading || modelPending || modelInvalid}
+                onClick={() => void commit("draft")}
+                title="Save changes and remove this product from the public catalog"
+              >
+                <Eye size={16} aria-hidden="true" /> Move to Draft
+              </button>
+            )}
             {isEditing && (
               <button
                 type="button"
