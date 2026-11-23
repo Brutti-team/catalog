@@ -37,7 +37,7 @@ import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
 import ProductPrice from "./ProductPrice";
 import { nextProductId } from "../lib/product-ids";
-import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, normalizeDimensionUnits, type DimensionKey, type DimensionUnit } from "../lib/dimensions";
+import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, normalizeDimensionUnits, type DimensionUnit } from "../lib/dimensions";
 import OverallDimensionFields from "./OverallDimensionFields";
 import MeasurementTypePicker from "./MeasurementTypePicker";
 import MaterialsEditor from "./MaterialsEditor";
