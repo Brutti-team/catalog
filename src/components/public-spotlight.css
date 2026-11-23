@@ -1,29 +1,30 @@
-/* Catalogue grid – regular sized cards instead of an oversized single-item hero. */
+/* Compact Brutti catalogue cards: natural card sizing, independent of item count. */
 .pub-app .pub-products-grid.pub-products-grid--catalog {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 30px 22px;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 282px));
+  gap: 23px 19px;
   align-items: start;
+  justify-content: start;
 }
 .pub-app .pub-catalog-tile {
   min-width: 0;
   overflow: hidden;
-  background: #fffdfa;
-  border: 1px solid #e3e6de;
-  border-radius: 13px;
-  box-shadow: 0 3px 12px rgba(34,56,42,.035);
+  background: rgba(255,254,251,.96);
+  border: 1px solid #e2e7df;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(34,56,42,.035);
   transition: transform .24s ease, border-color .24s ease, box-shadow .24s ease;
 }
 .pub-app .pub-catalog-tile:hover {
-  transform: translateY(-4px);
-  border-color: #c8d4c7;
-  box-shadow: 0 12px 25px rgba(35,62,43,.10);
+  transform: translateY(-3px);
+  border-color: #cbd7ca;
+  box-shadow: 0 10px 22px rgba(35,62,43,.075);
 }
 .pub-app .pub-catalog-tile__visual {
   position: relative;
   width: 100%;
-  aspect-ratio: 1.18;
-  background: #eeeee9;
+  aspect-ratio: 1.42;
+  background: #e9ebe5;
   overflow: hidden;
 }
 .pub-app .pub-catalog-tile__preview {
@@ -31,8 +32,8 @@
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 9px;
-  background: linear-gradient(145deg,#eceee8,#e5e5dc);
+  padding: 7px;
+  background: linear-gradient(145deg,#eeefe8,#e6e8e1);
   cursor: zoom-in;
 }
 .pub-app .pub-catalog-tile__preview img {
@@ -46,12 +47,12 @@
 .pub-app .pub-catalog-tile:hover .pub-catalog-tile__preview img {transform:scale(1.035);}
 .pub-app .pub-catalog-tile__featured {
   position: absolute;
-  top: 13px;
-  left: 13px;
+  top: 10px;
+  left: 10px;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 7px 10px;
+  padding: 6px 9px;
   border-radius: 7px;
   background: rgba(255,253,247,.92);
   color: #356347;
@@ -61,32 +62,35 @@
 }
 .pub-app .pub-catalog-tile__eye {
   position: absolute;
-  right: 13px;
-  bottom: 13px;
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba(237,242,233,.8);
-  border-radius: 50%;
+  right: 11px;
+  bottom: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 31px;
+  padding: 7px 10px;
+  border: 1px solid rgba(237,242,233,.9);
+  border-radius: 8px;
   background: rgba(255,255,255,.94);
   color: #28523a;
-  box-shadow: 0 4px 12px rgba(30,54,35,.08);
+  font: 700 10px "Karla",system-ui,sans-serif;
+  box-shadow: 0 4px 12px rgba(30,54,35,.07);
   transition: background .2s ease, transform .2s ease;
 }
-.pub-app .pub-catalog-tile__eye:hover {background:#e5efe4;transform:scale(1.08);}
+.pub-app .pub-catalog-tile__eye:hover {background:#e9f2e8;transform:translateY(-2px);}
 .pub-app .pub-catalog-tile__copy {
   display: flex;
   flex-direction: column;
-  min-height: 175px;
-  padding: 15px 17px 16px;
+  min-height: 122px;
+  padding: 12px 14px 13px;
 }
 .pub-app .pub-catalog-tile__meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 9px;
-  min-height: 17px;
+  gap: 7px;
+  min-height: 16px;
 }
 .pub-app .pub-catalog-tile__category {
   color: #a38167;
@@ -119,13 +123,13 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-top: 9px;
+  margin-top: 7px;
   color: #2c4533;
 }
 .pub-app .pub-catalog-tile__title h3 {
   overflow-wrap: anywhere;
   font-family: "Cormorant Garamond",Georgia,serif;
-  font-size: clamp(27px,2.5vw,33px);
+  font-size: 26px;
   font-weight: 500;
   line-height: 1.12;
   letter-spacing: -.025em;
@@ -141,7 +145,7 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  margin: 8px 0 0;
+  margin: 5px 0 0;
   color: #748075;
   font: 400 11px/1.6 "Karla",system-ui,sans-serif;
 }
@@ -151,27 +155,12 @@
   justify-content: space-between;
   gap: 10px;
   margin-top: auto;
-  padding-top: 14px;
+  padding-top: 10px;
 }
 .pub-app .pub-catalog-tile__price {
   color: #285039;
-  font: 700 12px/1.45 "Manrope","Karla",system-ui,sans-serif;
+  font: 700 11.5px/1.45 "Manrope","Karla",system-ui,sans-serif;
 }
-.pub-app .pub-catalog-tile__quick {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-  padding: 7px 9px;
-  border: 1px solid #dde5dc;
-  border-radius: 8px;
-  background: #f7faf6;
-  color: #3b6248;
-  font: 700 10px "Karla",system-ui,sans-serif;
-  transition: background .2s ease;
-}
-.pub-app .pub-catalog-tile__quick:hover {background:#e9f2e8;}
 .pub-app .pub-catalog-tile :is(a,button):focus-visible,
 .pub-app .pub-quickview :is(a,button):focus-visible {
   outline: 2px solid #568166;
@@ -315,18 +304,12 @@
   transition: background .2s ease,transform .2s ease;
 }
 .pub-app .pub-quickview__cta:hover {background:#1a3d2a;transform:translateY(-2px);}
-@media(max-width:1220px) {
-  .pub-app .pub-products-grid.pub-products-grid--catalog {grid-template-columns:repeat(3,minmax(0,1fr));}
-}
-@media(max-width:850px) {
-  .pub-app .pub-products-grid.pub-products-grid--catalog {grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 16px;}
-}
 @media(max-width:560px) {
-  .pub-app .pub-products-grid.pub-products-grid--catalog {grid-template-columns:1fr;gap:20px;}
-  .pub-app .pub-catalog-tile {max-width:440px;width:100%;}
-  .pub-app .pub-catalog-tile__visual {aspect-ratio:1.22;}
-  .pub-app .pub-catalog-tile__copy {padding:15px 16px;min-height:155px;}
-  .pub-app .pub-catalog-tile__title h3 {font-size:30px;}
+  .pub-app .pub-products-grid.pub-products-grid--catalog {grid-template-columns:minmax(0,1fr);gap:20px;}
+  .pub-app .pub-catalog-tile {max-width:350px;width:100%;}
+  .pub-app .pub-catalog-tile__visual {aspect-ratio:1.4;}
+  .pub-app .pub-catalog-tile__copy {padding:12px 14px 13px;min-height:120px;}
+  .pub-app .pub-catalog-tile__title h3 {font-size:25px;}
   .pub-app .pub-quickview__panel {grid-template-columns:1fr;min-height:0;}
   .pub-app .pub-quickview__image {height:min(70vw,290px);padding:13px;}
   .pub-app .pub-quickview__image img {max-height:100%;}
