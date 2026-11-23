@@ -5,12 +5,25 @@ import { discountPercent, hasProductDiscount } from "../lib/discount-price";
 type Props = {
   product: Pick<Product, "price" | "originalPrice" | "priceBasis">;
   surface?: "admin" | "editor" | "public";
+  /** Present starting-from prices on two deliberately styled lines in cards. */
+  stackedBasis?: boolean;
 };
 
-export default function ProductPrice({ product, surface = "public" }: Props) {
+export default function ProductPrice({ product, surface = "public", stackedBasis = false }: Props) {
   const price = formatProductPrice(product, surface);
+  const separateBasis = stackedBasis && product.price !== null && product.priceBasis === "starting-from";
+  const currentPrice = (
+    <span className={separateBasis ? "catalog-price-current catalog-price-current--stacked" : "catalog-price-current"}>
+      {separateBasis ? (
+        <>
+          <small className="catalog-price-basis">Starting from</small>
+          <span className="catalog-price-amount">{formatProductPrice({ price: product.price, priceBasis: "fixed" }, surface)}</span>
+        </>
+      ) : price}
+    </span>
+  );
   if (!hasProductDiscount(product)) {
-    return <span className="catalog-price-current">{price}</span>;
+    return currentPrice;
   }
 
   const original = new Intl.NumberFormat("en-MY", {
@@ -20,7 +33,7 @@ export default function ProductPrice({ product, surface = "public" }: Props) {
 
   return (
     <span className="catalog-price-line">
-      <span className="catalog-price-current">{price}</span>
+      {currentPrice}
       <del className="catalog-price-old" aria-label={`Original price RM ${original}`}>
         RM {original}
       </del>
