@@ -1,3 +1,4 @@
+import type { DimensionUnits } from "./dimensions";
 export type ProductStatus = "draft" | "published" | "archived";
 export type Availability = "available" | "made-to-order" | "unavailable";
 export interface ProductSpecification {
@@ -39,6 +40,8 @@ export interface Product {
   width: number;
   depth: number;
   height: number;
+  /** Display unit per overall dimension. Values themselves stay canonical cm. */
+  dimensionUnits?: DimensionUnits;
   price: number | null;
   /** Optional original (pre-discount) price, null when no sale. */
   originalPrice?: number | null;
