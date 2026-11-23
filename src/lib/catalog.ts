@@ -4,6 +4,7 @@ import { optimizeImageForUpload } from "./image-optimization";
 import { subscribeCatalogRefresh } from "./catalog-refresh";
 import { modelUploadBytes } from "./model-formats";
 import { categoryProductPrefix, nextProductId } from "./product-ids";
+import { normalizeDimensionUnits } from "./dimensions";
 
 const url = import.meta.env.VITE_SUPABASE_URL?.trim() ?? "";
 const key = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY)?.trim() ?? "";
@@ -81,6 +82,7 @@ type ProductRow = {
   width: number;
   depth: number;
   height: number;
+  dimension_units?: Product["dimensionUnits"];
   price: number | null;
   original_price?: number | null;
   price_basis?: Product['priceBasis'];
@@ -110,6 +112,7 @@ function fromRow(row: ProductRow): Product {
     width: Number(row.width),
     depth: Number(row.depth),
     height: Number(row.height),
+    dimensionUnits: normalizeDimensionUnits(row.dimension_units),
     price: row.price === null ? null : Number(row.price),
     originalPrice: row.original_price == null ? null : Number(row.original_price),
     ...(row.price_basis ? { priceBasis: row.price_basis } : {}),
@@ -137,6 +140,7 @@ function toRow(product: Product, capabilities: CatalogCapabilities): ProductRow 
     width: product.width,
     depth: product.depth,
     height: product.height,
+    dimension_units: normalizeDimensionUnits(product.dimensionUnits),
     price: product.price,
     original_price: product.originalPrice ?? null,
     ...(capabilities.priceBasis && product.priceBasis ? { price_basis: product.priceBasis } : {}),
