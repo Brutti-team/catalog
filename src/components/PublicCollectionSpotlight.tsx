@@ -75,7 +75,8 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
             aria-label={"Open quick view for " + product.name}
             title="Quick view"
           >
-            <Eye size={19} />
+            <Eye size={15} aria-hidden="true" />
+            <span>Quick view</span>
           </button>
         </div>
 
@@ -94,9 +95,6 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
           {description && <p className="pub-catalog-tile__description">{description}</p>}
           <div className="pub-catalog-tile__footer">
             <span className="pub-catalog-tile__price"><ProductPrice product={product} /></span>
-            <button type="button" className="pub-catalog-tile__quick" onClick={openQuickView}>
-              Quick view <Eye size={15} />
-            </button>
           </div>
         </div>
       </article>
