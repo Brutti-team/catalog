@@ -673,3 +673,9 @@
     transform: none;
   }
 }
+
+/* Catalogue labels use clean text without a decorative dash. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-products-grid--catalog .pub-catalog-tile__category::after {
+  content: none;
+  display: none;
+}
