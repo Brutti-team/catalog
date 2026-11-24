@@ -1518,8 +1518,8 @@
 .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations {
   box-sizing: border-box;
   min-width: 0;
-  margin-top: clamp(28px, 3vw, 48px);
-  padding: 22px 0 0;
+  margin-top: 20px;
+  padding: 16px 0 0;
   border: 0;
   border-top: 1px solid #dce5dc;
   border-radius: 0;
@@ -1947,4 +1947,12 @@
 .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-catalog-tile .pub-catalog-tile__copy:has(.pub-catalog-tile__swatch:is(:hover,:focus)) { z-index: 3; }
 @media (prefers-reduced-motion: reduce) {
   .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-catalog-tile .pub-catalog-tile__swatch, .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-catalog-tile .pub-catalog-tile__swatch::after { transition: none; }
+}
+
+/* Compact spacing between recommendations and the preceding section, on both public routes. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations.pub-related {margin-top:20px;padding-top:16px;}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations.pub-home-recommendations {margin-top:12px;}
+@media(max-width:650px){
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations.pub-related {margin-top:16px;padding-top:12px;}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations.pub-home-recommendations {margin-top:8px;}
 }

@@ -303,3 +303,9 @@
     padding: 19px 17px;
   }
 }
+
+/* Only reduce the trailing space when a recommendations section immediately follows. */
+.pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling:has(+ #pub-recommendations) {padding-bottom:12px;}
+@media(max-width:650px){
+  .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling:has(+ #pub-recommendations) {padding-bottom:8px;}
+}
