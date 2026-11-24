@@ -2230,20 +2230,24 @@
 
 /* Restrained card typography: let the furniture imagery lead the four-column grid. */
 .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__summary .pub-catalog-tile__title h3 {
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif !important;
   font-size: 19px !important;
-  font-weight: 600 !important;
-  line-height: 1.35;
-  letter-spacing: -.018em;
+  font-weight: 700 !important;
+  line-height: 1.3;
+  letter-spacing: -.025em;
 }
 .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__pricing :is(.catalog-price-current,.catalog-price-amount) {
+  font-family: "Plus Jakarta Sans", "Manrope", system-ui, sans-serif !important;
   font-size: 18px !important;
-  font-weight: 600 !important;
+  font-weight: 650 !important;
+  font-variant-numeric: lining-nums tabular-nums;
   line-height: 1.35;
-  letter-spacing: -.015em;
+  letter-spacing: -.025em;
 }
 .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-basis {
+  font-family: "DM Sans", system-ui, sans-serif !important;
   font-size: 11px !important;
-  font-weight: 500 !important;
+  font-weight: 550 !important;
   line-height: 1.4;
   letter-spacing: 0;
 }
