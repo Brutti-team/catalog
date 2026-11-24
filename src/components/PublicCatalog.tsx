@@ -319,15 +319,15 @@ export default function PublicCatalog({
   const related = useMemo(() => recommendProducts(published, viewedIds, searchedIds, product?.id),
     [published, viewedIds, searchedIds, product?.id]);
   const recommendations = (home: boolean) => (
-    <section className={home ? "pub-related pub-home-recommendations" : "pub-related"} aria-label="You may also like">
+    <section id="pub-recommendations" className={home ? "pub-related pub-home-recommendations" : "pub-related"} aria-labelledby="pub-recommendations-title">
       <div className="pub-section-heading">
         <div>
           <p className="pub-eyebrow">CURATED FOR YOU</p>
-          <h2>You May Also Like</h2>
+          <h2 id="pub-recommendations-title">You May Also Like</h2>
           <p className="pub-recommendations-copy">Discover more pieces based on your recent views and searches.</p>
         </div>
-        <button type="button" className="pub-primary-button" onClick={() => { resetFilters(); browseCollection(); }}>
-          View all products <ArrowRight size={16} />
+        <button type="button" className="pub-recommendations-browse" onClick={() => { resetFilters(); browseCollection(); }}>
+          View all products <ArrowRight size={15} aria-hidden="true" />
         </button>
       </div>
       <div className="pub-products-grid pub-products-grid--catalog">
