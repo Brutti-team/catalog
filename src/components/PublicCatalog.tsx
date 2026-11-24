@@ -152,6 +152,23 @@ export default function PublicCatalog({
   const [category, setCategory] = useState("all");
   const [bestOnly, setBestOnly] = useState(false);
   const [collectionExpanded, setCollectionExpanded] = useState(false);
+  // The collapsed collection shows two complete rows at each CSS breakpoint.
+  const getCollectionLimit = () => {
+    if (typeof window === "undefined") return 8;
+    if (window.matchMedia("(max-width: 365px)").matches) return 2;
+    if (window.matchMedia("(max-width: 850px)").matches) return 4;
+    if (window.matchMedia("(max-width: 1199px)").matches) return 6;
+    return 8;
+  };
+  const [collectionLimit, setCollectionLimit] = useState(getCollectionLimit);
+  useEffect(() => {
+    const queries = ["(max-width: 365px)", "(max-width: 850px)", "(max-width: 1199px)"]
+      .map(query => window.matchMedia(query));
+    const syncLimit = () => setCollectionLimit(getCollectionLimit());
+    syncLimit();
+    queries.forEach(query => query.addEventListener("change", syncLimit));
+    return () => queries.forEach(query => query.removeEventListener("change", syncLimit));
+  }, []);
   // Keep recommendation signals in this catalog session only, not in analytics or persistent storage.
   const [viewedIds, setViewedIds] = useState<string[]>([]);
   const [searchedIds, setSearchedIds] = useState<string[]>([]);
@@ -267,8 +284,8 @@ export default function PublicCatalog({
     );
   }, [published, query, category, sort, bestOnly]);
   useEffect(() => { setCollectionExpanded(false); }, [query, category, sort, bestOnly]);
-  const canExpandCollection = !bestOnly && filtered.length > 6;
-  const visibleProducts = bestOnly || collectionExpanded ? filtered : filtered.slice(0, 6);
+  const canExpandCollection = !bestOnly && filtered.length > collectionLimit;
+  const visibleProducts = bestOnly || collectionExpanded ? filtered : filtered.slice(0, collectionLimit);
   const browseCollection = () => {
     setMobileMenu(false);
     if (productId !== null) {
