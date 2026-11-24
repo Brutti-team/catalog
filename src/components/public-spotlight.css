@@ -2048,7 +2048,7 @@
 /* Balance the visual whitespace around the recommendation shelf.
    Product detail pages formerly inherited a much larger bottom padding. */
 .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section:has(> #pub-recommendations) {
-  --pub-recommendation-gap: clamp(32px, 4vw, 48px);
+  --pub-recommendation-gap: clamp(48px, 6vw, 76px);
   padding-bottom: 0;
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > #pub-recommendations.pub-related:not(.pub-home-recommendations) {
@@ -2058,7 +2058,7 @@
   margin-bottom: 0;
 }
 .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations.pub-home-recommendations {
-  --pub-recommendation-gap: clamp(32px, 4vw, 48px);
+  --pub-recommendation-gap: clamp(48px, 6vw, 76px);
   margin-top: calc(var(--pub-recommendation-gap) / 2);
   padding-top: calc(var(--pub-recommendation-gap) / 2);
   padding-bottom: var(--pub-recommendation-gap);
@@ -2066,5 +2066,5 @@
 }
 @media (max-width: 650px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section:has(> #pub-recommendations),
-  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations.pub-home-recommendations { --pub-recommendation-gap: 28px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations.pub-home-recommendations { --pub-recommendation-gap: 40px; }
 }
