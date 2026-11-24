@@ -12,6 +12,7 @@ interface Props {
   product: Product;
   categoryName: string;
   onView?: (id: string) => void;
+  showColours?: boolean;
 }
 
 const availabilityLabels: Record<Product["availability"], string> = {
@@ -20,13 +21,47 @@ const availabilityLabels: Record<Product["availability"], string> = {
   unavailable: "Currently unavailable",
 };
 
+/** Only use explicitly recorded product colours, not inferred photo backgrounds. */
+const colourSamples: Record<string, string> = {
+  white: "#ffffff", black: "#252525", grey: "#909396", gray: "#909396",
+  brown: "#795338", beige: "#d8c8b1", cream: "#f3ead5", ivory: "#f6f0e4",
+  green: "#537d56", "sage green": "#9cae98", "forest green": "#244c36",
+  blue: "#517fa3", "navy blue": "#293e59", navy: "#293e59",
+  red: "#b74b45", pink: "#d995a7", yellow: "#e3bf51", orange: "#d88b4d",
+  purple: "#8870a4", natural: "#c4a47d", "natural wood": "#c4a47d",
+  oak: "#c7a478", walnut: "#76523a", teak: "#ad8250", "light wood": "#d8bb91",
+  "dark wood": "#67482f", silver: "#c4c7ca", gold: "#c5a35b",
+  putih: "#ffffff", hitam: "#252525", coklat: "#795338", kelabu: "#909396",
+  hijau: "#537d56", biru: "#517fa3", merah: "#b74b45", kuning: "#e3bf51"
+};
+function recordedColours(product: Product) {
+  const seen = new Set<string>();
+  return (product.specifications ?? [])
+    .filter(row => row.kind !== "section" && /^(?:product\s+)?(?:colou?rs?|warna)(?:\s+(?:options?|finishes?))?$/i.test(row.name.trim()))
+    .flatMap(row => row.value.split(/[,;\n\/|&]+|\s+and\s+|\s+dan\s+/i))
+    .map(value => value.trim())
+    .filter(label => {
+      const key = label.toLowerCase();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .map(label => ({
+      label,
+      hex: /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(label)
+        ? label : Object.prototype.hasOwnProperty.call(colourSamples, label.toLowerCase())
+          ? colourSamples[label.toLowerCase()] : undefined,
+    }));
+}
+
 /** A regular catalogue card with an optional quick-view modal, not a full-width hero. */
-export default function PublicCollectionSpotlight({ product, categoryName, onView }: Props) {
+export default function PublicCollectionSpotlight({ product, categoryName, onView, showColours = false }: Props) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const photo = product.images[0];
   const detailUrl = "#/product/" + encodeURIComponent(product.id);
   const description = product.description?.trim();
+  const colours = showColours ? recordedColours(product) : [];
   const sale = hasProductDiscount(product);
   const saving = sale ? discountPercent(product) : 0;
   const [isFavourite, setIsFavourite] = useState(() => {
@@ -134,6 +169,16 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
               <a className="pub-catalog-tile__title" href={detailUrl} onClick={openDetails}>
                 <h3>{product.name}</h3>
               </a>
+              {colours.length > 0 && (
+                <div className="pub-catalog-tile__colours" role="group" aria-label="Recorded product colours">
+                  {colours.slice(0, 4).map(colour => colour.hex ? (
+                    <span key={colour.label} className="pub-catalog-tile__swatch" style={{ backgroundColor: colour.hex }} title={colour.label} role="img" aria-label={colour.label} />
+                  ) : (
+                    <span key={colour.label} className="pub-catalog-tile__colour-label" title={colour.label}>{colour.label}</span>
+                  ))}
+                  {colours.length > 4 && <span className="pub-catalog-tile__colour-label" title={colours.slice(4).map(colour => colour.label).join(", ")}>+{colours.length - 4}</span>}
+                </div>
+              )}
               {sale && product.bestSelling && <span className="pub-catalog-tile__best-inline"><Star size={11} fill="currentColor" /> Best Seller</span>}
               {description && <p className="pub-catalog-tile__description" title={description}>{description}</p>}
             </div>

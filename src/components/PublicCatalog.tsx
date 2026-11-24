@@ -327,7 +327,7 @@ export default function PublicCatalog({
       </div>
       <div className="pub-products-grid pub-products-grid--catalog">
         {related.map(item => <PublicCollectionSpotlight key={item.id} product={item}
-          categoryName={categoryName(item.categoryId)} onView={noteViewed} />)}
+          categoryName={categoryName(item.categoryId)} onView={noteViewed} showColours />)}
       </div>
     </section>
   );
