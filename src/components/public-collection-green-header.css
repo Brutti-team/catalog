@@ -330,3 +330,29 @@
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection
   .pub-collection-green-header .pub-category-filters button {padding-inline: 11px;}
 }
+
+/* Compact, count-free category chips; wrap when needed so no label is clipped. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-filter-row {
+  overflow: visible;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters {
+  flex-wrap: wrap;
+  overflow: visible;
+  gap: 6px;
+  padding: 2px 0 4px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters button {
+  flex: 0 0 auto;
+  max-width: 100%;
+  min-height: 36px;
+  padding: 7px 9px;
+  font-size: 11px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+  border-radius: 9px;
+}
+@media (max-width: 520px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters { gap: 5px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters button { min-height: 36px; padding: 7px 8px; }
+}

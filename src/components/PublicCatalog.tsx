@@ -234,11 +234,6 @@ export default function PublicCatalog({
   const showingModel = viewMode === '3d' && Boolean(selectedModel);
   const categoryName = (id: string) =>
     categories.find((item) => item.id === id)?.name || "Furniture";
-  const categoryCounts = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const item of published) counts.set(item.categoryId, (counts.get(item.categoryId) ?? 0) + 1);
-    return counts;
-  }, [published]);
 
   const filtered = useMemo(() => {
     const text = query.trim().toLowerCase();
@@ -539,12 +534,12 @@ export default function PublicCatalog({
                     className={category === "all" && !bestOnly ? "pub-filter-active" : ""}
                     onClick={() => { setCategory("all"); setBestOnly(false); }}
                   >
-                    All projects <span>{published.length}</span>
+                    All projects
                   </button>
                   <button type="button" aria-pressed={bestOnly}
                     className={bestOnly ? "pub-filter-active" : ""}
                     onClick={() => { setCategory("all"); setBestOnly(value => !value); }}>
-                    Best Sellers <span>{published.filter(item => item.bestSelling === true).length}</span>
+                    Best Sellers
                   </button>
                   {categories.map((item) => (
                     <button
@@ -555,7 +550,6 @@ export default function PublicCatalog({
                       onClick={() => setCategory(item.id)}
                     >
                       {item.name}
-                      {Boolean(categoryCounts.get(item.id)) && <span className="pub-category-count">{categoryCounts.get(item.id)}</span>}
                     </button>
                   ))}
                 </div>
