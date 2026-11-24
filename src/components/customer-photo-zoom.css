@@ -188,3 +188,26 @@ dialog.customer-photo-zoom button:focus-visible { outline: 2px solid #48765b; ou
 @media(prefers-reduced-motion:reduce) {
   .pub-photo-zoom-trigger>span, dialog.customer-photo-zoom button { transition: none; }
 }
+
+
+/* Brutti green photo viewer header, with accessible light text and controls. */
+dialog.customer-photo-zoom .customer-photo-zoom-header {
+  background: #244d38;
+  color: #fff;
+  border-bottom: 1px solid #315a44;
+}
+dialog.customer-photo-zoom .customer-photo-zoom-header strong { color: #fff; }
+dialog.customer-photo-zoom .customer-photo-zoom-header span { color: #e0ebe3; }
+dialog.customer-photo-zoom .customer-photo-zoom-header button {
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.24);
+  color: #fff;
+}
+dialog.customer-photo-zoom .customer-photo-zoom-header button:hover:not(:disabled) {
+  background: rgba(255,255,255,.24);
+  border-color: rgba(255,255,255,.48);
+  color: #fff;
+}
+dialog.customer-photo-zoom .customer-photo-zoom-header button:focus-visible {
+  outline-color: #fff;
+}
