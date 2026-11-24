@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 /** Only text-based markers are supported. Never interpret stored HTML. */
 const FORMAT = [
+  { mark: "***", kind: "boldItalic" },
   { mark: "**", kind: "bold" },
   { mark: "~~", kind: "strike" },
   { mark: "++", kind: "underline" },
@@ -42,6 +43,7 @@ export function renderMaterialInline(text: string): ReactNode[] {
     pushBuffer();
     const key = `${found.kind}-${i}`;
     switch (found.kind) {
+      case "boldItalic": nodes.push(<strong key={key}><em>{children}</em></strong>); break;
       case "bold": nodes.push(<strong key={key}>{children}</strong>); break;
       case "italic": nodes.push(<em key={key}>{children}</em>); break;
       case "underline": nodes.push(<u key={key}>{children}</u>); break;

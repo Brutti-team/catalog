@@ -52,7 +52,7 @@ export function parseMaterials(value: string): MaterialBlock[] {
 /** Strip supported inline markers when displaying short product card snippets. */
 export function stripMaterialFormatting(value: string): string {
   let text = value;
-  for (const pattern of [/\*\*([^*]+)\*\*/g, /~~([^~]+)~~/g, /\+\+([^+]+)\+\+/g,
+  for (const pattern of [/\*\*\*([^*]+)\*\*\*/g, /\*\*([^*]+)\*\*/g, /~~([^~]+)~~/g, /\+\+([^+]+)\+\+/g,
     /==([^=]+)==/g, /\*([^*]+)\*/g]) {
     text = text.replace(pattern, "$1");
   }

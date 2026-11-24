@@ -1,13 +1,11 @@
-import { useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
+import { useRef, useState, useLayoutEffect, type KeyboardEvent, type MouseEvent } from "react";
 import {
   AlignLeft, List, ListOrdered, Bold, Italic, Underline, Strikethrough,
   Highlighter, Heading2, RemoveFormatting, type LucideIcon,
 } from "lucide-react";
 import { materialListStyle, type MaterialListStyle } from "../lib/material-list";
-import {
-  toggleMaterialInline, toggleMaterialHeading, clearMaterialFormatting,
-  setMaterialList, type InlineMaterialFormat, type MaterialEdit,
-} from "../lib/material-editor-format";
+import type { InlineMaterialFormat } from "../lib/material-editor-format";
+import { materialEditorHtml, serializeMaterialEditor } from "../lib/material-richtext";
 
 type Props = {
   value: string;
@@ -30,109 +28,76 @@ const inlineOptions: { value: InlineMaterialFormat; label: string; shortcut: str
   { value: "highlight", label: "Highlight", shortcut: "", Icon: Highlighter },
 ];
 
-/** Rich text-style controls with a safe plain-text storage format.
- * Selection formatting uses compact markers, rendered safely in the public Brutti Catalog.
- */
-export default function MaterialsEditor({
-  value, onChange, disabled = false, placeholder,
-}: Props) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [warning, setWarning] = useState("");
-  const mode = materialListStyle(value);
-  const help = "Select text, then choose a format. Enter continues your list.";
-
-  const currentSelection = (): [number, number] => {
-    const el = textareaRef.current;
-    return [el?.selectionStart ?? value.length, el?.selectionEnd ?? value.length];
+/** Editable rich text, with the existing safe text-based storage format. */
+export default function MaterialsEditor({value,onChange,disabled=false,placeholder}:Props) {
+  const editorRef=useRef<HTMLDivElement>(null);
+  const savedValue=useRef<string|null>(null);
+  const selection=useRef<Range|null>(null);
+  const [warning,setWarning]=useState("");
+  const mode=materialListStyle(value);
+  const [active,setActive]=useState<string[]>([]);
+  useLayoutEffect(()=>{
+    const el=editorRef.current;
+    if(el && savedValue.current!==value){
+      el.innerHTML=value ? materialEditorHtml(value) : "";
+      savedValue.current=value;
+      selection.current=null;
+    }
+  },[value]);
+  const remember=()=>{
+    const el=editorRef.current, sel=window.getSelection();
+    if(el&&sel?.rangeCount&&el.contains(sel.getRangeAt(0).commonAncestorContainer)){
+      selection.current=sel.getRangeAt(0).cloneRange();
+      setActive(["bold","italic","underline","strikeThrough","insertUnorderedList","insertOrderedList"].filter(cmd=>document.queryCommandState(cmd)));
+    }
   };
-
-  const apply = (edit: MaterialEdit) => {
-    if (disabled) return;
-    if (edit.value.length > MAX_LENGTH) {
+  const publish=()=>{
+    const el=editorRef.current;if(!el)return;
+    const next=serializeMaterialEditor(el);
+    if(next.length>MAX_LENGTH){
       setWarning("Materials cannot exceed 2,000 characters.");
-      textareaRef.current?.focus({ preventScroll: true });
+      el.innerHTML=savedValue.current ? materialEditorHtml(savedValue.current) : "";
+      selection.current=null;
+      const range=document.createRange();range.selectNodeContents(el);range.collapse(false);
+      const sel=window.getSelection();sel?.removeAllRanges();sel?.addRange(range);
       return;
     }
-    setWarning("");
-    onChange(edit.value);
-    requestAnimationFrame(() => {
-      const el = textareaRef.current;
-      if (!el) return;
-      el.focus({ preventScroll: true });
-      el.setSelectionRange(edit.selectionStart, edit.selectionEnd);
-    });
+    setWarning("");savedValue.current=next;onChange(next);remember();
   };
-
-  const chooseStyle = (style: MaterialListStyle) => {
-    const [from, to] = currentSelection();
-    apply(setMaterialList(value, from, to, style));
-  };
-
-  const formatInline = (style: InlineMaterialFormat) => {
-    const [from, to] = currentSelection();
-    apply(toggleMaterialInline(value, from, to, style));
-  };
-
-  const formatHeading = () => {
-    const [from] = currentSelection();
-    apply(toggleMaterialHeading(value, from));
-  };
-
-  const clearFormat = () => {
-    const [from, to] = currentSelection();
-    apply(clearMaterialFormatting(value, from, to));
-  };
-
-  const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    const mod = event.ctrlKey || event.metaKey;
-    if (mod && !event.altKey) {
-      const key = event.key.toLowerCase();
-      const type: InlineMaterialFormat | null = key === "b" ? "bold" :
-        key === "i" ? "italic" : key === "u" ? "underline" :
-          key === "x" && event.shiftKey ? "strike" : null;
-      if (type) {
-        event.preventDefault();
-        formatInline(type);
-        return;
-      }
+  const command=(name:string,arg?:string)=>{
+    const el=editorRef.current;if(disabled||!el)return;
+    el.focus({preventScroll:true});
+    const sel=window.getSelection();
+    if(selection.current && el.contains(selection.current.commonAncestorContainer)){
+      sel?.removeAllRanges();sel?.addRange(selection.current);
     }
-    if (event.key !== "Enter" || event.shiftKey || mod) return;
-    const el = event.currentTarget;
-    if (el.selectionStart !== el.selectionEnd) return;
-    const start = el.selectionStart;
-    const lineStart = value.lastIndexOf("\n", start - 1) + 1;
-    const previous = value.slice(lineStart, start);
-    const match = previous.match(/^(\s*)(•\s+|[-*]\s+|(\d{1,3})[.)]\s+)(.*)$/);
-    if (!match) return;
-    const prefix = match[2];
-    if (!match[4].trim()) {
-      // Empty bullet + Enter finishes the list.
-      event.preventDefault();
-      apply({ value: value.slice(0, lineStart) + value.slice(start),
-        selectionStart: lineStart, selectionEnd: lineStart });
-      return;
-    }
-    const nextPrefix = /^\d/.test(prefix)
-      ? `${Number(match[3]) + 1}. `
-      : prefix.trimStart().startsWith("•") ? "• " : prefix.trimStart().startsWith("*") ? "* " : "- ";
-    const insertion = "\n" + match[1] + nextPrefix;
-    if (value.length + insertion.length > MAX_LENGTH) return;
-    event.preventDefault();
-    const cursor = start + insertion.length;
-    apply({
-      value: value.slice(0, start) + insertion + value.slice(start),
-      selectionStart: cursor, selectionEnd: cursor,
-    });
+    document.execCommand("styleWithCSS",false,"false");
+    document.execCommand(name,false,arg);
+    publish();
   };
-
-  // Mouse clicks should not steal the textarea's selected text. Keyboard
-  // access to formatting buttons is still fully supported.
-  const preserveSelection = (event: MouseEvent<HTMLDivElement>) => {
-    if (event.target instanceof Element && event.target.closest("button")) {
-      event.preventDefault();
-    }
+  const chooseStyle=(style:MaterialListStyle)=>{
+    if(style==="plain"){
+      if(document.queryCommandState("insertUnorderedList"))command("insertUnorderedList");
+      else if(document.queryCommandState("insertOrderedList"))command("insertOrderedList");
+      else command("formatBlock","div");
+    }else command(style==="bullet"?"insertUnorderedList":"insertOrderedList");
   };
-
+  const formatInline=(style:InlineMaterialFormat)=>{
+    if(style==="highlight")command("hiliteColor","#fff1b7");
+    else command(style==="strike"?"strikeThrough":style);
+  };
+  const formatHeading=()=>command("formatBlock",document.queryCommandValue("formatBlock")==="h2"?"div":"h2");
+  const clearFormat=()=>command("removeFormat");
+  const onKeyDown=(event:KeyboardEvent<HTMLDivElement>)=>{
+    if(!(event.ctrlKey||event.metaKey)||event.altKey)return;
+    const key=event.key.toLowerCase();
+    const type:InlineMaterialFormat|null=key==="b"?"bold":key==="i"?"italic":key==="u"?"underline":key==="x"&&event.shiftKey?"strike":null;
+    if(type){event.preventDefault();remember();formatInline(type);}
+  };
+  const preserveSelection=(event:MouseEvent<HTMLDivElement>)=>{
+    if(event.target instanceof Element&&event.target.closest("button")){remember();event.preventDefault();}
+  };
+  const help="Select text or choose a format before typing.";
   return (
     <div className="catalog-materials-editor">
       <div className="catalog-materials-toolbar" role="toolbar" aria-label="Materials formatting tools"
@@ -163,6 +128,8 @@ export default function MaterialsEditor({
               aria-label={label}
               title={shortcut ? `${label} (${shortcut})` : label}
               disabled={disabled}
+              aria-pressed={active.includes(format === "strike" ? "strikeThrough" : format)}
+              className={active.includes(format === "strike" ? "strikeThrough" : format) ? "is-active" : ""}
               onClick={() => formatInline(format)}
             >
               <Icon size={16} strokeWidth={1.85} aria-hidden="true" />
@@ -178,16 +145,16 @@ export default function MaterialsEditor({
           </button>
         </div>
       </div>
-      <textarea
-        ref={textareaRef}
-        aria-label="Materials"
-        rows={4}
-        maxLength={MAX_LENGTH}
-        disabled={disabled}
-        value={value}
-        onKeyDown={onKeyDown}
-        onChange={event => { setWarning(""); onChange(event.target.value); }}
-        placeholder={placeholder ?? "Tier: Solid pine wood with clear satin finishing\nStructure: Steel hollow with anti-rust white finishing\nFacade: White finished plywood"}
+      <div
+        ref={editorRef}
+        className="catalog-materials-live"
+        role="textbox" aria-label="Materials" aria-multiline="true" aria-disabled={disabled}
+        contentEditable={!disabled} suppressContentEditableWarning
+        data-placeholder={placeholder ?? "Describe materials and finishing…"}
+        onInput={publish} onKeyDown={onKeyDown}
+        onKeyUp={remember} onMouseUp={remember} onFocus={remember}
+        onPaste={event=>{event.preventDefault();document.execCommand("insertText",false,event.clipboardData.getData("text/plain"));publish();}}
+        onDrop={event=>event.preventDefault()}
       />
       <div className="catalog-materials-helper">
         <span>{warning || help}</span>

@@ -198,3 +198,26 @@
   .admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs
   .catalog-materials-preview { padding: 13px 14px; }
 }
+
+/* Live WYSIWYG materials editor. Never show storage markers in the UI. */
+.catalog-materials-editor > .catalog-materials-live {
+  box-sizing:border-box; width:100%; min-width:0; min-height:136px; max-height:310px;
+  overflow:auto; padding:13px 15px; outline:none; white-space:pre-wrap; overflow-wrap:anywhere;
+  background:transparent; color:#33493a; font:500 13px/1.65 "DM Sans",sans-serif;
+  cursor:text;
+}
+.catalog-materials-editor > .catalog-materials-live:empty::before { content:attr(data-placeholder); color:#84978a; pointer-events:none; }
+.catalog-materials-live :is(ul,ol) { margin:0; padding-left:22px; list-style-position:outside; }
+.catalog-materials-live ul { list-style-type:disc; }
+.catalog-materials-live ol { list-style-type:decimal; }
+.catalog-materials-live li { display:list-item; margin:0; padding:0; }
+.catalog-materials-live :is(div,p) { margin:0; }
+.catalog-materials-live :is(strong,b) { font-weight:750; }
+.catalog-materials-live :is(em,i) { font-style:italic; }
+.catalog-materials-live u { text-decoration:underline; }
+.catalog-materials-live :is(s,strike,del) { text-decoration:line-through; }
+.catalog-materials-live h2 { font-size:16px; font-weight:720; line-height:1.5; margin:5px 0; }
+.catalog-materials-live mark { background:#fff1b7; color:#4d4224; }
+.catalog-materials-live[aria-disabled="true"] { cursor:default; opacity:.8; }
+.admin-app[data-theme="dark"] .catalog-materials-editor > .catalog-materials-live { color:#e9f3eb; }
+.admin-app[data-theme="dark"] .catalog-materials-editor > .catalog-materials-live:empty::before { color:#a9beae; }
