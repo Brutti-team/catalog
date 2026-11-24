@@ -1063,3 +1063,61 @@
   .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy { column-gap: 6px; }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-eyebrow { overflow-wrap: anywhere; }
 }
+
+/* Customer gallery: centre every photo and use the available column width.
+   Portraits stay intact; landscapes can use the entire width. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-gallery {
+  align-items:center;
+  width:100%;
+  min-width:0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-gallery > .pub-detail-main-image {
+  --pub-photo-max-height: min(820px, max(280px, calc(100dvh - 135px)));
+  width:100%;
+  max-width:100%;
+  align-self:stretch;
+  margin:0 auto;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  border-radius:10px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-gallery > .pub-detail-main-image > img {
+  width:100%;
+  height:auto;
+  max-width:100%;
+  max-height:var(--pub-photo-max-height);
+  object-fit:contain!important;
+  object-position:center!important;
+  margin-inline:auto;
+  border-radius:10px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-gallery-thumbnails {
+  width:100%;
+  justify-content:center;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-gallery-enquiry {
+  align-self:center;
+  width:100%;
+  justify-content:center;
+  align-items:center;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-gallery-enquiry > .pub-enquiry-button.pub-whatsapp-enquiry {
+  align-self:center;
+}
+@media(min-width:851px){
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-gallery:has(.pub-gallery-thumbnails) > .pub-detail-main-image {
+    --pub-photo-max-height:min(760px,max(250px,calc(100dvh - 205px)));
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-gallery:has(.pub-media-switch) > .pub-detail-main-image {
+    --pub-photo-max-height:min(780px,max(250px,calc(100dvh - 180px)));
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-gallery:has(.pub-gallery-thumbnails):has(.pub-media-switch) > .pub-detail-main-image {
+    --pub-photo-max-height:min(720px,max(220px,calc(100dvh - 250px)));
+  }
+}
+@media(max-width:850px){
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-gallery > .pub-detail-main-image {
+    --pub-photo-max-height:min(740px,115vw);
+  }
+}
