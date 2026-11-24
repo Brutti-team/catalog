@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cmToUnit, unitMax, unitToCm, normalizeDimensionUnits, formatProductDimensions, splitFeetInches, feetInchesToCm, dimensionParts, type DimensionUnit } from "../src/lib/dimensions";
+import { cmToUnit, unitMax, unitToCm, normalizeDimensionUnits, formatProductDimensions, splitFeetInches, feetInchesToCm, dimensionParts, parseDimensionInput, dimensionInputText, type DimensionUnit } from "../src/lib/dimensions";
 
 describe("Brutti catalog dimension display units", () => {
   it("converts each selectable unit to canonical centimetres", () => {
@@ -62,6 +62,18 @@ describe("Brutti catalog dimension display units", () => {
     expect(normalizeDimensionUnits(units)).toEqual(units);
     expect(dimensionParts(1,units,"width")).toEqual({primaryCm:1});
     expect(normalizeDimensionUnits({additional:{width:{unit:"bad",cm:10}}})).toEqual({width:"cm",depth:"cm",height:"cm"});
+  });
+
+  it("accepts feet and inches shorthand without confusing it with decimal feet", () => {
+    expect(parseDimensionInput("6'5","ft")).toBe(195.58);
+    expect(parseDimensionInput("6′5″","ft")).toBe(195.58);
+    expect(parseDimensionInput("6'","ft")).toBe(182.88);
+    expect(parseDimensionInput("6.5","ft")).toBe(198.12);
+    expect(parseDimensionInput("6'12","ft")).toBeNull();
+    expect(parseDimensionInput("6'5","cm")).toBeNull();
+    expect(parseDimensionInput("-3","ft")).toBeNull();
+    expect(dimensionInputText(195.58,"ft")).toBe("6'5");
+    expect(formatProductDimensions({width:0,depth:0,height:195.58,dimensionUnits:{width:"cm",depth:"cm",height:"ft"}})).toBe("6 ft 5 in H");
   });
 
   it("keeps the existing maximum limit in centimetres", () => {

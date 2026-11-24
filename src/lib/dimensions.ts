@@ -75,6 +75,34 @@ export function feetInchesToCm(feet: number, inches: number): number {
   return Number((feet * 30.48 + inches * 2.54).toFixed(4));
 }
 
+/** Accept architectural feet/inches shorthand as well as regular decimals.
+ * A trailing apostrophe means whole feet; the inch component must be < 12. */
+export function parseDimensionInput(raw: string, unit: DimensionUnit): number | null {
+  const text = raw.trim();
+  if (!text) return 0;
+  const mixed = text.match(/^(\d+)\s*['’′]\s*(\d+(?:\.\d*)?)?\s*["”″]?$/);
+  let cm: number;
+  if (unit === "ft" && mixed) {
+    const inches = Number(mixed[2] ?? 0);
+    if (inches >= 12) return null;
+    cm = feetInchesToCm(Number(mixed[1]), inches);
+  } else {
+    if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(text)) return null;
+    cm = unitToCm(Number(text), unit);
+  }
+  return Number.isFinite(cm) && cm >= 0 && cm <= 99999.99 ? cm : null;
+}
+
+/** Keep ordinary decimal measurements; display exact whole-inch sizes as shorthand. */
+export function dimensionInputText(cm: number, unit: DimensionUnit): string {
+  if (!cm) return "";
+  if (unit === "ft") {
+    const {feet,inches} = splitFeetInches(cm);
+    if (inches > 0 && Number.isInteger(inches)) return String(feet) + "'" + String(inches);
+  }
+  return String(cmToUnit(cm, unit));
+}
+
 export function formatDimension(centimetres: number, unit: DimensionUnit): string {
   if (unit !== "ft") return `${cmToUnit(centimetres, unit)} ${unit}`;
   const { feet, inches } = splitFeetInches(centimetres);
