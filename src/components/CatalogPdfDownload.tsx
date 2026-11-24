@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useImperativeHandle, useRef, useState, type Ref } from "react";
 import { BookOpen, Check, Download, FileText, Heart, Layers3, Star, X } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import { selectPdfProducts, type PdfSelection } from "../lib/catalog-pdf-plan";
@@ -7,7 +7,9 @@ import "./catalog-pdf-download.css";
 import { useFavouriteIds } from "../lib/customer-favourites";
 import { downloadCustomerCatalogue } from "../lib/download-customer-catalogue";
 
-export default function CatalogPdfDownload({products,categories,disabled}:{products:Product[];categories:Category[];disabled:boolean}) {
+export type CatalogPdfDownloadHandle = { open: () => void };
+type Props = {products:Product[];categories:Category[];disabled:boolean;openRef?:Ref<CatalogPdfDownloadHandle>;hideTrigger?:boolean};
+export default function CatalogPdfDownload({products,categories,disabled,openRef,hideTrigger=false}:Props) {
   const dialog=useRef<HTMLDialogElement>(null);
   const running=useRef(false);
   const [mode,setMode]=useState<PdfSelection>("all");
@@ -17,6 +19,11 @@ export default function CatalogPdfDownload({products,categories,disabled}:{produ
   const [message,setMessage]=useState("");
   const [failed,setFailed]=useState(false);
   const count=selectPdfProducts(products,mode,category,[...favourites]).length;
+  const open=()=>{
+    if(disabled||!products.length||dialog.current?.open)return;
+    setMessage("");setFailed(false);dialog.current?.showModal();
+  };
+  useImperativeHandle(openRef,()=>({open}));
   const download=async()=>{
     if(running.current||!count)return;
     running.current=true;setProgress(0);setMessage("");setFailed(false);
@@ -27,10 +34,10 @@ export default function CatalogPdfDownload({products,categories,disabled}:{produ
     finally {running.current=false;setProgress(null);}
   };
   return <>
-    <button className="pub-pdf-trigger" type="button" disabled={disabled||!products.length}
-      onClick={()=>{setMessage("");setFailed(false);dialog.current?.showModal();}}>
+    {!hideTrigger&&<button className="pub-pdf-trigger" type="button" disabled={disabled||!products.length}
+      aria-haspopup="dialog" onClick={open}>
       <Download size={17} aria-hidden="true"/> Download Catalogue
-    </button>
+    </button>}
     <dialog ref={dialog} className="pub-pdf-dialog" aria-labelledby="pub-pdf-title"
       onCancel={e=>{if(running.current)e.preventDefault();}}>
       <div className="pub-pdf-dialog-head">

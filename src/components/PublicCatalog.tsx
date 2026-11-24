@@ -6,6 +6,7 @@ import {
   ArrowUp,
   Check,
   ChevronDown,
+  Download,
   Image as ImageIcon,
   Box as BoxIcon,
   Search,
@@ -19,7 +20,7 @@ import type { Category, Product, ProductImage, ProductSpecification } from "../l
 import { photoCropStyle } from "../lib/photo-crop";
 import { publicAssetUrl } from "../lib/assets";
 import ProductPrice from "./ProductPrice";
-import CatalogPdfDownload from "./CatalogPdfDownload";
+import CatalogPdfDownload, { type CatalogPdfDownloadHandle } from "./CatalogPdfDownload";
 import { recommendProducts, recentProductIds, searchMatches } from "../lib/product-recommendations";
 import MaterialsContent from "./MaterialsContent";
 import { splitSpecifications } from "../lib/specification-groups";
@@ -168,6 +169,11 @@ export default function PublicCatalog({
   const [photoZoomOpen, setPhotoZoomOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"photos" | "3d">("photos");
   const [mobileMenu, setMobileMenu] = useState(false);
+  const pdfDownloadRef = useRef<CatalogPdfDownloadHandle>(null);
+  const openCatalogueDownload = () => {
+    setMobileMenu(false);
+    pdfDownloadRef.current?.open();
+  };
   useEffect(() => {
     if (!sortOpen) return;
     const closeOutside = (event: PointerEvent) => {
@@ -376,6 +382,10 @@ export default function PublicCatalog({
           <button onClick={browseBestSellers}>
             Best sellers
           </button>
+          <button type="button" className="pub-nav-download" aria-haspopup="dialog"
+            disabled={loading || Boolean(error) || !published.length} onClick={openCatalogueDownload}>
+            Download Catalogue
+          </button>
         </nav>}
         {!previewProduct && <div className="pub-header-actions">
           <CustomerFavourites products={published} categories={categories} loading={loading} error={error} onOpen={() => setMobileMenu(false)} />
@@ -394,6 +404,8 @@ export default function PublicCatalog({
         </div>}
         {previewProduct && <span className="pub-private-preview-label">Preview only · Not published</span>}
       </header>
+      {!previewProduct && <CatalogPdfDownload products={published} categories={categories}
+        disabled={loading || Boolean(error)} openRef={pdfDownloadRef} hideTrigger />}
 
       <main id="pub-main" tabIndex={-1}>
         {productId === null && (
@@ -490,7 +502,9 @@ export default function PublicCatalog({
                   )}
                 </label>
                 <div className="pub-collection-actions">
-                  <CatalogPdfDownload products={published} categories={categories} disabled={loading || Boolean(error)} />
+                  <button className="pub-pdf-trigger" type="button" aria-haspopup="dialog" disabled={loading || Boolean(error) || !published.length} onClick={openCatalogueDownload}>
+                    <Download size={17} aria-hidden="true"/> Download Catalogue
+                  </button>
                   <div className="pub-sort" ref={sortRef}>
                     <div className="pub-sort-control">
                       <button
