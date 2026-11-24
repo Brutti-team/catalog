@@ -1303,15 +1303,11 @@
   border-radius: 5px;
   padding: 6px 11px;
   min-height: 30px;
-  gap: 8px;
+  gap: 0;
   font: 650 12px/1.4 "DM Sans", system-ui, sans-serif !important;
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-available > i {
-  background: #ffffff !important;
-  border: 0;
-  flex-basis: 7px;
-  width: 7px;
-  height: 7px;
+  display: none !important;
 }
 @media (max-width:520px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-available { padding: 5px 8px; min-height: 26px; font-size: 11px !important; }
