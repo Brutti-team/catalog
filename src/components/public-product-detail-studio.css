@@ -893,39 +893,62 @@
 }
 
 
-/* Show the complete original photograph in the customer detail gallery.
-   Cover crops and zoom are useful for collection thumbnails, but must not
-   hide furniture edges on the full product page. Explicitly constrain the
-   image to the frame rather than letting an intrinsic grid track overflow. */
+/* Edge-to-edge product photo: the frame follows the photograph instead
+   of forcing portraits and landscapes into the same background panel.
+   Keep the full original photo visible without crop, stretch or padding. */
 .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-main-image {
-  --pub-full-photo-inset: clamp(8px, 1vw, 14px);
+  --pub-photo-max-height: min(680px, max(220px, calc(100dvh - 260px)));
   display: block;
   position: relative;
-  overflow: hidden;
-  padding: 0;
+  align-self: center;
+  flex: 0 0 auto;
+  width: fit-content;
+  max-width: 100%;
   min-width: 0;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none;
+  aspect-ratio: auto;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  box-shadow: none;
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-main-image > img {
-  position: absolute;
-  inset: var(--pub-full-photo-inset);
-  box-sizing: border-box;
+  position: static;
   display: block;
-  width: calc(100% - 2 * var(--pub-full-photo-inset));
-  height: calc(100% - 2 * var(--pub-full-photo-inset));
+  box-sizing: border-box;
+  width: auto;
+  height: auto;
   min-width: 0;
   min-height: 0;
-  max-width: none;
-  max-height: none;
+  max-width: 100%;
+  max-height: var(--pub-photo-max-height);
   margin: 0;
+  padding: 0;
+  border: 0;
   object-fit: contain !important;
   object-position: center !important;
   transform: none !important;
   mix-blend-mode: normal;
 }
+@media (min-width: 851px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-gallery:has(.pub-gallery-thumbnails) .pub-detail-main-image {
+    --pub-photo-max-height: min(620px, max(180px, calc(100dvh - 340px)));
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-gallery:has(.pub-media-switch) .pub-detail-main-image {
+    --pub-photo-max-height: min(620px, max(180px, calc(100dvh - 310px)));
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-gallery:has(.pub-gallery-thumbnails):has(.pub-media-switch) .pub-detail-main-image {
+    --pub-photo-max-height: min(590px, max(160px, calc(100dvh - 390px)));
+  }
+}
 @media (max-width: 850px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-main-image {
-    aspect-ratio: 1 / 1;
-    height: auto;
-    max-height: none;
+    --pub-photo-max-height: min(740px, 115vw);
+    border-radius: 8px;
   }
 }
