@@ -8,6 +8,7 @@ import { recordCatalogEvent } from "../lib/customer-analytics";
 import ProductPrice from "./ProductPrice";
 import { discountPercent, hasProductDiscount } from "../lib/discount-price";
 import "./public-spotlight.css";
+import { useFavouriteIds, toggleFavouriteId } from "../lib/customer-favourites";
 
 interface Props {
   product: Product;
@@ -103,27 +104,9 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
   const colourPending = Boolean(autoPhotoUrl && detected?.url !== autoPhotoUrl);
   const sale = hasProductDiscount(product);
   const saving = sale ? discountPercent(product) : 0;
-  const [isFavourite, setIsFavourite] = useState(() => {
-    try {
-      const saved: unknown = JSON.parse(window.localStorage.getItem("brutti-catalog-favourites") || "[]");
-      return Array.isArray(saved) && saved.includes(product.id);
-    } catch {
-      return false;
-    }
-  });
-
-  const toggleFavourite = () => {
-    const next = !isFavourite;
-    setIsFavourite(next);
-    try {
-      const saved: unknown = JSON.parse(window.localStorage.getItem("brutti-catalog-favourites") || "[]");
-      const ids = Array.isArray(saved) ? saved.filter((value): value is string => typeof value === "string") : [];
-      const updated = next ? [...new Set([...ids, product.id])] : ids.filter(id => id !== product.id);
-      window.localStorage.setItem("brutti-catalog-favourites", JSON.stringify(updated));
-    } catch {
-      // Local storage may be disabled; the visible toggle still works for this session.
-    }
-  };
+  const favouriteIds = useFavouriteIds();
+  const isFavourite = favouriteIds.includes(product.id);
+  const toggleFavourite = () => toggleFavouriteId(product.id, product.name);
 
   useEffect(() => {
     const dialog = dialogRef.current;

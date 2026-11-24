@@ -4,36 +4,31 @@ import type { Category, Product } from "../lib/types";
 import { selectPdfProducts, type PdfSelection } from "../lib/catalog-pdf-plan";
 import PdfCategoryDropdown from "./PdfCategoryDropdown";
 import "./catalog-pdf-download.css";
+import { useFavouriteIds } from "../lib/customer-favourites";
+import { downloadCustomerCatalogue } from "../lib/download-customer-catalogue";
 
-function favouriteIds():string[] {
-  try { const value:unknown=JSON.parse(localStorage.getItem("brutti-catalog-favourites")||"[]");return Array.isArray(value)?value.filter((x):x is string=>typeof x==="string"):[]; } catch {return [];}
-}
 export default function CatalogPdfDownload({products,categories,disabled}:{products:Product[];categories:Category[];disabled:boolean}) {
   const dialog=useRef<HTMLDialogElement>(null);
   const running=useRef(false);
   const [mode,setMode]=useState<PdfSelection>("all");
   const [category,setCategory]=useState("");
-  const [favourites,setFavourites]=useState<string[]>([]);
+  const favourites=useFavouriteIds();
   const [progress,setProgress]=useState<number|null>(null);
   const [message,setMessage]=useState("");
   const [failed,setFailed]=useState(false);
-  const count=selectPdfProducts(products,mode,category,favourites).length;
+  const count=selectPdfProducts(products,mode,category,[...favourites]).length;
   const download=async()=>{
     if(running.current||!count)return;
     running.current=true;setProgress(0);setMessage("");setFailed(false);
     try {
-      const {generateCatalogPdf}=await import("../lib/catalog-pdf");
-      const result=await generateCatalogPdf(products,categories,mode,category,favourites,(done,total)=>setProgress(Math.round(done/total*100)));
-      const url=URL.createObjectURL(result.blob);
-      const link=document.createElement("a");link.href=url;link.download="Benua-Brutti-Catalogue-"+new Date().toISOString().slice(0,10)+".pdf";
-      document.body.appendChild(link);link.click();link.remove();window.setTimeout(()=>URL.revokeObjectURL(url),60000);
+      const result=await downloadCustomerCatalogue(products,categories,mode,category,favourites,(done,total)=>setProgress(Math.round(done/total*100)));
       setMessage(result.missing ? "PDF created. "+result.missing+" product or category image(s) could not be loaded." : "Your catalogue PDF is ready.");
     } catch {setFailed(true);setMessage("Unable to create the PDF. Check your connection and try again.");}
     finally {running.current=false;setProgress(null);}
   };
   return <>
     <button className="pub-pdf-trigger" type="button" disabled={disabled||!products.length}
-      onClick={()=>{setFavourites(favouriteIds());setMessage("");setFailed(false);dialog.current?.showModal();}}>
+      onClick={()=>{setMessage("");setFailed(false);dialog.current?.showModal();}}>
       <Download size={17} aria-hidden="true"/> Download Catalogue
     </button>
     <dialog ref={dialog} className="pub-pdf-dialog" aria-labelledby="pub-pdf-title"

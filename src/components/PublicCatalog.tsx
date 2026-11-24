@@ -31,6 +31,7 @@ import ShowroomSections from "./ShowroomSections";
 import BestSellingSection from "./BestSellingSection";
 import PublicCollectionSpotlight from "./PublicCollectionSpotlight";
 import CustomerPhotoZoom from "./CustomerPhotoZoom";
+import CustomerFavourites from "./CustomerFavourites";
 import "./public.css";
 import "./brutti-3d.css";
 import "./public-reference.css";
@@ -377,6 +378,7 @@ export default function PublicCatalog({
           </button>
         </nav>}
         {!previewProduct && <div className="pub-header-actions">
+          <CustomerFavourites products={published} categories={categories} loading={loading} error={error} onOpen={() => setMobileMenu(false)} />
           <button className="pub-admin-link" onClick={onAdmin}>
             Staff portal <ArrowUpRight size={15} />
           </button>
