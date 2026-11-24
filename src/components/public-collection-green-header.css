@@ -139,7 +139,7 @@
   opacity: .85;
 }
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection > .pub-results-label {
-  margin: 0 0 22px;
+  margin: 0 0 34px;
   padding: 0 3px;
   color: #768479;
   font-size: 13px;
@@ -182,7 +182,7 @@
     max-width: 100%;
   }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection > .pub-results-label {
-    margin-bottom: 18px;
+    margin-bottom: 26px;
     font-size: 12px;
   }
 }
