@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Download, X } from "lucide-react";
+import { BookOpen, Check, Download, FileText, Heart, Layers3, Star, X } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import { selectPdfProducts, type PdfSelection } from "../lib/catalog-pdf-plan";
 import "./catalog-pdf-download.css";
@@ -38,22 +38,22 @@ export default function CatalogPdfDownload({products,categories,disabled}:{produ
     <dialog ref={dialog} className="pub-pdf-dialog" aria-labelledby="pub-pdf-title"
       onCancel={e=>{if(running.current)e.preventDefault();}}>
       <div className="pub-pdf-dialog-head">
-        <div><p>BENUA BRUTTI</p><h2 id="pub-pdf-title">Download Catalogue</h2><span>Take our collection with you.</span></div>
+        <div className="pub-pdf-heading"><span className="pub-pdf-heading-icon"><FileText size={22} strokeWidth={1.7} aria-hidden="true"/></span><div><p>BENUA BRUTTI / COLLECTION</p><h2 id="pub-pdf-title">Download Catalogue</h2><span>Choose a collection to keep or share.</span></div></div>
         <button type="button" aria-label="Close download options" disabled={progress!==null} onClick={()=>dialog.current?.close()}><X size={20}/></button>
       </div>
       <fieldset disabled={progress!==null}>
         <legend>Choose your collection</legend>
-        {([{id:"all",title:"Full Catalogue",desc:"All published products and original category covers"},
-          {id:"best",title:"Best Sellers",desc:"Our selected best-selling pieces"},
-          {id:"category",title:"By Category",desc:"Choose one product category"},
-          {id:"favourites",title:"My Favourites",desc:"Products you have saved"}] as const).map(option=>
+        {([{id:"all",title:"Full Catalogue",desc:"All products and original collection covers",icon:BookOpen},
+          {id:"best",title:"Best Sellers",desc:"Our selected best-selling pieces",icon:Star},
+          {id:"category",title:"By Category",desc:"Explore a specific product collection",icon:Layers3},
+          {id:"favourites",title:"My Favourites",desc:"Your saved products in one PDF",icon:Heart}] as const).map(option=>
             <label key={option.id} className="pub-pdf-option"><input type="radio" name="catalog-pdf-mode" value={option.id}
-              checked={mode===option.id} onChange={()=>{setMode(option.id);setMessage("");}}/><span><strong>{option.title}</strong><small>{option.desc}</small></span></label>)}
+              checked={mode===option.id} onChange={()=>{setMode(option.id);setMessage("");}}/><span className="pub-pdf-option-icon"><option.icon size={19} strokeWidth={1.7} aria-hidden="true"/></span><span className="pub-pdf-option-copy"><strong>{option.title}</strong><small>{option.desc}</small></span><span className="pub-pdf-option-check" aria-hidden="true"><Check size={12} strokeWidth={2.7}/></span></label>)}
         {mode==="category"&&<select aria-label="Choose a category" value={category} onChange={e=>setCategory(e.target.value)}>
           <option value="">Select category</option>{categories.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}
         </select>}
       </fieldset>
-      <p className="pub-pdf-summary">PDF · A4 portrait · {count} {count===1?"product":"products"} · Original Brutti covers</p>
+      <div className="pub-pdf-summary"><span className="pub-pdf-summary-icon"><FileText size={17} strokeWidth={1.7} aria-hidden="true"/></span><div><strong>{count} {count===1?"product":"products"} selected</strong><small>PDF · A4 portrait · Original Brutti covers</small></div></div>
       {progress!==null&&<div role="status" className="pub-pdf-progress"><progress max={100} value={progress}/><span>Preparing PDF · {progress}%</span></div>}
       {message&&<p role={failed?"alert":"status"} className="pub-pdf-message">{message}</p>}
       <button type="button" className="pub-pdf-download" disabled={progress!==null||!count} onClick={()=>void download()}><Download size={17}/> {progress!==null?"Preparing catalogue…":"Download PDF"}</button>
