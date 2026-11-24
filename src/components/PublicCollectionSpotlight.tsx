@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type SyntheticEvent } from "react";
-import { ArrowRight, Eye, Heart, Sparkles, X } from "lucide-react";
+import { ArrowRight, Eye, Heart, Sparkles, Star, X } from "lucide-react";
 import type { Product } from "../lib/types";
 import { photoCropStyle } from "../lib/photo-crop";
 import { publicAssetUrl } from "../lib/assets";
@@ -11,6 +11,7 @@ import "./public-spotlight.css";
 interface Props {
   product: Product;
   categoryName: string;
+  onView?: (id: string) => void;
 }
 
 const availabilityLabels: Record<Product["availability"], string> = {
@@ -20,7 +21,7 @@ const availabilityLabels: Record<Product["availability"], string> = {
 };
 
 /** A regular catalogue card with an optional quick-view modal, not a full-width hero. */
-export default function PublicCollectionSpotlight({ product, categoryName }: Props) {
+export default function PublicCollectionSpotlight({ product, categoryName, onView }: Props) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const photo = product.images[0];
@@ -58,6 +59,7 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
   }, [quickViewOpen]);
 
   const openQuickView = () => {
+    onView?.(product.id);
     recordCatalogEvent("product_click", product.id);
     setQuickViewOpen(true);
   };
@@ -103,6 +105,8 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
           </button>
           {sale ? (
             <span className="pub-catalog-tile__sale">SALE</span>
+          ) : product.bestSelling ? (
+            <span className="pub-catalog-tile__featured pub-catalog-tile__best"><Star size={12} fill="currentColor" /> Best Seller</span>
           ) : product.featured ? (
             <span className="pub-catalog-tile__featured"><Sparkles size={12} /> Featured</span>
           ) : null}
@@ -130,6 +134,7 @@ export default function PublicCollectionSpotlight({ product, categoryName }: Pro
               <a className="pub-catalog-tile__title" href={detailUrl} onClick={openDetails}>
                 <h3>{product.name}</h3>
               </a>
+              {sale && product.bestSelling && <span className="pub-catalog-tile__best-inline"><Star size={11} fill="currentColor" /> Best Seller</span>}
               {description && <p className="pub-catalog-tile__description" title={description}>{description}</p>}
             </div>
             <div className="pub-catalog-tile__pricing">

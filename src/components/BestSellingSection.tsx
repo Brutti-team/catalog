@@ -12,6 +12,7 @@ type Props = {
   categories: Category[];
   loading: boolean;
   onBrowse: () => void;
+  onBrowseBestSellers: () => void;
 };
 
 /**
@@ -19,7 +20,7 @@ type Props = {
  * Featured. It only displays Published products with an uploaded photograph.
  * These are editorial picks: no fabricated sales counts or discounts.
  */
-export default function BestSellingSection({ products, categories, loading, onBrowse }: Props) {
+export default function BestSellingSection({ products, categories, loading, onBrowse, onBrowseBestSellers }: Props) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const curated = useMemo(() => (
     products
@@ -37,9 +38,8 @@ export default function BestSellingSection({ products, categories, loading, onBr
     () => categories.filter(category => curated.some(product => product.categoryId === category.id)),
     [categories, curated],
   );
-  const filtered = curated
-    .filter(product => selectedCategory === "all" || product.categoryId === selectedCategory)
-    .slice(0, 8);
+  const matching = curated.filter(product => selectedCategory === "all" || product.categoryId === selectedCategory);
+  const filtered = matching.slice(0, 8);
   const categoryName = (id: string) =>
     categories.find(category => category.id === id)?.name || "Furniture";
 
@@ -110,8 +110,8 @@ export default function BestSellingSection({ products, categories, loading, onBr
             })}
           </div>
           <div className="brutti-best-selling__footer">
-            <span>{filtered.length} selected {filtered.length === 1 ? "piece" : "pieces"}</span>
-            <button type="button" onClick={onBrowse}>Explore all products <ArrowRight size={17} aria-hidden="true" /></button>
+            <span>Showing {filtered.length} of {matching.length} {matching.length === 1 ? "piece" : "pieces"}</span>
+            <button type="button" onClick={onBrowseBestSellers}>View All Best Sellers <ArrowRight size={17} aria-hidden="true" /></button>
           </div>
         </>
       ) : (

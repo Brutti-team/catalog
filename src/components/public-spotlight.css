@@ -1506,3 +1506,8 @@
     transition: none !important;
   }
 }
+
+.pub-app .pub-catalog-tile__featured.pub-catalog-tile__best { background: #fff2d5; color: #80571d; border-color: #e6c88e; }
+.pub-app .pub-catalog-tile__best-inline { display: inline-flex; align-items: center; gap: 4px; color: #80571d; font-size: 11px; font-weight: 650; margin-top: 4px; }
+.pub-app .pub-recommendations-copy { margin: 7px 0 0; color: inherit; opacity: .75; font-size: 14px; line-height: 1.5; }
+.pub-app .pub-home-recommendations { margin: 0 auto; padding: clamp(24px, 4vw, 64px) clamp(16px, 5vw, 72px); max-width: 1600px; }

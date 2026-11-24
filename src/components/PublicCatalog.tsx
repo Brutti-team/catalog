@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowRight,
@@ -18,8 +18,8 @@ import type { Category, Product, ProductImage, ProductSpecification } from "../l
 import { photoCropStyle } from "../lib/photo-crop";
 import { publicAssetUrl } from "../lib/assets";
 import ProductPrice from "./ProductPrice";
+import { recommendProducts, recentProductIds, searchMatches } from "../lib/product-recommendations";
 import MaterialsContent from "./MaterialsContent";
-import { materialCardSummary } from "../lib/material-list";
 import { splitSpecifications } from "../lib/specification-groups";
 import { formatProductDimensions } from "../lib/dimensions";
 import { productIdFromHash } from "../lib/routes";
@@ -146,6 +146,10 @@ export default function PublicCatalog({
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [bestOnly, setBestOnly] = useState(false);
+  // Keep recommendation signals in this catalog session only, not in analytics or persistent storage.
+  const [viewedIds, setViewedIds] = useState<string[]>([]);
+  const [searchedIds, setSearchedIds] = useState<string[]>([]);
+  const noteViewed = useCallback((id: string) => setViewedIds(ids => recentProductIds(ids, [id])), []);
   // When an Admin deletes a category, avoid keeping a stale public filter.
   useEffect(() => {
     if (!loading && category !== "all" && !categories.some(item => item.id === category)) {
@@ -204,6 +208,18 @@ export default function PublicCatalog({
     productId === null ? undefined : published.find((item) => item.id === productId)
   );
   const specificationGroups = splitSpecifications(product?.specifications);
+  const viewedProductId = product?.status === "published" ? product.id : undefined;
+  useEffect(() => {
+    if (!previewProduct && !loading && !error && viewedProductId) noteViewed(viewedProductId);
+  }, [previewProduct, loading, error, viewedProductId, noteViewed]);
+  useEffect(() => {
+    if (previewProduct || loading || error || !query.trim()) return;
+    const timeout = window.setTimeout(() => {
+      const matches = published.filter(item => searchMatches(item, query)).slice(0, 16).map(item => item.id);
+      if (matches.length) setSearchedIds(ids => recentProductIds(ids, matches));
+    }, 450);
+    return () => window.clearTimeout(timeout);
+  }, [query, published, previewProduct, loading, error]);
   // Track only the public catalog, never the admin's private product preview.
   useEffect(() => {
     if (!previewProduct && !loading && !error) recordCatalogEvent("catalog_open");
@@ -261,6 +277,7 @@ export default function PublicCatalog({
   const exploreShowroom = (keyword: string) => {
     setQuery(keyword);
     setCategory("all");
+    setBestOnly(false);
     browseCollection();
   };
   const browseShowroom = () => {
@@ -292,51 +309,31 @@ export default function PublicCatalog({
     setCategory("all");
     setBestOnly(false);
   };
-  const related = product
-    ? published
-        .filter(
-          (item) =>
-            item.id !== product.id && item.categoryId === product.categoryId,
-        )
-        .slice(0, 3)
-    : [];
-  const card = (item: Product) => (
-    <a
-      href={`#/product/${encodeURIComponent(item.id)}`}
-      className="pub-product-card"
-      key={item.id}
-      onClick={() => { if (!previewProduct) recordCatalogEvent("product_click", item.id); }}
-    >
-      <div className="pub-card-image">
-        <FurnitureImage
-          src={item.images[0]?.url}
-          alt={item.images[0]?.alt || item.name}
-          image={item.images[0]}
-        />
-        {item.bestSelling ? (
-          <span className="pub-featured-tag catalog-best-public-tag"><Star size={11} fill="currentColor" /> Best Seller</span>
-        ) : item.featured && (
-          <span className="pub-featured-tag">
-            <Sparkles size={11} /> Featured
-          </span>
-        )}
-        <span className="pub-card-open" aria-hidden="true">
-          <ArrowUpRight size={20} />
-        </span>
+  const showAllBestSellers = () => {
+    setQuery("");
+    setCategory("all");
+    setBestOnly(true);
+    browseCollection();
+  };
+  const related = useMemo(() => recommendProducts(published, viewedIds, searchedIds, product?.id),
+    [published, viewedIds, searchedIds, product?.id]);
+  const recommendations = (home: boolean) => (
+    <section className={home ? "pub-related pub-home-recommendations" : "pub-related"} aria-label="You may also like">
+      <div className="pub-section-heading">
+        <div>
+          <p className="pub-eyebrow">CURATED FOR YOU</p>
+          <h2>You May Also Like</h2>
+          <p className="pub-recommendations-copy">Discover more pieces based on your recent views and searches.</p>
+        </div>
+        <button type="button" className="pub-primary-button" onClick={() => { resetFilters(); browseCollection(); }}>
+          View all products <ArrowRight size={16} />
+        </button>
       </div>
-      <div className="pub-card-meta">
-        <span>{categoryName(item.categoryId)}</span>
-        <span className={`pub-availability pub-${item.availability}`}>
-          <i />
-          {availabilityLabels[item.availability]}
-        </span>
+      <div className="pub-products-grid pub-products-grid--catalog">
+        {related.map(item => <PublicCollectionSpotlight key={item.id} product={item}
+          categoryName={categoryName(item.categoryId)} onView={noteViewed} />)}
       </div>
-      <div className="pub-card-bottom">
-        <h3>{item.name}</h3>
-        <span className="pub-card-price"><ProductPrice product={item} /></span>
-      </div>
-      {item.materials.trim() && <p className="pub-card-material">{materialCardSummary(item.materials)}</p>}
-    </a>
+    </section>
   );
 
   return (
@@ -365,7 +362,7 @@ export default function PublicCatalog({
           className={mobileMenu ? "pub-nav pub-nav-open" : "pub-nav"}
           aria-label="Main navigation"
         >
-          <button className="pub-nav-active" onClick={() => browseCollection()}>
+          <button className="pub-nav-active" onClick={() => { resetFilters(); browseCollection(); }}>
             Collection
           </button>
           <button onClick={browseShowroom}>
@@ -459,7 +456,7 @@ export default function PublicCatalog({
                 BENUA BRUTTI SDN. BHD. <ArrowDown size={14} />
               </span>
             </div>
-            <ShowroomSections onExplore={exploreShowroom} onCategorySelect={(categoryId) => { setQuery(""); setCategory(categoryId); browseCollection(); }} categories={categories} publishedProducts={published} loading={loading} />
+            <ShowroomSections onExplore={exploreShowroom} onCategorySelect={(categoryId) => { setQuery(""); setCategory(categoryId); setBestOnly(false); browseCollection(); }} categories={categories} publishedProducts={published} loading={loading} />
             <section id="pub-collection" className="pub-collection">
               <div className="pub-collection-green-header">
                 <div className="pub-section-heading">
@@ -536,15 +533,15 @@ export default function PublicCatalog({
                 <div className="pub-category-filters" aria-label="Filter by category">
                   <button
                     type="button"
-                    aria-pressed={category === "all"}
-                    className={category === "all" ? "pub-filter-active" : ""}
-                    onClick={() => setCategory("all")}
+                    aria-pressed={category === "all" && !bestOnly}
+                    className={category === "all" && !bestOnly ? "pub-filter-active" : ""}
+                    onClick={() => { setCategory("all"); setBestOnly(false); }}
                   >
                     All projects <span>{published.length}</span>
                   </button>
                   <button type="button" aria-pressed={bestOnly}
                     className={bestOnly ? "pub-filter-active" : ""}
-                    onClick={() => setBestOnly(value => !value)}>
+                    onClick={() => { setCategory("all"); setBestOnly(value => !value); }}>
                     Best Sellers <span>{published.filter(item => item.bestSelling === true).length}</span>
                   </button>
                   {categories.map((item) => (
@@ -601,6 +598,7 @@ export default function PublicCatalog({
                       key={item.id}
                       product={item}
                       categoryName={categoryName(item.categoryId)}
+                      onView={noteViewed}
                     />
                   ))}
                 </div>
@@ -850,25 +848,14 @@ export default function PublicCatalog({
                     </div>
                   </div>
                 </div>
-                {!previewProduct && related.length > 0 && (
-                  <section className="pub-related">
-                    <div className="pub-section-heading">
-                      <div>
-                        <p className="pub-eyebrow">MORE FROM THE WORKSHOP</p>
-                        <h2>Explore related works.</h2>
-                      </div>
-                      <a href="#/catalog">
-                        View the collection <ArrowRight size={16} />
-                      </a>
-                    </div>
-                    <div className="pub-products-grid">{related.map(card)}</div>
-                  </section>
-                )}
+                {!previewProduct && related.length > 0 && recommendations(false)}
               </>
             )}
           </section>
         )}
-        {productId === null && <BestSellingSection products={published} categories={categories} loading={loading} onBrowse={() => { resetFilters(); browseCollection(); }} />}
+        {productId === null && <BestSellingSection products={published} categories={categories} loading={loading}
+          onBrowse={() => { resetFilters(); browseCollection(); }} onBrowseBestSellers={showAllBestSellers} />}
+        {!previewProduct && productId === null && !loading && !error && related.length > 0 && recommendations(true)}
       </main>
       {!previewProduct && <footer className="pub-footer pub-footer--reference" id="pub-contact">
         <div className="pub-footer__layout">
