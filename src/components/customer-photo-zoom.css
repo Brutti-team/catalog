@@ -190,24 +190,29 @@ dialog.customer-photo-zoom button:focus-visible { outline: 2px solid #48765b; ou
 }
 
 
-/* Brutti green photo viewer header, with accessible light text and controls. */
-dialog.customer-photo-zoom .customer-photo-zoom-header {
-  background: #244d38;
-  color: #fff;
+/* Brutti green photo viewer masthead. Keep the dedicated viewer palette
+   isolated from global public header and neutral theme overrides. */
+dialog.customer-photo-zoom[open] > header.customer-photo-zoom-header {
+  background: #244d38 !important;
+  color: #fff !important;
   border-bottom: 1px solid #315a44;
 }
-dialog.customer-photo-zoom .customer-photo-zoom-header strong { color: #fff; }
-dialog.customer-photo-zoom .customer-photo-zoom-header span { color: #e0ebe3; }
-dialog.customer-photo-zoom .customer-photo-zoom-header button {
-  background: rgba(255,255,255,.12);
-  border-color: rgba(255,255,255,.24);
-  color: #fff;
+dialog.customer-photo-zoom[open] > header.customer-photo-zoom-header strong {
+  color: #fff !important;
 }
-dialog.customer-photo-zoom .customer-photo-zoom-header button:hover:not(:disabled) {
-  background: rgba(255,255,255,.24);
-  border-color: rgba(255,255,255,.48);
-  color: #fff;
+dialog.customer-photo-zoom[open] > header.customer-photo-zoom-header span {
+  color: #e0ebe3 !important;
 }
-dialog.customer-photo-zoom .customer-photo-zoom-header button:focus-visible {
+dialog.customer-photo-zoom[open] > header.customer-photo-zoom-header button {
+  background: rgba(255,255,255,.12) !important;
+  border-color: rgba(255,255,255,.24) !important;
+  color: #fff !important;
+}
+dialog.customer-photo-zoom[open] > header.customer-photo-zoom-header button:hover:not(:disabled) {
+  background: rgba(255,255,255,.24) !important;
+  border-color: rgba(255,255,255,.48) !important;
+  color: #fff !important;
+}
+dialog.customer-photo-zoom[open] > header.customer-photo-zoom-header button:focus-visible {
   outline-color: #fff;
 }
