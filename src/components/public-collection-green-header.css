@@ -344,9 +344,9 @@
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters button {
   flex: 0 0 auto;
   max-width: 100%;
-  min-height: 42px;
-  padding: 9px 11px;
-  font: 650 12px/1.35 "DM Sans", system-ui, sans-serif;
+  min-height: 48px;
+  padding: 10px 12px;
+  font: 650 13px/1.35 "DM Sans", system-ui, sans-serif;
   white-space: normal;
   overflow-wrap: anywhere;
   text-align: center;
@@ -354,5 +354,5 @@
 }
 @media (max-width: 520px) {
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters { gap: 5px; }
-  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters button { min-height: 40px; padding: 8px 10px; font-size: 12px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters button { min-height: 44px; padding: 9px 11px; font-size: 13px; }
 }
