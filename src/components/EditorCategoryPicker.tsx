@@ -60,26 +60,41 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
     if (!open) return;
     const position = () => {
       const anchor = triggerRef.current?.getBoundingClientRect();
-      const box = dialog?.getBoundingClientRect();
-      if (!anchor) return;
+      const host = rootRef.current?.closest<HTMLDialogElement>("dialog");
+      const box = host?.getBoundingClientRect();
+      if (!anchor || !host || !box) return;
+      // The portal belongs to the native dialog, not the page. Convert viewport
+      // coordinates to the dialog padding box, including scroll and any scaling.
+      const sx = box.width / host.offsetWidth || 1;
+      const sy = box.height / host.offsetHeight || 1;
       const gap = 8;
-      const leftLimit = Math.max(12, (box?.left ?? 0) + 12);
-      const rightLimit = Math.min(window.innerWidth - 12, (box?.right ?? window.innerWidth) - 12);
-      const width = Math.min(420, anchor.width, rightLimit - leftLimit);
-      const left = Math.min(Math.max(anchor.left, leftLimit), rightLimit - width);
-      const footer = dialog?.querySelector<HTMLElement>(".editor-footer")?.getBoundingClientRect();
-      const header = dialog?.querySelector<HTMLElement>(".catalog-editor-actionbar")?.getBoundingClientRect();
-      const low = Math.max(12, (box?.top ?? 0) + 12, header?.bottom && header.bottom < anchor.top ? header.bottom + gap : 12);
-      const high = Math.min(window.innerHeight - 12, (box?.bottom ?? window.innerHeight) - 12, footer?.top && footer.top > low ? footer.top - gap : window.innerHeight - 12);
-      const wishedHeight = Math.min(360, 118 + Math.max(filtered.length, 1) * 45);
-      const below = high - anchor.bottom - gap;
-      const above = anchor.top - low - gap;
-      const placeBelow = below >= Math.min(wishedHeight, 180) || below >= above;
-      const free = Math.max(100, placeBelow ? below : above);
-      const maxHeight = Math.min(wishedHeight, free);
-      const top = placeBelow ? Math.max(low, anchor.bottom + gap) : Math.max(low, anchor.top - gap - maxHeight);
-      setLayout({ position: "fixed", top: Math.round(top), left: Math.round(left),
-        width: Math.max(140, Math.round(width)), maxHeight: Math.floor(maxHeight), zIndex: 120 });
+      const leftLimit = Math.max(10, box.left + 12 * sx);
+      const rightLimit = Math.min(window.innerWidth - 10, box.right - 12 * sx);
+      const width = Math.min(420 * sx, anchor.width, rightLimit - leftLimit);
+      const left = Math.max(leftLimit, Math.min(anchor.right - width, rightLimit - width));
+      const footer = host.querySelector<HTMLElement>(".editor-footer")?.getBoundingClientRect();
+      const header = host.querySelector<HTMLElement>(".catalog-editor-actionbar")?.getBoundingClientRect();
+      const outerLow = Math.max(10, box.top + 12 * sy);
+      const outerHigh = Math.min(window.innerHeight - 10, box.bottom - 12 * sy);
+      let low = Math.max(outerLow, header && header.bottom <= anchor.top ? header.bottom + gap : outerLow);
+      let high = Math.min(outerHigh, footer && footer.top >= anchor.bottom ? footer.top - gap : outerHigh);
+      if (high - low < 200 * sy) { low = outerLow; high = outerHigh; }
+      const desired = Math.min(420, 82 + Math.max(filtered.length, 1) * 41) * sy;
+      const below = Math.max(0, high - anchor.bottom - gap);
+      const above = Math.max(0, anchor.top - low - gap);
+      const placeBelow = below >= Math.min(desired, 220 * sy) || below >= above;
+      const free = placeBelow ? below : above;
+      const height = Math.max(0, Math.min(desired, free >= 190 * sy ? free : high - low));
+      const preferredTop = placeBelow ? anchor.bottom + gap : anchor.top - gap - height;
+      const top = Math.max(low, Math.min(preferredTop, high - height));
+      setLayout({
+        position: "absolute",
+        top: Math.round((top - box.top) / sy + host.scrollTop - host.clientTop),
+        left: Math.round((left - box.left) / sx + host.scrollLeft - host.clientLeft),
+        width: Math.max(0, Math.floor(width / sx)),
+        maxHeight: Math.max(0, Math.floor(height / sy)),
+        zIndex: 120,
+      });
     };
     position();
     window.addEventListener("resize", position);
@@ -99,6 +114,7 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
     };
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        event.preventDefault();
         event.stopPropagation();
         setOpen(false);
         triggerRef.current?.focus({ preventScroll: true });

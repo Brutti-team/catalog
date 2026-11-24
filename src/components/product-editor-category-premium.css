@@ -426,3 +426,43 @@
     min-height: 49px;
   }
 }
+
+/* Compact category menu: same glass finish, clear rows, and a visible list scroll. */
+.admin-app .product-editor-dialog .catalog-editor-category-popover {
+  padding: 10px;
+  gap: 7px;
+  border-radius: 12px;
+  background: rgba(250,253,250,.94);
+  box-shadow: 0 12px 32px rgba(25,55,35,.16), inset 0 1px rgba(255,255,255,.9);
+  animation: brutti-category-fade .14s ease-out both;
+}
+@keyframes brutti-category-fade { from { opacity: 0; } to { opacity: 1; } }
+.admin-app .product-editor-dialog .catalog-editor-category-menu-head {
+  flex: 0 0 auto; min-height: 18px; font-size: 10px; color: #607a68;
+}
+.admin-app .product-editor-dialog .catalog-editor-category-search {
+  box-sizing: border-box; flex: 0 0 36px; height: 36px; min-width: 0; border-radius: 7px;
+}
+.admin-app .product-editor-dialog .catalog-editor-category-options {
+  gap: 2px; padding-right: 3px; scrollbar-width: thin; scrollbar-color: #a8bead transparent;
+}
+.admin-app .product-editor-dialog .catalog-editor-category-options::-webkit-scrollbar {
+  display: block; width: 5px;
+}
+.admin-app .product-editor-dialog .catalog-editor-category-options::-webkit-scrollbar-thumb {
+  background: #a8bead; border-radius: 8px;
+}
+.admin-app .product-editor-dialog .catalog-editor-category-option {
+  box-sizing: border-box; min-height: 39px; gap: 9px; padding: 4px 8px; border-radius: 7px;
+}
+.admin-app .product-editor-dialog .catalog-editor-category-option-icon {
+  flex-basis: 28px; width: 28px; height: 28px; border-radius: 6px;
+}
+.admin-app .product-editor-dialog .catalog-editor-category-option-name { overflow-wrap: anywhere; }
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-popover {
+  background: rgba(30,53,39,.95); box-shadow: 0 12px 32px rgba(0,0,0,.32);
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .catalog-editor-category-menu-head { color:#b0c6b5; }
+@media(prefers-reduced-motion:reduce) {
+  .admin-app .product-editor-dialog .catalog-editor-category-popover { animation: none; }
+}
