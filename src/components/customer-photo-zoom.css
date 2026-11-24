@@ -260,10 +260,10 @@ dialog.customer-photo-zoom[open] > header.customer-photo-zoom-header {
   border-bottom-color: rgba(255,255,255,.14);
 }
 dialog.customer-photo-zoom[open] > .customer-photo-zoom-stage {
-  background: radial-gradient(ellipse at 50% 35%,#426b55 0%,#2d5641 45%,#1b3c2d 100%) !important;
+  background: #ffffff !important;
 }
 dialog.customer-photo-zoom[open] > .customer-photo-zoom-stage:not(.is-zoomed):not(.is-dragging) img {
   border-radius: 10px;
-  box-shadow: 0 0 0 1px rgba(255,255,255,.23), 0 14px 42px rgba(8,27,19,.25);
+  box-shadow: 0 0 0 1px rgba(36,77,56,.08), 0 8px 26px rgba(36,77,56,.09);
 }
-dialog.customer-photo-zoom[open] > .customer-photo-zoom-stage p { color: #fff; }
+dialog.customer-photo-zoom[open] > .customer-photo-zoom-stage p { color: #244d38; }
