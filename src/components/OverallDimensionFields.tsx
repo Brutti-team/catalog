@@ -85,12 +85,6 @@ export default function OverallDimensionFields({
                   onValueChange(key, cm);
                 }}
               />}
-              <button type="button" className="catalog-dimension-add-part"
-                aria-label={mixed ? `${label}: use a single value (keep total size)` : unit === "ft" ? `${label}: add inches` : `${label}: use feet and inches (convert current value)`}
-                title={mixed ? "Use single value; keep total size" : unit === "ft" ? "Add inches" : "Use feet + inches; convert current value"}
-                aria-expanded={mixed} disabled={disabled} onClick={toggleMixed}>
-                {mixed ? <Minus size={15} aria-hidden="true" /> : <Plus size={15} aria-hidden="true" />}
-              </button>
               <InlineDimensionUnitMenu
                 label={label}
                 value={unit}
@@ -100,6 +94,12 @@ export default function OverallDimensionFields({
                   onUnitChange(key, next);
                 }}
               />
+              <button type="button" className="catalog-dimension-add-part"
+                aria-label={mixed ? `${label}: use a single value (keep total size)` : unit === "ft" ? `${label}: add inches` : `${label}: use feet and inches (convert current value)`}
+                title={mixed ? "Use single value; keep total size" : unit === "ft" ? "Add inches" : "Use feet + inches; convert current value"}
+                aria-expanded={mixed} disabled={disabled} onClick={toggleMixed}>
+                {mixed ? <Minus size={15} aria-hidden="true" /> : <Plus size={15} aria-hidden="true" />}
+              </button>
             </div>
           </div>
         );
