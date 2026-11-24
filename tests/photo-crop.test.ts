@@ -28,3 +28,17 @@ describe("Brutti Catalog non-destructive photo composition", () => {
     expect(image.url).toBe("https://images.example.com/photo.jpg");
   });
 });
+
+import { catalogCardPhotoStyle, publicPhotoCropStyle } from "../src/lib/photo-crop";
+
+describe("shared catalogue card framing", () => {
+  const photo = { id: "one", url: "/photo.webp", alt: "Desk", preservedOriginalPaths: ["original.webp"] };
+  it("uses the same cover framing for edited and unedited card photos", () => {
+    expect(catalogCardPhotoStyle(photo)).toEqual(catalogCardPhotoStyle({ ...photo, preservedOriginalPaths: undefined }));
+    expect(catalogCardPhotoStyle(photo)).toMatchObject({ objectFit: "cover", objectPosition: "center 67%", transform: "none" });
+    expect(publicPhotoCropStyle(photo)).toMatchObject({ objectFit: "contain" });
+  });
+  it("preserves explicitly chosen cover position and zoom", () => {
+    expect(catalogCardPhotoStyle({ ...photo, crop: { x: 22, y: 75, zoom: 1.4 } })).toMatchObject({ objectPosition: "22% 75%", transform: "scale(1.4)" });
+  });
+});

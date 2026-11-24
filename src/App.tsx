@@ -1,6 +1,6 @@
 import "./components/catalog-best-seller-controls.css";
 import SafeImage from "./components/SafeImage";
-import { photoCropStyle } from "./lib/photo-crop";
+import { photoCropStyle, catalogCardPhotoStyle } from "./lib/photo-crop";
 import { formatProductPrice } from "./lib/price";
 import { publicAssetUrl } from "./lib/assets";
 import { categoryCover } from "./lib/category-covers";
@@ -896,7 +896,7 @@ export default function App() {
                           setEditor(p);
                         }} aria-label={`Edit ${p.name}`}>
                         <div className="catalog-gallery-photo">
-                          <SafeImage src={p.images[0]?.url || "/images/placeholder.svg"} alt="" style={photoCropStyle(p.images[0])} loading="lazy" decoding="async" />
+                          <SafeImage src={p.images[0]?.url || "/images/placeholder.svg"} alt="" style={catalogCardPhotoStyle(p.images[0], p.sku)} loading="lazy" decoding="async" />
                           <BackgroundGalleryOverlay productId={p.id} coverImageId={p.images[0]?.id}/>
                           <span className={`status-badge status-${p.status}`}><i />{label(p.status)}</span>
                         </div>

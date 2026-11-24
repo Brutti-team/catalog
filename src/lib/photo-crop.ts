@@ -41,3 +41,14 @@ export function publicPhotoCropStyle(image?: ProductImage): CSSProperties | unde
     ? { objectFit: "contain", objectPosition: "center", transform: "none", mixBlendMode: "normal" }
     : photoCropStyle(image);
 }
+
+/** The gallery and customer tiles must use the same composition. Cover is
+ * intentional for thumbnail frames; the detail viewer can show the full file. */
+export function catalogCardPhotoStyle(image?: ProductImage, sku?: string): CSSProperties {
+  return photoCropStyle(image) ?? {
+    objectFit: "cover",
+    objectPosition: sku === "PNL-15" ? "center bottom" : "center 67%",
+    transform: "none",
+    mixBlendMode: "normal",
+  };
+}

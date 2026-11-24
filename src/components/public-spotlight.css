@@ -2328,11 +2328,19 @@
   .pub-app.pub-refined .pub-quickview .pub-quickview__content h2 { font-size: 23px !important; }
 }
 
-/* Keep the saved Photo Studio composition inside the existing card frame. */
-.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-recommendations) .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__preview img.catalog-image-studio-edited:not(.catalog-image-cropped),
+/* Show the complete exported crop in the larger quick-view preview. */
 .pub-app.pub-refined .pub-quickview .pub-quickview__image img.catalog-image-studio-edited:not(.catalog-image-cropped) {
   object-fit: contain !important;
   object-position: center !important;
   transform: none !important;
   filter: none !important;
 }
+
+/* One card aspect ratio for staff and customer presentation. Details and zoom
+   use their own full-image view; the public four-column grid stays unchanged. */
+:root { --catalog-card-photo-ratio: 1.18; }
+@media (max-width: 1199px) { :root { --catalog-card-photo-ratio: 1.16; } }
+@media (max-width: 670px) { :root { --catalog-card-photo-ratio: 1.08; } }
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-recommendations) .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__visual { aspect-ratio: var(--catalog-card-photo-ratio) !important; height: auto; }
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-recommendations) .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__preview img { object-fit: cover !important; }
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-recommendations) .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__visual:hover .pub-catalog-tile__preview img { filter: none; }
