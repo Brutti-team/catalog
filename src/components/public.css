@@ -1695,3 +1695,7 @@
     width: 79px;
   }
 }
+
+/* Original Brutti signature in the product promise badge. */
+.pub-app .pub-detail-promise .pub-promise-symbol {flex-shrink:0;}
+.pub-app .pub-detail-promise .pub-promise-logo {display:block;width:80%;height:auto;max-height:80%;object-fit:contain;filter:brightness(0) saturate(100%) invert(32%) sepia(19%) saturate(1050%) hue-rotate(103deg) brightness(88%) contrast(86%);}

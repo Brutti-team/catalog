@@ -864,7 +864,7 @@ export default function PublicCatalog({
                       ))}
                     </div>}
                     <div className="pub-detail-promise">
-                      <span className="pub-promise-symbol">b.</span>
+                      <span className="pub-promise-symbol"><img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="pub-promise-logo" /></span>
                       <p>
                         Made for the spaces you imagine.
                         <br />
