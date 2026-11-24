@@ -2101,3 +2101,22 @@
 @media (max-width:650px) {
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-products-grid.pub-products-grid--catalog .pub-catalog-tile__meta .pub-catalog-tile__availability { font-size: 10px; white-space: normal; }
 }
+
+/* Recommendation price only: a stronger numeric hierarchy, no layout changes. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing :is(.catalog-price-amount,.catalog-price-current) {
+  font-family: "Plus Jakarta Sans", "DM Sans", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -.035em;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: #174b33 !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-basis {
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-weight: 450;
+  letter-spacing: 0;
+}
+@media(max-width:650px){
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing :is(.catalog-price-amount,.catalog-price-current) {font-size:15px;}
+}
