@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cmToUnit, unitMax, unitToCm, normalizeDimensionUnits, formatProductDimensions, splitFeetInches, feetInchesToCm, type DimensionUnit } from "../src/lib/dimensions";
+import { cmToUnit, unitMax, unitToCm, normalizeDimensionUnits, formatProductDimensions, splitFeetInches, feetInchesToCm, dimensionParts, type DimensionUnit } from "../src/lib/dimensions";
 
 describe("Brutti catalog dimension display units", () => {
   it("converts each selectable unit to canonical centimetres", () => {
@@ -53,6 +53,15 @@ describe("Brutti catalog dimension display units", () => {
     expect(splitFeetInches(15.24)).toEqual({ feet:0, inches:6 });
     expect(splitFeetInches(feetInchesToCm(2,3.5))).toEqual({ feet:2, inches:3.5 });
     expect(formatProductDimensions({width:91.44,depth:45.72,height:213.36,dimensionUnits:{width:"ft",depth:"ft",height:"ft"}})).toBe("3 ft W × 1 ft 6 in D × 7 ft H");
+  });
+
+  it("preserves independently chosen extra units and their physical value", () => {
+    const units = normalizeDimensionUnits({width:"ft",depth:"m",height:"cm",additional:{width:{unit:"cm",cm:15},depth:{unit:null,cm:0}}});
+    expect(dimensionParts(106.44,units,"width")).toEqual({primaryCm:91.44,additional:{unit:"cm",cm:15}});
+    expect(formatProductDimensions({width:106.44,depth:100,height:0,dimensionUnits:units})).toBe("3 ft 15 cm W × 1 m D");
+    expect(normalizeDimensionUnits(units)).toEqual(units);
+    expect(dimensionParts(1,units,"width")).toEqual({primaryCm:1});
+    expect(normalizeDimensionUnits({additional:{width:{unit:"bad",cm:10}}})).toEqual({width:"cm",depth:"cm",height:"cm"});
   });
 
   it("keeps the existing maximum limit in centimetres", () => {

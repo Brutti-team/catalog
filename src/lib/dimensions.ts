@@ -34,7 +34,8 @@ export function unitMax(unit: DimensionUnit): number {
 
 export const OVERALL_DIMENSION_KEYS = ["width", "depth", "height"] as const;
 export type DimensionKey = typeof OVERALL_DIMENSION_KEYS[number];
-export type DimensionUnits = Record<DimensionKey, DimensionUnit>;
+export type DimensionPart = { unit: DimensionUnit | null; cm: number };
+export type DimensionUnits = Record<DimensionKey, DimensionUnit> & { additional?: Partial<Record<DimensionKey, DimensionPart>> };
 export const DEFAULT_DIMENSION_UNITS: Readonly<DimensionUnits> = Object.freeze({
   width: "cm", depth: "cm", height: "cm",
 });
@@ -45,7 +46,20 @@ export function normalizeDimensionUnits(value: unknown): DimensionUnits {
   const allowed: ReadonlyArray<string> = DIMENSION_UNIT_OPTIONS.map(option => option.value);
   const valid = (raw: unknown): DimensionUnit =>
     typeof raw === "string" && allowed.includes(raw) ? raw as DimensionUnit : "cm";
-  return { width: valid(saved.width), depth: valid(saved.depth), height: valid(saved.height) };
+  const result: DimensionUnits = { width: valid(saved.width), depth: valid(saved.depth), height: valid(saved.height) };
+  if (saved.additional && typeof saved.additional === "object") {
+    const raw = saved.additional as Record<string, unknown>;
+    const additional: NonNullable<DimensionUnits["additional"]> = {};
+    for (const key of OVERALL_DIMENSION_KEYS) {
+      const part = raw[key];
+      if (!part || typeof part !== "object") continue;
+      const {unit, cm} = part as Record<string, unknown>;
+      if (unit === null && cm === 0) additional[key] = {unit:null,cm:0};
+      else if (typeof unit === "string" && allowed.includes(unit) && typeof cm === "number" && Number.isFinite(cm) && cm >= 0 && cm <= 99999.99) additional[key] = {unit:unit as DimensionUnit,cm};
+    }
+    if (Object.keys(additional).length) result.additional = additional;
+  }
+  return result;
 }
 
 /** Feet/inches are an editor/display representation of the existing ft unit.
@@ -67,12 +81,24 @@ export function formatDimension(centimetres: number, unit: DimensionUnit): strin
   return feet ? `${feet} ft${inches ? ` ${inches} in` : ""}` : `${inches} in`;
 }
 
+/** Preserve the total in cm while recovering independently editable components. */
+export function dimensionParts(total: number, units: DimensionUnits, key: DimensionKey): {primaryCm:number; additional?:DimensionPart} {
+  const part = units.additional?.[key];
+  if (!part || part.cm > total + .0001) return {primaryCm:total};
+  return {primaryCm:Number(Math.max(0,total-part.cm).toFixed(4)),additional:part};
+}
+
 /** Readable mixed-unit dimensions; missing overall sizes stay hidden. */
 export function formatProductDimensions(product: Pick<Record<DimensionKey, number>, DimensionKey> & { dimensionUnits?: DimensionUnits }): string {
   const units = normalizeDimensionUnits(product.dimensionUnits);
   const suffix: Record<DimensionKey, string> = { width: "W", depth: "D", height: "H" };
   return OVERALL_DIMENSION_KEYS
     .filter(key => Number.isFinite(product[key]) && product[key] > 0)
-    .map(key => `${formatDimension(product[key], units[key])} ${suffix[key]}`)
+    .map(key => {
+      const {primaryCm, additional} = dimensionParts(product[key], units, key);
+      if (!additional?.unit || !additional.cm) return `${formatDimension(product[key], units[key])} ${suffix[key]}`;
+      const parts = [primaryCm > 0 ? `${cmToUnit(primaryCm, units[key])} ${units[key]}` : "", `${cmToUnit(additional.cm, additional.unit)} ${additional.unit}`].filter(Boolean);
+      return `${parts.join(" ")} ${suffix[key]}`;
+    })
     .join(" × ");
 }

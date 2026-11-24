@@ -7,7 +7,7 @@ import { Check, ChevronDown } from "lucide-react";
 import { DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
 
 type Props = {
-  value: DimensionUnit;
+  value: DimensionUnit | null;
   label: string;
   onChange: (unit: DimensionUnit) => void;
   disabled?: boolean;
@@ -174,8 +174,8 @@ export default function InlineDimensionUnitMenu({
         ref={triggerRef}
         type="button"
         className="catalog-dimension-inline-trigger"
-        aria-label={`Choose ${label} unit, currently ${unitNames[value]}`}
-        title={`${label} unit: ${unitNames[value]}`}
+        aria-label={`Choose ${label} unit, currently ${value ? unitNames[value] : "Select unit"}`}
+        title={`${label} unit: ${value ? unitNames[value] : "Select unit"}`}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={open ? id : undefined}
@@ -189,7 +189,7 @@ export default function InlineDimensionUnitMenu({
           }
         }}
       >
-        <span>{value}</span>
+        <span>{value ?? "Unit"}</span>
         <ChevronDown size={15} strokeWidth={1.8} aria-hidden="true" />
       </button>
       {open && portalTarget && createPortal(

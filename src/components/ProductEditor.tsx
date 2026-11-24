@@ -37,7 +37,7 @@ import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
 import ProductPrice from "./ProductPrice";
 import { nextProductId } from "../lib/product-ids";
-import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, normalizeDimensionUnits, type DimensionUnit } from "../lib/dimensions";
+import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
 import OverallDimensionFields from "./OverallDimensionFields";
 import MeasurementTypePicker from "./MeasurementTypePicker";
 import MaterialsEditor from "./MaterialsEditor";
@@ -944,11 +944,7 @@ export default function ProductEditor({
                   <OverallDimensionFields
                     product={draft}
                     disabled={busy || uploading}
-                    onValueChange={(key, value) => update(key, value)}
-                    onUnitChange={(key, unit) => setDraft(current => ({
-                      ...current,
-                      dimensionUnits: { ...normalizeDimensionUnits(current.dimensionUnits), [key]: unit },
-                    }))}
+                    onDimensionChange={(key, totalCm, dimensionUnits) => setDraft(current => ({ ...current, [key]: totalCm, dimensionUnits }))}
                   />
                 </div>
                 <div className="catalog-reference-spec-row catalog-materials-spec-row">
@@ -1114,11 +1110,7 @@ export default function ProductEditor({
               <OverallDimensionFields
                 product={draft}
                 disabled={busy || uploading}
-                onValueChange={(key, value) => update(key, value)}
-                onUnitChange={(key, unit) => setDraft(current => ({
-                  ...current,
-                  dimensionUnits: { ...normalizeDimensionUnits(current.dimensionUnits), [key]: unit },
-                }))}
+                onDimensionChange={(key, totalCm, dimensionUnits) => setDraft(current => ({ ...current, [key]: totalCm, dimensionUnits }))}
               />
               <div className="catalog-new-pricing-fields" role="group" aria-label="Product pricing">
                 <label className="catalog-pricing-field">
