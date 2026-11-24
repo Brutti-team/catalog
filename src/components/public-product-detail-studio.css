@@ -1230,8 +1230,10 @@
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy {
     height: 100%;
     min-height: 0;
-    grid-template-rows: auto auto auto auto minmax(0,1fr) auto;
-    align-content: stretch;
+    /* Let short specifications use their natural height, but shrink long ones
+       to the available viewport space. Keep spare space below the whole column. */
+    grid-template-rows: auto auto auto auto minmax(0,max-content) auto;
+    align-content: start;
     align-items: start;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-eyebrow, .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-availability { grid-row: 1; align-self: center; }
@@ -1247,9 +1249,9 @@
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll { flex: 1 1 auto; max-height: none; }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-promise {
     grid-row: 6;
-    align-self: end;
-    margin-top: 12px;
-    padding-top: 10px;
+    align-self: start;
+    margin-top: 14px;
+    padding-top: 12px;
   }
 }
 /* On narrow or short screens, let the document scroll naturally rather
