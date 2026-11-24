@@ -2205,3 +2205,24 @@
 @media (prefers-reduced-motion:reduce) {
   .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-recommendations) .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__sale { transition: none; }
 }
+
+
+/* Recommendation shelf: use the available fourth desktop column instead of
+   wrapping the fourth product while there is still room on the right. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog {
+  grid-template-columns: repeat(4, minmax(0, 340px)) !important;
+  gap: 15px;
+  justify-content: start;
+}
+@media (max-width: 1199px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog { grid-template-columns: repeat(3, minmax(0, 340px)) !important; }
+}
+@media (max-width: 850px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog { grid-template-columns: repeat(2, minmax(0, 340px)) !important; gap: 12px; }
+}
+@media (max-width: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 9px; }
+}
+@media (max-width: 320px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog { grid-template-columns: minmax(0, 1fr) !important; }
+}
