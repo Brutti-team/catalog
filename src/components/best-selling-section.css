@@ -323,3 +323,33 @@
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection:has(+ #pub-best-selling) {padding-bottom: 12px;}
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection + #pub-best-selling {padding-top: 16px;}
 }
+
+/* Full-width collection divider with a compact, functional See more control. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-more-divider {
+  display:flex;align-items:center;gap:14px;margin:22px 0 0;width:100%;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-more-divider::before,
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-more-divider::after {
+  content:"";height:1px;flex:1;min-width:0;background:rgba(74,116,89,.22);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection button.pub-collection-more-button {
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:0 0 auto;
+  min-height:36px;padding:8px 16px;border:1px solid rgba(74,116,89,.22);
+  border-radius:999px;background:rgba(255,255,255,.68);color:#28543a;
+  font:650 12px/1.4 "Manrope","DM Sans",system-ui,sans-serif;cursor:pointer;
+  box-shadow:0 2px 8px rgba(37,69,48,.04);transition:background .2s,border-color .2s;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection button.pub-collection-more-button:hover {background:#e5efe6;border-color:#8baa95;}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection button.pub-collection-more-button svg {transition:transform .2s;}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection button.pub-collection-more-button:hover svg {transform:translateY(2px);}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection button.pub-collection-more-button:focus-visible {outline:2px solid #47765b;outline-offset:3px;}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection:has(+ #pub-best-selling) {padding-bottom:12px!important;}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection + #pub-best-selling {padding-top:16px!important;}
+@media(max-width:650px){
+ .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-more-divider {margin-top:16px;gap:10px;}
+ .pub-app.pub-refined:not(.pub-private-preview) #pub-collection + #pub-best-selling {padding-top:12px!important;}
+}
+@media(prefers-reduced-motion:reduce){
+ .pub-app.pub-refined:not(.pub-private-preview) #pub-collection button.pub-collection-more-button,
+ .pub-app.pub-refined:not(.pub-private-preview) #pub-collection button.pub-collection-more-button svg {transition:none;}
+}

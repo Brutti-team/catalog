@@ -147,6 +147,7 @@ export default function PublicCatalog({
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [bestOnly, setBestOnly] = useState(false);
+  const [visibleLimit, setVisibleLimit] = useState(6);
   // Keep recommendation signals in this catalog session only, not in analytics or persistent storage.
   const [viewedIds, setViewedIds] = useState<string[]>([]);
   const [searchedIds, setSearchedIds] = useState<string[]>([]);
@@ -254,6 +255,9 @@ export default function PublicCatalog({
           : Number(b.featured) - Number(a.featured) || (a.displayOrder ?? 0) - (b.displayOrder ?? 0),
     );
   }, [published, query, category, sort, bestOnly]);
+  useEffect(() => { setVisibleLimit(6); }, [query, category, sort, bestOnly]);
+  const visibleProducts = bestOnly ? filtered : filtered.slice(0, visibleLimit);
+  const hasMoreProducts = visibleProducts.length < filtered.length;
   const browseCollection = () => {
     setMobileMenu(false);
     if (productId !== null) {
@@ -583,8 +587,9 @@ export default function PublicCatalog({
                   </button>
                 </div>
               ) : filtered.length ? (
-                <div className="pub-products-grid pub-products-grid--catalog">
-                  {filtered.map(item => (
+                <>
+                <div id="pub-collection-product-grid" className="pub-products-grid pub-products-grid--catalog">
+                  {visibleProducts.map(item => (
                     <PublicCollectionSpotlight
                       key={item.id}
                       product={item}
@@ -593,6 +598,21 @@ export default function PublicCatalog({
                     />
                   ))}
                 </div>
+                <div className="pub-collection-more-divider">
+                  {hasMoreProducts ? (
+                    <button type="button" className="pub-collection-more-button" aria-controls="pub-collection-product-grid"
+                      onClick={() => setVisibleLimit(limit => limit + 6)}>
+                      See more <ChevronDown size={15} aria-hidden="true" />
+                    </button>
+                  ) : (
+                    <button type="button" className="pub-collection-more-button" aria-label="See more of the catalogue: Best Sellers"
+                      onClick={browseBestSellers}>
+                      See more <ChevronDown size={15} aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+                {hasMoreProducts && <span className="pub-sr-only" role="status">Showing {visibleProducts.length} of {filtered.length} products.</span>}
+                </>
               ) : published.length === 0 && !query && category === "all" ? (
                 <div className="pub-empty-state pub-empty-state--unpublished">
                   <div className="pub-empty-editorial">
