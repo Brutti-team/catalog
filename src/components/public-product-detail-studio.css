@@ -663,7 +663,7 @@
 /* Remove the dead back-link spacing and use one coherent sans-serif product
    typography system. The homepage/header and private preview are unchanged. */
 .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section {
-  padding-top: clamp(24px, 2.8vw, 41px);
+  padding-top: clamp(36px, 3.8vw, 56px);
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > h1 {
   font-family: "Manrope", "DM Sans", system-ui, sans-serif;
@@ -694,7 +694,7 @@
 }
 @media (max-width: 850px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section {
-    padding-top: 24px;
+    padding-top: 34px;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > h1 {
     font-size: clamp(33px, 5.3vw, 42px);
@@ -703,7 +703,7 @@
 }
 @media (max-width: 520px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section {
-    padding-top: 17px;
+    padding-top: 26px;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > h1 {
     font-size: clamp(30px, 7.6vw, 38px);
