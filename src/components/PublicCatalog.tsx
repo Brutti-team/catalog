@@ -462,11 +462,6 @@ export default function PublicCatalog({
                     Browse by category
                   </h2>
                 </div>
-                <p>
-                  Discover our published pieces by category.
-                  <br />
-                  Search, filter and explore the details.
-                </p>
               </div>
               <div className="pub-collection-tools">
                 <label className="pub-search">
