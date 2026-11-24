@@ -1,0 +1,25 @@
+/* Best Seller is independent of Featured and uses the existing catalog flag. */
+.catalog-best-gallery-wrap { position: relative; min-width: 0; }
+.catalog-best-gallery-wrap > .catalog-gallery-card { width: 100%; height: 100%; }
+.catalog-best-toggle { cursor: pointer; }
+.catalog-best-toggle[aria-pressed="true"], .catalog-best-inline { color: #a36e1e; }
+.admin-app[data-theme="dark"] .catalog-best-toggle[aria-pressed="true"],
+.admin-app[data-theme="dark"] .catalog-best-inline { color: #e6bc73; }
+.catalog-best-gallery-wrap > .catalog-best-gallery-toggle {
+  position: absolute; z-index: 5; top: 10px; right: 10px;
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 9px; border: 1px solid rgba(255,255,255,.5); border-radius: 9px;
+  background: rgba(255,255,255,.92); color: #34483d; font: inherit; font-size: 11px; font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0,0,0,.1); backdrop-filter: blur(12px);
+}
+.catalog-best-gallery-wrap > .catalog-best-gallery-toggle[aria-pressed="true"] {
+  background: #fff4d9; color: #855818; border-color: #e9cc90;
+}
+.catalog-best-toggle:disabled, .catalog-best-editor-switch:disabled { opacity: .55; cursor: wait; }
+.catalog-best-toggle:focus-visible, .catalog-best-editor-switch:focus-visible { outline: 2px solid #a36e1e; outline-offset: 3px; }
+.catalog-best-editor-switch { display: inline-flex; align-items: center; gap: 9px; justify-self: start; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; padding: 7px 0; }
+.catalog-best-switch-track { width: 40px; height: 23px; flex: 0 0 40px; border-radius: 20px; background: #939b95; padding: 3px; display: flex; align-items: center; }
+.catalog-best-switch-track i { width: 17px; height: 17px; border-radius: 50%; background: #fff; transition: transform .18s ease; }
+.catalog-best-editor-switch[aria-checked="true"] .catalog-best-switch-track { background: #285741; }
+.catalog-best-editor-switch[aria-checked="true"] .catalog-best-switch-track i { transform: translateX(17px); }
+.pub-featured-tag.catalog-best-public-tag { color: #80571d; background: #fff2d5; border-color: #e6c88e; }

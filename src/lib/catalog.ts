@@ -480,6 +480,16 @@ export async function saveProduct(product: Product, modelChange?: ProductModelCh
   return { ...result, ...cleanup };
 }
 
+/** Update only the editorial flag; preserve concurrent changes to product details and media. */
+export async function setProductBestSelling(id: string, selected: boolean): Promise<void> {
+  await requireAdmin();
+  const { data, error } = await supabase().from("products")
+    .update({ best_selling: selected })
+    .eq("id", id).select("id,best_selling").maybeSingle();
+  if (error) throw backendError(error.message, "update Best Seller");
+  if (!data || data.best_selling !== selected) throw new Error("Best Seller was not updated. Refresh and try again.");
+}
+
 export async function deleteProduct(id: string): Promise<CatalogMutationOutcome> {
   await requireAdmin();
   const db = supabase();

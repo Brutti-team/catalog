@@ -1,3 +1,4 @@
+import "./components/catalog-best-seller-controls.css";
 import SafeImage from "./components/SafeImage";
 import { photoCropStyle } from "./lib/photo-crop";
 import { formatProductPrice } from "./lib/price";
@@ -42,12 +43,14 @@ import {
   ChevronDown,
   UsersRound,
   History,
+  Star,
 } from "lucide-react";
 import type { Product, Category, CatalogData } from "./lib/types";
 import {
   loadCatalog,
   subscribeCatalog,
   saveProduct,
+  setProductBestSelling,
   type ProductModelChange,
   deleteProduct,
   saveCategory,
@@ -325,6 +328,11 @@ export default function App() {
       setBusy(false);
       setMenu(null);
     }
+  }
+  function toggleBestSeller(p: Product) {
+    const selected = p.bestSelling !== true;
+    void action(() => setProductBestSelling(p.id, selected),
+      selected ? "Added to Best Sellers" : "Removed from Best Sellers");
   }
   function requestCategoryDeletion(category: Category) {
     setCategoryToDelete(category);
@@ -872,7 +880,8 @@ export default function App() {
                 <div className="catalog-gallery">
                   {loading ? Array.from({ length: 6 }, (_, index) => <div className="skeleton" key={index} />)
                     : filtered.map(p => (
-                      <button className="catalog-gallery-card" type="button" key={p.id}
+                      <div className="catalog-best-gallery-wrap" key={p.id}>
+                      <button className="catalog-gallery-card" type="button"
                         data-product-sku={p.sku.trim().toUpperCase()}
                         onClick={() => {
                           const job = getBackgroundJobSnapshot();
@@ -903,6 +912,15 @@ export default function App() {
                           </div>
                         </div>
                       </button>
+                      <button type="button" className="catalog-best-toggle catalog-best-gallery-toggle"
+                        disabled={busy} aria-pressed={p.bestSelling === true}
+                        aria-label={`${p.bestSelling ? "Remove" : "Mark"} ${p.name} ${p.bestSelling ? "from" : "as"} Best Seller`}
+                        title={p.bestSelling ? "Remove from Best Sellers" : "Mark as Best Seller"}
+                        onClick={() => toggleBestSeller(p)}>
+                        <Star size={15} fill={p.bestSelling ? "currentColor" : "none"} aria-hidden="true" />
+                        <span>{p.bestSelling ? "Best Seller" : "Set Best Seller"}</span>
+                      </button>
+                      </div>
                     ))}
                 </div>
               ) : (
@@ -945,6 +963,7 @@ export default function App() {
                                     <strong>{p.name}</strong>
                                     <small>
                                       {p.sku}
+                                      {p.bestSelling && <span className="catalog-best-inline"> · Best Seller</span>}
                                       {p.featured && (
                                         <span
                                           className="featured-dot"
@@ -984,6 +1003,13 @@ export default function App() {
                               <td className="price-cell">{formatProductPrice(p)}</td>
                               <td>
                                 <div className="row-actions">
+                                  <button type="button" className="icon-button catalog-best-toggle"
+                                    disabled={busy} aria-pressed={p.bestSelling === true}
+                                    aria-label={`${p.bestSelling ? "Remove" : "Mark"} ${p.name} ${p.bestSelling ? "from" : "as"} Best Seller`}
+                                    title={p.bestSelling ? "Remove from Best Sellers" : "Mark as Best Seller"}
+                                    onClick={() => toggleBestSeller(p)}>
+                                    <Star size={16} fill={p.bestSelling ? "currentColor" : "none"} aria-hidden="true" />
+                                  </button>
                                   <button
                                     className="icon-button edit-row"
                                     aria-label={`Edit ${p.name}`}
@@ -1010,6 +1036,7 @@ export default function App() {
                                               ...structuredClone(p),
                                               id: crypto.randomUUID(),
                                               model: undefined,
+                                              bestSelling: false,
                                               name: `${p.name} (copy)`,
                                               sku: `${p.sku}-COPY`,
                                               status: "draft",

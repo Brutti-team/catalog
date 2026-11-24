@@ -649,8 +649,8 @@ export default function ProductEditor({
                   onChange={(e) => update("bestSelling", e.target.checked)}
                 />
                 <span>
-                  Best Selling
-                  <small>Display this product in the public Best-Selling Furniture gallery once Published. Separate from Featured.</small>
+                  Best Seller
+                  <small>Show in the public Best Sellers collection once published.</small>
                 </span>
               </label>
             </section>
@@ -1003,6 +1003,16 @@ export default function ProductEditor({
                     onChange={(next) => update("availability", next)}
                     disabled={busy}
                   />
+                </div>
+                <div className="catalog-reference-spec-row">
+                  <span className="catalog-reference-spec-key" id="catalog-best-seller-label">Best Seller <small>Show in the public collection once published</small></span>
+                  <button type="button" role="switch" aria-checked={draft.bestSelling === true}
+                    aria-labelledby="catalog-best-seller-label" disabled={busy}
+                    className="catalog-best-editor-switch"
+                    onClick={() => update("bestSelling", draft.bestSelling !== true)}>
+                    <span className="catalog-best-switch-track" aria-hidden="true"><i /></span>
+                    {draft.bestSelling ? "Selected" : "Not selected"}
+                  </button>
                 </div>
               </div>
               <div className="catalog-spec-base-rows">

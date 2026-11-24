@@ -11,6 +11,7 @@ import {
   Search,
   SlidersHorizontal,
   Sparkles,
+  Star,
   X,
 } from "lucide-react";
 import type { Category, Product, ProductImage, ProductSpecification } from "../lib/types";
@@ -144,6 +145,7 @@ export default function PublicCatalog({
   const productId = previewProduct ? previewProduct.id : routeProductId;
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
+  const [bestOnly, setBestOnly] = useState(false);
   // When an Admin deletes a category, avoid keeping a stale public filter.
   useEffect(() => {
     if (!loading && category !== "all" && !categories.some(item => item.id === category)) {
@@ -226,6 +228,7 @@ export default function PublicCatalog({
     const list = published.filter(
       (item) =>
         (category === "all" || item.categoryId === category) &&
+        (!bestOnly || item.bestSelling === true) &&
         (!text ||
           `${item.name} ${item.sku} ${item.description} ${item.materials}`
             .toLowerCase()
@@ -238,7 +241,7 @@ export default function PublicCatalog({
           ? (a.price ?? Infinity) - (b.price ?? Infinity)
           : Number(b.featured) - Number(a.featured) || (a.displayOrder ?? 0) - (b.displayOrder ?? 0),
     );
-  }, [published, query, category, sort]);
+  }, [published, query, category, sort, bestOnly]);
   const browseCollection = () => {
     setMobileMenu(false);
     if (productId !== null) {
@@ -287,6 +290,7 @@ export default function PublicCatalog({
   const resetFilters = () => {
     setQuery("");
     setCategory("all");
+    setBestOnly(false);
   };
   const related = product
     ? published
@@ -309,7 +313,9 @@ export default function PublicCatalog({
           alt={item.images[0]?.alt || item.name}
           image={item.images[0]}
         />
-        {item.featured && (
+        {item.bestSelling ? (
+          <span className="pub-featured-tag catalog-best-public-tag"><Star size={11} fill="currentColor" /> Best Seller</span>
+        ) : item.featured && (
           <span className="pub-featured-tag">
             <Sparkles size={11} /> Featured
           </span>
@@ -536,6 +542,11 @@ export default function PublicCatalog({
                   >
                     All projects <span>{published.length}</span>
                   </button>
+                  <button type="button" aria-pressed={bestOnly}
+                    className={bestOnly ? "pub-filter-active" : ""}
+                    onClick={() => setBestOnly(value => !value)}>
+                    Best Sellers <span>{published.filter(item => item.bestSelling === true).length}</span>
+                  </button>
                   {categories.map((item) => (
                     <button
                       type="button"
@@ -555,7 +566,7 @@ export default function PublicCatalog({
                 {loading
                   ? "Loading the collection…"
                   : `${filtered.length} ${filtered.length === 1 ? "project" : "projects"}${query ? ` matching “${query}”` : " in the collection"}`}
-                {(query || category !== "all") && (
+                {(query || category !== "all" || bestOnly) && (
                   <button onClick={resetFilters}>
                     Clear filters <X size={12} />
                   </button>
@@ -689,7 +700,9 @@ export default function PublicCatalog({
                         image={product.images[imageIndex] || product.images[0]}
                         eager
                       />
-                      {product.featured && (
+                      {product.bestSelling ? (
+                        <span className="pub-featured-tag catalog-best-public-tag"><Star size={12} fill="currentColor" /> Best Seller</span>
+                      ) : product.featured && (
                         <span className="pub-featured-tag">
                           <Sparkles size={12} /> Featured piece
                         </span>
