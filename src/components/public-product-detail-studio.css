@@ -891,3 +891,41 @@
     grid-template-columns: minmax(0, 240px);
   }
 }
+
+
+/* Show the complete original photograph in the customer detail gallery.
+   Cover crops and zoom are useful for collection thumbnails, but must not
+   hide furniture edges on the full product page. Explicitly constrain the
+   image to the frame rather than letting an intrinsic grid track overflow. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-main-image {
+  --pub-full-photo-inset: clamp(8px, 1vw, 14px);
+  display: block;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  min-width: 0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-main-image > img {
+  position: absolute;
+  inset: var(--pub-full-photo-inset);
+  box-sizing: border-box;
+  display: block;
+  width: calc(100% - 2 * var(--pub-full-photo-inset));
+  height: calc(100% - 2 * var(--pub-full-photo-inset));
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+  mix-blend-mode: normal;
+}
+@media (max-width: 850px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-main-image {
+    aspect-ratio: 1 / 1;
+    height: auto;
+    max-height: none;
+  }
+}
