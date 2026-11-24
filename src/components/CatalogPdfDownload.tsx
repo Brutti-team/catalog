@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { BookOpen, Check, Download, FileText, Heart, Layers3, Star, X } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import { selectPdfProducts, type PdfSelection } from "../lib/catalog-pdf-plan";
+import PdfCategoryDropdown from "./PdfCategoryDropdown";
 import "./catalog-pdf-download.css";
 
 function favouriteIds():string[] {
@@ -49,9 +50,8 @@ export default function CatalogPdfDownload({products,categories,disabled}:{produ
           {id:"favourites",title:"My Favourites",desc:"Your saved products in one PDF",icon:Heart}] as const).map(option=>
             <label key={option.id} className="pub-pdf-option"><input type="radio" name="catalog-pdf-mode" value={option.id}
               checked={mode===option.id} onChange={()=>{setMode(option.id);setMessage("");}}/><span className="pub-pdf-option-icon"><option.icon size={19} strokeWidth={1.7} aria-hidden="true"/></span><span className="pub-pdf-option-copy"><strong>{option.title}</strong><small>{option.desc}</small></span><span className="pub-pdf-option-check" aria-hidden="true"><Check size={12} strokeWidth={2.7}/></span></label>)}
-        {mode==="category"&&<select aria-label="Choose a category" value={category} onChange={e=>setCategory(e.target.value)}>
-          <option value="">Select category</option>{categories.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}
-        </select>}
+        {mode==="category"&&<PdfCategoryDropdown categories={categories} products={products} value={category}
+          disabled={progress!==null} onChange={id=>{setCategory(id);setMessage("");setFailed(false);}} />}
       </fieldset>
       <div className="pub-pdf-summary"><span className="pub-pdf-summary-icon"><FileText size={17} strokeWidth={1.7} aria-hidden="true"/></span><div><strong>{count} {count===1?"product":"products"} selected</strong><small>PDF · A4 portrait · Original Brutti covers</small></div></div>
       {progress!==null&&<div role="status" className="pub-pdf-progress"><progress max={100} value={progress}/><span>Preparing PDF · {progress}%</span></div>}

@@ -44,3 +44,25 @@
 .pub-pdf-dialog button:focus-visible,.pub-pdf-trigger:focus-visible {outline:2px solid #79a38c;outline-offset:3px;}
 @media(max-width:640px){.pub-app .pub-pdf-trigger {font-size:12px;padding:8px 10px;white-space:normal;}.pub-app dialog.pub-pdf-dialog{padding:19px;border-radius:16px;}.pub-pdf-heading-icon{flex-basis:38px;height:38px;}.pub-pdf-heading{gap:9px;}.pub-app .pub-pdf-dialog .pub-pdf-option{min-height:60px;padding:9px;gap:9px;}}
 @media(prefers-reduced-motion:reduce){.pub-app .pub-pdf-dialog[open]{animation:none;}.pub-pdf-option,.pub-pdf-download,.pub-pdf-trigger{transition:none!important;}}
+
+/* In-flow custom listbox stays inside the modal on small screens, instead of a native OS popup. */
+.pub-app .pub-pdf-dialog .pub-pdf-category{display:grid;gap:6px;min-width:0;margin-top:3px;}
+.pub-app .pub-pdf-dialog .pub-pdf-category-label{font:650 11px/1.4 "Manrope","DM Sans",sans-serif;color:#527263;padding-left:2px;}
+.pub-app .pub-pdf-dialog button.pub-pdf-category-trigger{width:100%;min-height:44px;display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border:1px solid #d6e0d7;border-radius:10px;color:#315442;font:600 13px/1.4 "Manrope","DM Sans",system-ui,sans-serif;cursor:pointer;text-align:left;box-sizing:border-box;transition:background .16s,border-color .16s,box-shadow .16s;}
+.pub-app .pub-pdf-dialog button.pub-pdf-category-trigger>span{flex:1;min-width:0;}
+.pub-pdf-category-trigger .is-placeholder{color:#6d7f73;}
+.pub-app .pub-pdf-dialog button.pub-pdf-category-trigger:hover,.pub-app .pub-pdf-dialog button.pub-pdf-category-trigger.is-open{background:#f8fbf8;border-color:#89aa94;}
+.pub-app .pub-pdf-dialog button.pub-pdf-category-trigger.is-open{box-shadow:0 0 0 3px #89aa9420;}
+.pub-pdf-category-chevron{flex-shrink:0;transition:transform .18s;}
+.pub-pdf-category-trigger.is-open .pub-pdf-category-chevron{transform:rotate(180deg);}
+.pub-app .pub-pdf-dialog .pub-pdf-category-menu{display:grid;gap:2px;padding:5px;background:#fff;border:1px solid #dce5dc;border-radius:11px;box-shadow:0 8px 24px #163c2812;max-height:218px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#b7cbbd transparent;animation:pdf-category-open .16s ease-out;}
+@keyframes pdf-category-open{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.pub-app .pub-pdf-dialog button.pub-pdf-category-item{width:100%;display:flex;align-items:center;gap:8px;min-height:38px;padding:8px 10px;margin:0;border:0;border-radius:7px;background:transparent;color:#30483a;text-align:left;font:500 12px/1.4 "DM Sans",system-ui,sans-serif;cursor:pointer;}
+.pub-app .pub-pdf-dialog button.pub-pdf-category-item>span:first-child{flex:1;min-width:0;}
+.pub-app .pub-pdf-dialog button.pub-pdf-category-item:hover,.pub-app .pub-pdf-dialog button.pub-pdf-category-item:focus-visible{background:#f0f5f0;outline:0;}
+.pub-app .pub-pdf-dialog button.pub-pdf-category-item.is-selected{background:#e5f0e7;color:#20563e;font-weight:700;}
+.pub-pdf-category-item small{color:#748a7a;font:600 11px/1.2 "DM Sans",sans-serif;font-variant-numeric:tabular-nums;}
+.pub-pdf-category-check{display:grid;place-items:center;width:16px;flex:0 0 16px;color:#215740;}
+.pub-pdf-category-trigger:disabled{opacity:.55;cursor:not-allowed;}
+@media(max-width:640px){.pub-app .pub-pdf-dialog .pub-pdf-category-menu{max-height:180px;}.pub-app .pub-pdf-dialog button.pub-pdf-category-item{min-height:42px;}}
+@media(prefers-reduced-motion:reduce){.pub-app .pub-pdf-dialog .pub-pdf-category-menu{animation:none;}.pub-pdf-category-chevron{transition:none;}}
