@@ -216,3 +216,54 @@ dialog.customer-photo-zoom[open] > header.customer-photo-zoom-header button:hove
 dialog.customer-photo-zoom[open] > header.customer-photo-zoom-header button:focus-visible {
   outline-color: #fff;
 }
+
+
+/* Matching Brutti green viewer chrome and restrained frosted-glass controls.
+   Keep the photograph itself sharp and preserve its zoom geometry. */
+dialog.customer-photo-zoom[open] > footer.customer-photo-zoom-footer {
+  background: #244d38 !important;
+  color: #fff !important;
+  border-top: 1px solid rgba(255,255,255,.15) !important;
+}
+dialog.customer-photo-zoom[open] > footer.customer-photo-zoom-footer :is(.customer-photo-zoom-pagination,.customer-photo-zoom-hint) {
+  color: #e0ebe3 !important;
+}
+dialog.customer-photo-zoom[open] > footer.customer-photo-zoom-footer .customer-photo-zoom-tools {
+  background: rgba(255,255,255,.11) !important;
+  border-color: rgba(255,255,255,.22) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 4px 16px rgba(10,28,19,.16), inset 0 1px 0 rgba(255,255,255,.09);
+}
+dialog.customer-photo-zoom[open] > footer.customer-photo-zoom-footer button {
+  background: rgba(255,255,255,.12) !important;
+  border-color: rgba(255,255,255,.18) !important;
+  color: #fff !important;
+}
+dialog.customer-photo-zoom[open] > footer.customer-photo-zoom-footer button:hover:not(:disabled) {
+  background: rgba(255,255,255,.25) !important;
+  border-color: rgba(255,255,255,.38) !important;
+  color: #fff !important;
+}
+dialog.customer-photo-zoom[open] > footer.customer-photo-zoom-footer button:disabled {
+  opacity: .42;
+}
+dialog.customer-photo-zoom[open] > footer.customer-photo-zoom-footer button:focus-visible {
+  outline-color: #fff;
+}
+dialog.customer-photo-zoom[open] > footer.customer-photo-zoom-footer .customer-photo-zoom-tools span {
+  color: #fff !important;
+}
+dialog.customer-photo-zoom[open] > header.customer-photo-zoom-header {
+  background: #244d38 !important;
+  background-image: linear-gradient(110deg,rgba(255,255,255,.035),transparent 65%) !important;
+  border-bottom-color: rgba(255,255,255,.14);
+}
+dialog.customer-photo-zoom[open] > .customer-photo-zoom-stage {
+  background: radial-gradient(ellipse at 50% 35%,#426b55 0%,#2d5641 45%,#1b3c2d 100%) !important;
+}
+dialog.customer-photo-zoom[open] > .customer-photo-zoom-stage:not(.is-zoomed):not(.is-dragging) img {
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.23), 0 14px 42px rgba(8,27,19,.25);
+}
+dialog.customer-photo-zoom[open] > .customer-photo-zoom-stage p { color: #fff; }
