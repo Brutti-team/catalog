@@ -89,7 +89,7 @@ function SpecificationRowFields({
     <div className={"catalog-reference-custom-row" + (measurement ? " catalog-spec-measurement-row" : "") + (quantityRow ? " catalog-spec-quantity-row" : "")}>
       {measurement ? (
         <div className="catalog-spec-measurement-name">
-          <MeasurementTypePicker
+          {!editingCustomMeasurement && <div className="catalog-spec-measurement-select-line"><MeasurementTypePicker
             label={label + " measurement type"}
             value={isCustomMeasurement ? "__custom__" : recognisedMeasurement ?? ""}
             customName={isCustomMeasurement ? row.name : undefined}
@@ -110,14 +110,14 @@ function SpecificationRowFields({
               className="catalog-spec-custom-name-edit"
               aria-label={label + " edit custom measurement name"}
               onClick={() => setEditingCustomMeasurement(true)}
-            ><Pencil size={12} aria-hidden="true" /> Edit custom name</button>
-          )}
+            ><Pencil size={15} aria-hidden="true" /></button>
+          )}</div>}
           {editingCustomMeasurement && (
-            <input
+            <div className="catalog-spec-measurement-edit-line"><input
               type="text"
               autoFocus
               aria-label={label + " custom measurement name"}
-              placeholder="e.g. Pipe diameter"
+              placeholder="Custom measurement name"
               maxLength={80}
               value={row.name}
               onChange={event => onChange(row.id, "name", event.target.value)}
@@ -128,7 +128,7 @@ function SpecificationRowFields({
                   setEditingCustomMeasurement(false);
                 }
               }}
-            />
+            /><button type="button" className="catalog-spec-custom-name-edit" aria-label={label + " finish editing measurement name"} title="Finish editing" onClick={() => setEditingCustomMeasurement(false)}><ChevronDown size={15} aria-hidden="true" /></button></div>
           )}
         </div>
       ) : (
