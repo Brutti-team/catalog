@@ -344,10 +344,10 @@
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection button.pub-collection-more-button:hover svg {transform:translateY(2px);}
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection button.pub-collection-more-button:focus-visible {outline:2px solid #47765b;outline-offset:3px;}
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection:has(+ #pub-best-selling) {padding-bottom:12px!important;}
-.pub-app.pub-refined:not(.pub-private-preview) #pub-collection + #pub-best-selling {padding-top:16px!important;}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection + #pub-best-selling {padding-top:36px!important;}
 @media(max-width:650px){
  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-more-divider {margin-top:16px;gap:10px;}
- .pub-app.pub-refined:not(.pub-private-preview) #pub-collection + #pub-best-selling {padding-top:12px!important;}
+ .pub-app.pub-refined:not(.pub-private-preview) #pub-collection + #pub-best-selling {padding-top:24px!important;}
 }
 @media(prefers-reduced-motion:reduce){
  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection button.pub-collection-more-button,
