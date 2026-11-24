@@ -1696,17 +1696,16 @@
   }
 }
 
-/* Original Brutti signature in the product promise badge. */
+/* Original signature without a decorative badge. */
 .pub-app.pub-refined .pub-detail-promise .pub-promise-symbol {
-  display:grid;place-items:center;flex:0 0 56px;width:56px;height:56px;
-  padding:0;border-radius:50%;background:#214f38;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+  display:grid;place-items:center;flex:0 0 66px;width:66px;height:44px;
+  padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;
 }
 .pub-app.pub-refined .pub-detail-promise .pub-promise-logo {
-  display:block;width:48px;height:auto;max-width:none;max-height:none;
-  aspect-ratio:250 / 164;object-fit:contain;filter:brightness(0) invert(1);
+  display:block;width:60px;height:auto;max-width:100%;max-height:none;
+  aspect-ratio:250 / 164;object-fit:contain;filter:none;
 }
 @media(max-width:480px){
-  .pub-app.pub-refined .pub-detail-promise .pub-promise-symbol {flex-basis:52px;width:52px;height:52px;}
-  .pub-app.pub-refined .pub-detail-promise .pub-promise-logo {width:44px;}
+  .pub-app.pub-refined .pub-detail-promise .pub-promise-symbol {flex-basis:58px;width:58px;height:40px;}
+  .pub-app.pub-refined .pub-detail-promise .pub-promise-logo {width:54px;}
 }
