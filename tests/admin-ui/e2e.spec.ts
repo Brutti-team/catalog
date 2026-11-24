@@ -847,7 +847,7 @@ test('dark admin navigation leaves the public catalog light and preserves the sa
   await expectTheme(page, 'dark');
 });
 
-test('product editor prioritizes essentials and photos, and explains publishing readiness on mobile', async ({ page }) => {
+test('create product uses the shared editor layout and explicit publishing actions on mobile', async ({ page }) => {
   await backend(page, { savedTheme: 'light' });
   await openAdmin(page);
   await page.getByRole('navigation', { name: 'Admin navigation' }).getByRole('button', { name: /Products/ }).click();
@@ -858,7 +858,11 @@ test('product editor prioritizes essentials and photos, and explains publishing 
   await expect(dialog.locator('#product-editor-photos')).toBeVisible();
   await expect(dialog.locator('#product-editor-specs')).toBeVisible();
   await expect(dialog.getByRole('button', { name: 'Add product photos' })).toBeVisible();
-  await expect(dialog.getByRole('progressbar', { name: 'Publishing checklist completion' })).toHaveAttribute('aria-valuenow', '0');
+  await expect(dialog.locator('.catalog-editor-actionbar')).toBeVisible();
+  await expect(dialog.locator('.editor-side')).toHaveCount(0);
+  await expect(dialog.getByRole('button', { name: 'Publish product', exact: true })).toBeVisible();
+  await expect(dialog.getByRole('button', { name: 'View live', exact: true })).toBeVisible();
+  await expect(dialog.getByLabel('Current product status: draft')).toBeVisible();
   await expect(dialog.getByRole('button', { name: 'Save product' })).toBeVisible();
   await expect(dialog.getByText('Display order', { exact: true })).toHaveCount(0);
   const inOrder = await dialog.evaluate(element => {
@@ -867,13 +871,13 @@ test('product editor prioritizes essentials and photos, and explains publishing 
     return !!photos && !!specs && !!(photos.compareDocumentPosition(specs) & Node.DOCUMENT_POSITION_FOLLOWING);
   });
   expect(inOrder).toBe(true);
-  await dialog.getByRole('button', { name: /Publishing/ }).click();
-  await expect(dialog.locator('#product-editor-publish')).toBeVisible();
+  await expect(dialog.getByRole('switch', { name: /Best Seller/ })).toBeVisible();
   await page.setViewportSize({ width: 390, height: 780 });
   const columns = await dialog.locator('.editor-columns').evaluate(element => getComputedStyle(element).gridTemplateColumns);
   expect(columns.trim().split(/\s+/)).toHaveLength(1);
   await expect(dialog.getByRole('button', { name: 'Save product' })).toBeVisible();
-  await dialog.getByRole('button', { name: 'Close dialog', exact: true }).click();
+  page.once('dialog', prompt => prompt.accept());
+  await dialog.getByRole('button', { name: 'Close product editor', exact: true }).click();
   await expect(dialog).toHaveCount(0);
 });
 

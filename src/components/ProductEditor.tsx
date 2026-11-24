@@ -14,7 +14,6 @@ import {
   LoaderCircle,
   LockKeyhole,
   CheckCircle2,
-  Circle,
   Upload,
   Crop,
   MoreHorizontal,
@@ -35,7 +34,6 @@ import AvailabilityPicker from "./AvailabilityPicker";
 import EditorCategoryPicker from "./EditorCategoryPicker";
 import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
-import ProductPrice from "./ProductPrice";
 import { nextProductId } from "../lib/product-ids";
 import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
 import OverallDimensionFields from "./OverallDimensionFields";
@@ -306,12 +304,12 @@ export default function ProductEditor({
   const [draft, setDraft] = useState<Product>(() => ({
     ...structuredClone(product),
     sku: isNewProduct ? nextProductId(product.categoryId, categories, existingProducts) : product.sku,
+    status: isNewProduct ? "draft" : product.status,
   }));
   const [error, setError] = useState("");
   const [confirmStatus, setConfirmStatus] = useState<"published" | "draft" | null>(null);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState(false);
   const [showLivePreview, setShowLivePreview] = useState(false);
   useEffect(() => {
     if (!showLivePreview) return;
@@ -349,7 +347,6 @@ export default function ProductEditor({
     setModelPending(pending);
     setModelInvalid(invalid);
   }, []);
-  const isEditing = Boolean(product.name);
   const fileRef = useRef<HTMLInputElement>(null);
   const uploadLock = useRef(false);
   const uploadedImages = useRef(new Map<string, ProductImage>());
@@ -461,8 +458,8 @@ export default function ProductEditor({
     try {
       validateProduct(candidate);
       if (!confirmed && (
-        (status === "published" && product.status !== "published") ||
-        (status === "draft" && product.status === "published")
+        (status === "published" && (isNewProduct || product.status !== "published")) ||
+        (status === "draft" && !isNewProduct && product.status === "published")
       )) {
         setConfirmStatus(status === "published" ? "published" : "draft");
         return;
@@ -536,159 +533,15 @@ export default function ProductEditor({
     closing.current = false;
     if (mounted.current) setBusy(false);
   }
-  const publishChecks = [
-    { label: "Name, Product ID & category", done: draft.name.trim().length >= 2 && !!draft.sku.trim() && !!draft.categoryId },
-    { label: "Cover photo", done: draft.images.length > 0 },
-  ];
-  const readyCount = publishChecks.filter((item) => item.done).length;
-  function jumpTo(id: string) {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    document.getElementById(id)?.scrollIntoView({ behavior: reduceMotion ? "instant" : "smooth", block: "start" });
-  }
-  const UploadIcon = isEditing ? Upload : ImagePlus;
   const cover = draft.images[0];
-  const previewDescription = draft.description || (isEditing ? "" : "Your thoughtful product story will appear here.");
-  const previewCard = (
-    <article className="editor-preview">
-      {isEditing && <div className="catalog-reference-preview-switch" aria-label="Customer preview format">
-        <span className="is-active"><ImagePlus size={14} aria-hidden="true" /> Photo</span>
-        <span className="is-disabled" aria-label="3D preview currently unavailable"><Box size={14} aria-hidden="true" /> 3D</span>
-      </div>}
-      {cover ? (
-        <SafeImage key={cover.url} src={cover.url} alt={cover.alt || draft.name} />
-      ) : (
-        <div className="preview-placeholder">
-          <ImagePlus aria-hidden="true" />
-          {isEditing && <span>No cover photo</span>}
-        </div>
-      )}
-      {isEditing && <span className="catalog-editor-media-caption">{product.model ? "ORIGINAL PHOTO · 3D MODEL AVAILABLE" : "ORIGINAL PHOTO · 3D NOT YET AVAILABLE"}</span>}
-      <span className="eyebrow">
-        {categories.find((category) => category.id === draft.categoryId)?.name || "Your category"}
-      </span>
-      <h3>{draft.name || "Your product name"}</h3>
-      <p>
-        <ProductPrice product={draft} surface="editor" />
-      </p>
-      {previewDescription && <p className="preview-description tiny muted">{previewDescription}</p>}
-    </article>
-  );
-  const publishingControls = (
-    <>
-            <div className="product-editor-aside-heading" id={!isEditing ? "product-editor-publish" : undefined}>
-              <span className="product-editor-step">04</span>
-              <div>
-                <h3>Publishing</h3>
-                <p>Control how this product appears in the catalogue.</p>
-              </div>
-            </div>
-            <section className="form-section product-editor-publish-fields">
-              <h3 className="product-editor-minor-heading">Visibility & availability</h3>
-              <label>
-                Status
-                <select
-                  value={draft.status}
-                  onChange={(e) =>
-                    update("status", e.target.value as Product["status"])
-                  }
-                >
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                  <option value="archived">Archived</option>
-                </select>
-              </label>
-              <p className="tiny muted">
-                Only published products appear in the public catalog.
-              </p>
-              <label>
-                Availability
-                <select
-                  value={draft.availability}
-                  onChange={(e) =>
-                    update(
-                      "availability",
-                      e.target.value as Product["availability"],
-                    )
-                  }
-                >
-                  <option value="available">Available</option>
-                  <option value="made-to-order">Made to order</option>
-                  <option value="unavailable">Unavailable</option>
-                </select>
-              </label>
-              {orderingEnabled && (
-                <label>
-                  Display order <span className="product-editor-publish-hint">Lower numbers appear first</span>
-                  <input
-                    aria-label="Display order"
-                    type="number"
-                    min={0}
-                    max={1000000}
-                    step={1}
-                    value={draft.displayOrder ?? 0}
-                    onChange={(e) => update("displayOrder", Number(e.target.value))}
-                  />
-                </label>
-              )}
-              <label className="checkbox-field">
-                <input
-                  type="checkbox"
-                  checked={draft.featured}
-                  onChange={(e) => update("featured", e.target.checked)}
-                />
-                <span>
-                  Feature this product
-                  <small>Give it a place in the spotlight.</small>
-                </span>
-              </label>
-              <label className="checkbox-field" title="Only published products selected here appear in Best-Selling Furniture.">
-                <input
-                  type="checkbox"
-                  checked={draft.bestSelling === true}
-                  onChange={(e) => update("bestSelling", e.target.checked)}
-                />
-                <span>
-                  Best Seller
-                  <small>Show in the public Best Sellers collection once published.</small>
-                </span>
-              </label>
-            </section>
-            <section className="product-editor-readiness" aria-label="Publishing checklist">
-              <div className="product-editor-readiness-top">
-                <h3>Publishing checklist</h3>
-                <span>{readyCount} of {publishChecks.length}</span>
-              </div>
-              <div className="product-editor-readiness-track" role="progressbar"
-                aria-label="Publishing checklist completion" aria-valuenow={readyCount}
-                aria-valuemin={0} aria-valuemax={publishChecks.length}>
-                <span style={{ width: `${readyCount / publishChecks.length * 100}%` }} />
-              </div>
-              <ul>
-                {publishChecks.map((item) => (
-                  <li className={item.done ? "is-complete" : ""} key={item.label}>
-                    {item.done ? <CheckCircle2 size={15} aria-hidden="true" /> : <Circle size={15} aria-hidden="true" />}
-                    {item.label}
-                  </li>
-                ))}
-              </ul>
-              <p>Drafts only need a name, Product ID and category.</p>
-            </section>
-            <section className="editor-note">
-              <span className="eyebrow">GOOD TO KNOW</span>
-              <h3>Drafts stay private</h3>
-              <p>Save now and finish the listing later. Only published products appear in the public catalogue.</p>
-            </section>
-    </>
-  );
   return (
     <Modal
-      title={isEditing ? "Edit product" : "Create product"}
+      title={isNewProduct ? "Create product" : "Edit product"}
       wide
-      className={isEditing ? "product-editor-dialog product-editor-dialog--editing" : "product-editor-dialog"}
+      className="product-editor-dialog product-editor-dialog--editing"
       onClose={() => void requestClose()}
     >
       <form onSubmit={submit} className="editor-form product-editor-v2">
-        {isEditing && (
           <header className="catalog-editor-actionbar" aria-label="Product editor actions">
             <div className="catalog-editor-actionbar-identity">
               <button
@@ -702,7 +555,7 @@ export default function ProductEditor({
               </button>
               <div className="catalog-editor-header-title">
                 <span className="catalog-editor-header-eyebrow">BRUTTI CATALOG / PRODUCT EDITOR</span>
-                <strong title={draft.name}>{draft.name || "Untitled product"}</strong>
+                <strong title={draft.name}>{draft.name || (isNewProduct ? "Create product" : "Untitled product")}</strong>
               </div>
             </div>
             <div className="catalog-editor-header-actions">
@@ -725,38 +578,6 @@ export default function ProductEditor({
               </button>
             </div>
           </header>
-        )}
-        <div className="product-editor-intro">
-          <div>
-            <span className="product-editor-kicker">PRODUCT WORKSPACE</span>
-            <p>
-              {isEditing
-                ? "Update the product details and check the preview before saving."
-                : "Complete the essentials, then save a draft or prepare the product for publishing."}
-            </p>
-          </div>
-          <span className={`product-editor-state product-editor-state--${draft.status}`}>
-            {draft.status === "published" ? "Published" : draft.status === "archived" ? "Archived" : "Draft"}
-          </span>
-        </div>
-        <nav className="product-editor-jump" aria-label="Jump to form section">
-          <button type="button" onClick={() => jumpTo("product-editor-basics")}>
-            <span className="product-editor-jump-number" aria-hidden="true">01</span>
-            <span>Essentials</span>
-          </button>
-          <button type="button" onClick={() => jumpTo("product-editor-photos")}>
-            <span className="product-editor-jump-number" aria-hidden="true">02</span>
-            <span>Photos</span>
-          </button>
-          <button type="button" onClick={() => jumpTo("product-editor-specs")}>
-            <span className="product-editor-jump-number" aria-hidden="true">03</span>
-            <span>Specifications</span>
-          </button>
-          <button type="button" onClick={() => jumpTo("product-editor-publish")}>
-            <span className="product-editor-jump-number" aria-hidden="true">04</span>
-            <span>Publishing</span>
-          </button>
-        </nav>
         <div className="editor-columns">
           <div className="editor-primary">
             <section className="form-section product-editor-section brutti-editor-section-card" id="product-editor-basics">
@@ -921,14 +742,12 @@ export default function ProductEditor({
               <div role="tabpanel" id="brutti-media-3d-panel" aria-labelledby="brutti-media-3d-tab"
                 className="brutti-media-3d-panel" hidden={mediaTab!=="3d"}>
                 <ProductModelEditor productName={draft.name||"this product"} productId={product.id}
-                  saved={isEditing} status={draft.status} model={product.model}
+                  saved={!isNewProduct} status={draft.status} model={product.model}
                   photos={draft.images} savedPhotoIds={product.images.map(image=>image.id)}
                   modelEnabled={modelEditingEnabled} poster={cover?.url}
                   disabled={busy} onChange={setModelChange} onPending={setModelLoading}/>
               </div>
             </section>
-            {isEditing ? (
-
             <section className="form-section product-editor-section catalog-reference-specifications brutti-editor-section-card" id="product-editor-specs">
               <div className="product-editor-section-heading">
                 <span className="product-editor-step">03</span>
@@ -1009,6 +828,24 @@ export default function ProductEditor({
                     {draft.bestSelling ? "Selected" : "Not selected"}
                   </button>
                 </div>
+                {isNewProduct && <>
+                  <div className="catalog-reference-spec-row">
+                    <span className="catalog-reference-spec-key" id="catalog-featured-create-label">Feature this product <small>Show in the spotlight once published</small></span>
+                    <button type="button" role="switch" aria-checked={draft.featured}
+                      aria-labelledby="catalog-featured-create-label" disabled={busy}
+                      className="catalog-best-editor-switch"
+                      onClick={() => update("featured", !draft.featured)}>
+                      <span className="catalog-best-switch-track" aria-hidden="true"><i /></span>
+                      {draft.featured ? "Selected" : "Not selected"}
+                    </button>
+                  </div>
+                  {orderingEnabled && <div className="catalog-reference-spec-row">
+                    <span className="catalog-reference-spec-key">Display order <small>Lower numbers appear first</small></span>
+                    <input aria-label="Display order" type="number" min={0} max={1000000} step={1}
+                      value={draft.displayOrder ?? 0} disabled={busy}
+                      onChange={e => update("displayOrder", Number(e.target.value))} />
+                  </div>}
+                </>}
               </div>
               <div className="catalog-spec-base-rows">
               {primarySpecificationRows.map((row, index) => (
@@ -1086,89 +923,11 @@ export default function ProductEditor({
                 <span>New section</span>
               </button>
             </section>
-            ) : (
-            <section className="form-section product-editor-section brutti-editor-section-card" id="product-editor-specs">
-              <div className="product-editor-section-heading">
-                <span className="product-editor-step">03</span>
-                <div>
-                  <h3>Specifications</h3>
-                  <p>Materials, measurements and pricing.</p>
-                </div>
-              </div>
-              <div className="catalog-materials-new-field">
-                <span>Materials <span className="product-editor-publish-hint">Optional</span></span>
-                <MaterialsEditor
-                  value={draft.materials}
-                  onChange={value => update("materials", value)}
-                  disabled={busy}
-                />
-              </div>
-              <div className="section-label">
-                Dimensions <span className="muted">Optional</span>
-              </div>
-              <OverallDimensionFields
-                product={draft}
-                disabled={busy || uploading}
-                onDimensionChange={(key, totalCm, dimensionUnits) => setDraft(current => ({ ...current, [key]: totalCm, dimensionUnits }))}
-              />
-              <div className="catalog-new-pricing-fields" role="group" aria-label="Product pricing">
-                <label className="catalog-pricing-field">
-                  <span>{draft.priceBasis === "starting-from" ? "Starting price" : "Current price"} <em>RM</em></span>
-                  <div className="price-input">
-                    <span>RM</span>
-                    <input
-                      aria-label="Current price in MYR"
-                      type="number"
-                      min={0}
-                      max={9999999999.99}
-                      step="0.01"
-                      value={draft.price ?? ""}
-                      placeholder="Price on enquiry"
-                      onChange={(e) => update("price", e.target.value === "" ? null : Number(e.target.value))}
-                    />
-                  </div>
-                </label>
-                <label className="catalog-pricing-field">
-                  <span>Original price <em>Optional · RM</em></span>
-                  <div className="price-input">
-                    <span>RM</span>
-                    <input
-                      aria-label="Original price before discount in MYR"
-                      type="number"
-                      min={0}
-                      max={9999999999.99}
-                      step="0.01"
-                      value={draft.originalPrice ?? ""}
-                      placeholder="No discount"
-                      onChange={(e) => update("originalPrice", e.target.value === "" ? null : Number(e.target.value))}
-                    />
-                  </div>
-                </label>
-              </div>
-              <p className="catalog-pricing-hint">Add an original price higher than the current price to show a discount in the catalog.</p>
-            </section>
-            )}
-
-
 
           </div>
-          {!isEditing && (
-            <aside className="editor-side product-editor-aside">
-              {publishingControls}
-              <button type="button" className="button secondary full" aria-expanded={preview} onClick={() => setPreview(open => !open)}>
-                <Eye size={16} /> {preview ? "Hide preview" : "Preview product"}
-              </button>
-              {preview && previewCard}
-            </aside>
-          )}
         </div>
-        {!isEditing && error && (
-          <div className="notice error" role="alert">
-            {error}
-          </div>
-        )}
         <footer className="editor-footer">
-          {isEditing && error && (
+          {error && (
             <div className="catalog-editor-save-error" role="alert">
               <AlertCircle size={18} aria-hidden="true" />
               <span>{error}</span>
@@ -1183,7 +942,7 @@ export default function ProductEditor({
           </span>
           <div className="button-row">
             <button
-              className={isEditing && draft.status !== "published"
+              className={draft.status !== "published"
                 ? "button secondary catalog-editor-footer-save-draft" : "button primary"}
               disabled={busy}
               type="submit"
@@ -1195,7 +954,7 @@ export default function ProductEditor({
               )}{" "}
               {busy ? "Saving…" : "Save product"}
             </button>
-            {isEditing && draft.status !== "published" && (
+            {draft.status !== "published" && (
               <button
                 type="button"
                 className="button primary catalog-editor-footer-publish"
@@ -1206,7 +965,7 @@ export default function ProductEditor({
                 <Upload size={16} aria-hidden="true" /> Publish product
               </button>
             )}
-            {isEditing && draft.status === "published" && (
+            {!isNewProduct && draft.status === "published" && (
               <button
                 type="button"
                 className="button secondary catalog-editor-footer-unpublish"
@@ -1217,7 +976,6 @@ export default function ProductEditor({
                 <Eye size={16} aria-hidden="true" /> Move to Draft
               </button>
             )}
-            {isEditing && (
               <button
                 type="button"
                 className="button secondary catalog-editor-footer-view-live"
@@ -1227,7 +985,6 @@ export default function ProductEditor({
               >
                 <Eye size={16} aria-hidden="true" /> View live
               </button>
-            )}
           </div>
         </footer>
       </form>
