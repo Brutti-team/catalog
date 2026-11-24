@@ -1907,3 +1907,44 @@
   color: #607164;
   overflow-wrap: anywhere;
 }
+
+/* Compact colour-name tooltips on hover or keyboard/touch focus. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-catalog-tile .pub-catalog-tile__swatch {
+  position: relative;
+  cursor: help;
+  outline: none;
+  transition: box-shadow .15s ease;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-catalog-tile .pub-catalog-tile__swatch::after {
+  content: attr(data-colour-name);
+  position: absolute;
+  z-index: 10;
+  bottom: calc(100% + 7px);
+  left: 0;
+  width: max-content;
+  max-width: 120px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  background: #244735;
+  color: #fff;
+  font: 500 11px/1.35 "DM Sans", sans-serif;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  box-shadow: 0 3px 8px rgba(20,49,33,.16);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .15s ease, visibility .15s ease;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-catalog-tile .pub-catalog-tile__swatch:is(:hover,:focus) {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px #668a71;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-catalog-tile .pub-catalog-tile__swatch:is(:hover,:focus)::after {
+  opacity: 1;
+  visibility: visible;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-catalog-tile .pub-catalog-tile__copy:has(.pub-catalog-tile__swatch:is(:hover,:focus)) { z-index: 3; }
+@media (prefers-reduced-motion: reduce) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-catalog-tile .pub-catalog-tile__swatch, .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-catalog-tile .pub-catalog-tile__swatch::after { transition: none; }
+}

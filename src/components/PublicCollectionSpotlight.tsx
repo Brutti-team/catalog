@@ -192,7 +192,7 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
                 <div className="pub-catalog-tile__colours" role="group" aria-label={shownInPhoto ? "Approximate colours shown in reference photo, not finish options" : "Recorded product colours"}>
                   {shownInPhoto && <span className="pub-catalog-tile__colour-label" title="Approximate colours shown in reference photo">Shown:</span>}
                   {colours.slice(0, 4).map(colour => colour.hex ? (
-                    <span key={colour.label} className="pub-catalog-tile__swatch" style={{ backgroundColor: colour.hex }} title={shownInPhoto ? `Pictured colour: ${colour.label}` : colour.label} role="img" aria-label={colour.label} />
+                    <span key={colour.label} className="pub-catalog-tile__swatch" style={{ backgroundColor: colour.hex }} data-colour-name={colour.label} tabIndex={0} role="img" aria-label={shownInPhoto ? `Pictured colour: ${colour.label}` : colour.label} />
                   ) : (
                     <span key={colour.label} className="pub-catalog-tile__colour-label" title={colour.label}>{colour.label}</span>
                   ))}
