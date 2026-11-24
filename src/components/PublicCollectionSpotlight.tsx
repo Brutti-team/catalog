@@ -6,6 +6,7 @@ import { readPhotoColours, type PhotoColour } from "../lib/photo-colours";
 import { publicAssetUrl } from "../lib/assets";
 import { recordCatalogEvent } from "../lib/customer-analytics";
 import ProductPrice from "./ProductPrice";
+import MaterialsContent from "./MaterialsContent";
 import { discountPercent, hasProductDiscount } from "../lib/discount-price";
 import "./public-spotlight.css";
 import { useFavouriteIds, toggleFavouriteId } from "../lib/customer-favourites";
@@ -242,7 +243,7 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
             />
           </div>
           <div className="pub-quickview__content">
-            <span className="pub-quickview__eyebrow">THE BRUTTI COLLECTION / QUICK VIEW</span>
+            <span className="pub-quickview__eyebrow">QUICK VIEW</span>
             <span className="pub-quickview__category">{categoryName}</span>
             <h2 id={"pub-quickview-title-" + product.id}>{product.name}</h2>
             <span className="pub-quickview__availability">
@@ -251,11 +252,10 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
             </span>
             {description && <p className="pub-quickview__description">{description}</p>}
             {product.materials?.trim() && (
-              <div className="pub-quickview__spec"><span>MATERIALS</span><p>{product.materials}</p></div>
+              <div className="pub-quickview__spec"><span className="pub-quickview__section-label">Materials</span><MaterialsContent value={product.materials} /></div>
             )}
             <div className="pub-quickview__price">
-              <span>PRICE GUIDE</span>
-              <strong><ProductPrice product={product} /></strong>
+              <div className="pub-quickview__price-value"><ProductPrice product={product} stackedBasis /></div>
             </div>
             <a href={detailUrl} className="pub-quickview__cta" onClick={openDetails}>
               View product details <ArrowRight size={17} />
