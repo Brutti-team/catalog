@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cmToUnit, unitMax, unitToCm, normalizeDimensionUnits, formatProductDimensions, type DimensionUnit } from "../src/lib/dimensions";
+import { cmToUnit, unitMax, unitToCm, normalizeDimensionUnits, formatProductDimensions, splitFeetInches, feetInchesToCm, type DimensionUnit } from "../src/lib/dimensions";
 
 describe("Brutti catalog dimension display units", () => {
   it("converts each selectable unit to canonical centimetres", () => {
@@ -36,14 +36,23 @@ describe("Brutti catalog dimension display units", () => {
       depth: 1.5,
       height: 182.88,
       dimensionUnits: { width: "ft", depth: "cm", height: "ft" },
-    })).toBe("5.5 ft W × 1.5 cm D × 6 ft H");
+    })).toBe("5 ft 6 in W × 1.5 cm D × 6 ft H");
   });
 
   it("does not display unspecified sizes as zero measurements", () => {
     expect(formatProductDimensions({
       width: 0, depth: 45.72, height: 0,
       dimensionUnits: { width: "cm", depth: "ft", height: "in" },
-    })).toBe("1.5 ft D");
+    })).toBe("1 ft 6 in D");
+  });
+
+  it("round-trips separate feet and inches without changing storage units", () => {
+    expect(feetInchesToCm(1,6)).toBe(45.72);
+    expect(splitFeetInches(45.72)).toEqual({ feet:1, inches:6 });
+    expect(splitFeetInches(30.48)).toEqual({ feet:1, inches:0 });
+    expect(splitFeetInches(15.24)).toEqual({ feet:0, inches:6 });
+    expect(splitFeetInches(feetInchesToCm(2,3.5))).toEqual({ feet:2, inches:3.5 });
+    expect(formatProductDimensions({width:91.44,depth:45.72,height:213.36,dimensionUnits:{width:"ft",depth:"ft",height:"ft"}})).toBe("3 ft W × 1 ft 6 in D × 7 ft H");
   });
 
   it("keeps the existing maximum limit in centimetres", () => {

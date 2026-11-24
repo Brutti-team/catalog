@@ -20,7 +20,7 @@ const unitNames: Record<DimensionUnit, string> = {
   cm: "Centimetres",
   m: "Metres",
   in: "Inches",
-  ft: "Feet",
+  ft: "Feet + inches",
 };
 
 /** A single compact measurement-unit selector.
@@ -189,7 +189,7 @@ export default function InlineDimensionUnitMenu({
           }
         }}
       >
-        <span>{value}</span>
+        <span>{value === "ft" ? "ft + in" : value}</span>
         <ChevronDown size={15} strokeWidth={1.8} aria-hidden="true" />
       </button>
       {open && portalTarget && createPortal(
@@ -215,7 +215,7 @@ export default function InlineDimensionUnitMenu({
                 className={value === option.value ? "is-selected" : ""}
                 onClick={() => pick(option.value)}
               >
-                <span className="catalog-dimension-inline-unit-code">{option.label}</span>
+                <span className="catalog-dimension-inline-unit-code">{option.value === "ft" ? "ft + in" : option.label}</span>
                 <span className="catalog-dimension-inline-unit-description">{unitNames[option.value]}</span>
                 {value === option.value && <Check size={15} strokeWidth={2.1} aria-hidden="true" />}
               </button>

@@ -48,12 +48,31 @@ export function normalizeDimensionUnits(value: unknown): DimensionUnits {
   return { width: valid(saved.width), depth: valid(saved.depth), height: valid(saved.height) };
 }
 
+/** Feet/inches are an editor/display representation of the existing ft unit.
+ * Keep storage and database unit constraints unchanged. Round to the precision
+ * of the existing canonical centimetre values and handle inch carry. */
+export function splitFeetInches(centimetres: number): { feet: number; inches: number } {
+  const total = Math.round(Math.max(0, centimetres) / 2.54 * 10000);
+  const feet = Math.floor(total / 120000);
+  return { feet, inches: (total - feet * 120000) / 10000 };
+}
+
+export function feetInchesToCm(feet: number, inches: number): number {
+  return Number((feet * 30.48 + inches * 2.54).toFixed(4));
+}
+
+export function formatDimension(centimetres: number, unit: DimensionUnit): string {
+  if (unit !== "ft") return `${cmToUnit(centimetres, unit)} ${unit}`;
+  const { feet, inches } = splitFeetInches(centimetres);
+  return feet ? `${feet} ft${inches ? ` ${inches} in` : ""}` : `${inches} in`;
+}
+
 /** Readable mixed-unit dimensions; missing overall sizes stay hidden. */
 export function formatProductDimensions(product: Pick<Record<DimensionKey, number>, DimensionKey> & { dimensionUnits?: DimensionUnits }): string {
   const units = normalizeDimensionUnits(product.dimensionUnits);
   const suffix: Record<DimensionKey, string> = { width: "W", depth: "D", height: "H" };
   return OVERALL_DIMENSION_KEYS
     .filter(key => Number.isFinite(product[key]) && product[key] > 0)
-    .map(key => `${cmToUnit(product[key], units[key])} ${units[key]} ${suffix[key]}`)
+    .map(key => `${formatDimension(product[key], units[key])} ${suffix[key]}`)
     .join(" × ");
 }
