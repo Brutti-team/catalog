@@ -772,7 +772,7 @@ export default function PublicCatalog({
                     <p className="pub-detail-price">
                       {previewProduct && product.price === null
                         ? <span className="catalog-price-current">Price on request</span>
-                        : <ProductPrice product={product} />}
+                        : <ProductPrice product={product} stackedBasis={!previewProduct} />}
                     </p>
                     {previewProduct && (
                       <>
