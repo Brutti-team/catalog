@@ -13,6 +13,7 @@ import {
   Sparkles,
   Star,
   X,
+  ZoomIn,
 } from "lucide-react";
 import type { Category, Product, ProductImage, ProductSpecification } from "../lib/types";
 import { photoCropStyle } from "../lib/photo-crop";
@@ -29,6 +30,7 @@ import { BRUTTI_WHATSAPP_NUMBER, productWhatsAppUrl } from "../lib/whatsapp-enqu
 import ShowroomSections from "./ShowroomSections";
 import BestSellingSection from "./BestSellingSection";
 import PublicCollectionSpotlight from "./PublicCollectionSpotlight";
+import CustomerPhotoZoom from "./CustomerPhotoZoom";
 import "./public.css";
 import "./brutti-3d.css";
 import "./public-reference.css";
@@ -162,6 +164,7 @@ export default function PublicCatalog({
   const [sortOpen, setSortOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
   const [imageIndex, setImageIndex] = useState(0);
+  const [photoZoomOpen, setPhotoZoomOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"photos" | "3d">("photos");
   const [mobileMenu, setMobileMenu] = useState(false);
   useEffect(() => {
@@ -195,6 +198,7 @@ export default function PublicCatalog({
     const changeRoute = () => {
       setProductId(currentProductId());
       setImageIndex(0);
+      setPhotoZoomOpen(false);
       setViewMode("photos");
       setMobileMenu(false);
       window.scrollTo({ top: 0, behavior: "instant" });
@@ -709,6 +713,12 @@ export default function PublicCatalog({
                         image={product.images[imageIndex] || product.images[0]}
                         eager
                       />
+                      {!previewProduct && Boolean((product.images[imageIndex] || product.images[0])?.url) && (
+                        <button type="button" className="pub-photo-zoom-trigger"
+                          aria-label={`Zoom in on ${product.name} photo`} onClick={() => setPhotoZoomOpen(true)}>
+                          <span><ZoomIn size={19} aria-hidden="true" /></span>
+                        </button>
+                      )}
                       {product.bestSelling ? (
                         <span className="pub-featured-tag catalog-best-public-tag"><Star size={12} fill="currentColor" /> Best Seller</span>
                       ) : product.featured && (
@@ -878,6 +888,10 @@ export default function PublicCatalog({
                     </div>
                   </div>
                 </div>
+                {!previewProduct && photoZoomOpen && product.images.length > 0 && (
+                  <CustomerPhotoZoom key={product.id} images={product.images} productName={product.name}
+                    initialIndex={imageIndex} onClose={() => setPhotoZoomOpen(false)} />
+                )}
                 {!previewProduct && related.length > 0 && recommendations(false)}
               </>
             )}
