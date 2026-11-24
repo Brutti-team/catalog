@@ -1990,3 +1990,12 @@
 .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-recommendations) .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__preview img:not(.catalog-image-cropped) {
   object-position: center;
 }
+
+/* Product details only: separate the enquiry/gallery row from recommendations. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > #pub-recommendations.pub-related:not(.pub-home-recommendations) {
+  margin-top: 44px;
+  padding-top: 24px;
+}
+@media(max-width:650px){
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > #pub-recommendations.pub-related:not(.pub-home-recommendations) {margin-top:32px;padding-top:18px;}
+}
