@@ -522,3 +522,54 @@
 @media(max-width:1080px) { .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-additional-spacer { flex-basis:69px; margin-right:4px; } }
 @container(max-width:810px) { .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-additional-spacer { flex-basis:56px; } }
 @container(max-width:570px) { .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-additional-spacer { flex-basis:69px; } }
+
+/* Expanded dimensions: one outer card, two spacious, independently editable rows.
+   Do not split the first numeric input or reserve an empty button slot below. */
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field > .catalog-dimension-single.has-additional {
+  box-sizing: border-box;
+  height: auto !important;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid #d5e3d8;
+  border-radius: 13px;
+  background: #fcfefc;
+  overflow: visible;
+}
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field > .catalog-dimension-single.has-additional > .catalog-dimension-single-control {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  height: 66px !important;
+  min-height: 66px !important;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible;
+}
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field > .catalog-dimension-single.has-additional > .catalog-dimension-single-control > input {
+  flex: 1 1 0;
+  min-width: 0;
+  width: 0 !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  max-height: 64px !important;
+  padding: 27px 10px 9px 14px !important;
+}
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field > .catalog-dimension-single.has-additional > .catalog-dimension-additional-control {
+  margin: 0 10px 5px;
+  width: auto;
+  border-top: 1px solid #e0e9e1 !important;
+}
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field > .catalog-dimension-single.has-additional > .catalog-dimension-additional-control > .catalog-dimension-single-label { left: 4px; top: 12px; }
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field > .catalog-dimension-single.has-additional > .catalog-dimension-additional-control > input { padding-left: 4px !important; padding-top: 29px !important; }
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field > .catalog-dimension-single.has-additional > .catalog-dimension-additional-control > .catalog-dimension-inline-unit { padding-right: 0; }
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field > .catalog-dimension-single.has-additional > .catalog-dimension-single-control > .catalog-dimension-inline-unit { flex-shrink: 0; }
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field > .catalog-dimension-single.has-additional > .catalog-dimension-single-control > .catalog-dimension-add-part { flex-shrink: 0; }
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field > .catalog-dimension-single.has-additional:focus-within { border-color: #91b79a; }
+.admin-app[data-theme="dark"] .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-single.has-additional { background: #2e4737; border-color: #52735b; }
+.admin-app[data-theme="dark"] .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-single.has-additional > .catalog-dimension-additional-control { border-top-color: #52735b !important; }
+/* Preserve readable input widths even when the editor is in a narrow pane. */
+@container (max-width: 720px) {
+  .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field > .catalog-dimension-single.has-additional { grid-column: 1/-1; }
+}

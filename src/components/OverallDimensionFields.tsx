@@ -56,7 +56,7 @@ export default function OverallDimensionFields({product,onDimensionChange,disabl
               <label htmlFor={`${id}-additional`} className="catalog-dimension-single-label">Additional value</label>
               <input id={`${id}-additional`} aria-label={`${label} additional measurement`} type="number" inputMode="decimal"
                 min={0} max={additional.unit ? unitMax(additional.unit) : undefined} step="any"
-                placeholder="Value" disabled={disabled || !additional.unit}
+                placeholder="Optional" disabled={disabled || !additional.unit}
                 value={additional.unit && additional.cm !== 0 ? cmToUnit(additional.cm,additional.unit) : ""}
                 onChange={event => {
                   if (!additional.unit) return;
@@ -65,7 +65,6 @@ export default function OverallDimensionFields({product,onDimensionChange,disabl
                 }} />
               <InlineDimensionUnitMenu label={label+" additional"} value={additional.unit} disabled={disabled}
                 onChange={next => save(primaryCm,unit,{...additional,unit:next})} />
-              <span className="catalog-dimension-additional-spacer" aria-hidden="true"/>
             </div>}
           </div>
         );
