@@ -793,7 +793,9 @@ export default function PublicCatalog({
                       specificationGroups.primary.some(item => specificationHasContent(item)) ||
                       specificationGroups.sections.some(section => section.rows.some(item => specificationHasContent(item)))
                     ) && <div className="pub-specifications">
-                      <h2>The details</h2>
+                      <h2 id="pub-specifications-heading">The details</h2>
+                      <div className="pub-specifications-scroll" tabIndex={previewProduct ? undefined : 0}
+                        role={previewProduct ? undefined : "region"} aria-labelledby={previewProduct ? undefined : "pub-specifications-heading"}>
                       {previewProduct ? (
                       <dl>
                         {Boolean(product.materials?.trim()) && (
@@ -869,6 +871,7 @@ export default function PublicCatalog({
                           </dl>
                         </div>
                       ))}
+                      </div>
                     </div>}
                     <div className="pub-detail-promise">
                       <span className="pub-promise-symbol"><img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="pub-promise-logo" /></span>

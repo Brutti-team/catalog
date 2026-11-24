@@ -1146,3 +1146,112 @@
 @media(prefers-reduced-motion:reduce){
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-promise > a.pub-promise-enquiry {transition:none;}
 }
+
+/* One-screen customer product overview. Only the specification content
+   scrolls; product identity, price, gallery and enquiry remain outside it.
+   Preserve regular page scrolling for related products and the site footer. */
+.pub-private-preview .pub-specifications-scroll { display: contents; }
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: clamp(14px,1.5vw,20px);
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > h2 { flex: 0 0 auto; margin: 0 0 9px; }
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll {
+  min-width: 0;
+  min-height: 0;
+  max-height: clamp(180px,48dvh,440px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #a6b9a6 transparent;
+  scrollbar-gutter: stable;
+  padding: 0 5px 2px 0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll:focus-visible {
+  outline: 2px solid #719379;
+  outline-offset: -2px;
+  border-radius: 5px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll::-webkit-scrollbar { width: 5px; }
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll::-webkit-scrollbar-thumb { background: #a6b9a6; border-radius: 8px; }
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications .pub-spec-section { padding: 12px 14px 9px; margin-top: 10px; }
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications .pub-spec-section dl > div { padding-block: 8px; }
+@media (min-width: 851px) and (min-height: 600px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section { padding-top: clamp(18px,2vw,30px); }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail {
+    height: calc(100dvh - 124px);
+    min-height: 0;
+    grid-template-rows: minmax(0,1fr);
+    align-items: stretch;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery {
+    position: static;
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    gap: 0;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > :is(.pub-media-switch,.pub-gallery-thumbnails) {
+    flex: 0 0 auto;
+    max-width: 100%;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image {
+    flex: 1 1 0;
+    align-self: stretch;
+    width: 100%;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: 100%;
+    display: grid;
+    place-items: center;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image > img {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    min-height: 0;
+    object-fit: contain !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .product-model-stage:not(.is-expanded):not(:fullscreen) {
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: 100%;
+    width: 100%;
+    aspect-ratio: auto;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy {
+    height: 100%;
+    min-height: 0;
+    grid-template-rows: auto auto auto auto minmax(0,1fr) auto;
+    align-content: stretch;
+    align-items: start;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-eyebrow, .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-availability { grid-row: 1; align-self: center; }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > h1 { grid-row: 2; margin-block: 8px 6px; }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-description { grid-row: 3; margin-bottom: 9px; }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price { grid-row: 4; padding-top: 9px; margin-bottom: 10px !important; }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications {
+    grid-row: 5;
+    align-self: start;
+    max-height: 100%;
+    overflow: hidden;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll { flex: 1 1 auto; max-height: none; }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-promise {
+    grid-row: 6;
+    align-self: end;
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+}
+@media (max-width: 850px), (max-height: 599px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll { max-height: clamp(180px,48dvh,400px); }
+}
