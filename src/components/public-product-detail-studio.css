@@ -1294,3 +1294,25 @@
   border-radius: 0;
   transform: rotate(45deg) translateY(-1px);
 }
+
+
+/* Give the available state a distinct, restrained Brutti green label. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-available {
+  background: #244d38 !important;
+  color: #ffffff !important;
+  border: 1px solid #244d38 !important;
+  border-radius: 5px;
+  padding: 6px 11px;
+  min-height: 30px;
+  gap: 8px;
+  font: 650 12px/1.4 "DM Sans", system-ui, sans-serif !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-available > i {
+  border-color: #ffffff;
+  flex-basis: 7px;
+  width: 7px;
+  height: 11px;
+}
+@media (max-width:520px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-available { padding: 5px 8px; min-height: 26px; font-size: 11px !important; }
+}
