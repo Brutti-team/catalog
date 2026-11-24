@@ -31,3 +31,13 @@ export function photoCropStyle(image?: Pick<ProductImage, "crop">): CSSPropertie
     mixBlendMode: "normal",
   };
 }
+
+/** Photo Studio exports a finished bitmap; never crop its edges again. */
+export function isStudioEditedPhoto(image?: ProductImage): boolean {
+  return Boolean(image?.preservedOriginalPaths?.length || (image?.url && /-edited(?:[.-]|%2e)/i.test(image.url)));
+}
+export function publicPhotoCropStyle(image?: ProductImage): CSSProperties | undefined {
+  return isStudioEditedPhoto(image) && !image?.crop
+    ? { objectFit: "contain", objectPosition: "center", transform: "none", mixBlendMode: "normal" }
+    : photoCropStyle(image);
+}

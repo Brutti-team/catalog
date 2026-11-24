@@ -2327,3 +2327,12 @@
   .pub-app.pub-refined .pub-quickview .pub-quickview__content { padding: 20px; }
   .pub-app.pub-refined .pub-quickview .pub-quickview__content h2 { font-size: 23px !important; }
 }
+
+/* Keep the saved Photo Studio composition inside the existing card frame. */
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-recommendations) .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__preview img.catalog-image-studio-edited:not(.catalog-image-cropped),
+.pub-app.pub-refined .pub-quickview .pub-quickview__image img.catalog-image-studio-edited:not(.catalog-image-cropped) {
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+  filter: none !important;
+}

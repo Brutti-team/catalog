@@ -1312,3 +1312,10 @@
 @media (max-width:520px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-available { padding: 5px 8px; min-height: 26px; font-size: 11px !important; }
 }
+
+/* A saved studio crop is a final image, not a new crop instruction. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section img.catalog-image-studio-edited:not(.catalog-image-cropped) {
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+}

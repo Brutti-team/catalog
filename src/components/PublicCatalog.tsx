@@ -17,7 +17,7 @@ import {
   ZoomIn,
 } from "lucide-react";
 import type { Category, Product, ProductImage, ProductSpecification } from "../lib/types";
-import { photoCropStyle } from "../lib/photo-crop";
+import { publicPhotoCropStyle, isStudioEditedPhoto } from "../lib/photo-crop";
 import { publicAssetUrl } from "../lib/assets";
 import ProductPrice from "./ProductPrice";
 import CatalogPdfDownload, { type CatalogPdfDownloadHandle } from "./CatalogPdfDownload";
@@ -122,8 +122,8 @@ function FurnitureImage({
     <img
       src={publicAssetUrl(src)}
       alt={alt}
-      className={`${className}${image?.crop ? " catalog-image-cropped" : ""}`.trim()}
-      style={photoCropStyle(image)}
+      className={`${className}${image?.crop ? " catalog-image-cropped" : isStudioEditedPhoto(image) ? " catalog-image-studio-edited" : ""}`.trim()}
+      style={publicPhotoCropStyle(image)}
       loading={eager ? "eager" : "lazy"}
       onError={(event) => {
         if (!fallbackToPlaceholder) {

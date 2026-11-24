@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type SyntheticEvent } from "react";
 import { ArrowRight, Eye, Heart, Sparkles, Star, X } from "lucide-react";
 import type { Product } from "../lib/types";
-import { photoCropStyle } from "../lib/photo-crop";
+import { publicPhotoCropStyle, isStudioEditedPhoto } from "../lib/photo-crop";
 import { readPhotoColours, type PhotoColour } from "../lib/photo-colours";
 import { publicAssetUrl } from "../lib/assets";
 import { recordCatalogEvent } from "../lib/customer-analytics";
@@ -145,8 +145,8 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
             <img
               src={publicAssetUrl(photo?.url)}
               alt={photo?.alt || product.name}
-              className={photo?.crop ? "catalog-image-cropped" : ""}
-              style={photoCropStyle(photo)}
+              className={photo?.crop ? "catalog-image-cropped" : isStudioEditedPhoto(photo) ? "catalog-image-studio-edited" : ""}
+              style={publicPhotoCropStyle(photo)}
               loading="lazy"
               onError={handleImageError}
             />
@@ -237,8 +237,8 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
             <img
               src={publicAssetUrl(photo?.url)}
               alt={photo?.alt || product.name}
-              className={photo?.crop ? "catalog-image-cropped" : ""}
-              style={photoCropStyle(photo)}
+              className={photo?.crop ? "catalog-image-cropped" : isStudioEditedPhoto(photo) ? "catalog-image-studio-edited" : ""}
+              style={publicPhotoCropStyle(photo)}
               onError={handleImageError}
             />
           </div>
