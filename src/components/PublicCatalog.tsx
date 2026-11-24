@@ -151,7 +151,7 @@ export default function PublicCatalog({
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [bestOnly, setBestOnly] = useState(false);
-  const [visibleLimit, setVisibleLimit] = useState(6);
+  const [collectionExpanded, setCollectionExpanded] = useState(false);
   // Keep recommendation signals in this catalog session only, not in analytics or persistent storage.
   const [viewedIds, setViewedIds] = useState<string[]>([]);
   const [searchedIds, setSearchedIds] = useState<string[]>([]);
@@ -266,9 +266,9 @@ export default function PublicCatalog({
           : Number(b.featured) - Number(a.featured) || (a.displayOrder ?? 0) - (b.displayOrder ?? 0),
     );
   }, [published, query, category, sort, bestOnly]);
-  useEffect(() => { setVisibleLimit(6); }, [query, category, sort, bestOnly]);
-  const visibleProducts = bestOnly ? filtered : filtered.slice(0, visibleLimit);
-  const hasMoreProducts = visibleProducts.length < filtered.length;
+  useEffect(() => { setCollectionExpanded(false); }, [query, category, sort, bestOnly]);
+  const canExpandCollection = !bestOnly && filtered.length > 6;
+  const visibleProducts = bestOnly || collectionExpanded ? filtered : filtered.slice(0, 6);
   const browseCollection = () => {
     setMobileMenu(false);
     if (productId !== null) {
@@ -618,20 +618,23 @@ export default function PublicCatalog({
                     />
                   ))}
                 </div>
-                <div className="pub-collection-more-divider">
-                  {hasMoreProducts ? (
-                    <button type="button" className="pub-collection-more-button" aria-controls="pub-collection-product-grid"
-                      onClick={() => setVisibleLimit(limit => limit + 6)}>
-                      See more <ChevronDown size={15} aria-hidden="true" />
+                {canExpandCollection && <>
+                  <div className="pub-collection-more-divider">
+                    <button type="button" className="pub-collection-more-button"
+                      aria-controls="pub-collection-product-grid" aria-expanded={collectionExpanded}
+                      onClick={event => {
+                        const button = event.currentTarget;
+                        setCollectionExpanded(!collectionExpanded);
+                        if (collectionExpanded) requestAnimationFrame(() => {
+                          if (button.isConnected) button.scrollIntoView({ block: "nearest", behavior: "instant" });
+                        });
+                      }}>
+                      {collectionExpanded ? "See less" : "See more"}
+                      <ChevronDown size={15} aria-hidden="true" style={{ transform: collectionExpanded ? "rotate(180deg)" : undefined }} />
                     </button>
-                  ) : (
-                    <button type="button" className="pub-collection-more-button" aria-label="See more of the catalogue: Best Sellers"
-                      onClick={browseBestSellers}>
-                      See more <ChevronDown size={15} aria-hidden="true" />
-                    </button>
-                  )}
-                </div>
-                {hasMoreProducts && <span className="pub-sr-only" role="status">Showing {visibleProducts.length} of {filtered.length} products.</span>}
+                  </div>
+                  <span className="pub-sr-only" role="status">Showing {visibleProducts.length} of {filtered.length} products.</span>
+                </>}
                 </>
               ) : published.length === 0 && !query && category === "all" ? (
                 <div className="pub-empty-state pub-empty-state--unpublished">
