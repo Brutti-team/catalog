@@ -10,8 +10,11 @@ type Props = {
 };
 
 export default function ProductPrice({ product, surface = "public", stackedBasis = false }: Props) {
-  const price = formatProductPrice(product, surface);
-  const separateBasis = stackedBasis && product.price !== null && product.priceBasis === "starting-from";
+  // Public catalogue prices are displayed as starting prices consistently.
+  // Keep stored amounts and the administrative price basis unchanged.
+  const displayProduct = surface === "public" ? { ...product, priceBasis: "starting-from" as const } : product;
+  const price = formatProductPrice(displayProduct, surface);
+  const separateBasis = stackedBasis && product.price !== null && displayProduct.priceBasis === "starting-from";
   const currentPrice = (
     <span className={separateBasis ? "catalog-price-current catalog-price-current--stacked" : "catalog-price-current"}>
       {separateBasis ? (
