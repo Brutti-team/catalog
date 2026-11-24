@@ -43,7 +43,7 @@ import PhotoCropEditor from "./PhotoCropEditor";
 import PhotoCoverStudio from "./PhotoCoverStudio";
 import AlbumLibrary from "./AlbumLibrary";
 import { albumPhotoToProductImage, type AlbumPhoto } from "../lib/album";
-import { photoCropStyle, catalogCardPhotoStyle, normalisePhotoCrop } from "../lib/photo-crop";
+import { photoCropStyle, catalogCardPhotoStyle, normalisePhotoCrop, effectivePhotoCrop } from "../lib/photo-crop";
 import { splitSpecifications, compactSpecifications } from "../lib/specification-groups";
 
 const MEASUREMENT_NAME_OPTIONS = [
@@ -534,7 +534,7 @@ export default function ProductEditor({
     if (mounted.current) setBusy(false);
   }
   const cover = draft.images[0];
-  const coverFraming = normalisePhotoCrop(cover?.crop ?? { x: 50, y: draft.sku === "PNL-15" ? 100 : 67, zoom: 1 });
+  const coverFraming = normalisePhotoCrop(effectivePhotoCrop(cover) ?? { x: 50, y: draft.sku === "PNL-15" ? 100 : 67, zoom: 1 });
   const coverChanged = JSON.stringify(cover ?? null) !== JSON.stringify(product.images[0] ?? null);
   const setCoverFraming = (patch: Partial<typeof coverFraming>) => {
     if (!cover) return;

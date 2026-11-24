@@ -17,7 +17,7 @@ import {
   ZoomIn,
 } from "lucide-react";
 import type { Category, Product, ProductImage, ProductSpecification } from "../lib/types";
-import { publicPhotoCropStyle, isStudioEditedPhoto } from "../lib/photo-crop";
+import { publicPhotoCropStyle, isStudioEditedPhoto, effectivePhotoCrop } from "../lib/photo-crop";
 import { publicAssetUrl } from "../lib/assets";
 import ProductPrice from "./ProductPrice";
 import CatalogPdfDownload, { type CatalogPdfDownloadHandle } from "./CatalogPdfDownload";
@@ -737,7 +737,8 @@ export default function PublicCatalog({
                         <ProductModelViewer model={selectedModel} productName={product.name} poster={product.images[0]?.url} />
                       </Suspense>
                     ) : (
-                    <div className="pub-detail-main-image">
+                    <div className={"pub-detail-main-image" + (effectivePhotoCrop(product.images[imageIndex] || product.images[0]) ? " has-saved-framing" : "")}>
+                      <div className="pub-detail-photo-frame">
                       <FurnitureImage
                         src={
                           (product.images[imageIndex] || product.images[0])?.url
@@ -749,6 +750,7 @@ export default function PublicCatalog({
                         image={product.images[imageIndex] || product.images[0]}
                         eager
                       />
+                      </div>
                       {!previewProduct && Boolean((product.images[imageIndex] || product.images[0])?.url) && (
                         <button type="button" className="pub-photo-zoom-trigger"
                           aria-label={`Zoom in on ${product.name} photo`} onClick={() => setPhotoZoomOpen(true)}>

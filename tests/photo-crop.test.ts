@@ -42,3 +42,13 @@ describe("shared catalogue card framing", () => {
     expect(catalogCardPhotoStyle({ ...photo, crop: { x: 22, y: 75, zoom: 1.4 } })).toMatchObject({ objectPosition: "22% 75%", transform: "scale(1.4)" });
   });
 });
+
+import { effectivePhotoCrop } from "../src/lib/photo-crop";
+it("uses a reversible default for the known bordered legacy photo and prefers saved framing", () => {
+ const photo = {id:"53a4e2d4-0faa-4964-9529-839c20de1c56",url:"/pico.webp",alt:"Pico"};
+ expect(effectivePhotoCrop(photo)).toEqual({x:50,y:58,zoom:1.15});
+ expect(catalogCardPhotoStyle(photo)).toMatchObject({transform:"scale(1.15)"});
+ expect(publicPhotoCropStyle(photo)).toMatchObject({transform:"scale(1.15)"});
+ expect(effectivePhotoCrop({...photo,crop:{x:20,y:30,zoom:1.3}})).toEqual({x:20,y:30,zoom:1.3});
+ expect(effectivePhotoCrop({...photo,id:"other"})).toBeUndefined();
+});

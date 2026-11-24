@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type SyntheticEvent } from "react";
 import { ArrowRight, Eye, Heart, Sparkles, Star, X } from "lucide-react";
 import type { Product } from "../lib/types";
-import { publicPhotoCropStyle, isStudioEditedPhoto, catalogCardPhotoStyle } from "../lib/photo-crop";
+import { publicPhotoCropStyle, isStudioEditedPhoto, catalogCardPhotoStyle, effectivePhotoCrop } from "../lib/photo-crop";
 import { readPhotoColours, type PhotoColour } from "../lib/photo-colours";
 import { publicAssetUrl } from "../lib/assets";
 import { recordCatalogEvent } from "../lib/customer-analytics";
@@ -233,7 +233,8 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
           >
             <X size={19} />
           </button>
-          <div className="pub-quickview__image">
+          <div className={"pub-quickview__image" + (effectivePhotoCrop(photo) ? " has-saved-framing" : "")}>
+            <div className="pub-quickview__photo-frame">
             <img
               src={publicAssetUrl(photo?.url)}
               alt={photo?.alt || product.name}
@@ -241,6 +242,7 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
               style={publicPhotoCropStyle(photo)}
               onError={handleImageError}
             />
+            </div>
           </div>
           <div className="pub-quickview__content">
             <span className="pub-quickview__eyebrow">QUICK VIEW</span>
