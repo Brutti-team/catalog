@@ -221,3 +221,22 @@
 .catalog-materials-live[aria-disabled="true"] { cursor:default; opacity:.8; }
 .admin-app[data-theme="dark"] .catalog-materials-editor > .catalog-materials-live { color:#e9f3eb; }
 .admin-app[data-theme="dark"] .catalog-materials-editor > .catalog-materials-live:empty::before { color:#a9beae; }
+
+
+/* The global reset disables synthetic font styles and the loaded DM Sans
+   font faces are upright only. Allow slanted glyphs specifically in materials,
+   including nested bold + italic, without changing the rest of the UI. */
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-live,
+.catalog-materials-content {
+  font-synthesis: weight style !important;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-live :is(i,em),
+.catalog-materials-content :is(i,em) {
+  font-style: italic !important;
+  font-synthesis: weight style !important;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-live :is(i,em) :is(b,strong),
+.catalog-materials-content :is(i,em) :is(b,strong) {
+  font-style: inherit !important;
+  font-synthesis: weight style !important;
+}
