@@ -450,8 +450,11 @@ export default function App() {
   const draftCount = data.products.filter((p) => p.status === "draft").length;
   const archivedCount = data.products.filter((p) => p.status === "archived").length;
   const withPhotos = data.products.filter((p) => p.images.length > 0).length;
-  const heroProduct = data.products.find(product => product.images.length && /chair|sofa|bench|armchair/i.test(product.name))
-    ?? data.products.find(product => product.images.length);
+  // Keep the established overview photograph fixed. Adding or renaming a
+  // catalogue product must not unexpectedly change the dashboard banner.
+  const heroProduct = data.products.find(product =>
+    product.id === "98cc7854-10c5-43a3-b4ab-71b1e886754b" && product.images.length > 0
+  );
   const filtered = data.products
     .filter((p) => {
       const needle = search.toLowerCase();
