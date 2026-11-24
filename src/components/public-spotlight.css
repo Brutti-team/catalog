@@ -1999,3 +1999,47 @@
 @media(max-width:650px){
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > #pub-recommendations.pub-related:not(.pub-home-recommendations) {margin-top:32px;padding-top:18px;}
 }
+
+
+/* Larger recommendation shelf: preserve the clean name/price layout. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-section-heading h2 {
+  font-size: clamp(27px, 2.8vw, 36px) !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-section-heading .pub-eyebrow { font-size: 10px; }
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-recommendations-copy { font-size: 13px; }
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog {
+  grid-template-columns: repeat(3, minmax(0, 340px));
+  gap: 15px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile { padding: 8px !important; }
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__copy { padding: 12px 7px 9px !important; }
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__title h3 {
+  font-size: 19px;
+  line-height: 1.3;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing :is(.catalog-price-amount,.catalog-price-current) {
+  font-size: 18px;
+  line-height: 1.3;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-basis { font-size: 12px; }
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__colour-label { font-size: 11px; }
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__colours { gap: 6px; margin-top: 7px; }
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__swatch { width: 15px; height: 15px; flex-basis: 15px; }
+@media (max-width: 850px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog { grid-template-columns: repeat(2, minmax(0, 340px)); gap: 12px; }
+}
+@media (max-width: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile { padding: 6px !important; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__copy { padding: 9px 5px 7px !important; }
+}
+@container (max-width: 250px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__title h3 { font-size: 15px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing :is(.catalog-price-amount,.catalog-price-current) { font-size: 15px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-basis { font-size: 10px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__colour-label { font-size: 10px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__swatch { width: 13px; height: 13px; flex-basis: 13px; }
+}
+@media (max-width: 320px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog { grid-template-columns: minmax(0, 340px); }
+}
