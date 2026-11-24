@@ -1569,14 +1569,15 @@
   flex: 0 0 auto;
   min-height: 36px;
   padding: 7px 10px;
-  border: 1px solid #dce6dc;
+  border: 1px solid #244d38;
   border-radius: 7px;
-  background: transparent;
-  color: #28543a;
+  background: #244d38;
+  color: #ffffff;
   font: 650 11px/1.4 "DM Sans",sans-serif;
   cursor: pointer;
+  transition: background .18s ease, border-color .18s ease;
 }
-.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations button.pub-recommendations-browse:hover { background: #e7efe7; }
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations button.pub-recommendations-browse:hover { background: #326347; border-color: #326347; color: #ffffff; }
 .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations button.pub-recommendations-browse:focus-visible { outline: 2px solid #47765b; outline-offset: 3px; }
 .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog {
   display: grid;
