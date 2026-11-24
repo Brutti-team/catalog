@@ -24,7 +24,7 @@ import CatalogPdfDownload, { type CatalogPdfDownloadHandle } from "./CatalogPdfD
 import { recommendProducts, recentProductIds, searchMatches } from "../lib/product-recommendations";
 import MaterialsContent from "./MaterialsContent";
 import { splitSpecifications } from "../lib/specification-groups";
-import { formatProductDimensions } from "../lib/dimensions";
+import { formatProductDimensions, formatSpecificationMeasurement } from "../lib/dimensions";
 import { productIdFromHash } from "../lib/routes";
 import { recordCatalogEvent } from "../lib/customer-analytics";
 import { BRUTTI_WHATSAPP_NUMBER, productWhatsAppUrl } from "../lib/whatsapp-enquiry";
@@ -42,7 +42,7 @@ const ProductModelViewer = lazy(() => import('./ProductModelViewer'));
 function specificationDisplayValue(item: ProductSpecification): string {
   const quantity = Number.isInteger(item.quantity) && (item.quantity ?? 0) > 0
     ? `${item.quantity} pcs` : "";
-  return [item.value.trim(), quantity].filter(Boolean).join(" · ");
+  return [item.kind === "measurement" ? formatSpecificationMeasurement(item.value) : item.value.trim(), quantity].filter(Boolean).join(" · ");
 }
 function specificationHasContent(item: ProductSpecification): boolean {
   return Boolean(item.name.trim() && specificationDisplayValue(item));

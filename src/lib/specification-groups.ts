@@ -1,4 +1,5 @@
 import type { ProductSpecification } from "./types";
+import { parseMeasurementValue } from "./dimensions";
 
 export type SpecificationSection = {
   id: string;
@@ -38,7 +39,7 @@ export function compactSpecifications(specifications: ProductSpecification[] = [
   const isFilled = (row: ProductSpecification): boolean => {
     if (row.kind === "section") return Boolean(row.name.trim());
     const hasNumber = row.kind === "measurement"
-      ? /^[0-9]/.test(row.value.trim())
+      ? Boolean(parseMeasurementValue(row.value).amount)
       : Boolean(row.value.trim());
     return Boolean(row.name.trim() || row.description?.trim() || row.quantity || hasNumber);
   };

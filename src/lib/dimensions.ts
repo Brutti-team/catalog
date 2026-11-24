@@ -130,3 +130,25 @@ export function formatProductDimensions(product: Pick<Record<DimensionKey, numbe
     })
     .join(" × ");
 }
+
+/** Specification rows keep their typed amount and unit in the existing JSON
+ * string, including feet/inches notation. Incomplete drafts remain editable. */
+export function parseMeasurementValue(value: string): { amount: string; unit: DimensionUnit } {
+  const match = value.trim().match(/^(.*?)\s*(mm|cm|m|in|ft)$/);
+  return match ? { amount: match[1].trim(), unit: match[2] as DimensionUnit }
+    : { amount: value.trim(), unit: "cm" };
+}
+export function validSpecificationMeasurement(value: string): boolean {
+  if (!/\s+(mm|cm|m|in|ft)$/.test(value.trim())) return false;
+  const { amount, unit } = parseMeasurementValue(value);
+  const cm = parseDimensionInput(amount, unit);
+  return cm !== null && cm > 0;
+}
+export function formatSpecificationMeasurement(value: string): string {
+  const { amount, unit } = parseMeasurementValue(value);
+  if (!validSpecificationMeasurement(value)) return value.trim();
+  const cm = parseDimensionInput(amount, unit)!;
+  return unit === "ft" && /['’′]/.test(amount)
+    ? formatDimension(cm, unit)
+    : String(Number(amount)) + " " + unit;
+}

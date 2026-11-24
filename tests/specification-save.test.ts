@@ -37,3 +37,20 @@ describe("product editor specification save preparation", () => {
     expect(rows).toHaveLength(2);
   });
 });
+
+import { parseMeasurementValue, validSpecificationMeasurement, formatSpecificationMeasurement } from "../src/lib/dimensions";
+describe("specification measurement shorthand", () => {
+  it.each(["5'6 ft","6’5 ft","6′5″ ft","1.5 ft",".5 cm","25.5 mm","5. ft"])("accepts %s", value => {
+    expect(validSpecificationMeasurement(value)).toBe(true);
+  });
+  it.each(["5'12 ft","5'6 cm","0 ft","-2 ft"," ft","5..2 cm","abc ft","5"])("rejects %s", value => {
+    expect(validSpecificationMeasurement(value)).toBe(false);
+  });
+  it("preserves draft input and presents mixed values clearly", () => {
+    expect(parseMeasurementValue("5' ft")).toEqual({amount:"5'",unit:"ft"});
+    expect(parseMeasurementValue("5. ft")).toEqual({amount:"5.",unit:"ft"});
+    expect(formatSpecificationMeasurement("5'6 ft")).toBe("5 ft 6 in");
+    expect(formatSpecificationMeasurement("1.5 ft")).toBe("1.5 ft");
+    expect(compactSpecifications([{id:"half",name:"Width",value:".5 cm",kind:"measurement"}])).toHaveLength(1);
+  });
+});

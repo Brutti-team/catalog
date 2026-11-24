@@ -4,7 +4,7 @@ import { optimizeImageForUpload } from "./image-optimization";
 import { subscribeCatalogRefresh } from "./catalog-refresh";
 import { modelUploadBytes } from "./model-formats";
 import { categoryProductPrefix, nextProductId } from "./product-ids";
-import { normalizeDimensionUnits } from "./dimensions";
+import { normalizeDimensionUnits, validSpecificationMeasurement } from "./dimensions";
 
 const url = import.meta.env.VITE_SUPABASE_URL?.trim() ?? "";
 const key = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY)?.trim() ?? "";
@@ -251,10 +251,9 @@ export function validateProduct(product: Product): void {
     (row.kind === "quantity" && (!row.quantity || Boolean(row.value.trim()))) ||
     (row.kind === "section" && row.quantity !== undefined) ||
     (row.kind === "section" && Boolean(row.value.trim())) ||
-    (row.kind === "measurement" && !/^([0-9]+(?:\.[0-9]+)?) (mm|cm|m|in|ft)$/.test(row.value.trim())) ||
-    (row.kind === "measurement" && Number(row.value.trim().split(" ")[0]) <= 0)
+    (row.kind === "measurement" && !validSpecificationMeasurement(row.value))
   ))
-    throw new Error("Enter a specification name and value. Quantity rows need 1–9999 pcs; Measurement rows need a positive number and valid unit.");
+    throw new Error("Enter a specification name and value. Quantity rows need 1–9999 pcs; Measurement rows need a positive value and valid unit (e.g. 25.5 cm or 5'6 ft).");
   if (new Set(specifications.map(row => row.id)).size !== specifications.length)
     throw new Error("Each specification row needs a unique ID.");
   if (!["draft", "published", "archived"].includes(product.status))

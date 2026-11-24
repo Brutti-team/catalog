@@ -35,7 +35,7 @@ import EditorCategoryPicker from "./EditorCategoryPicker";
 import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
 import { nextProductId } from "../lib/product-ids";
-import { cmToUnit, unitToCm, unitMax, DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
+import { cmToUnit, parseDimensionInput, parseMeasurementValue, DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
 import OverallDimensionFields from "./OverallDimensionFields";
 import MeasurementTypePicker from "./MeasurementTypePicker";
 import MaterialsEditor from "./MaterialsEditor";
@@ -52,13 +52,6 @@ const MEASUREMENT_NAME_OPTIONS = [
 ] as const;
 
 type SpecificationRowType = "detail" | "measurement" | "quantity";
-
-function parseMeasurementValue(value: string): { amount: string; unit: DimensionUnit } {
-  const match = value.trim().match(/^([0-9]*(?:\.[0-9]*)?)\s*(mm|cm|m|in|ft)$/);
-  return match
-    ? { amount: match[1], unit: match[2] as DimensionUnit }
-    : { amount: "", unit: "cm" };
-}
 
 /** Uses the existing name/value specification record. Measurement units stay
  * embedded in value for the public product view, with kind for editing. */
@@ -165,12 +158,14 @@ function SpecificationRowFields({
         <div className="catalog-spec-measurement-fields" role="group" aria-label={label + " measurement"}>
           <input
             aria-label={label + " measurement value"}
-            type="number"
-            inputMode="decimal"
-            min={0}
-            max={unitMax(unit)}
-            step="any"
-            placeholder="e.g. 25"
+            type="text"
+            inputMode={unit === "ft" ? "text" : "decimal"}
+            autoComplete="off"
+            spellCheck={false}
+            maxLength={40}
+            placeholder={unit === "ft" ? "e.g. 5'6" : "e.g. 25.5"}
+            title={unit === "ft" ? "Enter decimal feet or feet and inches, e.g. 5'6" : "Enter a decimal measurement"}
+            aria-invalid={Boolean(amount) && parseDimensionInput(amount, unit) === null}
             value={amount}
             onChange={(event) => onChange(row.id, "value", event.target.value + " " + unit)}
           />
@@ -180,8 +175,9 @@ function SpecificationRowFields({
             title="Measurement unit"
             onChange={(event) => {
               const nextUnit = event.target.value as DimensionUnit;
-              const nextAmount = amount && Number.isFinite(Number(amount)) && Number(amount) > 0
-                ? String(cmToUnit(unitToCm(Number(amount), unit), nextUnit))
+              const cm = parseDimensionInput(amount, unit);
+              const nextAmount = amount && cm !== null && cm > 0
+                ? String(cmToUnit(cm, nextUnit))
                 : amount;
               onChange(row.id, "value", nextAmount + " " + nextUnit);
             }}
