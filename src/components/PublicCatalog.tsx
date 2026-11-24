@@ -743,19 +743,7 @@ export default function PublicCatalog({
                         ))}
                       </div>
                     )}
-                    {!previewProduct && (
-                      <div className="pub-gallery-enquiry">
-                        <a
-                          className="pub-primary-button pub-enquiry-button pub-whatsapp-enquiry"
-                          href={productWhatsAppUrl(product)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`Enquire about ${product.name} on WhatsApp`}
-                        >
-                          Enquire about this piece <ArrowUpRight size={16} aria-hidden="true" />
-                        </a>
-                      </div>
-                    )}
+
                   </div>
                   <div className="pub-detail-copy">
                     <p className="pub-eyebrow">
@@ -879,6 +867,14 @@ export default function PublicCatalog({
                         <br />
                         <span>Crafted with care by Benua Brutti.</span>
                       </p>
+                      {!previewProduct && (
+                        <a className="pub-primary-button pub-enquiry-button pub-whatsapp-enquiry pub-promise-enquiry"
+                          href={productWhatsAppUrl(product)}
+                          target="_blank" rel="noopener noreferrer"
+                          aria-label={`Enquire about ${product.name} on WhatsApp`}>
+                          Enquire about this piece <ArrowUpRight size={16} aria-hidden="true" />
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
