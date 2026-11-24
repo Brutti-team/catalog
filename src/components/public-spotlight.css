@@ -1842,3 +1842,45 @@
   .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__details-row { grid-template-columns: minmax(0,1fr); gap: 4px; }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing { justify-self: end; }
 }
+
+
+/* Larger recommendation typography with the price caption aligned to the
+   first character of the amount, while the entire price group stays right. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__title h3 {
+  font: 700 22px/1.25 "DM Sans", "Manrope", system-ui, sans-serif;
+  letter-spacing: -.035em;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__details-row {
+  align-items: start;
+  gap: 12px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-current--stacked {
+  width: max-content;
+  max-width: 100%;
+  margin-left: auto !important;
+  align-items: flex-start;
+  text-align: left;
+  gap: 3px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-basis {
+  font: 550 12px/1.3 "DM Sans", "Manrope", system-ui, sans-serif;
+  letter-spacing: 0;
+  text-align: left;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing :is(.catalog-price-amount,.catalog-price-current) {
+  font: 700 20px/1.25 "DM Sans", "Manrope", system-ui, sans-serif;
+  letter-spacing: -.03em;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-amount {
+  text-align: left;
+}
+@container (max-width: 230px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__title h3 { font-size: 17px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing :is(.catalog-price-amount,.catalog-price-current) { font-size: 16px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-basis { font-size: 11px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__details-row { gap: 6px; }
+}
+@container (max-width: 180px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__details-row { grid-template-columns: minmax(0,1fr); }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing { justify-self: end; }
+}
