@@ -526,6 +526,34 @@ export default function PublicCatalog({
                   </div>
                 </div>
               </div>
+              <div className="pub-filter-row">
+                <div className="pub-category-filters" aria-label="Filter by category">
+                  <button
+                    type="button"
+                    aria-pressed={category === "all" && !bestOnly}
+                    className={category === "all" && !bestOnly ? "pub-filter-active" : ""}
+                    onClick={() => { setCategory("all"); setBestOnly(false); }}
+                  >
+                    All projects
+                  </button>
+                  <button type="button" aria-pressed={bestOnly}
+                    className={bestOnly ? "pub-filter-active" : ""}
+                    onClick={() => { setCategory("all"); setBestOnly(value => !value); }}>
+                    Best Sellers
+                  </button>
+                  {categories.map((item) => (
+                    <button
+                      type="button"
+                      key={item.id}
+                      aria-pressed={category === item.id}
+                      className={category === item.id ? "pub-filter-active" : ""}
+                      onClick={() => setCategory(item.id)}
+                    >
+                      {item.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
               </div>
               <div className="pub-results-label" role="status">
                 {loading
