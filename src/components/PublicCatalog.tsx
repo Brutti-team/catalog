@@ -745,9 +745,6 @@ export default function PublicCatalog({
                         >
                           Enquire about this piece <ArrowUpRight size={16} aria-hidden="true" />
                         </a>
-                        <p className="pub-enquiry-note">
-                          Opens WhatsApp with a ready-to-send message about this product. You can review it before sending.
-                        </p>
                       </div>
                     )}
                   </div>
@@ -769,11 +766,6 @@ export default function PublicCatalog({
                       {previewProduct && product.price === null
                         ? <span className="catalog-price-current">Price on request</span>
                         : <ProductPrice product={product} />}
-                      {product.price !== null && (
-                        <small>
-                          Indicative price · Confirm details on enquiry
-                        </small>
-                      )}
                     </p>
                     {previewProduct && (
                       <>
@@ -786,9 +778,6 @@ export default function PublicCatalog({
                     >
                       Enquire about this piece <ArrowUpRight size={16} aria-hidden="true" />
                     </a>
-                    <p className="pub-enquiry-note">
-                      Opens WhatsApp with a ready-to-send message about this product. You can review it before sending.
-                    </p>
                       </>
                     )}
                     {(!previewProduct ||
@@ -822,10 +811,6 @@ export default function PublicCatalog({
                             <dd>{specificationDisplayValue(item)}</dd>
                           </div>
                         ))}
-                        <div className="catalog-preview-hidden-meta">
-                          <dt>Product reference</dt>
-                          <dd>{product.sku}</dd>
-                        </div>
                       </dl>
                       ) : (
                         <>
@@ -833,10 +818,6 @@ export default function PublicCatalog({
                             <div>
                               <dt>Category</dt>
                               <dd>{categoryName(product.categoryId)}</dd>
-                            </div>
-                            <div>
-                              <dt>Product reference</dt>
-                              <dd>{product.sku}</dd>
                             </div>
                           </dl>
                           {(Boolean(product.materials?.trim()) ||
