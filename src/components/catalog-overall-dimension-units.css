@@ -448,3 +448,43 @@
 @media(max-width: 740px) {
   .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field:has(.is-mixed) { grid-template-columns: minmax(0,1fr) !important; }
 }
+
+
+/* Keep the original three-card layout and full-height unit selector.
+   The small +/- action sits on the label line rather than taking input width. */
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-single-control { position: relative; }
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-add-part {
+  position: absolute;
+  z-index: 3;
+  top: 5px;
+  right: 86px;
+  width: 23px;
+  min-width: 23px;
+  height: 23px;
+  min-height: 23px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-add-part svg { width: 14px; height: 14px; }
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-single-control.is-mixed .catalog-dimension-inline-unit { flex-basis: 82px; width: 82px; min-width: 82px; }
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-single-control.is-mixed .catalog-dimension-inline-trigger { padding-inline: 10px; font-size: 12px; }
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-single-control.is-mixed .catalog-dimension-mixed-fields { padding-left: 14px; }
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field:has(.is-mixed) { grid-template-columns: repeat(3,minmax(0,1fr)) !important; gap: 12px !important; }
+.admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field:has(.is-mixed) .catalog-dimension-single:last-child { grid-column: auto; }
+@media(max-width:1080px) {
+  .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-add-part { right: 81px; }
+  .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-dimension-single-control.is-mixed .catalog-dimension-inline-unit { flex-basis: 77px; width: 77px; min-width: 77px; }
+  .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field:has(.is-mixed) { gap: 9px !important; }
+}
+@media(max-width:850px) {
+  .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field:has(.is-mixed) { grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 10px !important; }
+  .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field:has(.is-mixed) .catalog-dimension-single:last-child { grid-column: 1/-1; }
+}
+@media(max-width:600px) {
+  .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field:has(.is-mixed) { grid-template-columns: minmax(0,1fr) !important; }
+  .admin-app .modal.product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-reference-dimension-inputs.catalog-unified-dimensions.catalog-dimensions-by-field:has(.is-mixed) .catalog-dimension-single:last-child { grid-column: auto; }
+}
