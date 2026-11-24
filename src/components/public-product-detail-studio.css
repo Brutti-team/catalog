@@ -1265,3 +1265,32 @@
   }
 }
 
+
+
+/* Editorial availability: plain text and a small check, without pill chrome. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0;
+  box-shadow: none !important;
+  padding: 2px 0;
+  min-height: 24px;
+  gap: 7px;
+  font: 550 12px/1.4 "DM Sans",system-ui,sans-serif !important;
+  color: #34563f !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-made-to-order { color: #866536 !important; }
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-unavailable { color: #777d76 !important; }
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability > i { box-shadow: none !important; }
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-available > i {
+  box-sizing: border-box;
+  display: inline-block;
+  flex: 0 0 6px;
+  width: 6px;
+  height: 10px;
+  background: transparent !important;
+  border: solid currentColor;
+  border-width: 0 1.6px 1.6px 0;
+  border-radius: 0;
+  transform: rotate(45deg) translateY(-1px);
+}

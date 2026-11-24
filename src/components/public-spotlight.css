@@ -2069,3 +2069,35 @@
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section:has(> #pub-recommendations),
   .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations.pub-home-recommendations { --pub-recommendation-gap: 40px; }
 }
+
+
+/* Match the plain editorial status treatment across customer cards and quick view. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-products-grid.pub-products-grid--catalog .pub-catalog-tile__meta .pub-catalog-tile__availability, .pub-app.pub-refined:not(.pub-private-preview) .pub-quickview .pub-quickview__availability {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0;
+  box-shadow: none !important;
+  padding: 2px 0;
+  min-height: 24px;
+  gap: 6px;
+  color: #34563f;
+  font: 550 11px/1.4 "DM Sans",system-ui,sans-serif;
+}
+:is(.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-products-grid.pub-products-grid--catalog .pub-catalog-tile__meta .pub-catalog-tile__availability, .pub-app.pub-refined:not(.pub-private-preview) .pub-quickview .pub-quickview__availability):has(.pub-catalog-tile__dot--made-to-order) { color: #866536; }
+:is(.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-products-grid.pub-products-grid--catalog .pub-catalog-tile__meta .pub-catalog-tile__availability, .pub-app.pub-refined:not(.pub-private-preview) .pub-quickview .pub-quickview__availability):has(.pub-catalog-tile__dot--unavailable) { color: #777d76; }
+:is(.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-products-grid.pub-products-grid--catalog .pub-catalog-tile__meta .pub-catalog-tile__availability, .pub-app.pub-refined:not(.pub-private-preview) .pub-quickview .pub-quickview__availability) .pub-catalog-tile__dot { box-shadow: none !important; }
+:is(.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-products-grid.pub-products-grid--catalog .pub-catalog-tile__meta .pub-catalog-tile__availability, .pub-app.pub-refined:not(.pub-private-preview) .pub-quickview .pub-quickview__availability) .pub-catalog-tile__dot--available {
+  box-sizing: border-box;
+  display: inline-block;
+  flex: 0 0 6px;
+  width: 6px;
+  height: 10px;
+  background: transparent !important;
+  border: solid currentColor;
+  border-width: 0 1.6px 1.6px 0;
+  border-radius: 0;
+  transform: rotate(45deg) translateY(-1px);
+}
+@media (max-width:650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-products-grid.pub-products-grid--catalog .pub-catalog-tile__meta .pub-catalog-tile__availability { font-size: 10px; white-space: normal; }
+}
