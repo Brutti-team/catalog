@@ -18,6 +18,7 @@ import type { Category, Product, ProductImage, ProductSpecification } from "../l
 import { photoCropStyle } from "../lib/photo-crop";
 import { publicAssetUrl } from "../lib/assets";
 import ProductPrice from "./ProductPrice";
+import CatalogPdfDownload from "./CatalogPdfDownload";
 import { recommendProducts, recentProductIds, searchMatches } from "../lib/product-recommendations";
 import MaterialsContent from "./MaterialsContent";
 import { splitSpecifications } from "../lib/specification-groups";
@@ -489,6 +490,7 @@ export default function PublicCatalog({
                   )}
                 </label>
                 <div className="pub-collection-actions">
+                  <CatalogPdfDownload products={published} categories={categories} disabled={loading || Boolean(error)} />
                   <div className="pub-sort" ref={sortRef}>
                     <div className="pub-sort-control">
                       <button

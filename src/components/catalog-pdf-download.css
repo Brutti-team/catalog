@@ -1,0 +1,25 @@
+.pub-app .pub-pdf-trigger {display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #d0ddd2;border-radius:9px;padding:10px 14px;background:#164638;color:white;font:inherit;font-size:13px;font-weight:650;cursor:pointer;white-space:nowrap;}
+.pub-app .pub-pdf-trigger:hover,.pub-app .pub-pdf-download:hover {background:#215d4b;}
+.pub-app .pub-pdf-dialog {position:fixed;inset:0;margin:auto;width:min(460px,calc(100% - 28px));max-height:calc(100dvh - 32px);overflow:auto;box-sizing:border-box;padding:24px;border:1px solid #dce3dc;border-radius:18px;background:#fcfcf9;color:#22392e;box-shadow:0 24px 90px #142d2555;}
+.pub-pdf-dialog::backdrop {background:#112e26a0;backdrop-filter:blur(5px);}
+.pub-pdf-dialog-head {display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:20px;}
+.pub-pdf-dialog-head p {font-size:10px;letter-spacing:.14em;font-weight:750;margin:0 0 6px;color:#48715b;}
+.pub-pdf-dialog-head h2 {font-size:25px;line-height:1.15;letter-spacing:-.04em;margin:0 0 6px;}
+.pub-pdf-dialog-head span {font-size:13px;color:#687970;}
+.pub-pdf-dialog-head button {background:#edf1ed;border:0;border-radius:50%;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;color:#294c3c;flex-shrink:0;}
+.pub-pdf-dialog fieldset {border:0;padding:0;margin:0;display:grid;gap:8px;min-width:0;}
+.pub-pdf-dialog legend {font-size:12px;font-weight:650;margin-bottom:8px;}
+.pub-pdf-option {display:flex;gap:10px;align-items:center;padding:12px;border:1px solid #dce4dc;border-radius:10px;cursor:pointer;}
+.pub-pdf-option:has(input:checked) {background:#edf4ee;border-color:#749681;}
+.pub-pdf-option input {accent-color:#164638;}
+.pub-pdf-option strong,.pub-pdf-option small {display:block;}
+.pub-pdf-option strong {font-size:14px;}
+.pub-pdf-option small {font-size:11px;color:#62776b;margin-top:4px;}
+.pub-pdf-dialog select {padding:10px;border:1px solid #d0ddd2;border-radius:9px;background:white;color:#22392e;font:inherit;}
+.pub-pdf-summary,.pub-pdf-message {font-size:12px;color:#62776b;line-height:1.5;margin:14px 0;}
+.pub-pdf-message[role=alert] {color:#a13e36;}
+.pub-pdf-progress {display:grid;gap:6px;font-size:12px;margin:12px 0;}
+.pub-pdf-progress progress {width:100%;accent-color:#164638;}
+.pub-pdf-download {width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#164638;border:0;border-radius:10px;color:white;padding:13px;font:inherit;font-weight:650;cursor:pointer;}
+.pub-pdf-download:disabled,.pub-app .pub-pdf-trigger:disabled {opacity:.5;cursor:not-allowed;}
+@media(max-width:640px){.pub-app .pub-pdf-trigger {font-size:12px;padding:8px 10px;white-space:normal;}}
