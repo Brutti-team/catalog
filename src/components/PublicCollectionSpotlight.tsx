@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type SyntheticEvent } from "react";
 import { ArrowRight, Eye, Heart, Sparkles, Star, X } from "lucide-react";
 import type { Product } from "../lib/types";
 import { photoCropStyle } from "../lib/photo-crop";
+import { readPhotoColours, type PhotoColour } from "../lib/photo-colours";
 import { publicAssetUrl } from "../lib/assets";
 import { recordCatalogEvent } from "../lib/customer-analytics";
 import ProductPrice from "./ProductPrice";
@@ -84,8 +85,22 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
   const referenceKey = product.name.trim().toLowerCase();
   const photoColours = showColours && photo?.url && Object.prototype.hasOwnProperty.call(referencePhotoColours, referenceKey)
     ? referencePhotoColours[referenceKey] : [];
-  const colours = savedColours.length ? savedColours : photoColours;
-  const shownInPhoto = savedColours.length === 0 && photoColours.length > 0;
+  const photoUrl = photo?.url ? publicAssetUrl(photo.url) : "";
+  const autoPhotoUrl = showColours && !savedColours.length && !photoColours.length ? photoUrl : "";
+  const [detected, setDetected] = useState<{ url: string; colours: PhotoColour[] } | null>(null);
+  useEffect(() => {
+    if (!autoPhotoUrl) return;
+    let active = true;
+    void readPhotoColours(autoPhotoUrl).then(colours => {
+      if (active) setDetected({ url: autoPhotoUrl, colours });
+    });
+    return () => { active = false; };
+  }, [autoPhotoUrl]);
+  const automaticColours = autoPhotoUrl && detected?.url === autoPhotoUrl ? detected.colours : [];
+  const colours = savedColours.length ? savedColours : photoColours.length ? photoColours : automaticColours;
+  const shownInPhoto = savedColours.length === 0 && colours.length > 0;
+  const automatic = shownInPhoto && !photoColours.length;
+  const colourPending = Boolean(autoPhotoUrl && detected?.url !== autoPhotoUrl);
   const sale = hasProductDiscount(product);
   const saving = sale ? discountPercent(product) : 0;
   const [isFavourite, setIsFavourite] = useState(() => {
@@ -194,8 +209,8 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
                 <h3>{product.name}</h3>
               </a>
               {colours.length > 0 && (
-                <div className="pub-catalog-tile__colours" role="group" aria-label={shownInPhoto ? "Approximate colours shown in reference photo, not finish options" : "Recorded product colours"}>
-                  {shownInPhoto && <span className="pub-catalog-tile__colour-label" title="Approximate colours shown in reference photo">Shown:</span>}
+                <div className="pub-catalog-tile__colours" role="group" aria-label={shownInPhoto ? "Approximate photo colours, may include surroundings; not finish options" : "Recorded product colours"}>
+                  {shownInPhoto && <span className="pub-catalog-tile__colour-label" title={automatic ? "Automatically sampled photo colours; may include surroundings" : "Approximate colours of pictured furniture"}>{automatic ? "Photo:" : "Shown:"}</span>}
                   {colours.slice(0, 4).map(colour => colour.hex ? (
                     <span key={colour.label} className="pub-catalog-tile__swatch" style={{ backgroundColor: colour.hex }} data-colour-name={colour.label} tabIndex={0} role="img" aria-label={shownInPhoto ? `Pictured colour: ${colour.label}` : colour.label} />
                   ) : (
@@ -204,6 +219,7 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
                   {colours.length > 4 && <span className="pub-catalog-tile__colour-label" title={colours.slice(4).map(colour => colour.label).join(", ")}>+{colours.length - 4}</span>}
                 </div>
               )}
+              {showColours && !colours.length && !colourPending && <span className="pub-catalog-tile__colour-label">Colour not specified</span>}
               {sale && product.bestSelling && <span className="pub-catalog-tile__best-inline"><Star size={11} fill="currentColor" /> Best Seller</span>}
               {description && <p className="pub-catalog-tile__description" title={description}>{description}</p>}
             </div>
