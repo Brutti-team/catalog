@@ -1252,6 +1252,14 @@
     padding-top: 10px;
   }
 }
+/* On narrow or short screens, let the document scroll naturally rather
+   than nesting a small scroll area inside the customer's page. */
 @media (max-width: 850px), (max-height: 599px) {
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll { max-height: clamp(180px,48dvh,400px); }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll {
+    max-height: none;
+    overflow: visible;
+    scrollbar-gutter: auto;
+    padding-right: 0;
+  }
 }
+
