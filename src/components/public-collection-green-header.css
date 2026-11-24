@@ -331,26 +331,43 @@
   .pub-collection-green-header .pub-category-filters button {padding-inline: 11px;}
 }
 
-/* Compact, count-free category chips; wrap when needed so no label is clipped. */
+/* Count-free category chips stay in a single row at every viewport width.
+   Use native horizontal scrolling when the complete row cannot fit. */
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-filter-row {
+  min-width: 0;
+  max-width: 100%;
   overflow: visible;
 }
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters {
-  flex-wrap: wrap;
-  overflow: visible;
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
   gap: 7px;
-  padding: 2px 0 4px;
+  padding: 3px 2px 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-padding-inline: 2px;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters::-webkit-scrollbar { display: none; }
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters button {
   flex: 0 0 auto;
-  max-width: 100%;
+  max-width: none;
   min-height: 48px;
   padding: 10px 12px;
   font: 650 13px/1.35 "DM Sans", system-ui, sans-serif;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow-wrap: normal;
   text-align: center;
   border-radius: 9px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -3px;
 }
 @media (max-width: 520px) {
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters { gap: 5px; }
