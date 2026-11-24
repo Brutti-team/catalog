@@ -54,6 +54,20 @@ function recordedColours(product: Product) {
     }));
 }
 
+/** Approximate colours of the furniture visible in the supplied reference
+ * photos. These are not selectable finishes or a claim of stock availability.
+ * Staff-entered colour specifications always take precedence. */
+const referencePhotoColours: Record<string, { label: string; hex: string }[]> = {
+  palangko: [
+    { label: "Off-white", hex: "#e5e4dc" },
+    { label: "Natural wood", hex: "#c59c63" },
+  ],
+  tomodon: [
+    { label: "Blue-grey", hex: "#77949d" },
+    { label: "Natural light wood", hex: "#c6aa8e" },
+  ],
+};
+
 /** A regular catalogue card with an optional quick-view modal, not a full-width hero. */
 export default function PublicCollectionSpotlight({ product, categoryName, onView, showColours = false }: Props) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
@@ -61,7 +75,12 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
   const photo = product.images[0];
   const detailUrl = "#/product/" + encodeURIComponent(product.id);
   const description = product.description?.trim();
-  const colours = showColours ? recordedColours(product) : [];
+  const savedColours = showColours ? recordedColours(product) : [];
+  const referenceKey = product.name.trim().toLowerCase();
+  const photoColours = showColours && photo?.url && Object.prototype.hasOwnProperty.call(referencePhotoColours, referenceKey)
+    ? referencePhotoColours[referenceKey] : [];
+  const colours = savedColours.length ? savedColours : photoColours;
+  const shownInPhoto = savedColours.length === 0 && photoColours.length > 0;
   const sale = hasProductDiscount(product);
   const saving = sale ? discountPercent(product) : 0;
   const [isFavourite, setIsFavourite] = useState(() => {
@@ -170,9 +189,10 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
                 <h3>{product.name}</h3>
               </a>
               {colours.length > 0 && (
-                <div className="pub-catalog-tile__colours" role="group" aria-label="Recorded product colours">
+                <div className="pub-catalog-tile__colours" role="group" aria-label={shownInPhoto ? "Approximate colours shown in reference photo, not finish options" : "Recorded product colours"}>
+                  {shownInPhoto && <span className="pub-catalog-tile__colour-label" title="Approximate colours shown in reference photo">Shown:</span>}
                   {colours.slice(0, 4).map(colour => colour.hex ? (
-                    <span key={colour.label} className="pub-catalog-tile__swatch" style={{ backgroundColor: colour.hex }} title={colour.label} role="img" aria-label={colour.label} />
+                    <span key={colour.label} className="pub-catalog-tile__swatch" style={{ backgroundColor: colour.hex }} title={shownInPhoto ? `Pictured colour: ${colour.label}` : colour.label} role="img" aria-label={colour.label} />
                   ) : (
                     <span key={colour.label} className="pub-catalog-tile__colour-label" title={colour.label}>{colour.label}</span>
                   ))}
