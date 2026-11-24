@@ -1194,3 +1194,72 @@
     transition: none;
   }
 }
+
+/* Public navigation · full-bleed compact masthead (all customer routes).
+   Preserve the forest-green gradient, glass finish, logo and navigation. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: none;
+  min-height: 56px;
+  margin: 0;
+  padding: 4px clamp(20px,4.2vw,64px);
+  gap: 16px;
+  border: 0;
+  border-bottom: 1px solid rgba(255,255,255,.14);
+  border-radius: 0;
+  box-shadow: inset 0 1px rgba(255,255,255,.07), 0 4px 14px rgba(2,24,16,.13);
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark {
+  min-width: 76px;
+  min-height: 46px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {
+  width: 70px !important;
+  height: auto !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button {
+  min-height: 36px;
+  padding: 7px 0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav .pub-nav-active::after {
+  bottom: 0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-admin-link {
+  min-height: 34px;
+  padding: 6px 15px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-main,#pub-collection,#pub-showroom,#pub-best-selling,#pub-recommendations,#pub-contact) {
+  scroll-margin-top: 68px;
+}
+@media (min-width:801px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+    align-items: center;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark {justify-self:start;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-header-actions {justify-self:end;}
+}
+@media(max-width:800px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header {
+    min-height: 54px;
+    padding: 4px 16px;
+    gap: 8px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark {min-width:65px;min-height:43px;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-wordmark .pub-official-logo {width:65px!important;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav {
+    top:100%;
+    left:0;
+    right:0;
+    border-radius:0 0 12px 12px;
+    padding:8px 12px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button {min-height:44px;padding:10px 13px;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-menu-toggle {min-height:40px;min-width:40px;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-admin-link {min-height:34px;padding:6px 10px;}
+}
