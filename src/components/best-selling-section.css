@@ -2,7 +2,7 @@
 .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling {
   width: min(100%, 1520px);
   margin: 0 auto;
-  padding: clamp(58px, 6vw, 96px) clamp(24px, 5.2vw, 80px) clamp(56px, 5.8vw, 90px);
+  padding: 20px clamp(24px, 5.2vw, 80px) clamp(56px, 5.8vw, 90px);
   box-sizing: border-box;
   scroll-margin-top: 90px;
 }
@@ -207,7 +207,7 @@
 }
 @media (max-width: 600px) {
   .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling {
-    padding: 45px 18px 55px;
+    padding: 16px 18px 55px;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling__head h2 {
     font-size: clamp(31px, 8vw, 41px);
@@ -308,4 +308,18 @@
 .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling:has(+ #pub-recommendations) {padding-bottom:12px;}
 @media(max-width:650px){
   .pub-app.pub-refined:not(.pub-private-preview) .brutti-best-selling:has(+ #pub-recommendations) {padding-bottom:8px;}
+}
+
+/* The catalogue grid and Best Sellers are adjacent siblings. Avoid stacking their section padding. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection:has(+ #pub-best-selling) {
+  padding-bottom: 20px;
+  margin-bottom: 0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection + #pub-best-selling {
+  padding-top: 20px;
+  margin-top: 0;
+}
+@media (max-width: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection:has(+ #pub-best-selling) {padding-bottom: 12px;}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection + #pub-best-selling {padding-top: 16px;}
 }
