@@ -58,6 +58,11 @@ function recordedColours(product: Product) {
  * photos. These are not selectable finishes or a claim of stock availability.
  * Staff-entered colour specifications always take precedence. */
 const referencePhotoColours: Record<string, { label: string; hex: string }[]> = {
+  kaanagan: [
+    { label: "Off-white", hex: "#e1e3dc" },
+    { label: "Light sage grey", hex: "#c0ceca" },
+    { label: "Natural wood", hex: "#ad8558" },
+  ],
   palangko: [
     { label: "Off-white", hex: "#e5e4dc" },
     { label: "Natural wood", hex: "#c59c63" },
