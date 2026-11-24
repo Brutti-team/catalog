@@ -1844,15 +1844,14 @@
 }
 
 
-/* Larger recommendation typography with the price caption aligned to the
-   first character of the amount, while the entire price group stays right. */
+/* Compact recommendation typography, retaining left name and right price alignment. */
 .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__title h3 {
-  font: 700 22px/1.25 "DM Sans", "Manrope", system-ui, sans-serif;
-  letter-spacing: -.035em;
+  font: 650 15px/1.35 "DM Sans", Arial, sans-serif;
+  letter-spacing: -.012em;
 }
 .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__details-row {
   align-items: start;
-  gap: 12px;
+  gap: 8px;
 }
 .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-current--stacked {
   width: max-content;
@@ -1863,21 +1862,21 @@
   gap: 3px;
 }
 .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-basis {
-  font: 550 12px/1.3 "DM Sans", "Manrope", system-ui, sans-serif;
+  font: 450 10px/1.3 "DM Sans", Arial, sans-serif;
   letter-spacing: 0;
   text-align: left;
 }
 .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing :is(.catalog-price-amount,.catalog-price-current) {
-  font: 700 20px/1.25 "DM Sans", "Manrope", system-ui, sans-serif;
-  letter-spacing: -.03em;
+  font: 550 15px/1.35 "DM Sans", Arial, sans-serif;
+  letter-spacing: 0;
 }
 .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-amount {
   text-align: left;
 }
 @container (max-width: 230px) {
-  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__title h3 { font-size: 17px; }
-  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing :is(.catalog-price-amount,.catalog-price-current) { font-size: 16px; }
-  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-basis { font-size: 11px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__title h3 { font-size: 13px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing :is(.catalog-price-amount,.catalog-price-current) { font-size: 13px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-basis { font-size: 9px; }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__details-row { gap: 6px; }
 }
 @container (max-width: 180px) {
