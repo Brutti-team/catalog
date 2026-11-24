@@ -539,7 +539,6 @@ export default function ProductEditor({
   const publishChecks = [
     { label: "Name, Product ID & category", done: draft.name.trim().length >= 2 && !!draft.sku.trim() && !!draft.categoryId },
     { label: "Cover photo", done: draft.images.length > 0 },
-    { label: "Description", done: !!draft.description.trim() },
   ];
   const readyCount = publishChecks.filter((item) => item.done).length;
   function jumpTo(id: string) {
@@ -812,7 +811,7 @@ export default function ProductEditor({
                 </div>
               </div>
               <label>
-                Description <span className="product-editor-publish-hint">Required to publish</span>
+                Description <span className="product-editor-publish-hint">Optional</span>
                 <textarea
                   aria-label="Description"
                   rows={4}

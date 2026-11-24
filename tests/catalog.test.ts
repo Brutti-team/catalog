@@ -68,10 +68,10 @@ describe("real catalog product validation", () => {
     })).not.toThrow();
   });
 
-  it("still requires a description and image to publish", () => {
+  it("allows an empty description but still requires an image to publish", () => {
     expect(() => validateProduct({
       ...verifiedProduct, description: "", status: "published"
-    })).toThrow(/description/i);
+    })).not.toThrow();
     expect(() => validateProduct({
       ...verifiedProduct, images: [], status: "published"
     })).toThrow(/image/i);

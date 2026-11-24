@@ -283,9 +283,7 @@ export function validateProduct(product: Product): void {
   if (product.status === "published") {
     if (!product.images.length)
       throw new Error("Add at least one image before publishing.");
-    if (!product.description.trim())
-      throw new Error("Add a description before publishing.");
-    // Materials are optional; an empty string is a valid published product.
+    // Description and materials are optional; an empty string is valid.
   }
 }
 
