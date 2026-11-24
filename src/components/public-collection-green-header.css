@@ -373,3 +373,16 @@
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters { gap: 5px; }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-category-filters button { min-height: 44px; padding: 9px 11px; font-size: 13px; }
 }
+
+
+/* One unified search field; suppress the nested native input focus frame. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-search { display:flex; align-items:center; overflow:hidden; }
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-search input, .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-search input:focus, .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-search input:focus-visible {
+  appearance:none; -webkit-appearance:none;
+  background:transparent !important;
+  border:0 !important; outline:none !important; box-shadow:none !important;
+  border-radius:0 !important;
+  min-width:0; flex:1 1 auto;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-search > svg { flex-shrink:0; }
+.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-search:focus-within { outline:2px solid #b6d8bf; outline-offset:2px; box-shadow:none; }
