@@ -1085,3 +1085,25 @@
   .admin-app .modal.product-editor-dialog--editing .product-editor-v2
   #brutti-media-section .brutti-media-tabs button {transition:none;}
 }
+
+/* The cover editor mirrors the actual customer image viewport, not the staff
+   gallery caption overlay. Crop metadata is stored with the product on Save. */
+.brutti-customer-crop { margin-top: 14px; border:1px solid #d5e3d8; border-radius:10px; background:rgba(247,251,247,.75); overflow:hidden; }
+.brutti-customer-crop > summary { display:flex; align-items:center; gap:9px; padding:12px 14px; cursor:pointer; color:#28533c; font-weight:650; list-style:none; }
+.brutti-customer-crop > summary::-webkit-details-marker { display:none; }
+.brutti-customer-crop > summary small { margin-left:auto; font-weight:450; color:#647e6c; }
+.brutti-customer-crop[open] > summary > svg:last-child { transform:rotate(180deg); }
+.brutti-customer-crop-body { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; padding:14px; border-top:1px solid #d5e3d8; align-items:start; }
+.brutti-customer-crop-frame { position:relative; width:100%; max-width:420px; aspect-ratio:var(--catalog-card-photo-ratio,1.18); overflow:hidden; border-radius:9px; background:#edf1ec; }
+.brutti-customer-crop-frame > img { display:block; width:100%; height:100%; max-width:none; max-height:none; object-fit:cover; }
+.brutti-customer-crop-controls { display:grid; gap:10px; min-width:0; color:#345843; }
+.brutti-customer-crop-controls p,.brutti-customer-crop-controls small { margin:0; font-size:12px; line-height:1.5; color:#60786a; }
+.brutti-customer-crop-controls label { display:grid; grid-template-columns:1fr auto; gap:3px; font-size:12px; font-weight:600; }
+.brutti-customer-crop-controls label input[type="range"] { grid-column:1/-1; width:100%; padding:0; height:23px; accent-color:#28543a; cursor:pointer; }
+.brutti-customer-crop-controls button { justify-self:start; border:1px solid #ccdcd0; color:inherit; background:transparent; border-radius:7px; padding:7px 11px; }
+.brutti-customer-crop-pending { margin:10px 0 0; padding:9px 12px; border-radius:7px; color:#785a2e; background:#fff4dd; font-size:12px; }
+.admin-app[data-theme="dark"] .brutti-customer-crop { background:#263b30; border-color:#486450; }
+.admin-app[data-theme="dark"] .brutti-customer-crop :is(summary,.brutti-customer-crop-controls) { color:#d8ecdc; }
+.admin-app[data-theme="dark"] .brutti-customer-crop :is(small,.brutti-customer-crop-controls p) { color:#afc5b4; }
+.admin-app[data-theme="dark"] .brutti-customer-crop-body { border-color:#486450; }
+@media(max-width:650px) { .brutti-customer-crop-body { grid-template-columns:minmax(0,1fr); gap:12px; } }

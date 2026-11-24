@@ -43,7 +43,7 @@ import PhotoCropEditor from "./PhotoCropEditor";
 import PhotoCoverStudio from "./PhotoCoverStudio";
 import AlbumLibrary from "./AlbumLibrary";
 import { albumPhotoToProductImage, type AlbumPhoto } from "../lib/album";
-import { photoCropStyle } from "../lib/photo-crop";
+import { photoCropStyle, catalogCardPhotoStyle, normalisePhotoCrop } from "../lib/photo-crop";
 import { splitSpecifications, compactSpecifications } from "../lib/specification-groups";
 
 const MEASUREMENT_NAME_OPTIONS = [
@@ -534,6 +534,13 @@ export default function ProductEditor({
     if (mounted.current) setBusy(false);
   }
   const cover = draft.images[0];
+  const coverFraming = normalisePhotoCrop(cover?.crop ?? { x: 50, y: draft.sku === "PNL-15" ? 100 : 67, zoom: 1 });
+  const coverChanged = JSON.stringify(cover ?? null) !== JSON.stringify(product.images[0] ?? null);
+  const setCoverFraming = (patch: Partial<typeof coverFraming>) => {
+    if (!cover) return;
+    setDraft(current => ({ ...current, images: current.images.map(image =>
+      image.id === cover.id ? { ...image, crop: normalisePhotoCrop({ ...coverFraming, ...patch }) } : image) }));
+  };
   return (
     <Modal
       title={isNewProduct ? "Create product" : "Edit product"}
@@ -737,6 +744,31 @@ export default function ProductEditor({
                   </button>}
                 </div>
                 <p className="brutti-media-gallery-help">Select a photo to preview it; use the crop icon to edit. The original file stays in Album.</p>
+                {cover && <>
+                  {coverChanged && <p className="brutti-customer-crop-pending" role="status">Cover changes are not published yet. Select Save product to update the customer catalog.</p>}
+                  <details className="brutti-customer-crop">
+                    <summary><Crop size={16} aria-hidden="true" /> Customer card crop <small>Preview and adjust</small><ChevronDown size={16} aria-hidden="true" /></summary>
+                    <div className="brutti-customer-crop-body">
+                      <div className="brutti-customer-crop-frame">
+                        <SafeImage src={cover.url} alt={cover.alt || draft.name} style={catalogCardPhotoStyle(cover,draft.sku)} />
+                      </div>
+                      <div className="brutti-customer-crop-controls">
+                        <p>This preview uses the same photo framing as the customer catalog. Adjust the image without replacing the original photo.</p>
+                        <label>Zoom <output>{Math.round(coverFraming.zoom * 100)}%</output>
+                          <input type="range" min={1} max={2.5} step={0.01} value={coverFraming.zoom} disabled={busy||uploading} onChange={event=>setCoverFraming({zoom:Number(event.target.value)})}/>
+                        </label>
+                        <label>Horizontal position <output>{Math.round(coverFraming.x)}%</output>
+                          <input type="range" min={0} max={100} value={coverFraming.x} disabled={busy||uploading} onChange={event=>setCoverFraming({x:Number(event.target.value)})}/>
+                        </label>
+                        <label>Vertical position <output>{Math.round(coverFraming.y)}%</output>
+                          <input type="range" min={0} max={100} value={coverFraming.y} disabled={busy||uploading} onChange={event=>setCoverFraming({y:Number(event.target.value)})}/>
+                        </label>
+                        <button type="button" disabled={busy||uploading} onClick={()=>setDraft(current=>({...current,images:current.images.map(image=>image.id===cover.id?{...image,crop:undefined}:image)}))}>Reset card crop</button>
+                        <small>Save product to apply this framing to the public catalog.</small>
+                      </div>
+                    </div>
+                  </details>
+                </>}
               </div>
 
               <div role="tabpanel" id="brutti-media-3d-panel" aria-labelledby="brutti-media-3d-tab"
