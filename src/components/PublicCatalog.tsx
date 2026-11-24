@@ -796,6 +796,7 @@ export default function PublicCatalog({
                       specificationGroups.sections.some(section => section.rows.some(item => specificationHasContent(item)))
                     ) && <div className="pub-specifications">
                       <h2>The details</h2>
+                      {previewProduct ? (
                       <dl>
                         {Boolean(product.materials?.trim()) && (
                           <div>
@@ -809,26 +810,67 @@ export default function PublicCatalog({
                             <dd>{formatProductDimensions(product)}</dd>
                           </div>
                         )}
-                        <div className={previewProduct ? "catalog-preview-hidden-meta" : ""}>
+                        <div className="catalog-preview-hidden-meta">
                           <dt>Category</dt>
                           <dd>{categoryName(product.categoryId)}</dd>
                         </div>
-                        {specificationGroups.primary.filter(item => !previewProduct || (specificationHasContent(item))).map((item) => (
+                        {specificationGroups.primary.filter(item => specificationHasContent(item)).map((item) => (
                           <div key={item.id}>
                             <dt>{item.name}</dt>
                             <dd>{specificationDisplayValue(item)}</dd>
                           </div>
                         ))}
-                        <div className={previewProduct ? "catalog-preview-hidden-meta" : ""}>
+                        <div className="catalog-preview-hidden-meta">
                           <dt>Product reference</dt>
                           <dd>{product.sku}</dd>
                         </div>
                       </dl>
-                      {specificationGroups.sections.filter(section => !previewProduct || section.rows.some(item => specificationHasContent(item))).map(section => (
-                        <div className="pub-spec-section" key={section.id}>
-                          <h3>{section.title}</h3>
+                      ) : (
+                        <>
                           <dl>
-                            {section.rows.filter(item => !previewProduct || (specificationHasContent(item))).map(item => (
+                            <div>
+                              <dt>Category</dt>
+                              <dd>{categoryName(product.categoryId)}</dd>
+                            </div>
+                            <div>
+                              <dt>Product reference</dt>
+                              <dd>{product.sku}</dd>
+                            </div>
+                          </dl>
+                          {(Boolean(product.materials?.trim()) ||
+                            [product.width, product.depth, product.height].some(value => Number.isFinite(value) && value > 0) ||
+                            specificationGroups.primary.some(specificationHasContent)) && (
+                            <div className="pub-spec-section">
+                              <h3>Specifications</h3>
+                              <dl>
+                                {Boolean(product.materials?.trim()) && (
+                                  <div>
+                                    <dt>Materials</dt>
+                                    <dd><MaterialsContent value={product.materials} /></dd>
+                                  </div>
+                                )}
+                                {[product.width, product.depth, product.height].some(value => Number.isFinite(value) && value > 0) && (
+                                  <div>
+                                    <dt>Dimensions</dt>
+                                    <dd>{formatProductDimensions(product)}</dd>
+                                  </div>
+                                )}
+                                {specificationGroups.primary.filter(item => specificationHasContent(item)).map((item) => (
+                                  <div key={item.id}>
+                                    <dt>{item.name}</dt>
+                                    <dd>{specificationDisplayValue(item)}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                            </div>
+                          )}
+                        </>
+                      )}
+                      {specificationGroups.sections.filter(section => section.rows.some(specificationHasContent)).map(section => (
+                        <div className="pub-spec-section" key={section.id}>
+                          <h3>{section.title.trim() || "Specifications"}</h3>
+                          <dl>
+                            {section.rows.filter(specificationHasContent).map(item => (
                               <div key={item.id}>
                                 <dt>{item.name}</dt>
                                 <dd>{specificationDisplayValue(item)}</dd>
