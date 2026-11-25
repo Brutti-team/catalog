@@ -677,3 +677,66 @@
 .admin-app[data-theme="dark"] .account-center--users .catalog-pending-staff-role {
   color: #c9dbcb;
 }
+
+/* Account Permission — compact neutral glass workspace, scoped to this page. */
+.admin-app .account-center--users {
+  --ap-ink:#254334;--ap-muted:#63776a;--ap-rule:rgba(94,127,105,.15);
+  --ap-glass:rgba(255,255,255,.76);--ap-soft:rgba(229,239,231,.62);
+  --ap-role:#e5efe7;--ap-role-ink:#315b40;--ap-pending:#f4eee2;--ap-pending-ink:#856a3e;
+  max-width:1240px!important;color:var(--ap-ink);font-family:Inter,system-ui,sans-serif!important;
+}
+.admin-app .account-center--users .account-heading {margin-bottom:20px!important;align-items:center!important;}
+.admin-app .account-center--users .account-heading h1 {font:700 clamp(25px,2.4vw,34px)/1.2 Inter,system-ui,sans-serif!important;letter-spacing:-.035em!important;margin:7px 0 5px!important;color:var(--ap-ink)!important;}
+.admin-app .account-center--users .account-heading p {font-size:12px!important;color:var(--ap-muted)!important;max-width:75ch;}
+.admin-app .account-center--users .account-heading-actions > .button {min-height:37px!important;padding:8px 13px!important;font:600 12px/1.4 Inter,system-ui,sans-serif!important;}
+.admin-app .account-center--users .account-heading-actions > .account-add-user {background:linear-gradient(135deg,#37634c,#234c38)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.17),0 4px 10px rgba(33,71,49,.12)!important;}
+.admin-app .account-center--users .account-table-wrap {border:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;padding:0!important;}
+.admin-app .account-center--users .account-table-title {
+  padding:15px 18px!important;gap:10px!important;border:1px solid var(--ap-rule)!important;border-bottom:0!important;
+  border-radius:14px 14px 0 0!important;background:var(--ap-glass)!important;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+}
+.admin-app .account-center--users .account-table-title > svg {box-sizing:content-box;padding:8px;border-radius:9px;background:var(--ap-role);color:var(--ap-role-ink)!important;}
+.admin-app .account-center--users .account-table-title strong {font:650 15px/1.4 Inter,system-ui,sans-serif!important;color:var(--ap-ink)!important;}
+.admin-app .account-center--users .account-table-title > span {background:var(--ap-role)!important;color:var(--ap-role-ink)!important;border:0!important;border-radius:7px!important;}
+.admin-app .account-center--users .account-table-hint {background:var(--ap-glass)!important;padding:0 18px 12px!important;border:1px solid var(--ap-rule)!important;border-top:0!important;border-bottom:0!important;color:var(--ap-muted)!important;font:400 11.5px/1.5 Inter,system-ui,sans-serif!important;}
+.admin-app .account-center--users .account-scroll {border:1px solid var(--ap-rule);border-radius:0 0 14px 14px;background:var(--ap-glass);box-shadow:0 5px 18px rgba(32,61,44,.045);scrollbar-width:none;}
+.admin-app .account-center--users .account-scroll::-webkit-scrollbar {display:none;}
+.admin-app .account-center--users .account-table {table-layout:fixed;min-width:620px;}
+.admin-app .account-center--users .account-table th {background:var(--ap-soft)!important;padding:10px 18px!important;color:var(--ap-muted)!important;font:600 11px/1.4 Inter,system-ui,sans-serif!important;}
+.admin-app .account-center--users .account-table th:nth-child(1) {width:39%;}
+.admin-app .account-center--users .account-table th:nth-child(2) {width:28%;}
+.admin-app .account-center--users .account-table th:last-child:not(:nth-child(3)) {width:86px;text-align:right;}
+.admin-app .account-center--users .account-table td {padding:13px 18px!important;background:transparent!important;border-color:var(--ap-rule)!important;color:var(--ap-ink)!important;font:450 12px/1.5 Inter,system-ui,sans-serif!important;}
+.admin-app .account-center--users .account-table td strong {font:650 13px/1.4 Inter,system-ui,sans-serif!important;color:var(--ap-ink)!important;}
+.admin-app .account-center--users .account-table td :is(span,small) {color:var(--ap-muted);font-size:11.5px;}
+.admin-app .account-center--users .account-table select {width:100%;max-width:160px!important;min-height:35px!important;padding:6px 10px!important;background:var(--ap-glass)!important;border:1px solid var(--ap-rule)!important;border-radius:8px!important;color:var(--ap-ink)!important;font:550 12px/1.4 Inter,system-ui,sans-serif!important;}
+.admin-app .account-center--users .account-table .button.secondary {min-height:34px!important;padding:7px 11px!important;background:var(--ap-role)!important;color:var(--ap-role-ink)!important;border:1px solid var(--ap-rule)!important;}
+.admin-app .account-center--users .account-table td:last-child:not(:nth-child(3)) {text-align:right;}
+.admin-app .account-center--users .catalog-pending-staff {
+  margin-top:18px!important;border:1px solid var(--ap-rule)!important;border-radius:14px!important;overflow:hidden;
+  background:var(--ap-glass)!important;box-shadow:0 5px 18px rgba(32,61,44,.045);
+}
+.admin-app .account-center--users .catalog-pending-staff-heading {padding:15px 18px 12px!important;align-items:center!important;border-bottom:1px solid var(--ap-rule)!important;}
+.admin-app .account-center--users .catalog-pending-staff-heading h2 {font:650 15px/1.4 Inter,system-ui,sans-serif!important;color:var(--ap-ink)!important;margin:0 0 4px!important;}
+.admin-app .account-center--users .catalog-pending-staff-heading p {font:400 11.5px/1.55 Inter,system-ui,sans-serif!important;color:var(--ap-muted)!important;max-width:95ch!important;}
+.admin-app .account-center--users .catalog-pending-staff-count,.admin-app .account-center--users .catalog-pending-staff-state {background:var(--ap-pending)!important;color:var(--ap-pending-ink)!important;border:0!important;border-radius:7px!important;font:600 11px/1.4 Inter,system-ui,sans-serif!important;}
+.admin-app .account-center--users .catalog-pending-staff-list {padding:0 18px 4px!important;}
+.admin-app .account-center--users .catalog-pending-staff-item {grid-template-columns:minmax(0,1.7fr) minmax(100px,.62fr) minmax(95px,.55fr) 83px!important;gap:12px!important;padding:11px 0!important;border-color:var(--ap-rule)!important;}
+.admin-app .account-center--users .catalog-pending-staff-item:not(:has(button)) {grid-template-columns:minmax(0,1.7fr) minmax(100px,.62fr) minmax(95px,.55fr)!important;}
+.admin-app .account-center--users .catalog-pending-staff-identity {gap:2px!important;}
+.admin-app .account-center--users .catalog-pending-staff-identity strong {font:650 13px/1.4 Inter,system-ui,sans-serif!important;color:var(--ap-ink)!important;}
+.admin-app .account-center--users .catalog-pending-staff-identity small {font:400 11.5px/1.4 Inter,system-ui,sans-serif!important;color:var(--ap-muted)!important;}
+.admin-app .account-center--users .catalog-pending-staff-role {justify-self:start;padding:5px 9px;border-radius:7px;background:var(--ap-role);color:var(--ap-role-ink)!important;font:600 11px/1.4 Inter,system-ui,sans-serif!important;}
+.admin-app .account-center--users .catalog-pending-staff-invite {min-height:34px!important;padding:7px 11px!important;justify-self:end;background:var(--ap-role)!important;color:var(--ap-role-ink)!important;border-color:var(--ap-rule)!important;font:600 11.5px/1.4 Inter,system-ui,sans-serif!important;transition:background .18s,box-shadow .18s;}
+.admin-app .account-center--users .catalog-pending-staff-invite:hover:not(:disabled) {box-shadow:0 3px 9px rgba(38,77,51,.10);filter:brightness(.97);}
+.admin-app .account-center--users .account-privacy {font-size:11px!important;margin-top:14px!important;}
+.admin-app[data-theme="dark"] .account-center--users {--ap-ink:#e1eae4;--ap-muted:#abbcb0;--ap-rule:rgba(165,190,172,.16);--ap-glass:rgba(39,46,42,.94);--ap-soft:#303b33;--ap-role:#364b3d;--ap-role-ink:#cce5d3;--ap-pending:#493f30;--ap-pending-ink:#e5cfa8;}
+@media(max-width:760px) {
+  .admin-app .account-center--users .account-heading {align-items:flex-start!important;}
+  .admin-app .account-center--users .catalog-pending-staff-item {grid-template-columns:minmax(0,1fr) auto!important;gap:7px 10px!important;}
+  .admin-app .account-center--users .catalog-pending-staff-item:not(:has(button)) {grid-template-columns:minmax(0,1fr) auto!important;}
+  .admin-app .account-center--users .catalog-pending-staff-invite {grid-column:2;grid-row:1/span 2;}
+  .admin-app .account-center--users .catalog-pending-staff-state {grid-column:1;}
+}
+@media(prefers-reduced-motion:reduce){.admin-app .account-center--users .catalog-pending-staff-invite {transition:none;}}
