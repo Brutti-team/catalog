@@ -19,6 +19,59 @@ const roleOptions: { value: StaffRole | "none"; title: string }[] = [
   { value: "none", title: "No access" },
 ];
 
+const inviteAccessOptions = [
+  { value: "editor", title: "Editor", detail: "Products", Icon: Pencil, tone: "blue" },
+  { value: "admin", title: "Admin", detail: "View permissions", Icon: ShieldCheck, tone: "amber" },
+  { value: "super_admin", title: "Super Admin", detail: "Manage access", Icon: ShieldCheck, tone: "violet" },
+] as const;
+
+function InviteRolePicker({ value, onChange, disabled }: { value: StaffRole; onChange: (role: StaffRole) => void; disabled: boolean }) {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const current = inviteAccessOptions.find(role => role.value === value) ?? inviteAccessOptions[0];
+  useEffect(() => {
+    if (!open) return;
+    root.current?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus({ preventScroll: true });
+    const outside = (e: PointerEvent) => {
+      if (e.target instanceof Node && !root.current?.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", outside);
+    return () => document.removeEventListener("pointerdown", outside);
+  }, [open]);
+  useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
+  const close = () => { setOpen(false); trigger.current?.focus({ preventScroll: true }); };
+  return <div ref={root} className="catalog-invite-role-picker"
+    onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false); }}
+    onKeyDown={e => {
+      if (e.key === "Escape" && open) { e.preventDefault(); e.stopPropagation(); close(); }
+      if (open && ["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) {
+        e.preventDefault();
+        const items = Array.from(root.current?.querySelectorAll<HTMLButtonElement>(".catalog-invite-role-option") ?? []);
+        if (!items.length) return;
+        const i = items.indexOf(document.activeElement as HTMLButtonElement);
+        items[e.key === "Home" ? 0 : e.key === "End" ? items.length - 1 : (i + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length]?.focus();
+      }
+    }}>
+    <button id="catalog-invite-role" ref={trigger} type="button" disabled={disabled} className="catalog-invite-role-trigger"
+      aria-label={"Catalog access: " + current.title + ", " + current.detail} aria-expanded={open}
+      aria-controls={open ? "catalog-invite-role-options" : undefined} onClick={() => open ? close() : setOpen(true)}>
+      <span className={"catalog-invite-role-icon is-" + current.tone}><current.Icon size={17} aria-hidden="true"/></span>
+      <span className="catalog-invite-role-copy"><strong>{current.title}</strong><small>{current.detail}</small></span>
+      <ChevronDown size={16} className={open ? "is-open" : ""} aria-hidden="true"/>
+    </button>
+    {open && <div id="catalog-invite-role-options" className="catalog-invite-role-menu" role="group" aria-label="Choose catalog access">
+      <small className="catalog-invite-role-menu-label">Access level</small>
+      {inviteAccessOptions.map(role => <button key={role.value} type="button" className={"catalog-invite-role-option" + (role.value === value ? " is-selected" : "")}
+        aria-pressed={role.value === value} disabled={disabled} onClick={() => { onChange(role.value); close(); }}>
+        <span className={"catalog-invite-role-icon is-" + role.tone}><role.Icon size={17} aria-hidden="true"/></span>
+        <span className="catalog-invite-role-copy"><strong>{role.title}</strong><small>{role.detail}</small></span>
+        {role.value === value && <Check size={16} aria-hidden="true"/>}
+      </button>)}
+    </div>}
+  </div>;
+}
+
 function dateText(value: string | null): string {
   if (!value) return "Never";
   const date = new Date(value);
@@ -490,13 +543,7 @@ export default function AccountCenter({
                 disabled={busyId === "invite"}/>
             </div>
             <label htmlFor="catalog-invite-role">Catalog access <span>*</span></label>
-            <select id="catalog-invite-role" value={inviteRole}
-              onChange={e => setInviteRole(e.target.value as StaffRole)}
-              disabled={busyId === "invite"}>
-              <option value="editor">Editor · Products</option>
-              <option value="admin">Admin · View permissions</option>
-              <option value="super_admin">Super Admin · Manage access</option>
-            </select>
+            <InviteRolePicker value={inviteRole} onChange={setInviteRole} disabled={busyId === "invite"}/>
             <p className="catalog-user-invite-note">
               This sends a separate Catalog invitation. Brutti OS login is not linked yet.
               Only grant access to the intended team member; no password is shared.
