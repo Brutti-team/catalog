@@ -513,3 +513,188 @@
 .admin-app.brutti-staff-redesign[data-theme="dark"] .catalog-category-delete-dialog .catalog-delete-warning p {
   color: #d0babc;
 }
+
+/* Product deletion only — compact neutral glass, red reserved for the destructive action. */
+.admin-app.brutti-staff-redesign.catalog-os-layout dialog.modal.catalog-product-delete-dialog {
+  --delete-surface: rgba(252,253,251,.97);
+  --delete-text: #263d30;
+  --delete-muted: #67776d;
+  --delete-line: #dce5de;
+  --delete-card: rgba(234,241,235,.72);
+  --delete-danger: #b62f3d;
+  --delete-warning: #fff2f1;
+  --delete-warning-text: #8d303b;
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(420px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  overflow: auto;
+  scrollbar-width: none;
+  border: 1px solid var(--delete-line);
+  border-radius: 18px;
+  background: var(--delete-surface);
+  color: var(--delete-text);
+  box-shadow: 0 24px 70px rgba(18,35,26,.25), 0 4px 16px rgba(18,35,26,.08);
+  backdrop-filter: blur(22px) saturate(115%);
+  animation: catalog-product-delete-enter .2s ease-out both;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout dialog.modal.catalog-product-delete-dialog::backdrop {
+  background: rgba(18,30,24,.42);
+  backdrop-filter: blur(5px);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout dialog.modal.catalog-product-delete-dialog > .modal-heading {
+  position: relative;
+  inset: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: 0;
+  gap: 12px;
+  margin: 0;
+  padding: 22px 22px 13px;
+  background: transparent !important;
+  border: 0;
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout dialog.modal.catalog-product-delete-dialog > .modal-heading .eyebrow {
+  display: block;
+  margin: 0 0 6px;
+  color: var(--delete-muted) !important;
+  font: 700 9px/1.4 "DM Sans",system-ui,sans-serif;
+  letter-spacing: .12em;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout dialog.modal.catalog-product-delete-dialog > .modal-heading h2 {
+  margin: 0;
+  color: var(--delete-text) !important;
+  font: 750 23px/1.25 "Manrope","DM Sans",system-ui,sans-serif;
+  letter-spacing: -.045em;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout dialog.modal.catalog-product-delete-dialog > .modal-heading .icon-button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--delete-line);
+  border-radius: 9px;
+  background: var(--delete-card);
+  color: var(--delete-muted);
+  box-shadow: none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-body {
+  display: grid;
+  gap: 14px;
+  padding: 0 22px 22px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-card {
+  display: grid;
+  grid-template-columns: 58px minmax(0,1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 9px;
+  border: 1px solid var(--delete-line);
+  border-radius: 12px;
+  background: var(--delete-card);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-thumb {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--delete-line);
+  color: var(--delete-muted);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-thumb img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-name {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-name strong {
+  color: var(--delete-text);
+  font: 700 13px/1.4 "DM Sans",system-ui,sans-serif;
+  overflow-wrap: anywhere;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-name small {
+  color: var(--delete-muted);
+  font: 500 11px/1.35 "DM Sans",system-ui,sans-serif;
+  overflow-wrap: anywhere;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: var(--delete-warning);
+  color: var(--delete-warning-text);
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-message > svg { flex: 0 0 17px; margin-top: 1px; }
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-message p {
+  margin: 0;
+  color: inherit;
+  font: 500 12px/1.55 "DM Sans",system-ui,sans-serif;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 9px;
+  padding-top: 3px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-actions > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 42px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--delete-line);
+  background: var(--delete-card);
+  color: var(--delete-text);
+  font: 700 12px/1.4 "DM Sans",system-ui,sans-serif;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-actions > .product-delete-submit {
+  background: var(--delete-danger);
+  border-color: var(--delete-danger);
+  color: white;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-actions > button:not(:disabled):hover { filter: brightness(.95); transform: translateY(-1px); }
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-actions > button:disabled { opacity: .55; cursor: not-allowed; }
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-actions > button:focus-visible { outline: 2px solid var(--delete-muted); outline-offset: 2px; }
+.admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .notice.error { margin: 0; }
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] dialog.modal.catalog-product-delete-dialog {
+  --delete-surface: rgba(27,31,29,.98);
+  --delete-text: #f0f4f1;
+  --delete-muted: #b0bdb4;
+  --delete-line: #424b45;
+  --delete-card: #333a35;
+  --delete-danger: #be3846;
+  --delete-warning: #432c30;
+  --delete-warning-text: #ffbac1;
+  background: var(--delete-surface) !important;
+}
+@keyframes catalog-product-delete-enter {
+  from { opacity: 0; transform: translateY(6px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout dialog.modal.catalog-product-delete-dialog { animation: none; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout .catalog-product-delete-dialog .product-delete-actions > button { transition: none; }
+}
