@@ -1480,3 +1480,10 @@
 @media(max-width:520px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-promise {padding:9px 10px;}
 }
+
+/* Stock labels on the full public product page. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-available {background:#1f5a43 !important;border-color:#1f5a43 !important;color:#fff !important;}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-made-to-order {color:#315d92 !important;background:#e9f1fa !important;border:1px solid #c8dbef !important;border-radius:5px;padding:6px 11px;}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-unavailable {color:#a13732 !important;background:#f8eae8 !important;border:1px solid #efcdca !important;border-radius:5px;padding:6px 11px;}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-availability.pub-made-to-order > i {background:#4779b5 !important;}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-availability.pub-unavailable > i {background:#a13732 !important;}
