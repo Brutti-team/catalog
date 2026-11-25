@@ -72,17 +72,11 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
       const rightLimit = Math.min(window.innerWidth - 10, box.right - 12 * sx);
       const width = Math.min(420 * sx, anchor.width, rightLimit - leftLimit);
       const left = Math.max(leftLimit, Math.min(anchor.right - width, rightLimit - width));
-      const footer = host.querySelector<HTMLElement>(".editor-footer")?.getBoundingClientRect();
-      const header = host.querySelector<HTMLElement>(".catalog-editor-actionbar")?.getBoundingClientRect();
-      const outerLow = Math.max(10, box.top + 12 * sy);
-      const outerHigh = Math.min(window.innerHeight - 10, box.bottom - 12 * sy);
-      let low = Math.max(outerLow, header && header.bottom <= anchor.top ? header.bottom + gap : outerLow);
-      let high = Math.min(outerHigh, footer && footer.top >= anchor.bottom ? footer.top - gap : outerHigh);
-      // Give the list enough vertical room to browse categories comfortably.
-      // If neither side fits, allow the popover to overlap the trigger rather
-      // than shrinking to just a few rows; stay within the visible dialog.
-      const desired = Math.min(520, 86 + Math.max(filtered.length, 1) * 42) * sy;
-      if (high - low < Math.min(desired, 360 * sy)) { low = outerLow; high = outerHigh; }
+      // Browse in a tall overlay, not just the small gap above the field.
+      // Cover the editor form when needed while staying in the visible dialog.
+      const low = Math.max(10, box.top + 12 * sy);
+      const high = Math.min(window.innerHeight - 10, box.bottom - 12 * sy);
+      const desired = Math.min(640, 100 + Math.max(filtered.length, 1) * 48) * sy;
       const below = Math.max(0, high - anchor.bottom - gap);
       const above = Math.max(0, anchor.top - low - gap);
       const placeBelow = below >= desired || below >= above;
@@ -94,6 +88,7 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
         top: Math.round((top - box.top) / sy + host.scrollTop - host.clientTop),
         left: Math.round((left - box.left) / sx + host.scrollLeft - host.clientLeft),
         width: Math.max(0, Math.floor(width / sx)),
+        height: Math.max(0, Math.floor(height / sy)),
         maxHeight: Math.max(0, Math.floor(height / sy)),
         zIndex: 120,
       });
