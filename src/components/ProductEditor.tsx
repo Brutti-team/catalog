@@ -47,7 +47,7 @@ import PhotoCoverStudio from "./PhotoCoverStudio";
 import AlbumLibrary from "./AlbumLibrary";
 import { albumPhotoToProductImage, type AlbumPhoto } from "../lib/album";
 import { photoCropStyle, catalogCardPhotoStyle, normalisePhotoCrop, effectivePhotoCrop } from "../lib/photo-crop";
-import { splitSpecifications, compactSpecifications } from "../lib/specification-groups";
+import { splitSpecifications, compactSpecifications, primaryFinishingRow, setPrimaryFinishing } from "../lib/specification-groups";
 
 const MEASUREMENT_NAME_OPTIONS = [
   "Width", "Height", "Depth", "Length", "Diameter", "Thickness", "Radius",
@@ -451,8 +451,10 @@ export default function ProductEditor({
       setEditorConfirmation({title:"Remove this section?",description:"This removes the section and all its rows when you save the product.",confirmLabel:"Remove section",action:remove});
     } else remove();
   };
+  const finishingRow = primaryFinishingRow(draft.specifications);
+  const finishingAtLimit = !finishingRow && (draft.specifications ?? []).length >= 24;
   const { primary: primarySpecificationRows, sections: specificationSections } =
-    splitSpecifications(draft.specifications);
+    splitSpecifications((draft.specifications ?? []).filter(row => row.id !== finishingRow?.id));
   const changeSpecification = (id: string, field: "name" | "value" | "description", value: string) =>
     setDraft((current) => ({
       ...current,
@@ -940,6 +942,17 @@ export default function ProductEditor({
                     value={draft.materials}
                     onChange={value => update("materials", value)}
                     disabled={busy}
+                  />
+                </div>
+                <div className="catalog-reference-spec-row catalog-materials-spec-row">
+                  <span className="catalog-reference-spec-key">Finishing <small>{finishingAtLimit ? "Remove a custom row to add finishing" : "Optional · surface finish"}</small></span>
+                  <MaterialsEditor
+                    label="Finishing"
+                    placeholder="Describe coating, paint, stain or surface finishing…"
+                    maxLength={400}
+                    value={finishingRow?.value ?? ""}
+                    onChange={value => setDraft(current => ({ ...current, specifications: setPrimaryFinishing(current.specifications, value) }))}
+                    disabled={busy || finishingAtLimit}
                   />
                 </div>
                 <div className="catalog-reference-spec-row catalog-reference-pricing-row">
