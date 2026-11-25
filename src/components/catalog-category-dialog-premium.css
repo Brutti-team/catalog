@@ -422,3 +422,25 @@
   .admin-app.brutti-staff-redesign .category-editor-dialog .category-editor-scroll-body {padding:15px 17px;gap:12px;}
   .admin-app.brutti-staff-redesign .category-editor-dialog .category-editor-actions {padding:11px 17px !important;}
 }
+
+
+/* Inline multi-photo Album selection, inside the category form only. */
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-album-search {
+  display:flex; align-items:center; gap:8px; padding:0 9px;
+  border:1px solid #d6e5d8; border-radius:9px;
+  background:rgba(255,255,255,.75); color:#62816a;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-album-search input {
+  min-height:36px; flex:1; min-width:0; border:0; background:transparent;
+  padding:7px 0; box-shadow:none;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-album-search button {
+  display:grid; place-items:center; width:30px; height:30px; flex-shrink:0;
+  border:0; border-radius:7px; background:transparent; color:inherit; cursor:pointer;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-album-search button:hover {background:rgba(97,152,113,.15);}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-album-picker .category-cover-option-image {aspect-ratio:1.25;}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-album-picker .category-cover-option-image img {object-fit:contain;}
+.admin-app.brutti-staff-redesign .category-editor-dialog .category-album-picker .category-cover-option {cursor:pointer;}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .category-album-search {background:#29382f;border-color:#4b6253;color:#c2ddca;}
+.admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .category-album-search input {background:transparent;}
