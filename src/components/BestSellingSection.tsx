@@ -45,11 +45,18 @@ export default function BestSellingSection({ products, categories, loading, onBr
   return (
     <section className="brutti-best-selling" id="pub-best-selling" aria-label="Best-selling furniture">
       <div className="brutti-best-selling__head">
-        <p className="brutti-best-selling__eyebrow"><Star size={14} aria-hidden="true"/> CURATED BY BRUTTI</p>
-        <h2>Best-selling <em>furniture</em></h2>
-        <p className="brutti-best-selling__lede">
-          Discover our curated selection of furniture for your space.
-        </p>
+        <div className="brutti-best-selling__heading-copy">
+          <p className="brutti-best-selling__eyebrow"><Star size={14} aria-hidden="true"/> CURATED BY BRUTTI</p>
+          <h2>Best-selling <em>furniture</em></h2>
+          <p className="brutti-best-selling__lede">
+            Discover our curated selection of furniture for your space.
+          </p>
+        </div>
+        {!loading && curated.length > 0 && (
+          <button type="button" className="brutti-best-selling__browse" onClick={onBrowseBestSellers}>
+            View All Best Sellers <ArrowRight size={17} aria-hidden="true" />
+          </button>
+        )}
       </div>
       {loading ? (
         <p className="brutti-best-selling__notice" role="status">Preparing our product selection…</p>
@@ -85,9 +92,6 @@ export default function BestSellingSection({ products, categories, loading, onBr
                 onView={onView}
               />
             ))}
-          </div>
-          <div className="brutti-best-selling__footer" style={{justifyContent:"flex-end"}}>
-            <button type="button" onClick={onBrowseBestSellers}>View All Best Sellers <ArrowRight size={17} aria-hidden="true" /></button>
           </div>
         </>
       ) : (
