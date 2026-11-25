@@ -353,3 +353,134 @@
  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection button.pub-collection-more-button,
  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection button.pub-collection-more-button svg {transition:none;}
 }
+
+
+/* Compact, editorial Best Sellers shelf, scoped to this public section. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling {
+  padding-bottom:clamp(32px,4vw,56px);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__head {
+  margin-bottom:20px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__eyebrow {
+  display:flex;align-items:center;gap:7px;
+  color:#66806c;letter-spacing:.11em;margin-bottom:8px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__head h2 {
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  font-size:clamp(27px,3vw,43px) !important;
+  font-weight:650 !important;letter-spacing:-.045em;
+  margin-bottom:8px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__filters {
+  gap:7px;margin:16px 0 18px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__filters button {
+  min-height:32px;padding:6px 13px;border-radius:9px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__grid {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px;align-items:stretch;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__item {
+  display:flex;flex-direction:column;overflow:hidden;
+  border-radius:13px;
+  background:linear-gradient(145deg,rgba(255,255,255,.84),rgba(235,244,237,.74));
+  border:1px solid rgba(184,207,190,.36);
+  box-shadow:0 5px 18px rgba(27,61,40,.055);
+  transition:box-shadow .2s ease,border-color .2s ease;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__item:hover {
+  border-color:rgba(109,157,124,.58);box-shadow:0 10px 24px rgba(27,61,40,.12);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__photo {
+  aspect-ratio:1.12;min-height:0;border-radius:0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__photo > img {
+  object-fit:cover;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__flag {
+  top:10px;right:10px;display:inline-flex;align-items:center;gap:5px;
+  padding:6px 9px;border-radius:7px;
+  background:rgba(255,246,221,.94);color:#80591c;
+  letter-spacing:0;font-size:11px;
+  box-shadow:0 2px 9px rgba(30,45,28,.09);
+  backdrop-filter:blur(10px);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__product-copy {
+  flex:1;gap:5px;padding:13px 15px 14px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__category {
+  text-transform:none;letter-spacing:0;font-size:11px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__product-copy > strong {
+  margin:0;font-family:"Inter",system-ui,sans-serif;font-size:16px;line-height:1.35;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price {
+  margin-top:4px;color:#28563c;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price .catalog-price-current--stacked {
+  display:flex;flex-direction:column;gap:2px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price .catalog-price-basis {
+  font-size:10px;font-weight:500;color:#718276;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price .catalog-price-amount {
+  font:650 17px/1.35 "Inter",system-ui,sans-serif;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__view {
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin-top:auto;padding-top:10px;border-top:1px solid rgba(112,151,123,.18);
+  color:#356247;font:650 11px/1.5 "Inter",system-ui,sans-serif;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__view svg {
+  transition:transform .2s ease;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__item:hover .brutti-best-selling__view svg {
+  transform:translateX(3px);
+}
+/* A lone best seller has a compact horizontal feature instead of an isolated,
+   tall portrait tile. It uses the same card elements and real product photo. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__grid.is-single {
+  grid-template-columns:minmax(0,1fr);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .is-single .brutti-best-selling__item {
+  display:grid;grid-template-columns:minmax(0,36%) minmax(0,1fr);
+  width:100%;max-width:850px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .is-single .brutti-best-selling__photo {
+  aspect-ratio:1.3;
+  height:100%;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .is-single .brutti-best-selling__product-copy {
+  justify-content:center;align-items:flex-start;padding:clamp(18px,3vw,34px);gap:8px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .is-single .brutti-best-selling__product-copy > strong {
+  font-size:clamp(19px,2vw,27px);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .is-single .brutti-best-selling__price .catalog-price-amount {
+  font-size:clamp(20px,2vw,26px);
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .is-single .brutti-best-selling__view {
+  margin-top:8px;border:0;border-radius:8px;background:#28543a;
+  color:#fff;padding:9px 13px;gap:16px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__footer {
+  margin-top:17px;
+}
+@media(max-width:950px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+}
+@media(max-width:600px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__grid {margin:0;padding:0;overflow:visible;scroll-snap-type:none;gap:10px;}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__product-copy {padding:10px;}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__product-copy > strong {font-size:14px;}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .is-single .brutti-best-selling__item {grid-template-columns:minmax(0,43%) minmax(0,1fr);}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .is-single .brutti-best-selling__product-copy {padding:12px;gap:5px;}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .is-single .brutti-best-selling__product-copy > strong {font-size:16px;}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .is-single .brutti-best-selling__view {padding:7px 9px;gap:6px;}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__flag {font-size:9px;padding:4px 6px;top:7px;right:7px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling :is(.brutti-best-selling__item,.brutti-best-selling__view svg) {transition:none;}
+}
