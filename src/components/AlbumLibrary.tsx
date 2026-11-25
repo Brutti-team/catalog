@@ -380,14 +380,6 @@ export default function AlbumLibrary({
   }
   function requestDelete(photo: AlbumPhoto) {
     photo = photos.find(item=>item.key===photo.key) || photo;
-    if (photo.usedBy.length || photo.categoryCovers.length) {
-      setDownloadError("This photo is still linked to a product or category cover. Unlink it before deleting.");
-      return;
-    }
-    if (!photo.id) {
-      setDownloadError("This photo has no Album record. Refresh and try again.");
-      return;
-    }
     setDeleteError("");
     setDeleteTarget(photo);
   }
@@ -398,7 +390,11 @@ export default function AlbumLibrary({
   }
   async function confirmDelete() {
     if (!deleteTarget || deleting) return;
-    const photo = deleteTarget;
+    const photo = photos.find(item=>item.key===deleteTarget.key) || deleteTarget;
+    if(photo.usedBy.length || photo.categoryCovers.length || !photo.id) {
+      setDeleteError("Unlink this photo from products and category covers before deleting it.");
+      return;
+    }
     setDeleting(true);
     setDeleteError("");
     try {
@@ -673,7 +669,7 @@ export default function AlbumLibrary({
                   <SafeImage src={photo.url} alt={photo.name} loading="lazy"/>
                   {picker && <span className="brutti-album__check">{checked?<Check size={16}/>:disabled?"Added":<span/>}</span>}
                 </button>
-                {!picker && !photo.usedBy.length && !photo.categoryCovers.length && photo.id && <button type="button" title="Delete photo" aria-label={`Delete ${photo.name}`} disabled={deleting} onClick={()=>requestDelete(photo)}
+                {!picker && <button type="button" title="Delete photo" aria-label={`Delete ${photo.name}`} disabled={deleting} onClick={()=>requestDelete(photo)}
                   style={{position:"absolute",top:10,right:10,zIndex:6,display:"grid",placeItems:"center",width:34,height:34,padding:0,border:"1px solid #f3c7c9",borderRadius:10,background:"#fff1f1",color:"#a63136",boxShadow:"0 2px 8px rgba(0,0,0,.1)",cursor:"pointer"}}>
                   <Trash2 size={16} aria-hidden="true"/>
                 </button>}
@@ -975,20 +971,30 @@ export default function AlbumLibrary({
           <span className="brutti-album__delete-confirm-icon">
             <AlertTriangle size={22} strokeWidth={1.8} aria-hidden="true"/>
           </span>
-          <p className="brutti-album__delete-confirm-heading">Remove this photo from Album?</p>
+          <p className="brutti-album__delete-confirm-heading">{deleteTarget.usedBy.length || deleteTarget.categoryCovers.length ? "This photo is still in use" : "Remove this photo from Album?"}</p>
           <p className="brutti-album__delete-confirm-name">{deleteTarget.name}</p>
           <p className="brutti-album__delete-confirm-message">
-            {deleteTarget.sourceKind === "external"
+            {deleteTarget.usedBy.length || deleteTarget.categoryCovers.length
+              ? "Remove the photo from its linked products or category covers first. This protects images that are still displayed in the catalog."
+              : !deleteTarget.id ? "This photo has no Album record. Refresh Album before deleting."
+              : deleteTarget.sourceKind === "external"
               ? "This removes the photo reference from Brutti Album only. The original image on GitHub or Google will not be deleted."
               : "This permanently removes the photo from Album and deletes its stored image. This action cannot be undone."}
           </p>
+          {!!deleteTarget.usedBy.length && onEditProduct && <div style={{display:"grid",gap:8,marginTop:12}}>
+            {deleteTarget.usedBy.map(product=><button type="button" key={product.id} className="brutti-album__linked-product"
+              onClick={()=>{setDeleteTarget(null);setPreview(null);onEditProduct(product.id);}}>
+              <Package size={16} aria-hidden="true"/> Open {product.name} to remove photo <ArrowUpRight size={15} aria-hidden="true"/>
+            </button>)}
+          </div>}
+          {!!deleteTarget.categoryCovers.length && <p className="brutti-album__delete-confirm-message">Category covers: {deleteTarget.categoryCovers.join(", ")}. Change these covers in Categories first.</p>}
           {deleteError && <p className="brutti-album__delete-confirm-error" role="alert">{deleteError}</p>}
         </div>
         <div className="brutti-album__delete-confirm-actions">
           <button type="button" className="brutti-album__delete-confirm-cancel"
             disabled={deleting} onClick={closeDeleteConfirmation}>Cancel</button>
           <button type="button" className="brutti-album__delete-confirm-submit"
-            disabled={deleting} onClick={() => void confirmDelete()}>
+            disabled={deleting||!!deleteTarget.usedBy.length||!!deleteTarget.categoryCovers.length||!deleteTarget.id} onClick={() => void confirmDelete()}>
             {deleting ? <LoaderCircle size={16} className="brutti-album__spin" aria-hidden="true"/>
               : <Trash2 size={16} aria-hidden="true"/>}
             {deleting ? "Deleting…" : "Yes, delete photo"}
