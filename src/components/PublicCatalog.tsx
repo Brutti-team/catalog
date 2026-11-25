@@ -452,6 +452,16 @@ export default function PublicCatalog({
                 </div>
               </div>
               <div className="pub-hero-visual">
+                <img
+                  className="pub-brutti-collection-hero"
+                  src={publicAssetUrl("/images/brutti-collection-hero.webp")}
+                  alt=""
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                  onLoad={event => event.currentTarget.classList.add("is-loaded")}
+                  onError={event => { event.currentTarget.style.visibility = "hidden"; }}
+                />
                 <div className="pub-hero-image-label">
                   <span>FURNITURE · JOINERY · INTERIORS</span>
                   <ArrowUpRight size={23} />
