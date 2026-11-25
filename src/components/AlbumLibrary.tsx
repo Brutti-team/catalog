@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Images, Upload, Download, Search, Check, Trash2, LoaderCircle, Eye,
   Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Crop, Grid2X2, Table2, AlertTriangle, LockKeyhole, Save, X,
+  BedDouble, PanelsTopLeft, BookOpen, Store, Armchair, CalendarDays, Sparkles,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import {
@@ -30,6 +31,22 @@ type Props = {
   maxSelect?: number;
   excludedUrls?: string[];
 };
+
+function uploadDestinationIcon(name: string) {
+  const label = name.toLowerCase();
+  if (label.includes("uncategor")) return Folder;
+  if (label.includes("bed") || label.includes("bunk")) return BedDouble;
+  if (label.includes("cabinet")) return PanelsTopLeft;
+  if (label.includes("display") || label.includes("memento")) return Images;
+  if (label.includes("kiosk")) return Store;
+  if (label.includes("panel")) return Layers;
+  if (label.includes("rack") || label.includes("shel")) return BookOpen;
+  if (label.includes("reception")) return Armchair;
+  if (label.includes("rental")) return CalendarDays;
+  if (label.includes("setup") || label.includes("decor")) return Sparkles;
+  if (label.includes("table") || label.includes("counter") || label.includes("kitchen")) return Table2;
+  return Folder;
+}
 
 export default function AlbumLibrary({
   products, categories, onSelect, onEditProduct, onDeleteProduct, onCreateProductFromPhoto, onAttachPhotoToProduct, onAddCategory, onClose,
@@ -472,6 +489,8 @@ export default function AlbumLibrary({
     }
   }
   const selectedPhotos=photos.filter(p=>selected.includes(p.key));
+  const uploadDestinationName = categories.find(item => item.id === uploadCategory)?.name || "Uncategorised";
+  const UploadDestinationIcon = uploadDestinationIcon(uploadDestinationName);
   const albumStats=(
     <div className="brutti-album__stats" aria-label="Album counts">
       <span><strong>{photos.length}</strong> All photos</span>
@@ -503,8 +522,8 @@ export default function AlbumLibrary({
                       event.preventDefault(); toggleUploadMenu();
                     }
                   }} style={{ opacity: busy ? .55 : 1, cursor: busy ? "not-allowed" : "pointer", height: "var(--album-upload-control-height, 43px)" }}>
-                  <Folder size={17} strokeWidth={1.7} aria-hidden="true"/>
-                  <span>{categories.find(item => item.id === uploadCategory)?.name || "Uncategorised"}</span>
+                  <UploadDestinationIcon size={17} strokeWidth={1.7} aria-hidden="true"/>
+                  <span>{uploadDestinationName}</span>
                   <ChevronDown size={16} className="brutti-album__category-chevron" aria-hidden="true"/>
                 </button>
                 {uploadMenuOpen && <div className="brutti-album__category-menu"
@@ -514,7 +533,7 @@ export default function AlbumLibrary({
                   }}>
                   <div className="brutti-album__category-menu-title">UPLOAD DESTINATION</div>
                   <div className="brutti-album__category-options" role="listbox" aria-label="Category for new uploads"
-                    style={{ maxHeight: uploadMenuLayout.listHeight }}
+                    style={{ maxHeight: uploadMenuLayout.listHeight, scrollbarWidth: "none" }}
                     onKeyDown={event => {
                       if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
                       event.preventDefault();
@@ -525,18 +544,20 @@ export default function AlbumLibrary({
                         : (current + options.length - 1) % options.length;
                       options[next]?.focus();
                     }}>
-                    {[{ id: "none", name: "Uncategorised" }, ...categories].map(item => (
-                      <button type="button" role="option" key={item.id} aria-selected={uploadCategory === item.id}
+                    {[{ id: "none", name: "Uncategorised" }, ...categories].map(item => {
+                      const DestinationIcon = uploadDestinationIcon(item.name);
+                      return <button type="button" role="option" key={item.id} aria-selected={uploadCategory === item.id}
                         className={uploadCategory === item.id ? "is-active" : ""}
                         onClick={() => {
                           setUploadCategory(item.id);
                           setUploadMenuOpen(false);
                           uploadTriggerRef.current?.focus({ preventScroll: true });
                         }}>
-                        <span>{item.name}</span>
+                        <DestinationIcon size={17} strokeWidth={1.7} aria-hidden="true" style={{ flexShrink: 0, color: "currentColor", opacity: .8 }}/>
+                        <span style={{ flex: "1 1 auto", minWidth: 0, overflowWrap: "anywhere" }}>{item.name}</span>
                         {uploadCategory === item.id && <Check size={16} aria-hidden="true"/>}
-                      </button>
-                    ))}
+                      </button>;
+                    })}
                   </div>
                 </div>}
               </div>
