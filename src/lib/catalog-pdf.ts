@@ -46,8 +46,8 @@ async function jpeg(canvas:HTMLCanvasElement,links?:PdfLink[]):Promise<PdfRaster
     links:links?.map(l=>({...l,x:l.x*SCALE,y:l.y*SCALE,w:l.w*SCALE,h:l.h*SCALE}))};
   canvas.width=1;canvas.height=1;return page;
 }
-async function photo(url:string):Promise<HTMLImageElement> {
-  const controller=new AbortController();const timeout=window.setTimeout(()=>controller.abort(),20000);
+async function photo(url:string,timeoutMs=20000):Promise<HTMLImageElement> {
+  const controller=new AbortController();const timeout=window.setTimeout(()=>controller.abort(),timeoutMs);
   try {
     const response=await fetch(publicAssetUrl(url),{signal:controller.signal,mode:"cors",credentials:"omit"});
     if(!response.ok)throw new Error(`Image unavailable (HTTP ${response.status}): ${url}`);
@@ -179,7 +179,7 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   const ratios=new Map<string,number>();
   for(let i=0;i<primaryUrls.length;i+=5){
     await Promise.all(primaryUrls.slice(i,i+5).map(async url=>{
-      try {const img=await photo(url);ratios.set(url,img.naturalWidth/img.naturalHeight);}
+      try {const img=await photo(url,6000);ratios.set(url,img.naturalWidth/img.naturalHeight);}
       catch {ratios.set(url,1);}
     }));
   }
@@ -193,7 +193,7 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     const keys=OVERALL_DIMENSION_KEYS.filter(key=>Number.isFinite(product[key])&&product[key]>0);
     // Portraits get an editorial side column; wide images use the full page width.
     // Dense technical specifications get a full-width reading area even with portrait photos.
-    const split=ratio<1.12 && (product.specifications?.length??0)<5 && descPlain.length<270
+    const split=ratio<0.88 && (product.specifications?.length??0)<5 && descPlain.length<270
       && clean(product.materials||"").length<380 && product.name.length<85;
     const titleSize=split?29:32;
     const title=lines(ctx,product.name,split?SIDE_W:350,titleSize,700);
@@ -225,8 +225,8 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     }else{
       const titleBlock=Math.max(title.length*titleLine,priceHeight);
       photoTop=identityTop+24+titleBlock+(product.bestSelling?25:0)+description.length*20+(description.length?10:0)+16;
-      const available=BOTTOM-photoTop-28-Math.max(dimensionHeight,Math.min(detailHeight,220));
-      extrasHeight=extras?Math.max(105,Math.min(170,Math.floor(available*.30))):0;
+      const available=BOTTOM-photoTop-28-Math.max(dimensionHeight,Math.min(detailHeight,340));
+      extrasHeight=extras?Math.max(90,Math.min(175,Math.floor(available*.32))):0;
       heroHeight=Math.max(130,Math.min(540/ratio,Math.max(130,available-(extrasHeight?extrasHeight+12:0))));
       detailTop=photoTop+heroHeight+(extrasHeight?extrasHeight+12:0)+26;
     }
