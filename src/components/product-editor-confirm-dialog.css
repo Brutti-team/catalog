@@ -104,9 +104,9 @@
   box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
 }
 .admin-app .catalog-publish-confirm-icon.is-draft {
-  color:#936c37;
-  border-color:#eddfc5;
-  background:linear-gradient(145deg,#fff2dc,#fff9ee);
+  color:#a63136;
+  border-color:#f1c5c8;
+  background:linear-gradient(145deg,#ffe7e9,#fff4f4);
 }
 .admin-app .catalog-publish-confirm-description {
   margin:0;
@@ -237,12 +237,12 @@
   box-shadow:0 9px 17px rgba(28,70,44,.24),inset 0 1px 0 rgba(255,255,255,.13);
 }
 .admin-app .catalog-publish-confirm-actions .catalog-publish-confirm-submit.is-draft {
-  background:#f1e4cf;
-  color:#775b33;
-  border-color:#dec9a7;
-  box-shadow:0 4px 11px rgba(122,91,45,.08);
+  background:#fff0f0;
+  color:#a63136;
+  border-color:#f1c5c8;
+  box-shadow:0 4px 11px rgba(166,49,54,.08);
 }
-.admin-app .catalog-publish-confirm-actions .catalog-publish-confirm-submit.is-draft:hover {background:#ecd9b9;}
+.admin-app .catalog-publish-confirm-actions .catalog-publish-confirm-submit.is-draft:hover {background:#ffe3e5;}
 @media (hover:hover) and (pointer:fine) {
   .admin-app .catalog-publish-confirm-actions button:hover {transform:translateY(-2px);}
 }
@@ -296,9 +296,9 @@
   border-color:#507a59;
 }
 .admin-app[data-theme="dark"] .catalog-publish-confirm-icon.is-draft {
-  color:#f4d7a8;
-  background:#594830;
-  border-color:#786044;
+  color:#ffc4c8;
+  background:#482d31;
+  border-color:#795057;
 }
 .admin-app[data-theme="dark"] .catalog-publish-confirm-actions .catalog-publish-confirm-cancel {
   background:rgba(81,112,84,.35);
@@ -312,9 +312,9 @@
   border-color:#478859;
 }
 .admin-app[data-theme="dark"] .catalog-publish-confirm-actions .catalog-publish-confirm-submit.is-draft {
-  background:#675237;
-  border-color:#907350;
-  color:#f8e9d3;
+  background:#482d31;
+  border-color:#795057;
+  color:#ffc4c8;
 }
 @media(max-width:480px) {
   .admin-app dialog.modal.catalog-publish-confirm-dialog {border-radius:16px;}
@@ -340,3 +340,5 @@
   from {opacity:0;transform:translateY(9px) scale(.99);}
   to {opacity:1;transform:translateY(0) scale(1);}
 }
+
+.admin-app[data-theme="dark"] .catalog-publish-confirm-actions .catalog-publish-confirm-submit.is-draft:hover {background:#59353a;}
