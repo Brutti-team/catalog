@@ -430,7 +430,7 @@ export default function PublicCatalog({
             <section className="pub-hero">
               <div className="pub-hero-copy">
                 <p className="pub-eyebrow">
-                  <span /> THE BENUA BRUTTI COLLECTION · SABAH
+                  <span /> BRUTTI'S COLLECTION
                 </p>
                 <h1>
                   Considered spaces.
