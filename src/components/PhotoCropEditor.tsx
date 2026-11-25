@@ -156,6 +156,7 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
   const [mirror, setMirror] = useState(false);
   const [pan, setPan] = useState<Pan>({ x: 0, y: 0 });
   const [crop, setCrop] = useState<CropRect>(initialCrop);
+  const [cropPreview, setCropPreview] = useState(false);
   const [edgeStrength, setEdgeStrength] = useState(0);
   const [brushMode, setBrushMode] = useState<"erase" | "restore" | null>(null);
   const [brushSize, setBrushSize] = useState(30);
@@ -182,11 +183,16 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
   const previousBrushPoint = useRef<{ x: number; y: number } | null>(null);
   const gesture = useRef<{
     id: number; x: number; y: number; px: number; py: number;
-    mode: "pan" | "crop" | "paint"; handle?: CropHandle; startCrop: CropRect;
+    mode: "pan" | "crop" | "paint"; handle?: CropHandle; startCrop: CropRect; changed?: boolean;
   } | null>(null);
   const totalAngle = quarterTurn + tilt;
   const width = 900, height = Math.round(width / aspectRatios[ratio]);
   const hasCutout = !!cutout;
+  const hasCropSelection = crop.w < .999 || crop.h < .999;
+  const showCropPreview = tool === "crop" && cropPreview && hasCropSelection && !aiBusy;
+  const displayWidth = showCropPreview ? Math.max(1, Math.round(width * crop.w)) : width;
+  const displayHeight = showCropPreview ? Math.max(1, Math.round(height * crop.h)) : height;
+  const displayRatio = displayWidth / displayHeight;
   // Apply alpha correction once when the slider changes, not for every drag frame.
   const refinedCutout = useMemo(
     () => workingCutout.current ? refineCutout(workingCutout.current, edgeStrength) : null,
@@ -280,14 +286,25 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
     if (!source || !canvasRef.current) return;
     try {
       const canvas = canvasRef.current;
-      if (canvas.width !== width) canvas.width = width;
-      if (canvas.height !== height) canvas.height = height;
-      drawPhoto(canvas, source, refinedCutout, background, customColor,
+      if (canvas.width !== displayWidth) canvas.width = displayWidth;
+      if (canvas.height !== displayHeight) canvas.height = displayHeight;
+      // The expanded preview uses the same source coordinates as Apply edits.
+      // Keep the original crop and transforms intact so Adjust crop is reversible.
+      const full = showCropPreview ? document.createElement("canvas") : canvas;
+      if (showCropPreview) { full.width = width; full.height = height; }
+      drawPhoto(full, source, refinedCutout, background, customColor,
         totalAngle, zoom, pan, mirror, previewOriginal);
+      if (showCropPreview) {
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("Unable to preview this crop.");
+        context.clearRect(0, 0, displayWidth, displayHeight);
+        context.drawImage(full, width * crop.x, height * crop.y, width * crop.w, height * crop.h,
+          0, 0, displayWidth, displayHeight);
+      }
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Unable to preview this photo.");
     }
-  }, [source, refinedCutout, background, customColor, totalAngle, zoom, pan, mirror, previewOriginal, width, height]);
+  }, [source, refinedCutout, background, customColor, totalAngle, zoom, pan, mirror, previewOriginal, width, height, showCropPreview, displayWidth, displayHeight, crop]);
 
   function removeBackground() {
     if (!source || saving || aiBusy) return;
@@ -335,7 +352,7 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
 
   function reset() {
     if (aiBusy) cancelAI();
-    setPan({ x: 0, y: 0 }); setCrop(initialCrop()); setEdgeStrength(0);
+    setPan({ x: 0, y: 0 }); setCrop(initialCrop()); setCropPreview(false); setEdgeStrength(0);
     setZoom(1); setTilt(0); setQuarterTurn(0);
     setMirror(false); setCutout(null); workingCutout.current = null;
     setMaskRevision(0); setBrushMode(null); setBackground("original");
@@ -396,7 +413,7 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
   }
 
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
-    if (event.button !== 0 || saving || aiBusy || !source) return;
+    if (event.button !== 0 || saving || aiBusy || !source || showCropPreview) return;
     event.preventDefault();
     const el = event.target as HTMLElement;
     const requested = el.closest<HTMLElement>("[data-crop-handle]")?.dataset.cropHandle as CropHandle | undefined;
@@ -431,6 +448,7 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
       if (start.handle.includes("e")) right = clamp(current.x + current.w + dx, left + minSize, 1);
       if (start.handle.includes("n")) top = clamp(current.y + dy, 0, bottom - minSize);
       if (start.handle.includes("s")) bottom = clamp(current.y + current.h + dy, top + minSize, 1);
+      start.changed = Math.abs(left-current.x) + Math.abs(top-current.y) + Math.abs(right-current.x-current.w) + Math.abs(bottom-current.y-current.h) > .001;
       setCrop({ x: left, y: top, w: right - left, h: bottom - top });
       return;
     }
@@ -451,8 +469,10 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
     });
   }
   function onPointerUp(event: PointerEvent<HTMLDivElement>) {
-    if (gesture.current?.id !== event.pointerId) return;
+    const finished = gesture.current;
+    if (finished?.id !== event.pointerId) return;
     gesture.current = null;
+    if (event.type === "pointerup" && finished.mode === "crop" && finished.changed) setCropPreview(true);
     previousBrushPoint.current = null;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
@@ -542,16 +562,16 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
 
         <div className="brutti-photo-studio-layout">
           <div className="brutti-photo-studio-preview">
-            <div className="brutti-photo-studio-stage"
+            <div className={"brutti-photo-studio-stage" + (showCropPreview ? " is-crop-preview" : "")}
               aria-label="Photo canvas; drag the product to reposition">
               <div className={`brutti-photo-crop-image-frame${hasCutout && background === "transparent" && !previewOriginal ? " is-transparent" : ""}${brushMode && tool === "background" ? " is-erasing" : ""}`}
-                style={{ aspectRatio: aspectRatios[ratio] }}
+                style={{ aspectRatio: displayRatio }}
                 onPointerDown={onPointerDown} onPointerMove={onPointerMove}
                 onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
-                <canvas ref={canvasRef} width={width} height={height}
+                <canvas ref={canvasRef} width={displayWidth} height={displayHeight}
                   className={showAiReveal && !aiBusy ? "is-fresh-cutout" : undefined}
-                  style={{ aspectRatio: aspectRatios[ratio] }}
-                  aria-label="Live crop and background preview" />
+                  style={{ aspectRatio: displayRatio }}
+                  aria-label={showCropPreview ? "Cropped photo preview" : "Live crop and background preview"} />
                 {aiBusy && (
                   <div className="brutti-photo-studio-ai-preview" aria-hidden="true">
                     <div className="brutti-photo-studio-ai-preview-indicator">
@@ -567,7 +587,7 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
                 {showAiReveal && !aiBusy && (
                   <div className="brutti-photo-studio-ai-finish" aria-hidden="true" />
                 )}
-                {tool === "crop" && (
+                {tool === "crop" && !showCropPreview && (
                   <div className="brutti-photo-crop-selection"
                     style={{
                       left: `${crop.x * 100}%`, top: `${crop.y * 100}%`,
@@ -593,7 +613,8 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
               </div>
             </div>
             <div className="brutti-photo-studio-preview-caption">
-              <Scan size={14} aria-hidden="true"/> Drag photo to reposition · Drag crop corners to resize
+              <Scan size={14} aria-hidden="true"/> {showCropPreview ? "Cropped preview · Original photo retained" : "Drag photo to reposition · Drag crop corners to resize"}
+              {tool === "crop" && hasCropSelection && <button type="button" disabled={locked} onClick={() => setCropPreview(v => !v)}>{showCropPreview ? "Adjust crop" : "Preview crop"}</button>}
               {hasCutout && <button type="button" onClick={() => setPreviewOriginal(v => !v)}
                 disabled={locked} aria-pressed={previewOriginal}>
                 {previewOriginal ? "Show edited" : "Before / After"}
@@ -614,7 +635,7 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
                     {(["4:3", "1:1", "3:4", "9:16"] as Ratio[]).map(item => (
                       <button type="button" key={item} className={ratio === item ? "is-active" : ""}
                         aria-pressed={ratio === item} disabled={locked}
-                        onClick={() => { setRatio(item); setCrop(initialCrop()); setPan({ x: 0, y: 0 }); }}>{item}</button>
+                        onClick={() => { setRatio(item); setCrop(initialCrop()); setCropPreview(false); setPan({ x: 0, y: 0 }); }}>{item}</button>
                     ))}
                   </div>
                 </div>
