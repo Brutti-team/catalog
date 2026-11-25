@@ -486,3 +486,83 @@
     flex:0 1 auto;
   }
 }
+
+
+/* Compact category cards: browse via the cover or title; independent edit
+   and delete controls remain above the image, including empty categories. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
+  grid-template-rows:164px minmax(64px,auto);
+  min-height:228px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-body {
+  min-height:64px !important;
+  padding:10px 11px !important;
+  cursor:pointer;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-body > p {
+  margin:6px 0 0 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card--without-cover .category-cover {
+  position:relative;
+  grid-row:1;
+  width:100%;
+  height:164px !important;
+  min-height:0 !important;
+  background:transparent !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-title-link {
+  display:block;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  letter-spacing:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card-corner-actions {
+  position:absolute;
+  top:11px;
+  right:11px;
+  z-index:5;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card-corner-actions > button {
+  display:grid;
+  place-items:center;
+  width:34px;
+  height:34px;
+  min-width:34px;
+  min-height:34px;
+  padding:0;
+  border-radius:9px;
+  border:1px solid rgba(210,230,216,.85);
+  background:rgba(247,252,248,.94);
+  color:#28583d;
+  box-shadow:0 3px 10px rgba(15,45,27,.12);
+  backdrop-filter:blur(12px);
+  cursor:pointer;
+  transition:background-color .16s ease,color .16s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card-corner-actions > .category-corner-delete {
+  background:rgba(255,240,240,.96);
+  border-color:#f3c7c9;
+  color:#a63136;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-corner-edit:hover:not(:disabled) {background:#dceee1;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-corner-delete:hover:not(:disabled) {background:#ffe1e3;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card-corner-actions > button:disabled {opacity:.6;cursor:not-allowed;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] :is(.category-card-corner-actions > button,.category-title-link):focus-visible {outline:2px solid #72a986;outline-offset:2px;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="categories"] .category-card-corner-actions > .category-corner-edit {
+  background:rgba(43,65,52,.94);border-color:#62836c;color:#e0f0e4;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="categories"] .category-card-corner-actions > .category-corner-delete {
+  background:rgba(77,44,47,.96);border-color:#895c61;color:#ffc4c8;
+}
