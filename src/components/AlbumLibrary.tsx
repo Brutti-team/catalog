@@ -226,8 +226,10 @@ export default function AlbumLibrary({
   // Standalone Album/legacy library photos do not have a product record, so open
   // the matching Photo Editor instead of inventing an editable product.
   function openPhotoEditor(photo: AlbumPhoto) {
-    // Display names are generated per product; preserve the original media metadata.
-    photo = photos.find(item=>item.key===photo.key) || photo;
+    // Keep the original record identity/metadata but use the same generated
+    // photo name as the Album card, including the currently opened product.
+    const original = photos.find(item=>item.key===photo.key) || photo;
+    photo = {...original, name:displayedName(original)};
     setDownloadError("");
     setDownloadFormat("jpg");
     // Album is the media library. Open its Photo Editor for every image,
@@ -309,10 +311,17 @@ export default function AlbumLibrary({
     setSavingDetails(true);
     setDetailsError("");
     try {
-      const saved = await saveAlbumPhotoDetails(photo, detailsDraft);
+      // Linked names are derived from the product and its current photo order.
+      // Do not overwrite shared media metadata with one product's display name.
+      const originalName = photos.find(item=>item.key===photo.key)?.name || photo.name;
+      const saved = await saveAlbumPhotoDetails(photo, {
+        ...detailsDraft,
+        name: photo.usedBy.length ? originalName : detailsDraft.name,
+      });
+      const displayName = photo.usedBy.length ? displayedName(photo) : saved.name;
       const updated: AlbumPhoto = {
         ...photo,
-        name: saved.name,
+        name: displayName,
         manualCategoryId: saved.categoryId,
         sourceDetails: saved.sourceDetails,
       };
@@ -322,7 +331,7 @@ export default function AlbumLibrary({
       ));
       setPreview(current => current?.id === photo.id ? updated : current);
       setDetailsDraft({
-        name: saved.name,
+        name: displayName,
         description: saved.sourceDetails.description || "",
         categoryId: saved.categoryId,
         size: saved.sourceDetails.album_size ?? saved.sourceDetails.size ?? "",
@@ -750,8 +759,10 @@ export default function AlbumLibrary({
                 <span>Name <b aria-hidden="true">*</b></span>
                 <input type="text" maxLength={120} required value={detailsDraft.name}
                   placeholder="e.g. Sulob Shoe Rack"
+                  readOnly={preview.usedBy.length>0}
                   disabled={savingDetails}
                   onChange={e => setDetailsDraft(current => ({...current,name:e.target.value}))}/>
+                {preview.usedBy.length>0 && <small>Generated automatically from product name and photo order.</small>}
               </label>
               <div className="field-pair brutti-album__field-pair">
                 <div className="catalog-product-id-field brutti-album__editor-field">
