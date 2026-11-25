@@ -343,3 +343,47 @@
   .admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs :is(.catalog-spec-base-rows,.catalog-spec-new-section-rows) > .catalog-reference-custom-row > .catalog-spec-row-description { grid-column:1 !important; grid-row:3 !important; }
   .admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs :is(.catalog-spec-base-rows,.catalog-spec-new-section-rows) > .catalog-reference-custom-row > .catalog-reference-remove-row { grid-column:2 !important; grid-row:1/4 !important; }
 }
+
+/* Compact specification actions; use the same unit popover as overall dimensions. */
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-measurement-fields > .catalog-dimension-inline-unit {
+  display:flex; align-items:stretch; flex:0 0 82px; width:82px; min-width:0; padding:4px;
+  border-left:1px solid rgba(125,154,134,.25); background:rgba(226,239,230,.45); box-sizing:border-box;
+}
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-measurement-fields .catalog-dimension-inline-trigger {
+  display:flex; align-items:center; justify-content:space-between; gap:5px; width:100%; min-width:0; height:100%; min-height:0;
+  padding:0 9px; margin:0; border:0 !important; border-radius:7px; background:transparent;
+  box-shadow:none !important; color:#315e43; font:700 12px/1.3 "DM Sans",system-ui,sans-serif;
+}
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-measurement-fields .catalog-dimension-inline-trigger:is(:hover,:focus-visible),
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-measurement-fields .catalog-dimension-inline-unit.is-open .catalog-dimension-inline-trigger {
+  background:#e2eee5; color:#244d38;
+}
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-menu-options { scrollbar-width:none; }
+.admin-app .modal.product-editor-dialog .catalog-dimension-inline-menu-options::-webkit-scrollbar { display:none; }
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-row-menu-wrap > .catalog-reference-add-row {
+  min-height:37px; padding:8px 13px; border-radius:9px; font-size:12px; gap:7px;
+}
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-extra-heading {
+  display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+  margin:16px 0 0 !important; padding:15px 0 0 !important; border-bottom:0 !important;
+}
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-extra-heading > div:first-child { flex:1 1 240px; min-width:0; }
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-extra-heading h4 { margin:0 0 4px; font-size:14px; }
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-extra-heading p { margin:0; font-size:11.5px; }
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-extra-actions {
+  display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:9px; flex:0 0 auto;
+}
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-extra-actions .catalog-spec-add-section {
+  display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:37px; width:auto; margin:0 !important; padding:8px 12px;
+  border-radius:9px; font:700 12px/1.35 "DM Sans",system-ui,sans-serif; background:#eaf3ec !important; color:#28533c !important; border:1px solid #c8decf !important; box-shadow:none !important;
+}
+.admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-extra-actions .catalog-spec-add-section:hover:not(:disabled) { background:#dcece0 !important; }
+.admin-app.brutti-staff-redesign[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-measurement-fields > .catalog-dimension-inline-unit { background:#303e35; border-left-color:#4e6655; }
+.admin-app.brutti-staff-redesign[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-measurement-fields .catalog-dimension-inline-trigger { color:#e2f0e5; }
+.admin-app.brutti-staff-redesign[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-measurement-fields .catalog-dimension-inline-trigger:is(:hover,:focus-visible),
+.admin-app.brutti-staff-redesign[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-measurement-fields .catalog-dimension-inline-unit.is-open .catalog-dimension-inline-trigger { background:#405849; color:#f0f7f1; }
+.admin-app.brutti-staff-redesign[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-extra-actions .catalog-spec-add-section { background:#30483a !important; color:#dbeee0 !important; border-color:#4b6955 !important; }
+@media(max-width:580px) {
+  .admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-extra-actions { flex:1 1 100%; justify-content:space-between; }
+  .admin-app.brutti-staff-redesign .modal.product-editor-dialog--editing .product-editor-v2 #product-editor-specs .catalog-spec-measurement-fields > .catalog-dimension-inline-unit { flex-basis:64px; width:64px; }
+}
