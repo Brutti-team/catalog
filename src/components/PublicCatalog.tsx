@@ -147,6 +147,75 @@ export default function PublicCatalog({
 }: Props) {
   const [routeProductId, setProductId] = useState(currentProductId);
   const productId = previewProduct ? previewProduct.id : routeProductId;
+  const publicPageRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (previewProduct || productId !== null) return;
+    const root = publicPageRef.current;
+    if (!root || !("IntersectionObserver" in window) || !("animate" in Element.prototype)) return;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const selector = [
+      ".pub-hero-copy > .pub-eyebrow", ".pub-hero-copy > h1",
+      ".pub-hero-copy > .pub-hero-description", ".pub-hero-copy > .pub-primary-button",
+      ".pub-values-strip", ".pub-category-marquee-heading", ".pub-category-marquee-controls",
+      ".pub-collection-green-header", ".pub-collection-tools", ".pub-filter-row",
+      ".pub-products-grid--catalog > .pub-catalog-tile", ".pub-collection-more-divider",
+      ".brutti-best-selling__head", ".brutti-best-selling__filters",
+      ".brutti-best-selling__empty", "#pub-recommendations > .pub-section-heading",
+      ".pub-reference-process-top", ".pub-reference-process-grid > article",
+      ".pub-reference-wide-feature > div", ".pub-footer__contact", ".pub-footer__connect"
+    ].join(",");
+    const seen = new WeakSet<Element>();
+    const running = new Set<Animation>();
+    const observer = new IntersectionObserver(entries => {
+      let index = 0;
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        observer.unobserve(entry.target);
+        if (seen.has(entry.target)) continue;
+        seen.add(entry.target);
+        if (motion.matches || entry.target.contains(document.activeElement)) continue;
+        const delay = Math.min(index++ * 55, 165);
+        const hero = Boolean(entry.target.closest(".pub-hero-copy"));
+        const animation = entry.target.animate(
+          [{ opacity: 0, translate: "0 12px" }, { opacity: 1, translate: "0 0" }],
+          { duration: hero ? 620 : 460, delay, easing: "cubic-bezier(.22,.8,.25,1)", fill: "backwards" }
+        );
+        running.add(animation);
+        const release = () => running.delete(animation);
+        animation.addEventListener("finish", release, { once: true });
+        animation.addEventListener("cancel", release, { once: true });
+      }
+    }, { threshold: 0.08 });
+    const observe = () => {
+      if (!motion.matches) root.querySelectorAll(selector).forEach(element => {
+        if (!seen.has(element)) observer.observe(element);
+      });
+    };
+    const stop = () => {
+      observer.disconnect();
+      running.forEach(animation => animation.cancel());
+      running.clear();
+    };
+    const syncMotion = () => { if (motion.matches) stop(); else observe(); };
+    const onFocus = (event: FocusEvent) => {
+      if (!(event.target instanceof Element)) return;
+      for (const animation of running) {
+        const target = (animation.effect as KeyframeEffect | null)?.target;
+        if (target?.contains(event.target)) animation.cancel();
+      }
+    };
+    const mutations = new MutationObserver(observe);
+    mutations.observe(root, { childList: true, subtree: true });
+    root.addEventListener("focusin", onFocus);
+    motion.addEventListener("change", syncMotion);
+    observe();
+    return () => {
+      stop();
+      mutations.disconnect();
+      root.removeEventListener("focusin", onFocus);
+      motion.removeEventListener("change", syncMotion);
+    };
+  }, [productId, previewProduct]);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [bestOnly, setBestOnly] = useState(false);
@@ -364,7 +433,7 @@ export default function PublicCatalog({
   );
 
   return (
-    <div className={previewProduct ? `pub-app pub-refined pub-private-preview${previewProduct.price === null ? " pub-private-preview-no-price" : ""}` : "pub-app pub-refined"}>
+    <div ref={publicPageRef} className={previewProduct ? `pub-app pub-refined pub-private-preview${previewProduct.price === null ? " pub-private-preview-no-price" : ""}` : "pub-app pub-refined"}>
       {!previewProduct && <a
         className="pub-skip-link"
         href="#pub-main"
