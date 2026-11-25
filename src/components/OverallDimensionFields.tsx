@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { Product } from "../lib/types";
 import InlineDimensionUnitMenu from "./InlineDimensionUnitMenu";
 import {
-  parseDimensionInput, dimensionInputText, normalizeDimensionUnits, dimensionParts,
+  parseDimensionInput, dimensionInputText, normalizeDimensionUnits, dimensionParts, cmToUnit, unitToCm,
   OVERALL_DIMENSION_KEYS,
   type DimensionKey, type DimensionUnits, type DimensionUnit, type DimensionPart,
 } from "../lib/dimensions";
@@ -44,6 +44,12 @@ function DimensionValueInput({id,label,cm,unit,disabled,onValue}:{
     }} />;
 }
 
+/** A unit selection reinterprets the entered number, rather than converting it.
+ * E.g. 3 ft changed to in means 3 in. The stored cm value is recalculated. */
+function reinterpretUnit(cm: number, from: DimensionUnit | null, to: DimensionUnit): number {
+  return from === null || from === to ? cm : unitToCm(cmToUnit(cm, from), to);
+}
+
 /** Each additional row has its own unit; retain the combined physical size in cm. */
 export default function OverallDimensionFields({product,onDimensionChange,disabled=false}:Props) {
   const units = normalizeDimensionUnits(product.dimensionUnits);
@@ -71,7 +77,7 @@ export default function OverallDimensionFields({product,onDimensionChange,disabl
               <DimensionValueInput key={id+unit} id={id} label={`${label} in ${unit}`} cm={primaryCm} unit={unit} disabled={disabled}
                 onValue={cm => save(cm,unit,additional)} />
               <InlineDimensionUnitMenu label={label} value={unit} disabled={disabled}
-                onChange={next => save(primaryCm,next,additional)} />
+                onChange={next => save(reinterpretUnit(primaryCm,unit,next),next,additional)} />
               <button type="button" className="catalog-dimension-add-part"
                 aria-label={additional ? `${label}: combine values` : `${label}: add another measurement`}
                 title={additional ? "Combine into one value; keep total size" : "Add another measurement"}
@@ -85,7 +91,7 @@ export default function OverallDimensionFields({product,onDimensionChange,disabl
               <DimensionValueInput key={id+"-additional-"+additional.unit} id={`${id}-additional`} label={`${label} additional measurement`} cm={additional.cm} unit={additional.unit} disabled={disabled}
                 onValue={cm => save(primaryCm,unit,{...additional,cm})} />
               <InlineDimensionUnitMenu label={label+" additional"} value={additional.unit} disabled={disabled}
-                onChange={next => save(primaryCm,unit,{...additional,unit:next})} />
+                onChange={next => save(primaryCm,unit,{...additional,unit:next,cm:reinterpretUnit(additional.cm,additional.unit,next)})} />
             </div>}
           </div>
         );
