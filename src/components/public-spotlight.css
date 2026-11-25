@@ -2352,3 +2352,35 @@
 .pub-app.pub-refined .pub-quickview .pub-quickview__photo-frame { display:contents; }
 .pub-app.pub-refined .pub-quickview .pub-quickview__image.has-saved-framing > .pub-quickview__photo-frame { display:block; width:100%; aspect-ratio:var(--catalog-card-photo-ratio,1.18); overflow:hidden; border-radius:8px; }
 .pub-app.pub-refined .pub-quickview .pub-quickview__image.has-saved-framing > .pub-quickview__photo-frame > img { width:100%; height:100%; max-height:none; object-fit:cover !important; border-radius:0; }
+
+
+/* Premium Brutti Best Seller badge — consistent across public product cards. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-catalog-tile__featured.pub-catalog-tile__best {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:6px 10px;
+  min-height:25px;
+  box-sizing:border-box;
+  border:0 !important;
+  border-radius:999px;
+  background:rgba(24,70,51,.96) !important;
+  color:#fffdf5 !important;
+  font:650 11px/1.2 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  letter-spacing:0;
+  text-transform:none;
+  white-space:nowrap;
+  box-shadow:0 3px 10px rgba(15,43,31,.20) !important;
+  backdrop-filter:blur(10px);
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-catalog-tile__featured.pub-catalog-tile__best svg {
+  flex-shrink:0;
+  width:12px;
+  height:12px;
+  color:#f4d28a;
+}
+@media(max-width:600px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-catalog-tile__featured.pub-catalog-tile__best {font-size:10px;gap:4px;padding:5px 8px;min-height:23px;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-catalog-tile__featured.pub-catalog-tile__best svg {width:11px;height:11px;}
+}
