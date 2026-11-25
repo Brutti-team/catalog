@@ -243,7 +243,7 @@ export default function AccountCenter({
           <p>{view === "profile"
             ? "Your name, account and access in one simple place."
             : view === "users"
-              ? "Catalog permissions are visible to Admin and Super Admin. Only Super Admin can change roles."
+              ? "Manage team access and invitations. Only Super Admin can change roles."
               : "A trustworthy record of changes made by your team."}</p>
         </div>
         <div className="account-heading-actions">
@@ -298,9 +298,9 @@ export default function AccountCenter({
                 : "Account permission management is not enabled on this workspace yet."}</p></div>
           : <div className="account-table-wrap">
               <div className="account-table-title"><UsersRound size={19} /><strong>Catalog users</strong><span>{members.length}</span></div>
-              <p className="account-hint account-table-hint">Only invited Catalog users appear here. OS single sign-on is not connected yet. Super Admin can invite staff; Admin can view permissions.</p>
+              <p className="account-hint account-table-hint">Invited Catalog members and their access levels. Admin can view permissions; Super Admin can manage them.</p>
               <div className="account-scroll"><table className="account-table">
-                <thead><tr><th>Person</th><th>Last login</th><th>Access</th>{account.role === "super_admin" && <th />}</tr></thead>
+                <thead><tr><th>Team member</th><th>Last login</th><th>Access role</th>{account.role === "super_admin" && <th>Action</th>}</tr></thead>
                 <tbody>{members.map(user => {
                   const draft = draftRoles[user.user_id] ?? user.role ?? "none";
                   return <tr key={user.user_id}>
@@ -334,8 +334,8 @@ export default function AccountCenter({
                 <section className="catalog-pending-staff" aria-labelledby="catalog-pending-staff-title">
                   <header className="catalog-pending-staff-heading">
                     <div>
-                      <h2 id="catalog-pending-staff-title">OS staff · pending catalog access</h2>
-                      <p>These people were matched from Brutti OS details where available. They cannot log in to Catalog until invited and verified. This does not activate OS single sign-on.</p>
+                      <h2 id="catalog-pending-staff-title">Pending invitations</h2>
+                      <p>Brutti OS staff awaiting access. Staff can sign in after invitation and verification. OS single sign-on is not connected.</p>
                     </div>
                     <span className="catalog-pending-staff-count">{pendingStaff.length} pending</span>
                   </header>
