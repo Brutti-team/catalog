@@ -315,12 +315,12 @@
   filter: brightness(0) invert(1);
   opacity: .98;
 }
-.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button {
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website) {
   color: rgba(255, 255, 255, .78);
   font-size: 12.5px !important;
   font-weight: 600;
 }
-.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button:hover,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website):hover,
 .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav .pub-nav-active {
   color: #fff;
 }
@@ -362,7 +362,7 @@
     background: #214f38;
     box-shadow: 0 13px 20px rgba(27, 52, 34, .22);
   }
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website) {
     color: rgba(255,255,255,.84);
     font-size: 13px !important;
   }
@@ -436,7 +436,7 @@
   justify-content: center;
   gap: clamp(18px, 2.4vw, 36px);
 }
-.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button {
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website) {
   min-height: 40px;
   padding: 9px 0;
   font-family: "DM Sans", system-ui, sans-serif;
@@ -446,7 +446,7 @@
   color: rgba(255, 255, 255, .80);
   text-transform: none;
 }
-.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button:hover,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website):hover,
 .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav .pub-nav-active {
   color: #fff;
 }
@@ -513,7 +513,7 @@
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav.pub-nav-open {
     display: flex;
   }
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website) {
     width: 100%;
     min-height: 44px;
     padding: 10px 13px;
@@ -521,7 +521,7 @@
     text-align: left;
     font-size: 13px !important;
   }
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button:hover,
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website):hover,
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav .pub-nav-active {
     background: rgba(255, 255, 255, .10);
   }
@@ -1221,7 +1221,7 @@
   width: 70px !important;
   height: auto !important;
 }
-.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button {
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website) {
   min-height: 36px;
   padding: 7px 0;
 }
@@ -1259,7 +1259,7 @@
     border-radius:0 0 12px 12px;
     padding:8px 12px;
   }
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button {min-height:44px;padding:10px 13px;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website) {min-height:44px;padding:10px 13px;}
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-menu-toggle {min-height:40px;min-width:40px;}
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-admin-link {min-height:34px;padding:6px 10px;}
 }
@@ -1306,10 +1306,10 @@
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-admin-link svg {transition:transform .22s ease;}
 @media(min-width:801px) {
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website) {
     transition:color .22s ease,text-shadow .22s ease;
   }
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button::after {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website)::after {
     content:"";
     position:absolute;
     bottom:0;
@@ -1326,13 +1326,13 @@
     pointer-events:none;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav .pub-nav-active::after,
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button:focus-visible::after {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website):focus-visible::after {
     transform:scaleX(1);
     opacity:1;
   }
 }
 @media (hover:hover) and (pointer:fine) {
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button:hover {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website):hover {
     color:#fff;
     text-shadow:0 0 12px rgba(219,255,224,.33);
   }
@@ -1345,21 +1345,21 @@
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-admin-link:hover svg {transform:translate(2px,-2px);}
 }
 @media(min-width:801px) and (hover:hover) and (pointer:fine) {
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button:hover::after {transform:scaleX(1);opacity:1;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website):hover::after {transform:scaleX(1);opacity:1;}
 }
 @media(prefers-reduced-motion:reduce) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header::before {animation:none;opacity:0;}
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button,
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button::after,
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website),
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website)::after,
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-admin-link,
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-admin-link svg {transition:none;transform:none;}
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button:not(.pub-nav-active):not(:hover):not(:focus-visible)::after {opacity:0;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website):not(.pub-nav-active):not(:hover):not(:focus-visible)::after {opacity:0;}
 }
 
 /* Catalogue PDF is a fourth navigation item, sharing the existing download dialog. */
-.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button.pub-nav-download {white-space:nowrap;}
-.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button.pub-nav-download:disabled {opacity:.45;cursor:not-allowed;}
-.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav button.pub-nav-download:disabled::after {opacity:0;}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website).pub-nav-download {white-space:nowrap;}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website).pub-nav-download:disabled {opacity:.45;cursor:not-allowed;}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav :is(button,.pub-nav-website).pub-nav-download:disabled::after {opacity:0;}
 @media(min-width:801px) and (max-width:1100px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header {padding-inline:18px;gap:12px;grid-template-columns:minmax(76px,1fr) auto minmax(max-content,1fr);}
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav {gap:16px;}
@@ -1548,4 +1548,24 @@
     transition:scale .32s cubic-bezier(.22,.8,.25,1);
   }
   .pub-app.pub-refined:not(.pub-private-preview):has(.pub-hero) .pub-products-grid--catalog > .pub-catalog-tile:hover .pub-catalog-tile__visual {scale:1.012;}
+}
+
+
+/* Main website is a real navigation link, styled like the catalogue tabs. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav .pub-nav-website {
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  box-sizing:border-box;
+  white-space:nowrap;
+  text-decoration:none;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav .pub-nav-website svg {flex-shrink:0;}
+@media(min-width:801px) and (max-width:1100px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav {gap:12px;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav .pub-nav-website {gap:3px;}
+}
+@media(max-width:800px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav .pub-nav-website {justify-content:space-between;}
 }
