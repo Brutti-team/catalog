@@ -8,6 +8,7 @@ import {
   Plus,
   Box,
   ArrowLeft,
+  ArrowRight,
   X,
   Eye,
   Save,
@@ -328,6 +329,24 @@ export default function ProductEditor({
   }, [showLivePreview]);
   const [mediaTab, setMediaTab] = useState<"photos" | "3d">("photos");
   const [photoMenuId, setPhotoMenuId] = useState<string | null>(null);
+  const draggedPhotoId = useRef<string | null>(null);
+  const [photoDropTarget, setPhotoDropTarget] = useState<string | null>(null);
+  function movePhotoTo(id: string, targetIndex: number) {
+    setDraft(current => {
+      const from = current.images.findIndex(image => image.id === id);
+      const to = Math.max(0, Math.min(current.images.length - 1, targetIndex));
+      if (from < 0 || from === to) return current;
+      const images = [...current.images];
+      const [moved] = images.splice(from, 1);
+      images.splice(to, 0, moved);
+      return {...current, images};
+    });
+    setPhotoMenuId(null);
+  }
+  function finishPhotoDrag() {
+    draggedPhotoId.current = null;
+    setPhotoDropTarget(null);
+  }
   const [previewPhotoId, setPreviewPhotoId] = useState<string | null>(null);
   const [showAlbumPicker, setShowAlbumPicker] = useState(false);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
@@ -696,11 +715,40 @@ export default function ProductEditor({
                 className="brutti-media-gallery-panel" hidden={mediaTab!=="photos"}>
                 <div className="brutti-media-gallery" aria-label="Product photos">
                   {draft.images.map((img,index)=>(
-                    <div className="brutti-media-photo-item" key={img.id}>
+                    <div className="brutti-media-photo-item" key={img.id}
+                      style={photoDropTarget===img.id?{outline:"2px solid #4a9265",outlineOffset:3}:undefined}
+                      onDragOver={event=>{
+                        if(!draggedPhotoId.current || busy || uploading)return;
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect="move";
+                        setPhotoDropTarget(draggedPhotoId.current===img.id?null:img.id);
+                      }}
+                      onDragLeave={event=>{
+                        if(event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget))return;
+                        setPhotoDropTarget(current=>current===img.id?null:current);
+                      }}
+                      onDrop={event=>{
+                        const source=draggedPhotoId.current;
+                        if(!source)return;
+                        event.preventDefault();
+                        if(!busy&&!uploading)movePhotoTo(source,index);
+                        finishPhotoDrag();
+                      }}>
                       <button type="button" className="brutti-media-thumbnail"
                         aria-label={`View photo ${index+1} of ${draft.images.length}`}
+                        title={draft.images.length>1?"Click to preview or drag to reorder":"View photo"}
+                        draggable={!busy&&!uploading&&draft.images.length>1}
+                        style={draft.images.length>1&&!busy&&!uploading?{cursor:"grab"}:undefined}
+                        onDragStart={event=>{
+                          if(busy||uploading||draft.images.length<2){event.preventDefault();return;}
+                          draggedPhotoId.current=img.id;
+                          event.dataTransfer.effectAllowed="move";
+                          event.dataTransfer.setData("text/plain",img.id);
+                          setPhotoMenuId(null);
+                        }}
+                        onDragEnd={finishPhotoDrag}
                         onClick={()=>{setPreviewPhotoId(img.id);setPhotoMenuId(null);}}>
-                        <SafeImage src={img.url} alt={img.alt||draft.name} style={photoCropStyle(img)}/>
+                        <SafeImage src={img.url} alt={img.alt||draft.name} style={photoCropStyle(img)} draggable={false}/>
                         {index===0 && <span className="brutti-media-cover-badge"><CheckCircle2 size={12} aria-hidden="true"/> Cover</span>}
                       </button>
                       <button type="button" className="brutti-media-quick-edit"
@@ -720,6 +768,18 @@ export default function ProductEditor({
                       {photoMenuId===img.id && <div className="brutti-media-photo-menu" role="menu" aria-label={`Photo ${index+1} actions`} onKeyDown={event=>{
                         if (event.key==="Escape") { event.stopPropagation(); setPhotoMenuId(null); }
                       }}>
+                        <button type="button" role="menuitem" disabled={busy||uploading||index===0}
+                          onClick={()=>movePhotoTo(img.id,0)}>
+                          <CheckCircle2 size={15} aria-hidden="true"/> {index===0?"Current cover":"Set as Cover"}
+                        </button>
+                        <button type="button" role="menuitem" disabled={busy||uploading||index===0}
+                          onClick={()=>movePhotoTo(img.id,index-1)}>
+                          <ArrowLeft size={15} aria-hidden="true"/> Move earlier
+                        </button>
+                        <button type="button" role="menuitem" disabled={busy||uploading||index===draft.images.length-1}
+                          onClick={()=>movePhotoTo(img.id,index+1)}>
+                          <ArrowRight size={15} aria-hidden="true"/> Move later
+                        </button>
                         <button type="button" role="menuitem" disabled={busy||uploading}
                           onClick={()=>{setEditingPhotoId(img.id);setPhotoMenuId(null);}}>
                           <Pencil size={15} aria-hidden="true"/> Edit
@@ -742,13 +802,14 @@ export default function ProductEditor({
                     onDragLeave={event=>{event.preventDefault();setDragging(false);}}
                     onDrop={event=>{
                       event.preventDefault();setDragging(false);
-                      if(!busy&&!uploading)void addImages(event.dataTransfer.files);
+                      if(!busy&&!uploading&&!draggedPhotoId.current&&event.dataTransfer.files.length)void addImages(event.dataTransfer.files);
+                      finishPhotoDrag();
                     }}>
                     <Plus size={24} aria-hidden="true"/>
                     <span>Add Photo</span>
                   </button>}
                 </div>
-                <p className="brutti-media-gallery-help">Select a photo to preview it; use the crop icon to edit. The original file stays in Album.</p>
+                <p className="brutti-media-gallery-help">Drag photos to reorder, or use the three-dot menu to move photos and set the cover. The first photo is the cover. Save product to apply the order.</p>
                 {cover && <>
                   {coverChanged && <p className="brutti-customer-crop-pending" role="status">Cover changes are not published yet. Select Save product to update the customer catalog.</p>}
                   <details className="brutti-customer-crop">
