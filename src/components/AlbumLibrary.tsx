@@ -268,16 +268,18 @@ export default function AlbumLibrary({
   // Linked photo details are a live view of the actual product, not a
   // separate editable copy of its metadata. Prefer the current folder when
   // a photo belongs to more than one product.
-  const linkedProduct = preview
-    ? (currentProductGroup?.items.some(item=>item.key===preview.key)
-      ? currentProductGroup.product
-      : productGroups.find(group=>group.items.some(item=>item.key===preview.key))?.product)
-    : undefined;
+  const productForPhoto = (photo: AlbumPhoto) => {
+    if (currentProductGroup?.items.some(item=>item.key===photo.key))
+      return currentProductGroup.product;
+    return productGroups.find(group=>group.items.some(item=>item.key===photo.key))?.product
+      || products.find(product=>photo.usedBy.some(item=>item.id===product.id));
+  };
+  const linkedProduct = preview ? productForPhoto(preview) : undefined;
   const linkedSpec = (pattern: RegExp) => linkedProduct?.specifications
     ?.filter(row=>row.kind!=="section" && pattern.test(row.name.trim()))
     .map(row=>row.value).filter(Boolean).join("; ") || "";
   const editorDetails: AlbumPhotoDetailsUpdate = linkedProduct && preview ? {
-    name: displayedName(preview),
+    name: linkedProduct.name,
     description: linkedProduct.description,
     categoryId: linkedProduct.categoryId || null,
     size: formatProductDimensions(linkedProduct) || linkedSpec(/^(dimensions?|size)$/i),
@@ -316,12 +318,21 @@ export default function AlbumLibrary({
     // Keep the original record identity/metadata but use the same generated
     // photo name as the Album card, including the currently opened product.
     const original = photos.find(item=>item.key===photo.key) || photo;
+    // Use the exact same editor as the Products page for any linked product,
+    // regardless of Draft/Published status. No duplicate photo details editor.
+    const product = productForPhoto(original);
+    if (!picker && product && onEditProduct) {
+      setPreview(null);
+      setDetailsError("");
+      setDownloadError("");
+      onEditProduct(product.id);
+      return;
+    }
     photo = {...original, name:displayedName(original)};
     setDownloadError("");
     setDownloadFormat("jpg");
-    // Album is the media library. Open its Photo Editor for every image,
-    // including images linked to a Product. Product Editor stays available
-    // via explicit linked-product actions and Create Product.
+    // Only standalone photos (or a host without a product editor callback)
+    // need the Album photo details form.
     setDetailsDraft({
       name: photo.name,
       description: photo.sourceDetails.description || "",
