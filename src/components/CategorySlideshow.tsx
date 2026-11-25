@@ -3,7 +3,27 @@ import SafeImage from "./SafeImage";
 import { publicAssetUrl } from "../lib/assets";
 export type CategorySlide = {src:string;position:string};
 
-export default function CategorySlideshow({slides, name, offset=0}:{slides:CategorySlide[];name:string;offset?:number}) {
+// All category cards subscribe to the same clock. Image loading never
+// advances a card independently: a ready image waits for the next shared tick.
+const slideListeners = new Set<() => void>();
+let slideClock: number | undefined;
+function subscribeToSlides(listener: () => void) {
+  slideListeners.add(listener);
+  if (slideClock === undefined) {
+    slideClock = window.setInterval(() => {
+      if (!document.hidden) slideListeners.forEach(advance => advance());
+    }, 4000);
+  }
+  return () => {
+    slideListeners.delete(listener);
+    if (!slideListeners.size) {
+      window.clearInterval(slideClock);
+      slideClock = undefined;
+    }
+  };
+}
+
+export default function CategorySlideshow({slides, name}:{slides:CategorySlide[];name:string;offset?:number}) {
   const [active,setActive]=useState(0);
   const [previous,setPrevious]=useState<number|null>(null);
   const [reduced,setReduced]=useState(()=>window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -14,54 +34,64 @@ export default function CategorySlideshow({slides, name, offset=0}:{slides:Categ
     query.addEventListener("change",change);
     return ()=>query.removeEventListener("change",change);
   },[]);
-  useEffect(()=>{setActive(0);setPrevious(null);},[signature]);
   useEffect(()=>{
-    if(slides.length<2)return;
+    setActive(0);
+    setPrevious(null);
+    const frames=JSON.parse(signature) as CategorySlide[];
+    if(frames.length<2)return;
     let cancelled=false;
-    let timer:number|undefined;
-    let fadeTimer:number|undefined;
-    let loadTimer:number|undefined;
-    let cursor=0;
     let visibleIndex=0;
+    let ready:number|null=null;
     let pending:HTMLImageElement|undefined;
-    const advance=()=>{
-      if(cancelled)return;
-      const next=(cursor+1)%slides.length;
+    let loadTimer:number|undefined;
+    let fadeTimer:number|undefined;
+    const preload=(candidate:number, remaining:number)=>{
+      if(cancelled || remaining<=0 || candidate===visibleIndex)return;
       const image=new Image();
       pending=image;
       let settled=false;
       const finish=(loaded:boolean)=>{
-        if(settled||cancelled)return;
+        if(cancelled||settled)return;
         settled=true;
         window.clearTimeout(loadTimer);
-        cursor=next;
-        if(loaded){
-          setPrevious(visibleIndex);
-          setActive(next);
-          visibleIndex=next;
-          window.clearTimeout(fadeTimer);
-          fadeTimer=window.setTimeout(()=>setPrevious(null),650);
-        }
-        timer=window.setTimeout(advance,loaded?3200:250);
+        image.onload=null;
+        image.onerror=null;
+        pending=undefined;
+        if(loaded) ready=candidate;
+        else preload((candidate+1)%frames.length,remaining-1);
       };
       image.onload=()=>finish(true);
       image.onerror=()=>finish(false);
-      // A stalled image must not freeze the entire slideshow.
       loadTimer=window.setTimeout(()=>finish(false),5000);
-      image.src=publicAssetUrl(slides[next].src);
+      image.src=publicAssetUrl(frames[candidate].src);
       if(image.complete && image.naturalWidth>0)finish(true);
     };
-    timer=window.setTimeout(advance,1800+(offset%4)*200);
+    const prepareNext=()=>preload((visibleIndex+1)%frames.length,frames.length-1);
+    prepareNext();
+    const unsubscribe=subscribeToSlides(()=>{
+      if(cancelled)return;
+      if(ready===null){
+        // Keep the current cover if loading is slow; retry at a shared tick.
+        if(!pending)prepareNext();
+        return;
+      }
+      const next=ready;
+      ready=null;
+      setPrevious(visibleIndex);
+      setActive(next);
+      visibleIndex=next;
+      window.clearTimeout(fadeTimer);
+      fadeTimer=window.setTimeout(()=>setPrevious(null),650);
+      prepareNext();
+    });
     return ()=>{
       cancelled=true;
-      window.clearTimeout(timer);
-      window.clearTimeout(fadeTimer);
+      unsubscribe();
       window.clearTimeout(loadTimer);
+      window.clearTimeout(fadeTimer);
       if(pending){pending.onload=null;pending.onerror=null;}
     };
-    // Reduced-motion users still see each photo, without the fade animation.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[signature,offset]);
+  },[signature]);
   const current=slides[active]||slides[0];
   const last=previous===null?undefined:slides[previous];
   if(!current)return null;
