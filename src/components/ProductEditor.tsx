@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 import type { Product, Category, ProductImage, ProductSpecification } from "../lib/types";
 import { uploadImage, validateProduct, cleanupAbandonedImages, type ProductModelChange } from "../lib/catalog";
-import Modal from "./Modal";
+import Modal, { EditorConfirmation } from "./Modal";
 import AvailabilityPicker from "./AvailabilityPicker";
 import EditorCategoryPicker from "./EditorCategoryPicker";
 import ProductModelEditor from "./ProductModelEditor";
@@ -313,6 +313,12 @@ export default function ProductEditor({
     sku: productIdForCategory(product.categoryId),
     status: isNewProduct ? "draft" : product.status,
   }));
+  // Compare against the initialized editor, not the unnormalized database
+  // record. Automatic ID previews must not trigger a discard warning.
+  const [initialDraftSnapshot] = useState(() => JSON.stringify(draft));
+  const [editorConfirmation, setEditorConfirmation] = useState<{
+    title: string; description: string; confirmLabel: string; action: () => void;
+  } | null>(null);
   const [error, setError] = useState("");
   const [confirmStatus, setConfirmStatus] = useState<"published" | "draft" | null>(null);
   const [busy, setBusy] = useState(false);
@@ -436,14 +442,15 @@ export default function ProductEditor({
     const next = specifications.findIndex((item, index) => index > start && item.kind === "section");
     const end = next < 0 ? specifications.length : next;
     const members = specifications.slice(start, end);
-    if (members.some(item => item.value.trim() || item.quantity || item.description?.trim() || (item.kind !== "section" && item.name.trim())) &&
-        !window.confirm("Remove this section and all its rows? This cannot be undone after saving.")) return;
-    setDraft(current => ({
+    const remove = () => setDraft(current => ({
       ...current,
       specifications: (current.specifications ?? []).filter(
         item => !members.some(member => member.id === item.id),
       ),
     }));
+    if (members.some(item => item.value.trim() || item.quantity || item.description?.trim() || (item.kind !== "section" && item.name.trim()))) {
+      setEditorConfirmation({title:"Remove this section?",description:"This removes the section and all its rows when you save the product.",confirmLabel:"Remove section",action:remove});
+    } else remove();
   };
   const { primary: primarySpecificationRows, sections: specificationSections } =
     splitSpecifications(draft.specifications);
@@ -549,9 +556,18 @@ export default function ProductEditor({
       if (fileRef.current) fileRef.current.value = "";
     }
   }
-  async function requestClose(next?: CatalogEditorNavigation) {
+  async function requestClose(next?: CatalogEditorNavigation, confirmed = false) {
     if (busy || uploading || uploadLock.current || closing.current) return;
-    if ((modelDirty || modelLocked.current || JSON.stringify(draft) !== JSON.stringify(product)) && !window.confirm('Discard your unsaved product changes?')) return;
+    const hasChanges = modelDirty || modelLocked.current || JSON.stringify(draft) !== initialDraftSnapshot;
+    if (!confirmed && hasChanges) {
+      setEditorConfirmation({
+        title:"Unsaved changes",
+        description:"You have unsaved product changes. If you leave now, your changes will be discarded.",
+        confirmLabel:"Discard changes",
+        action:()=>void requestClose(next,true),
+      });
+      return;
+    }
     closing.current = true;
     setBusy(true);
     const abandoned = [...uploadedImages.current.values()];
@@ -838,8 +854,12 @@ export default function ProductEditor({
                         </button>
                         <button type="button" role="menuitem" className="is-danger" disabled={busy||uploading} onClick={()=>{
                           setPhotoMenuId(null);
-                          if (!window.confirm("Delete this photo from the product? It will be removed when you save. The original Album photo will remain.")) return;
-                          setDraft(current=>({...current,images:current.images.filter(item=>item.id!==img.id)}));
+                          setEditorConfirmation({
+                            title:"Remove photo?",
+                            description:"This photo will be removed from the product when you save. The original Album photo will remain.",
+                            confirmLabel:"Remove photo",
+                            action:()=>setDraft(current=>({...current,images:current.images.filter(item=>item.id!==img.id)})),
+                          });
                         }}>
                           <Trash2 size={15} aria-hidden="true"/> Delete
                         </button>
@@ -1138,6 +1158,17 @@ export default function ProductEditor({
           </div>
         </footer>
       </form>
+      {editorConfirmation && <EditorConfirmation
+        title={editorConfirmation.title}
+        description={editorConfirmation.description}
+        confirmLabel={editorConfirmation.confirmLabel}
+        onCancel={()=>setEditorConfirmation(null)}
+        onConfirm={()=>{
+          const action = editorConfirmation.action;
+          setEditorConfirmation(null);
+          action();
+        }}
+      />}
       {confirmStatus && (
         <Modal
           title={confirmStatus === "published" ? "Publish this product?" : "Unpublish this product?"}
