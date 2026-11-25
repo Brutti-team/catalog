@@ -48,7 +48,7 @@ export function renderMaterialInline(text: string): ReactNode[] {
       case "italic": nodes.push(<em key={key}>{children}</em>); break;
       case "underline": nodes.push(<u key={key}>{children}</u>); break;
       case "strike": nodes.push(<s key={key}>{children}</s>); break;
-      case "highlight": nodes.push(<mark key={key}>{children}</mark>); break;
+      case "highlight": nodes.push(...children); break; // Display saved highlights as plain text everywhere.
     }
     i = end + found.mark.length;
   }
