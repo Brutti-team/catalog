@@ -1,13 +1,13 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
-import { Check, CheckCircle2, ChevronDown, CircleOff, Hammer } from "lucide-react";
+import { Check, CheckCircle2, ChevronDown, CircleOff, CalendarClock } from "lucide-react";
 import type { Product } from "../lib/types";
 
 type Availability = Product["availability"];
 type Props = { value: Availability; onChange: (next: Availability) => void; disabled?: boolean };
 
 const choices = [
-  { id: "available", name: "Available", description: "Available for enquiries", Icon: CheckCircle2 },
-  { id: "made-to-order", name: "Made to order", description: "Produced on request", Icon: Hammer },
+  { id: "available", name: "Ready Stock", description: "In stock and ready to order", Icon: CheckCircle2 },
+  { id: "made-to-order", name: "Pre-order", description: "Order in advance", Icon: CalendarClock },
   { id: "unavailable", name: "Unavailable", description: "Not currently available", Icon: CircleOff },
 ] as const;
 
