@@ -14,13 +14,14 @@ export default function CategorySlideshow({slides, name, offset=0}:{slides:Categ
     query.addEventListener("change",change);
     return ()=>query.removeEventListener("change",change);
   },[]);
-  useEffect(()=>{setActive(0);setPrevious(null);},[signature]);
+  useEffect(()=>{setActive(0);setPrevious(null);},[signature,reduced,offset]);
   useEffect(()=>{
     if(reduced || slides.length<2)return;
     let cancelled=false;
     let timer:number|undefined;
     let fadeTimer:number|undefined;
-    let cursor=active % slides.length;
+    let cursor=0;
+    let visibleIndex=0;
     const advance=()=>{
       if(cancelled)return;
       if(document.hidden){timer=window.setTimeout(advance,4000);return;}
@@ -28,7 +29,7 @@ export default function CategorySlideshow({slides, name, offset=0}:{slides:Categ
       const image=new Image();
       image.onload=()=>{
         if(cancelled)return;
-        setPrevious(cursor);setActive(next);cursor=next;
+        setPrevious(visibleIndex);setActive(next);cursor=next;visibleIndex=next;
         fadeTimer=window.setTimeout(()=>setPrevious(null),650);
         timer=window.setTimeout(advance,4000);
       };
