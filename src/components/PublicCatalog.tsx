@@ -1,6 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowDown,
   ArrowRight,
   ArrowUpRight,
   ArrowUp,
@@ -462,10 +461,6 @@ export default function PublicCatalog({
                   onLoad={event => event.currentTarget.classList.add("is-loaded")}
                   onError={event => { event.currentTarget.style.visibility = "hidden"; }}
                 />
-                <div className="pub-hero-image-label">
-                  <span>FURNITURE · JOINERY · INTERIORS</span>
-                  <ArrowUpRight size={23} />
-                </div>
                 <span className="pub-hero-number">
                   BRUTTI / BESPOKE BY NATURE
                 </span>
@@ -480,9 +475,6 @@ export default function PublicCatalog({
               </span>
               <span>
                 <Check size={15} /> Crafted for real spaces
-              </span>
-              <span className="pub-strip-location">
-                BRUTTI <ArrowDown size={14} />
               </span>
             </div>
             <ShowroomSections onExplore={exploreShowroom} onCategorySelect={(categoryId) => { setQuery(""); setCategory(categoryId); setBestOnly(false); browseCollection(); }} categories={categories} publishedProducts={published} loading={loading} />
