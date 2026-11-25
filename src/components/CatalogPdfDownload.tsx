@@ -1,4 +1,4 @@
-import { useEffect, useImperativeHandle, useRef, useState, useId, type Ref } from "react";
+import { useEffect, useImperativeHandle, useRef, useState, useId, useLayoutEffect, type Ref } from "react";
 import { ArrowLeft, Armchair, BedDouble, BookOpen, Check, Download, Eye, FileText, Heart, LampFloor, Layers3, LibraryBig, Sofa, Star, Table2, X } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import { selectPdfProducts, type PdfSelection } from "../lib/catalog-pdf-plan";
@@ -62,6 +62,8 @@ type Props = {products:Product[];categories:Category[];disabled:boolean;openRef?
 export default function CatalogPdfDownload({products,categories,disabled,openRef,hideTrigger=false,staffPreview=false}:Props) {
   const dialog=useRef<HTMLDialogElement>(null);
   const running=useRef(false);
+  const optionsViewport=useRef<HTMLDivElement>(null);
+  const optionsContent=useRef<HTMLDivElement>(null);
   const [mode,setMode]=useState<PdfSelection>("all");
   const [category,setCategory]=useState("");
   const favourites=useFavouriteIds();
@@ -76,6 +78,43 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
     setPreviewUrl(url);
     return()=>URL.revokeObjectURL(url);
   },[preview]);
+  // Keep the options modal fully inside the visible viewport without scrolling.
+  // Measure natural content height (including loading, errors and category choices)
+  // before applying a proportional transform. The PDF preview is not affected.
+  useLayoutEffect(() => {
+    const modal = dialog.current;
+    const viewport = optionsViewport.current;
+    const content = optionsContent.current;
+    if (preview || !modal || !viewport || !content) return;
+    const fit = () => {
+      if (!modal.open || !content.offsetHeight || !modal.offsetWidth) return;
+      const css = getComputedStyle(modal);
+      const chrome = (parseFloat(css.paddingTop) || 0) + (parseFloat(css.paddingBottom) || 0)
+        + (parseFloat(css.borderTopWidth) || 0) + (parseFloat(css.borderBottomWidth) || 0);
+      const inheritedScale = modal.getBoundingClientRect().width / modal.offsetWidth || 1;
+      const visibleHeight = Math.min(window.innerHeight, window.visualViewport?.height ?? window.innerHeight);
+      const cssMaxHeight = parseFloat(css.maxHeight);
+      const available = Math.max(1, Math.min((visibleHeight - 24) / inheritedScale,
+        Number.isFinite(cssMaxHeight) ? cssMaxHeight : Infinity) - chrome - 2);
+      const naturalHeight = content.offsetHeight;
+      const scale = Math.min(1, available / naturalHeight);
+      viewport.style.height = Math.ceil(naturalHeight * scale) + "px";
+      content.style.transform = scale < 1 ? "scale(" + scale + ")" : "none";
+    };
+    const observer = new ResizeObserver(fit);
+    observer.observe(content);
+    const openObserver = new MutationObserver(fit);
+    openObserver.observe(modal, { attributes: true, attributeFilter: ["open"] });
+    window.addEventListener("resize", fit);
+    window.visualViewport?.addEventListener("resize", fit);
+    fit();
+    return () => {
+      observer.disconnect();
+      openObserver.disconnect();
+      window.removeEventListener("resize", fit);
+      window.visualViewport?.removeEventListener("resize", fit);
+    };
+  }, [preview]);
   const clearPreview=()=>{setPreviewUrl("");setPreview(null);};
   const count=selectPdfProducts(products,mode,category,[...favourites]).length;
   const open=()=>{
@@ -123,7 +162,7 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
           <a href={previewUrl||undefined} target="_blank" rel="noopener noreferrer" aria-disabled={!previewUrl}>Open PDF in new tab</a>
           <a className="staff-pdf-preview-download" href={previewUrl||undefined} download={preview.filename} aria-disabled={!previewUrl}><Download size={17}/> Download PDF</a>
         </footer>
-      </div>:<>
+      </div>:<div ref={optionsViewport} className="pub-pdf-options-viewport"><div ref={optionsContent} className="pub-pdf-options-content">
       <div className="pub-pdf-dialog-head">
         <div className="pub-pdf-heading"><span className="pub-pdf-heading-icon"><FileText size={22} strokeWidth={1.7} aria-hidden="true"/></span><div><p>BENUA BRUTTI / COLLECTION</p><h2 id="pub-pdf-title">Download Catalogue</h2><span>Choose a collection to keep or share.</span></div></div>
         <button type="button" aria-label="Close download options" disabled={progress!==null} onClick={()=>dialog.current?.close()}><X size={20}/></button>
@@ -143,7 +182,7 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
       {progress!==null&&<CatalogueLoading progress={progress}/>}
       {message&&<p role={failed?"alert":"status"} className="pub-pdf-message">{message}</p>}
       <button type="button" className="pub-pdf-download" disabled={progress!==null||!count} onClick={()=>void download()}>{staffPreview?<Eye size={17}/>:<Download size={17}/>} {progress!==null?"Preparing catalogue…":staffPreview?"Preview PDF":"Download PDF"}</button>
-      </>}
+      </div></div>}
     </dialog>
   </>;
 }
