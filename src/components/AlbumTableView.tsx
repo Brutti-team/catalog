@@ -10,20 +10,21 @@ export type AlbumCategoryGroup = {
 };
 
 export function AlbumCategoryTable({
-  groups, uncategorised, search, onOpen,
+  groups, uncategorised, search, onOpen, hideEmptyUncategorised = false,
 }: {
   groups: AlbumCategoryGroup[];
   uncategorised: AlbumPhoto[];
   search: string;
   onOpen: (id: string) => void;
+  hideEmptyUncategorised?: boolean;
 }) {
   const needle = search.trim().toLowerCase();
   const matched = groups.filter(({category, items}) =>
     !needle || category.name.toLowerCase().includes(needle) ||
     items.some(photo => photo.name.toLowerCase().includes(needle))
   );
-  const includeOther = !needle || "uncategorised".includes(needle) ||
-    uncategorised.some(photo => photo.name.toLowerCase().includes(needle));
+  const includeOther = (!hideEmptyUncategorised || uncategorised.length > 0) && (!needle || "uncategorised".includes(needle) ||
+    uncategorised.some(photo => photo.name.toLowerCase().includes(needle)));
   return (
     <div className="brutti-album__table-shell">
       <table className="brutti-album__table brutti-album__table--folders">
