@@ -243,18 +243,31 @@ export default function AlbumLibrary({
     return names;
   },[productGroups]);
   const standalonePhotos=photos.filter(photo=>photo.usedBy.length===0);
-  const currentProductGroup=productGroups.find(group=>group.product.id===selectedProductFolder);
+  const publishedView = filter==="published";
+  const categoryFolderView = filter==="by-category" || publishedView;
+  const scopedProductGroups = publishedView ? productGroups.filter(group=>publishedIds.has(group.product.id)) : productGroups;
+  const currentProductGroup=scopedProductGroups.find(group=>group.product.id===selectedProductFolder);
   const needle=search.trim().toLowerCase();
-  const inCategoryFolder = filter==="by-category" && selectedFolder!==null;
+  const matchesProductSearch = ({product,items}: (typeof productGroups)[number]) =>
+    !needle || [product.name,product.sku,categories.find(item=>item.id===product.categoryId)?.name || "Uncategorised"].some(value=>value.toLowerCase().includes(needle))
+      || items.some(photo=>(photo.name+" "+(photos.find(item=>item.key===photo.key)?.name || "")).toLowerCase().includes(needle));
+  const publishedSearchGroups = publishedView ? scopedProductGroups.filter(matchesProductSearch) : [];
+  const uniqueFolderPhotos = (items: AlbumPhoto[]) => Array.from(new Map(items.map(photo=>[photo.key,photo])).values());
+  const folderGroups = publishedView ? categories.map(item=>{
+    const items = uniqueFolderPhotos(publishedSearchGroups.filter(group=>group.product.categoryId===item.id).flatMap(group=>group.items));
+    return {category:item,items,cover:items[0]?.url};
+  }).filter(group=>group.items.length>0) : groups;
+  const folderUngrouped = publishedView
+    ? uniqueFolderPhotos(publishedSearchGroups.filter(group=>!categories.some(item=>item.id===group.product.categoryId)).flatMap(group=>group.items))
+    : ungrouped;
+  const inCategoryFolder = categoryFolderView && selectedFolder!==null;
   const showProductFolders = filter==="by-product" || inCategoryFolder;
   const matchesFolderCategory = (id: string) => inCategoryFolder
     ? (selectedFolder==="__uncategorized__" ? !id || !categories.some(item=>item.id===id) : id===selectedFolder)
     : category==="all" || id===category;
-  const matchingProductGroups=productGroups.filter(({product,items})=>
-    matchesFolderCategory(product.categoryId) &&
-    (!needle || [product.name,product.sku,categories.find(item=>item.id===product.categoryId)?.name || ""].some(value=>value.toLowerCase().includes(needle))
-      || items.some(photo=>(photo.name+" "+(photos.find(item=>item.key===photo.key)?.name || "")).toLowerCase().includes(needle))));
-  const matchingStandalone=standalonePhotos.filter(photo=>{
+  const matchingProductGroups=scopedProductGroups.filter(group=>
+    matchesFolderCategory(group.product.categoryId) && matchesProductSearch(group));
+  const matchingStandalone=publishedView ? [] : standalonePhotos.filter(photo=>{
     const ids=albumPhotoCategoryIds(photo);
     const inScope=inCategoryFolder
       ? (selectedFolder==="__uncategorized__" ? ids.length===0 : ids.includes(selectedFolder!))
@@ -306,7 +319,7 @@ export default function AlbumLibrary({
     if (next !== "by-category") setUploadCategory("none");
   }
   function openFolder(id: string) {
-    setFilter("by-category");
+    if (!publishedView) setFilter("by-category");
     setSelectedProductFolder(null);
     setSelectedFolder(id);
     setUploadCategory(id === "__uncategorized__" ? "none" : id);
@@ -624,7 +637,7 @@ export default function AlbumLibrary({
           <button type="button" className={filter==="published"?"is-current":""} aria-pressed={filter==="published"} onClick={()=>selectFilter("published")}>Published</button>
         </div>
         <label className="brutti-album__search"><Search size={17}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search photos or product names…" aria-label="Search Album"/></label>
-        {filter !== "by-category" && <div ref={categoryMenuRef}
+        {!categoryFolderView && <div ref={categoryMenuRef}
           className={`brutti-album__category-picker${categoryMenuOpen ? " is-open" : ""}${categoryMenuAbove ? " is-above" : ""}`}>
           <button ref={categoryTriggerRef} type="button" className="brutti-album__category-trigger"
             aria-label="Filter album photos by category"
@@ -700,7 +713,7 @@ export default function AlbumLibrary({
           <Upload size={15}/> Add photos to Album
         </button>
       </div>}
-      {filter==="by-category" && selectedFolder!==null && <div className="brutti-album__folder-path">
+      {categoryFolderView && selectedFolder!==null && <div className="brutti-album__folder-path">
         <button type="button" onClick={()=>{setSelectedProductFolder(null);setSelectedFolder(null);}}><ArrowLeft size={16}/> All categories</button>
         <span aria-hidden="true">/</span>
         {selectedProductFolder!==null ? <button type="button" onClick={()=>setSelectedProductFolder(null)}>{folderTitle}</button> : <strong>{folderTitle}</strong>}
@@ -711,7 +724,7 @@ export default function AlbumLibrary({
         <span className="brutti-album__folder-items">{selectedProductFolder===null ? `${matchingProductGroups.length} products` : `${displayedPhotos.length} photos`}</span>
         {selectedProductFolder!==null && !picker && <button type="button" className="brutti-album__folder-add" disabled={exportingFolder||!displayedPhotos.length}
           onClick={()=>void exportProductFolder()}>{exportingFolder?<LoaderCircle size={16} className="brutti-album__spin"/>:<Download size={16}/>} Download HTML</button>}
-        {selectedProductFolder===null && <button type="button" className="brutti-album__folder-add" disabled={busy}
+        {!publishedView && selectedProductFolder===null && <button type="button" className="brutti-album__folder-add" disabled={busy}
           onClick={()=>{setUploadCategory(selectedFolder==="__uncategorized__"?"none":selectedFolder);fileRef.current?.click();}}>
           <Plus size={16}/> Add photos
         </button>}
@@ -763,17 +776,21 @@ export default function AlbumLibrary({
               </div>}
             </div>
           )
-        ) : filter === "by-category" && selectedFolder === null ? (
+        ) : categoryFolderView && selectedFolder === null ? (
+          publishedView && !folderGroups.length && !folderUngrouped.length ? (
+            <div className="brutti-album__empty"><ImageOff size={28}/><strong>No matching published products with photos</strong></div>
+          ) :
           viewMode === "table" ? (
             <AlbumCategoryTable
-              groups={groups}
-              uncategorised={ungrouped}
-              search={search}
+              groups={folderGroups}
+              uncategorised={folderUngrouped}
+              search={publishedView ? "" : search}
+              hideEmptyUncategorised={publishedView}
               onOpen={openFolder}
             />
           ) : (
           <div className="brutti-album__folders" aria-label="Photo folders by category">
-            {groups.filter(({category:item,items})=>!search.trim() ||
+            {folderGroups.filter(({category:item,items})=>publishedView || !search.trim() ||
               item.name.toLowerCase().includes(search.trim().toLowerCase()) ||
               items.some(photo=>photo.name.toLowerCase().includes(search.trim().toLowerCase())))
               .map(({category:item,items,cover})=>(
@@ -787,13 +804,13 @@ export default function AlbumLibrary({
                 <span className="brutti-album__folder-open" aria-hidden="true"><ArrowUpRight size={17}/></span>
               </button>
             ))}
-            {(!search.trim() || "uncategorised".includes(search.trim().toLowerCase()) ||
-              ungrouped.some(photo=>photo.name.toLowerCase().includes(search.trim().toLowerCase()))) && (
+            {(!publishedView || folderUngrouped.length>0) && (publishedView || !search.trim() || "uncategorised".includes(search.trim().toLowerCase()) ||
+              folderUngrouped.some(photo=>photo.name.toLowerCase().includes(search.trim().toLowerCase()))) && (
               <button type="button" className="brutti-album__folder" onClick={()=>openFolder("__uncategorized__")}>
                 <span className="brutti-album__folder-cover brutti-album__folder-cover--empty">
                   <Folder size={44}/><span className="brutti-album__folder-mark"><FolderOpen size={18}/></span>
                 </span>
-                <span className="brutti-album__folder-copy"><strong>Uncategorised</strong><small>{ungrouped.length} photos</small></span>
+                <span className="brutti-album__folder-copy"><strong>Uncategorised</strong><small>{folderUngrouped.length} photos</small></span>
                 <span className="brutti-album__folder-open" aria-hidden="true"><ArrowUpRight size={17}/></span>
               </button>
             )}
