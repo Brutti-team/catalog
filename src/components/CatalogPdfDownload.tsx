@@ -88,14 +88,20 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
     if (preview || !modal || !viewport || !content) return;
     const fit = () => {
       if (!modal.open || !content.offsetHeight || !modal.offsetWidth) return;
+      // The staff workspace can render at an inherited CSS scale. Reserve
+      // real viewport gutters before converting them to local layout units.
+      const inheritedScale = modal.getBoundingClientRect().width / modal.offsetWidth || 1;
+      const visibleHeight = Math.min(window.innerHeight, window.visualViewport?.height ?? window.innerHeight);
+      const visibleWidth = Math.min(window.innerWidth, window.visualViewport?.width ?? window.innerWidth);
+      const gutter = visibleHeight < 500 ? 14 : 24;
+      const maxHeight = Math.max(1, Math.floor((visibleHeight - gutter * 2) / inheritedScale));
+      const maxWidth = Math.max(1, Math.floor((visibleWidth - (visibleWidth < 500 ? 28 : 48)) / inheritedScale));
+      modal.style.setProperty("--pdf-options-max-height", maxHeight + "px");
+      modal.style.setProperty("--pdf-options-max-width", maxWidth + "px");
       const css = getComputedStyle(modal);
       const chrome = (parseFloat(css.paddingTop) || 0) + (parseFloat(css.paddingBottom) || 0)
         + (parseFloat(css.borderTopWidth) || 0) + (parseFloat(css.borderBottomWidth) || 0);
-      const inheritedScale = modal.getBoundingClientRect().width / modal.offsetWidth || 1;
-      const visibleHeight = Math.min(window.innerHeight, window.visualViewport?.height ?? window.innerHeight);
-      const cssMaxHeight = parseFloat(css.maxHeight);
-      const available = Math.max(1, Math.min((visibleHeight - 24) / inheritedScale,
-        Number.isFinite(cssMaxHeight) ? cssMaxHeight : Infinity) - chrome - 2);
+      const available = Math.max(1, maxHeight - chrome - 4);
       const naturalHeight = content.offsetHeight;
       const scale = Math.min(1, available / naturalHeight);
       viewport.style.height = Math.ceil(naturalHeight * scale) + "px";
