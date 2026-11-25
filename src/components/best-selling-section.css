@@ -477,3 +477,31 @@
 @media(max-width:600px) {
   .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__product-copy {padding:10px;}
 }
+
+/* Best Seller cards: compact name / right-aligned price, whole card opens details. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__product-copy {
+  display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto 1fr;
+  align-items:start;column-gap:10px;row-gap:5px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__category {
+  grid-column:1 / -1;grid-row:1;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__product-copy > strong {
+  grid-column:1;grid-row:2;min-width:0;align-self:start;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price {
+  grid-column:2;grid-row:2;min-width:0;max-width:100%;margin:0;text-align:right;align-self:start;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price :is(.catalog-price-current--stacked,.catalog-price-line) {
+  align-items:flex-end;justify-content:flex-end;text-align:right;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price .catalog-price-line {
+  display:flex;flex-direction:column;gap:3px;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price .catalog-price-amount {
+  white-space:nowrap;font-size:clamp(13px,1.15vw,17px);
+}
+@media(max-width:600px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__product-copy {column-gap:6px;}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price .catalog-price-basis {font-size:9px;}
+}
