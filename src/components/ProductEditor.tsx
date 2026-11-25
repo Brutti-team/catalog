@@ -34,7 +34,7 @@ import AvailabilityPicker from "./AvailabilityPicker";
 import EditorCategoryPicker from "./EditorCategoryPicker";
 import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
-import { nextProductId } from "../lib/product-ids";
+import { categoryProductPrefix, nextProductId } from "../lib/product-ids";
 import { cmToUnit, parseDimensionInput, parseMeasurementValue, DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
 import OverallDimensionFields from "./OverallDimensionFields";
 import MeasurementTypePicker from "./MeasurementTypePicker";
@@ -297,9 +297,18 @@ export default function ProductEditor({
   onSave: (p: Product, modelChange?: ProductModelChange, autoProductId?: boolean) => Promise<Product | void>;
   onClose: (warning?: string) => void;
 }) {
+  // Keep the assigned ID for ordinary edits. Moving a product to a new
+  // category (or reopening an already mismatched ID) generates a new code.
+  const needsProductId = (categoryId: string) => {
+    if (isNewProduct || categoryId !== product.categoryId) return true;
+    const prefix = categoryProductPrefix(categoryId, categories);
+    return Boolean(prefix && !product.sku.trim().toUpperCase().startsWith(`${prefix.toUpperCase()}-`));
+  };
+  const productIdForCategory = (categoryId: string) =>
+    needsProductId(categoryId) ? nextProductId(categoryId, categories, existingProducts) : product.sku;
   const [draft, setDraft] = useState<Product>(() => ({
     ...structuredClone(product),
-    sku: isNewProduct ? nextProductId(product.categoryId, categories, existingProducts) : product.sku,
+    sku: productIdForCategory(product.categoryId),
     status: isNewProduct ? "draft" : product.status,
   }));
   const [error, setError] = useState("");
@@ -461,7 +470,7 @@ export default function ProductEditor({
         return;
       }
       setBusy(true);
-      const saved = await onSave({ ...candidate, sku: isNewProduct ? draft.sku : product.sku, updatedAt: new Date().toISOString() }, modelChange.current, isNewProduct);
+      const saved = await onSave({ ...candidate, updatedAt: new Date().toISOString() }, modelChange.current, needsProductId(candidate.categoryId));
       const savedImages = saved?.images ?? draft.images;
       const retained = new Set(savedImages.map(image => image.url));
       const preservedOriginalPaths = new Set(savedImages.flatMap(image => image.preservedOriginalPaths ?? []));
@@ -612,12 +621,12 @@ export default function ProductEditor({
                     title="Product ID is system-managed and cannot be edited"
                   >
                     <span className="catalog-product-id-value">
-                      {(isNewProduct ? draft.sku : product.sku) || "Choose a category to generate ID"}
+                      {draft.sku || "Choose a category to generate ID"}
                     </span>
                     <LockKeyhole size={16} strokeWidth={1.8} aria-hidden="true" />
                   </output>
                   <small className="catalog-product-id-help">
-                    {isNewProduct ? "Generated automatically · final ID confirmed on Save" : "Assigned Product ID · cannot be changed"}
+                    {needsProductId(draft.categoryId) ? "Generated automatically · final ID confirmed on Save" : "Assigned automatically · updates when category changes"}
                   </small>
                 </div>
                 <div className="catalog-editor-category-field">
@@ -628,7 +637,7 @@ export default function ProductEditor({
                     onChange={value => setDraft(current => ({
                       ...current,
                       categoryId: value,
-                      sku: isNewProduct ? nextProductId(value, categories, existingProducts) : current.sku,
+                      sku: productIdForCategory(value),
                     }))}
                     disabled={busy || uploading}
                   />
