@@ -537,3 +537,48 @@
   .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__flag {font-size:10px;gap:4px;padding:5px 8px;min-height:23px;}
   .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__flag svg {width:11px;height:11px;}
 }
+
+
+/* Match the main collection card typography: one font family and a balanced
+   name/price hierarchy, without changing card geometry or badge styling. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling :is(.brutti-best-selling__product-copy,.brutti-best-selling__footer) {
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__category {
+  font-family:inherit !important;
+  font-size:11px !important;
+  font-weight:550 !important;
+  line-height:1.4;
+  letter-spacing:0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__product-copy > strong,
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price :is(.catalog-price-amount,.catalog-price-current:not(.catalog-price-current--stacked)) {
+  font-family:inherit !important;
+  font-size:clamp(14px,1.1vw,16px) !important;
+  font-weight:650 !important;
+  line-height:1.4;
+  letter-spacing:-.015em;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price :is(.catalog-price-basis,.catalog-price-old,.catalog-price-discount) {
+  font-family:inherit !important;
+  font-size:11px !important;
+  font-weight:500 !important;
+  line-height:1.4;
+  letter-spacing:0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__footer {
+  font-size:12px;
+  font-weight:500;
+  line-height:1.5;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__footer button {
+  font-family:inherit;
+}
+@media(max-width:600px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__product-copy > strong,
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price :is(.catalog-price-amount,.catalog-price-current:not(.catalog-price-current--stacked)) {
+    font-size:13px !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__category,
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__price .catalog-price-basis {font-size:10px !important;}
+}
