@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { History, ImageOff, ZoomIn } from "lucide-react";
-import { getLatestEditedOrAddedProduct, type ActivityEntry } from "../lib/account-center";
+import { History, ImageOff, ArrowRight } from "lucide-react";
+import { getTodayProductUpdates, catalogActivityMYTRange, type ActivityEntry } from "../lib/account-center";
 import SafeImage from "./SafeImage";
 import { publicAssetUrl } from "../lib/assets";
 import type { CatalogData } from "../lib/types";
@@ -20,25 +20,6 @@ export function formatActivityTime(value: string): string {
     minute: "2-digit",
     hour12: true,
   }).format(date)} MYT`;
-}
-
-/** Show the real audit date, weekday, and time in Malaysia local time. */
-function formatOverviewActivityTime(value: string): string {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Time unavailable";
-  const parts = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Asia/Kuala_Lumpur",
-    weekday: "long",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  }).formatToParts(date);
-  const get = (type: Intl.DateTimeFormatPartTypes) =>
-    parts.find(part => part.type === type)?.value ?? "";
-  return `${get("day")} ${get("month")} ${get("year")} (${get("weekday")}), ${get("hour")}:${get("minute")} ${get("dayPeriod").toLowerCase()} MYT`;
 }
 
 export function activityLabel(event: Pick<ActivityEntry, "action" | "resource_type">): string {
@@ -61,92 +42,70 @@ export function activityLabel(event: Pick<ActivityEntry, "action" | "resource_ty
 export default function LastChange({
   authenticated,
   refreshKey,
+  onHistory,
 }: {
   authenticated: boolean;
   refreshKey: CatalogData;
   onHistory: () => void;
 }) {
-  const [latest, setLatest] = useState<ActivityEntry | null>(null);
+  const [updates, setUpdates] = useState<ActivityEntry[]>([]);
   const [status, setStatus] = useState<RecordStatus>("not-enabled");
+  const [day, setDay] = useState(() => catalogActivityMYTRange("today").start);
+
+  useEffect(() => {
+    if (!authenticated) return;
+    const checkDay = () => setDay(catalogActivityMYTRange("today").start);
+    const timer = window.setInterval(checkDay, 15000);
+    window.addEventListener("focus", checkDay);
+    return () => { window.clearInterval(timer); window.removeEventListener("focus", checkDay); };
+  }, [authenticated]);
 
   useEffect(() => {
     let mounted = true;
-    if (!authenticated) return;
-    // Do not fabricate actor/time from product timestamps while audit is absent.
-    void getLatestEditedOrAddedProduct().then(record => {
+    if (!authenticated) { setUpdates([]); setStatus("not-enabled"); return; }
+    setStatus("loading");
+    void getTodayProductUpdates(new Date(day)).then(records => {
       if (!mounted) return;
-      setLatest(record);
-      setStatus(record ? "ready" : "empty");
+      setUpdates(records);
+      setStatus(records.length ? "ready" : "empty");
     }).catch(() => {
       if (!mounted) return;
-      setLatest(null);
+      setUpdates([]);
       setStatus("error");
     });
     return () => { mounted = false; };
-  }, [authenticated, refreshKey]);
-
-  // Only use the exact audited product ID. Missing/removed product photos are
-  // never replaced with an unrelated catalog image.
-  const changedProduct = latest?.resource_id
-    ? refreshKey.products.find(product => product.id === latest.resource_id)
-    : undefined;
-  const productPhoto = changedProduct?.images.find(image => image.url.trim());
+  }, [authenticated, refreshKey, day]);
 
   const visibleStatus = authenticated ? (status === "not-enabled" ? "loading" : status) : "not-enabled";
-
   return (
-    <section className="catalog-last-activity catalog-latest-updates" aria-label="Latest catalog updates">
-      <div className="catalog-last-activity-heading">
-        <span className="catalog-latest-title-icon" aria-hidden="true"><History size={18} strokeWidth={1.9} /></span>
-        <h2>Latest updates</h2>
-        {visibleStatus === "ready" && latest && (
-          <span className="catalog-latest-action" aria-label={"Change type: " + (latest.action === "products_created" ? "Added" : "Edited")}>
-            {latest.action === "products_created" ? "Added" : "Edited"}
-          </span>
-        )}
+    <section className="catalog-today-feed" aria-label="Latest catalog updates">
+      <header className="catalog-today-feed-head">
+        <span className="catalog-today-feed-icon" aria-hidden="true"><History size={19} strokeWidth={1.8} /></span>
+        <div className="catalog-today-feed-title"><h2>Latest updates</h2><p>Today's catalog activity</p></div>
+        <button type="button" className="catalog-today-feed-history" onClick={onHistory}>View activity <ArrowRight size={15} aria-hidden="true" /></button>
+      </header>
+      <div className="catalog-today-feed-list" aria-live="polite" aria-busy={visibleStatus === "loading"}>
+        {visibleStatus === "ready" ? updates.map(event => {
+          const product = event.resource_id ? refreshKey.products.find(p => p.id === event.resource_id) : undefined;
+          const photo = product?.images.find(image => image.url.trim());
+          const added = event.action === "products_created";
+          const name = event.resource_name || event.resource_type;
+          const date = new Date(event.created_at);
+          const time = Number.isNaN(date.getTime()) ? "Time unavailable" : new Intl.DateTimeFormat("en-MY", {
+            timeZone: "Asia/Kuala_Lumpur", hour: "numeric", minute: "2-digit", hour12: true,
+          }).format(date).toUpperCase();
+          return <article key={event.id} className="catalog-today-feed-row">
+            {photo ? <a className="catalog-today-feed-photo" href={publicAssetUrl(photo.url)} target="_blank" rel="noopener noreferrer" aria-label={"Open full-size photo of " + name} title="View full product photo">
+              <SafeImage src={photo.url} alt="" loading="lazy" />
+            </a> : <span className="catalog-today-feed-photo" aria-label="No product photo available"><ImageOff size={19} aria-hidden="true" /></span>}
+            <div className="catalog-today-feed-copy">
+              <div className="catalog-today-feed-name"><strong title={name}>{name}</strong><span className={"catalog-today-feed-action" + (added ? " is-added" : "")}>{added ? "Added" : "Edited"}</span></div>
+              <small>By {event.actor_email || "System"}</small>
+            </div>
+            <time className="catalog-today-feed-time" dateTime={event.created_at} title={formatActivityTime(event.created_at)}><strong>{time}</strong><small>Today · MYT</small></time>
+          </article>;
+        }) : <p className="catalog-today-feed-empty">{visibleStatus === "loading" ? "Checking latest updates…" : visibleStatus === "empty" ? "No product additions or edits today." : visibleStatus === "error" ? "Latest updates are temporarily unavailable." : "Updates will appear when your administrator account is verified."}</p>}
       </div>
-      {visibleStatus === "ready" && latest ? (
-        <div className="catalog-last-activity-details">
-          <p className="catalog-latest-product" title={latest.resource_name || latest.resource_type}>
-            <strong>{latest.resource_name || latest.resource_type}</strong>
-          </p>
-          <p className="catalog-latest-actor">By {latest.actor_email || "System"}</p>
-          <time className="catalog-latest-time" dateTime={latest.created_at}>
-            {formatOverviewActivityTime(latest.created_at)}
-          </time>
-        </div>
-      ) : (
-        <p className="catalog-last-activity-placeholder">
-          {visibleStatus === "loading" ? "Checking latest updates…"
-            : visibleStatus === "empty" ? "No product additions or edits recorded yet."
-              : visibleStatus === "error" ? "Latest updates are temporarily unavailable."
-                : "Updates will appear when your administrator account is verified."}
-        </p>
-      )}
-      {productPhoto ? (
-        <a
-          className="catalog-last-activity-photo has-photo catalog-latest-photo-link"
-          href={publicAssetUrl(productPhoto.url)}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={"Open full-size photo of " + (changedProduct?.name ?? "latest product")}
-          title="View full product photo"
-        >
-          <SafeImage
-            src={productPhoto.url}
-            alt={"Product: " + (changedProduct?.name ?? "")}
-            loading="lazy"
-          />
-          <span className="catalog-latest-photo-zoom" aria-hidden="true"><ZoomIn size={15} /></span>
-        </a>
-      ) : (
-        <div className="catalog-last-activity-photo is-empty" aria-label="No product photo available">
-          <span className="catalog-last-activity-photo-empty">
-            <ImageOff size={24} aria-hidden="true" />
-            <small>No product photo</small>
-          </span>
-        </div>
-      )}
     </section>
   );
 }
