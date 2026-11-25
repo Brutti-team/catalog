@@ -452,22 +452,6 @@ export default function PublicCatalog({
                 </div>
               </div>
               <div className="pub-hero-visual">
-                <img
-                  src="https://brutti.my/assets/showroom-web.jpg"
-                  alt="Benua Brutti shared showroom showcasing handcrafted furniture and interiors"
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="async"
-                  onError={(event) => {
-                    // Use another real photograph from the official Brutti website if needed.
-                    const image = event.currentTarget;
-                    if (!image.src.includes("built%20in%20cabinet.webp")) {
-                      image.src = "https://brutti.my/assets/what-we-build/built%20in%20cabinet.webp";
-                    } else {
-                      image.style.visibility = "hidden";
-                    }
-                  }}
-                />
                 <div className="pub-hero-image-label">
                   <span>FURNITURE · JOINERY · INTERIORS</span>
                   <ArrowUpRight size={23} />
