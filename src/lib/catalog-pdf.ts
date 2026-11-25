@@ -176,14 +176,16 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     const desc=lines(ctx,plainMaterials(product.description||""),SIDE_W,14,400);
     // Keep the description with the product identity when possible. Overflow
     // continues in the specifications; no text or measurements are discarded.
-    const targetHero=Math.min(extras?408:500,BOTTOM-HERO_TOP-(extras?132:0)-32-185);
+    const dimensionKeys=OVERALL_DIMENSION_KEYS.filter(key=>Number.isFinite(product[key])&&product[key]>0);
+    const cardWidth=(210-Math.max(0,dimensionKeys.length-1)*6)/Math.max(1,dimensionKeys.length);
+    const dimensions=dimensionKeys.map(key=>{
+      const value=formatProductDimensions({width:0,depth:0,height:0,dimensionUnits:product.dimensionUnits,[key]:product[key]}).replace(/ [WDH]$/,"");
+      return {label:key[0].toUpperCase(),value:lines(ctx,value,cardWidth-12,13,600)};
+    });
+    const dimensionHeight=dimensions.length?25+Math.max(58,...dimensions.map(d=>31+d.value.length*17)):0;
+    const targetHero=Math.min(extras?408:500,BOTTOM-HERO_TOP-(extras?132:0)-32-Math.max(100,dimensionHeight));
     const descriptionCount=Math.min(desc.length,Math.max(0,Math.floor((targetHero-identityHeight-14)/20)));
     const description=desc.slice(0,descriptionCount);
-    const dimensions=OVERALL_DIMENSION_KEYS.filter(key=>Number.isFinite(product[key])&&product[key]>0).map(key=>{
-      const value=formatProductDimensions({width:0,depth:0,height:0,dimensionUnits:product.dimensionUnits,[key]:product[key]}).replace(/ [WDH]$/,"");
-      return {label:key.toUpperCase(),value:lines(ctx,value,188,15,600)};
-    });
-    const dimensionHeight=dimensions.length?25+dimensions.reduce((n,d)=>n+Math.max(43,23+d.value.length*18)+7,0):0;
     const detailX=dimensions.length?270:40;
     const detail=productLines(ctx,product,580-detailX,desc.slice(descriptionCount));
     const detailHeight=detail.reduce((n,row)=>n+row.height,0);
@@ -193,8 +195,7 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
       Math.min(extras?430:545,BOTTOM-HERO_TOP-stripHeight-32-neededBottom));
     const detailTop=HERO_TOP+heroHeight+stripHeight+24;
     const continuationTop=105+lines(ctx,product.name,540,25,600).length*31+20;
-    // If an unusually long title pushes the first-page budget down, retain
-    // the full product name on continuation pages instead of clipping details.
+    // Keep overflow specifications on continuation pages, not over the footer.
     const first=detail.length&&detail[0].height<=BOTTOM-detailTop?takeRows(detail,0,BOTTOM-detailTop):0;
     const chunks=[detail.slice(0,first)];
     for(let i=first;i<detail.length;){const end=takeRows(detail,i,BOTTOM-continuationTop);chunks.push(detail.slice(i,end));i=end;}
@@ -324,14 +325,17 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
           cx.fillStyle=RULE;cx.fillRect(40,entry.detailTop-12,540,1);
           if(entry.dimensions.length){
             text(cx,"DIMENSIONS",40,entry.detailTop+12,11,GREEN,700);
-            let dy=entry.detailTop+25;
-            for(const dimension of entry.dimensions){
-              const h=Math.max(43,23+dimension.value.length*18);
-              panel(cx,40,dy,210,h,"#edf0e7",8);
-              text(cx,dimension.label,50,dy+13,10,MUTED,600);
-              dimension.value.forEach((line,i)=>text(cx,line,50,dy+31+i*18,15,GREEN,600));
-              dy+=h+7;
-            }
+            const dy=entry.detailTop+25;
+            const w=(210-(entry.dimensions.length-1)*6)/entry.dimensions.length;
+            const h=entry.dimensionHeight-25;
+            entry.dimensions.forEach((dimension,i)=>{
+              const x=40+i*(w+6);
+              panel(cx,x,dy,w,h,"#edf0e7",8);
+              cx.textAlign="center";
+              text(cx,dimension.label,x+w/2,dy+17,11,MUTED,600);
+              dimension.value.forEach((line,j)=>text(cx,line,x+w/2,dy+37+j*17,13,GREEN,600));
+              cx.textAlign="left";
+            });
             if(detail.length){cx.fillStyle=RULE;cx.fillRect(259,entry.detailTop,1,Math.max(entry.dimensionHeight,detail.reduce((n,r)=>n+r.height,0)));}
           }
           drawRows(cx,detail,entry.detailTop,entry.detailX);
