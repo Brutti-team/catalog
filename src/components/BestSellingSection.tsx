@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import type { Category, Product } from "../lib/types";
-import { publicAssetUrl } from "../lib/assets";
-import { photoCropStyle } from "../lib/photo-crop";
+import { catalogCardPhotoStyle } from "../lib/photo-crop";
+import SafeImage from "./SafeImage";
 import { recordCatalogEvent } from "../lib/customer-analytics";
 import ProductPrice from "./ProductPrice";
 import "./best-selling-section.css";
@@ -38,7 +38,8 @@ export default function BestSellingSection({ products, categories, loading, onBr
     () => categories.filter(category => curated.some(product => product.categoryId === category.id)),
     [categories, curated],
   );
-  const matching = curated.filter(product => selectedCategory === "all" || product.categoryId === selectedCategory);
+  const activeCategory = visibleCategories.some(category => category.id === selectedCategory) ? selectedCategory : "all";
+  const matching = curated.filter(product => activeCategory === "all" || product.categoryId === activeCategory);
   const filtered = matching.slice(0, 8);
   const categoryName = (id: string) =>
     categories.find(category => category.id === id)?.name || "Furniture";
@@ -46,22 +47,21 @@ export default function BestSellingSection({ products, categories, loading, onBr
   return (
     <section className="brutti-best-selling" id="pub-best-selling" aria-label="Best-selling furniture">
       <div className="brutti-best-selling__head">
-        <p className="brutti-best-selling__eyebrow">BENUA BRUTTI / CURATED PICKS</p>
-        <h2>Our Best-Selling <em>Furniture</em></h2>
+        <p className="brutti-best-selling__eyebrow"><Star size={14} aria-hidden="true"/> CURATED BY BENUA BRUTTI</p>
+        <h2>Best-selling <em>furniture</em></h2>
         <p className="brutti-best-selling__lede">
-          Discover statement pieces and practical designs, thoughtfully selected
-          for spaces that feel like your own.
+          Discover our curated selection of furniture for your space.
         </p>
       </div>
       {loading ? (
         <p className="brutti-best-selling__notice" role="status">Preparing our product selection…</p>
       ) : curated.length > 0 ? (
         <>
-          <div className="brutti-best-selling__filters" role="group" aria-label="Filter selected furniture by category">
+          {visibleCategories.length > 1 && <div className="brutti-best-selling__filters" role="group" aria-label="Filter selected furniture by category">
             <button
               type="button"
-              className={selectedCategory === "all" ? "is-selected" : ""}
-              aria-pressed={selectedCategory === "all"}
+              className={activeCategory === "all" ? "is-selected" : ""}
+              aria-pressed={activeCategory === "all"}
               onClick={() => setSelectedCategory("all")}
             >
               All designs
@@ -70,15 +70,15 @@ export default function BestSellingSection({ products, categories, loading, onBr
               <button
                 type="button"
                 key={category.id}
-                className={selectedCategory === category.id ? "is-selected" : ""}
-                aria-pressed={selectedCategory === category.id}
+                className={activeCategory === category.id ? "is-selected" : ""}
+                aria-pressed={activeCategory === category.id}
                 onClick={() => setSelectedCategory(category.id)}
               >
                 {category.name}
               </button>
             ))}
-          </div>
-          <div className="brutti-best-selling__grid">
+          </div>}
+          <div className={`brutti-best-selling__grid${filtered.length === 1 ? " is-single" : ""}`}>
             {filtered.map(product => {
               const photo = product.images.find(image => Boolean(image.url?.trim()));
               if (!photo) return null;
@@ -91,33 +91,34 @@ export default function BestSellingSection({ products, categories, loading, onBr
                   onClick={() => recordCatalogEvent("product_click", product.id)}
                 >
                   <span className="brutti-best-selling__photo">
-                    <img
-                      src={publicAssetUrl(photo.url)}
+                    <SafeImage
+                      src={photo.url}
                       alt={photo.alt || product.name}
                       loading="lazy"
                       decoding="async"
-                      style={photoCropStyle(photo)}
+                      style={catalogCardPhotoStyle(photo, product.sku)}
                     />
-                    <span className="brutti-best-selling__flag">BEST SELLING</span>
+                    <span className="brutti-best-selling__flag"><Star size={12} fill="currentColor" aria-hidden="true"/> Best Seller</span>
                   </span>
                   <span className="brutti-best-selling__product-copy">
                     <span className="brutti-best-selling__category">{categoryName(product.categoryId)}</span>
                     <strong>{product.name}</strong>
-                    <span className="brutti-best-selling__price"><ProductPrice product={product} /></span>
+                    <span className="brutti-best-selling__price"><ProductPrice product={product} stackedBasis /></span>
+                    <span className="brutti-best-selling__view">View details <ArrowRight size={16} aria-hidden="true"/></span>
                   </span>
                 </a>
               );
             })}
           </div>
           <div className="brutti-best-selling__footer">
-            <span>Showing {filtered.length} of {matching.length} {matching.length === 1 ? "piece" : "pieces"}</span>
+            <span>{matching.length} {matching.length === 1 ? "piece" : "pieces"} in this selection</span>
             <button type="button" onClick={onBrowseBestSellers}>View All Best Sellers <ArrowRight size={17} aria-hidden="true" /></button>
           </div>
         </>
       ) : (
         <div className="brutti-best-selling__empty" role="status">
           <span className="brutti-best-selling__empty-heading">Our selected collection is coming together.</span>
-          <p>Products marked Best Selling and Published in Admin will appear here with their real photos, names and prices.</p>
+          <p>Explore our collection while we prepare our next selection.</p>
           <button type="button" onClick={onBrowse}>Browse the collection <ArrowRight size={17} aria-hidden="true" /></button>
         </div>
       )}
