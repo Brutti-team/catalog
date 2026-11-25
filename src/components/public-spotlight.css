@@ -2527,25 +2527,6 @@
   box-shadow:none;
 }
 
-/* Portrait product photos must stay intact, even on hover.
-   Keep the shared card dimensions; landscape photos retain their existing crop. */
-.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-best-selling,#pub-recommendations) .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__preview img.is-portrait-photo,
-.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-best-selling,#pub-recommendations) .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__visual:hover .pub-catalog-tile__preview img.is-portrait-photo {
-  object-fit:contain !important;
-  object-position:center !important;
-  transform:none !important;
-  scale:1 !important;
-  filter:none !important;
-}
-.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-best-selling,#pub-recommendations) .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__preview:has(img.is-portrait-photo) {
-  background:rgba(132,145,132,.08) !important;
-}
-.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-best-selling,#pub-recommendations) .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__visual:has(img.is-portrait-photo),
-.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-best-selling,#pub-recommendations) .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile:hover .pub-catalog-tile__visual:has(img.is-portrait-photo) {
-  scale:1 !important;
-  transform:none !important;
-}
-
 /* Consistent stock availability colours across public cards and Quick View. */
 .pub-app.pub-refined :is(.pub-catalog-tile__availability,.pub-quickview__availability):has(.pub-catalog-tile__dot--available) {color:#1f5a43 !important;}
 .pub-app.pub-refined :is(.pub-catalog-tile__availability,.pub-quickview__availability):has(.pub-catalog-tile__dot--made-to-order) {color:#315d92 !important;}
@@ -2553,3 +2534,57 @@
 .pub-app.pub-refined .pub-catalog-tile__dot--available {background:#1f5a43 !important;}
 .pub-app.pub-refined .pub-catalog-tile__dot--made-to-order {background:#4779b5 !important;box-shadow:0 0 0 2px rgba(71,121,181,.12) !important;}
 .pub-app.pub-refined .pub-catalog-tile__dot--unavailable {background:#a13732 !important;}
+
+/* Full-bleed product card photos, including portrait images.
+   Preserve stored crop position/zoom and the existing image aspect ratio.
+   Only thumbnail cards change; Quick View and detail photos are untouched. */
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog,.pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile {
+  padding:0 !important;
+  overflow:hidden;
+}
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog,.pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__visual,
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog,.pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile:hover .pub-catalog-tile__visual {
+  width:100%;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  overflow:hidden;
+  transform:none !important;
+  scale:1 !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog,.pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__preview {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  padding:0 !important;
+  margin:0 !important;
+  border:0 !important;
+  overflow:hidden;
+  background:transparent !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog,.pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__preview img,
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog,.pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__visual:hover .pub-catalog-tile__preview img {
+  display:block;
+  width:100% !important;
+  height:100% !important;
+  min-width:0;min-height:0;
+  max-width:none !important;
+  max-height:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  object-fit:cover !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog,.pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__copy {
+  padding:16px 18px 18px !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__copy {
+  padding:12px 12px 13px !important;
+}
+@media(max-width:670px) {
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog,.pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__copy {padding:11px 12px 14px !important;}
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__copy {padding:9px 9px 11px !important;}
+}
+
