@@ -47,7 +47,7 @@ export default function BestSellingSection({ products, categories, loading, onBr
   return (
     <section className="brutti-best-selling" id="pub-best-selling" aria-label="Best-selling furniture">
       <div className="brutti-best-selling__head">
-        <p className="brutti-best-selling__eyebrow"><Star size={14} aria-hidden="true"/> CURATED BY BENUA BRUTTI</p>
+        <p className="brutti-best-selling__eyebrow"><Star size={14} aria-hidden="true"/> CURATED BY BRUTTI</p>
         <h2>Best-selling <em>furniture</em></h2>
         <p className="brutti-best-selling__lede">
           Discover our curated selection of furniture for your space.
