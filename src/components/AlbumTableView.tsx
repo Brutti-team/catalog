@@ -156,7 +156,7 @@ export function AlbumPhotoTable({
                       onClick={() => onEditCover(photo)}>
                       <Crop size={15} aria-hidden="true"/>
                     </button>}
-                    {!picker && onDelete && !linked && !covered && photo.id && <button type="button" style={{color:"#a63136",background:"#fff1f1",borderColor:"#f3c7c9"}} title="Delete photo" aria-label={`Delete ${photo.name}`} onClick={()=>onDelete(photo)}><Trash2 size={15} aria-hidden="true"/></button>}
+                    {!picker && onDelete && <button type="button" style={{color:"#a63136",background:"#fff1f1",borderColor:"#f3c7c9"}} title="Delete photo" aria-label={`Delete ${photo.name}`} onClick={()=>onDelete(photo)}><Trash2 size={15} aria-hidden="true"/></button>}
                   </div>
                 </td>
               </tr>
