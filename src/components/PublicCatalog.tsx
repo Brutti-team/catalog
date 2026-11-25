@@ -22,7 +22,7 @@ import ProductPrice from "./ProductPrice";
 import CatalogPdfDownload, { type CatalogPdfDownloadHandle } from "./CatalogPdfDownload";
 import { recommendProducts, recentProductIds, searchMatches } from "../lib/product-recommendations";
 import MaterialsContent from "./MaterialsContent";
-import { splitSpecifications } from "../lib/specification-groups";
+import { splitSpecifications, primaryFinishingRow } from "../lib/specification-groups";
 import { formatProductDimensions, formatSpecificationMeasurement } from "../lib/dimensions";
 import { productIdFromHash } from "../lib/routes";
 import { recordCatalogEvent } from "../lib/customer-analytics";
@@ -258,7 +258,8 @@ export default function PublicCatalog({
   const product = previewProduct ?? (
     productId === null ? undefined : published.find((item) => item.id === productId)
   );
-  const specificationGroups = splitSpecifications(product?.specifications);
+  const finishingRow = primaryFinishingRow(product?.specifications);
+  const specificationGroups = splitSpecifications((product?.specifications ?? []).filter(row => row.id !== finishingRow?.id));
   const viewedProductId = product?.status === "published" ? product.id : undefined;
   useEffect(() => {
     if (!previewProduct && !loading && !error && viewedProductId) noteViewed(viewedProductId);
@@ -838,7 +839,7 @@ export default function PublicCatalog({
                       </>
                     )}
                     {(!previewProduct ||
-                      Boolean(product.materials?.trim()) ||
+                      Boolean(product.materials?.trim()) || Boolean(finishingRow?.value.trim()) ||
                       [product.width, product.depth, product.height].some(value => Number.isFinite(value) && value > 0) ||
                       specificationGroups.primary.some(item => specificationHasContent(item)) ||
                       specificationGroups.sections.some(section => section.rows.some(item => specificationHasContent(item)))
@@ -852,6 +853,12 @@ export default function PublicCatalog({
                           <div>
                             <dt>Materials</dt>
                             <dd><MaterialsContent value={product.materials} /></dd>
+                          </div>
+                        )}
+                        {finishingRow?.value.trim() && (
+                          <div>
+                            <dt>Finishing</dt>
+                            <dd><MaterialsContent value={finishingRow.value} /></dd>
                           </div>
                         )}
                         {[product.width, product.depth, product.height].some(value => Number.isFinite(value) && value > 0) && (
@@ -879,7 +886,7 @@ export default function PublicCatalog({
                               <dd>{categoryName(product.categoryId)}</dd>
                             </div>
                           </dl>
-                          {(Boolean(product.materials?.trim()) ||
+                          {(Boolean(product.materials?.trim()) || Boolean(finishingRow?.value.trim()) ||
                             [product.width, product.depth, product.height].some(value => Number.isFinite(value) && value > 0) ||
                             specificationGroups.primary.some(specificationHasContent)) && (
                             <div className="pub-spec-section">
@@ -889,6 +896,12 @@ export default function PublicCatalog({
                                   <div>
                                     <dt>Materials</dt>
                                     <dd><MaterialsContent value={product.materials} /></dd>
+                                  </div>
+                                )}
+                                {finishingRow?.value.trim() && (
+                                  <div>
+                                    <dt>Finishing</dt>
+                                    <dd><MaterialsContent value={finishingRow.value} /></dd>
                                   </div>
                                 )}
                                 {[product.width, product.depth, product.height].some(value => Number.isFinite(value) && value > 0) && (
