@@ -1365,3 +1365,48 @@
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-nav {gap:16px;}
   .pub-app.pub-refined:not(.pub-private-preview) .pub-header .pub-header-actions {gap:8px;}
 }
+
+
+/* Homepage hero — Brutti forest green, without changing the photograph,
+   typography, dimensions or placement. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero {
+  background:#1f5a43 !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero-visual::after {
+  background:linear-gradient(90deg,rgba(23,70,52,.91) 0%,rgba(31,90,67,.69) 48%,rgba(31,90,67,.37) 100%),
+    linear-gradient(0deg,rgba(16,48,36,.29),transparent 65%) !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero h1 {
+  color:#fffdf8 !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero h1 em {
+  color:#dcecdf !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero .pub-primary-button {
+  background:rgba(31,90,67,.93) !important;
+  border-color:rgba(218,239,225,.55) !important;
+  color:#fff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 9px 25px rgba(7,21,13,.18);
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero .pub-primary-button svg {
+  color:#fff !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero .pub-primary-button:hover {
+  background:#174634 !important;
+  border-color:rgba(218,239,225,.8) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 13px 29px rgba(7,21,13,.22);
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip {
+  background:linear-gradient(112deg,rgba(255,255,255,.92),rgba(31,90,67,.10)) !important;
+  border-color:rgba(31,90,67,.18) !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span svg,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip .pub-strip-location {
+  color:#1f5a43 !important;
+}
+@media(max-width:760px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero-visual::after {
+    background:linear-gradient(0deg,rgba(23,70,52,.94),rgba(31,90,67,.65) 65%,rgba(31,90,67,.34)) !important;
+  }
+}
