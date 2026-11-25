@@ -1681,3 +1681,44 @@
   letter-spacing:0;
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image > .pub-featured-tag.catalog-best-public-tag svg {color:#fff !important;}
+
+/* Give long specifications an explicit scroll budget. A percentage max-height
+   inside an auto-height grid can resolve as unlimited and overlap the enquiry. */
+@media(min-width:851px) and (min-height:600px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy {
+    max-height:none;
+    overflow:visible;
+    grid-template-rows:auto auto auto auto auto auto;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-specifications {
+    max-height:none;
+    overflow:visible;
+    min-height:0;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll {
+    flex:0 1 auto;
+    max-height:clamp(140px,calc(100dvh - 365px),290px);
+    overflow-x:hidden;
+    overflow-y:auto;
+    scrollbar-width:thin;
+    scrollbar-color:#b0c2b3 transparent;
+    scrollbar-gutter:stable;
+    padding-right:7px;
+    overscroll-behavior-y:auto;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-detail-promise {
+    position:relative;
+    align-self:start;
+    margin-top:12px;
+  }
+}
+@media(max-width:850px), (max-height:599px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy {max-height:none;overflow:visible;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-specifications {max-height:none;overflow:visible;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll {
+    max-height:none;
+    overflow:visible;
+    scrollbar-gutter:auto;
+    padding-right:0;
+  }
+}
