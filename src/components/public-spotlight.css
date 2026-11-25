@@ -2365,13 +2365,13 @@
   box-sizing:border-box;
   border:0 !important;
   border-radius:999px;
-  background:rgba(24,70,51,.96) !important;
+  background:rgba(161,55,50,.97) !important;
   color:#fffdf5 !important;
   font:650 11px/1.2 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   letter-spacing:0;
   text-transform:none;
   white-space:nowrap;
-  box-shadow:0 3px 10px rgba(15,43,31,.20) !important;
+  box-shadow:0 3px 10px rgba(105,30,26,.20) !important;
   backdrop-filter:blur(10px);
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-catalog-tile__featured.pub-catalog-tile__best svg {
