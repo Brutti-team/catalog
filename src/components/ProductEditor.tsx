@@ -1123,7 +1123,7 @@ export default function ProductEditor({
                 onClick={() => void commit("draft")}
                 title="Save changes and remove this product from the public catalog"
               >
-                <Eye size={16} aria-hidden="true" /> Move to Draft
+                <EyeOff size={16} aria-hidden="true" /> Unpublish
               </button>
             )}
               <button
@@ -1140,7 +1140,7 @@ export default function ProductEditor({
       </form>
       {confirmStatus && (
         <Modal
-          title={confirmStatus === "published" ? "Publish this product?" : "Move product to Draft?"}
+          title={confirmStatus === "published" ? "Publish this product?" : "Unpublish this product?"}
           eyebrow="BRUTTI CATALOG / CONFIRM ACTION"
           className="catalog-publish-confirm-dialog"
           onClose={() => setConfirmStatus(null)}
@@ -1185,7 +1185,7 @@ export default function ProductEditor({
                 {confirmStatus === "published"
                   ? <Globe2 size={17} strokeWidth={1.85} aria-hidden="true" />
                   : <EyeOff size={17} strokeWidth={1.85} aria-hidden="true" />}
-                {confirmStatus === "published" ? "Publish Product" : "Move to Draft"}
+                {confirmStatus === "published" ? "Publish Product" : "Unpublish"}
               </button>
             </div>
           </div>
