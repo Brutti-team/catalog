@@ -925,7 +925,7 @@ export default function PublicCatalog({
           </section>
         )}
         {productId === null && <BestSellingSection products={published} categories={categories} loading={loading}
-          onBrowse={() => { resetFilters(); browseCollection(); }} onBrowseBestSellers={showAllBestSellers} />}
+          onBrowse={() => { resetFilters(); browseCollection(); }} onBrowseBestSellers={showAllBestSellers} onView={noteViewed} />}
         {!previewProduct && productId === null && !loading && !error && related.length > 0 && recommendations(true)}
       </main>
       {!previewProduct && <footer className="pub-footer pub-footer--reference" id="pub-contact">
