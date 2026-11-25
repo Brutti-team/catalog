@@ -1672,3 +1672,19 @@
     gap: 12px;
   }
 }
+
+
+/* Sidebar wordmark: no background tile, preserve the existing logo dimensions. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .catalog-sidebar-logo {
+  background:transparent !important;
+  background-image:none !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .sidebar .catalog-sidebar-logo img {
+  filter:brightness(0) saturate(100%) invert(24%) sepia(18%) saturate(1078%) hue-rotate(96deg) brightness(93%) contrast(88%) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar .catalog-sidebar-logo img {
+  filter:brightness(0) invert(1) !important;
+}
