@@ -376,3 +376,62 @@
     transform: none !important;
   }
 }
+
+
+/* Compact four-column category gallery. Fit the actual workspace width
+   (including a collapsed or expanded sidebar), not just the viewport. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(244px, calc((100% - 42px) / 4))), 1fr)) !important;
+  grid-auto-rows: auto;
+  gap: 14px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
+  --brutti-category-dock-height: 100px;
+  min-width: 0;
+  height: 264px !important;
+  min-height: 264px !important;
+  max-height: 264px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-body {
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  padding: 7px 9px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-body h2 {
+  font-size: 12.5px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions {
+  gap: 5px;
+  flex-wrap: nowrap;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions .text-button {
+  flex: 0 0 auto;
+  gap: 4px;
+  padding: 0 6px;
+  height: 30px;
+  min-height: 30px;
+  font-size: 10px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions .text-button svg {
+  width: 12px;
+  height: 12px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card .category-card-actions .icon-button.danger-text {
+  flex: 0 0 30px;
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  min-height: 30px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-grid > :is(.skeleton,.empty-state) {
+  grid-column: 1 / -1;
+}
+@media (max-width: 430px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-active-tab="categories"] .category-card {
+    height: 280px !important;
+    min-height: 280px !important;
+    max-height: 280px !important;
+  }
+}
