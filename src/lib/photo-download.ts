@@ -132,3 +132,36 @@ export async function downloadCatalogPhoto(
     window.setTimeout(() => URL.revokeObjectURL(objectURL), 10_000);
   }
 }
+
+
+/** Export the verified image bytes inside an offline, self-contained HTML page.
+ * Original JPEG/PNG/WebP assets remain untouched in storage. */
+export async function downloadCatalogPhotosHtml(title: string, photos: DownloadablePhoto[]): Promise<void> {
+  if (!photos.length) throw new Error("No photos to export.");
+  const escape = (value: string) => value.replace(/[&<>"']/g, char =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char] || char);
+  const figures: string[] = [];
+  for (const photo of photos) {
+    const blob = await retrieveImage(photo);
+    const src = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(new Error("Could not embed photo in HTML."));
+      reader.readAsDataURL(blob);
+    });
+    const name = escape(photo.name || photo.alt || "Product photo");
+    figures.push(`<figure><img src="${src}" alt="${name}"><figcaption>${name}</figcaption></figure>`);
+  }
+  const heading = escape(title);
+  const html = `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${heading}</title><style>body{font:16px system-ui,sans-serif;background:#f5f7f4;color:#254535;max-width:1200px;margin:32px auto;padding:0 20px}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:20px}figure{margin:0;background:white;padding:12px;border-radius:12px}img{width:100%;height:auto;display:block;border-radius:8px}figcaption{padding:10px 0 0}</style><h1>${heading}</h1><main>${figures.join("")}</main></html>`;
+  const url = URL.createObjectURL(new Blob([html], {type:"text/html;charset=utf-8"}));
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = (title.replace(/[\\/:*?"<>|\x00-\x1f]/g, "-").trim().slice(0,110) || "brutti-photos") + ".html";
+  anchor.style.display = "none";
+  document.body.appendChild(anchor);
+  try { anchor.click(); } finally {
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }
+}
