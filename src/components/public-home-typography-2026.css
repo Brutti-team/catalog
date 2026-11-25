@@ -1410,3 +1410,16 @@
     background:linear-gradient(0deg,rgba(23,70,52,.94),rgba(31,90,67,.65) 65%,rgba(31,90,67,.34)) !important;
   }
 }
+
+
+/* Image-free Brutti hero. Preserve the existing text and visual labels. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero {
+  background:#1f5a43 !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero-visual {
+  background:transparent !important;
+  background-image:none !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero-visual::after {
+  background:linear-gradient(110deg,#174634 0%,#1f5a43 60%,#28694f 100%) !important;
+}
