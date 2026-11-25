@@ -74,10 +74,11 @@ import Modal from "./components/Modal";
 import AccountCenter from "./components/AccountCenter";
 import CataloguePhotoImport from "./components/CataloguePhotoImport";
 import AlbumLibrary from "./components/AlbumLibrary";
-import { albumPhotoToProductImage, combineAlbumPhotos, listAlbumRecords, setAlbumPhotoCategory } from "./lib/album";
+import { albumPhotoToProductImage, combineAlbumPhotos, listAlbumRecords, setAlbumPhotoCategory, type AlbumRecord } from "./lib/album";
 import LastChange from "./components/LastChange";
 import CategoryFilter from "./components/CategoryFilter";
 import CategoryAlbumPicker from "./components/CategoryAlbumPicker";
+import CategorySlideshow, { type CategorySlide } from "./components/CategorySlideshow";
 import "./components/category-cover-picker.css";
 import SortFilter from "./components/SortFilter";
 import { getAccountSummary, initials, type StaffRole } from "./lib/account-center";
@@ -161,6 +162,17 @@ export default function App() {
   const [catName, setCatName] = useState("");
   const [categoryAlbumSelection, setCategoryAlbumSelection] = useState<string[]>([]);
   const [albumRevision, setAlbumRevision] = useState(0);
+  const [categoryAlbumRecords, setCategoryAlbumRecords] = useState<AlbumRecord[]>([]);
+  useEffect(()=>{
+    if(tab!=="categories" || !auth.isAdmin || route.startsWith("#/catalog") || route.startsWith("#/product/")) {
+      setCategoryAlbumRecords([]);
+      return;
+    }
+    let active=true;
+    listAlbumRecords().then(records=>{if(active)setCategoryAlbumRecords(records);})
+      .catch(error=>{if(active){setCategoryAlbumRecords([]);console.warn("Category Album slides unavailable",error);}});
+    return()=>{active=false;};
+  },[tab,auth.isAdmin,route,albumRevision]);
   const [actionError, setActionError] = useState("");
   const [toast, setToast] = useState("");
   const [menu, setMenu] = useState<string | null>(null);
@@ -1216,22 +1228,27 @@ export default function App() {
                     : curatedCover
                       ? { src: curatedCover.imageUrl, position: "center" }
                       : categoryCover(c.name, items);
+                  const slidesByUrl = new Map<string,CategorySlide>();
+                  for (const item of items) for (const image of item.images) {
+                    if (image.url?.trim()) slidesByUrl.set(image.url,{src:image.url,position:image.crop ? `${image.crop.x}% ${image.crop.y}%` : "center"});
+                  }
+                  for (const photo of categoryAlbumRecords) {
+                    if(photo.category_id===c.id && photo.url?.trim() && !slidesByUrl.has(photo.url))
+                      slidesByUrl.set(photo.url,{src:photo.url,position:"center"});
+                  }
+                  const slides = Array.from(slidesByUrl.values());
+                  const preferredIndex=slides.findIndex(slide=>slide.src===cover.src);
+                  if(preferredIndex>0)slides.unshift(...slides.splice(preferredIndex,1));
+                  if(!slides.length && cover.src)slides.push(cover);
                   return (
-                    <article className={`category-card${cover.src ? "" : " category-card--without-cover"}`} key={c.id}>
+                    <article className={`category-card${slides.length ? "" : " category-card--without-cover"}`} key={c.id}>
                       <button
                         type="button"
                         className="category-cover"
                         aria-label={`View products in ${c.name}`}
                         onClick={() => { switchTab("products"); setCategory(c.id); }}
                       >
-                        {cover.src && <SafeImage
-                          className="category-cover-image"
-                          src={cover.src}
-                          alt={`${c.name} category cover`}
-                          loading="lazy"
-                          decoding="async"
-                          style={{ objectPosition: cover.position }}
-                        />}
+                        <CategorySlideshow slides={slides} name={c.name} offset={index}/>
                         <span>{String(index + 1).padStart(2, "0")}</span>
                       </button>
                       <div className="category-card-corner-actions">
