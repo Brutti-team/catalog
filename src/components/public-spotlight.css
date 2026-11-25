@@ -2418,7 +2418,14 @@
   display:block;width:100%;height:100%;max-width:none;max-height:none;
   object-fit:cover !important;border-radius:0;filter:none;
 }
-.pub-app.pub-refined .pub-quickview .pub-quickview__image:not(.has-saved-framing) > .pub-quickview__photo-frame > img {object-position:center 72% !important;}
+/* Centre photos in both axes when their aspect ratio differs from Quick View.
+   Preserve intentional saved framing in the separate has-saved-framing rule. */
+.pub-app.pub-refined .pub-quickview .pub-quickview__image:not(.has-saved-framing) > .pub-quickview__photo-frame > img {
+  object-fit:contain !important;
+  object-position:50% 50% !important;
+  transform:none !important;
+  margin:0 !important;
+}
 .pub-app.pub-refined .pub-quickview .pub-quickview__close {
   top:16px;right:16px;width:36px;height:36px;
   border-radius:50%;background:rgba(255,255,255,.76);
