@@ -521,6 +521,7 @@
    The crop selection itself stays intact until the user applies the edit. */
 .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-stage.is-crop-preview {
   container-type:size;
+  padding:16px !important;
 }
 .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-stage.is-crop-preview .brutti-photo-crop-image-frame {
   width:min(100cqw, calc(100cqh * var(--crop-preview-ratio, 1))) !important;
@@ -528,7 +529,7 @@
   max-width:100cqw !important;
   max-height:100cqh !important;
   border:0;
-  overflow:hidden !important;
+  overflow:visible !important;
   cursor:default !important;
 }
 .admin-app .brutti-photo-studio-v2 .brutti-photo-studio-stage.is-crop-preview .brutti-photo-crop-image-frame canvas {
