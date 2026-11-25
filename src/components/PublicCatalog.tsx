@@ -471,6 +471,9 @@ export default function PublicCatalog({
             disabled={loading || Boolean(error) || !published.length} onClick={openCatalogueDownload}>
             Download Catalogue
           </button>
+          <a className="pub-nav-website" href="https://brutti.my" onClick={() => setMobileMenu(false)}>
+            Main Website <ArrowUpRight size={13} aria-hidden="true" />
+          </a>
         </nav>}
         {!previewProduct && <div className="pub-header-actions">
           <CustomerFavourites products={published} categories={categories} loading={loading} error={error} onOpen={() => setMobileMenu(false)} />
