@@ -33,8 +33,8 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
     } catch(error) {
       console.error("[Catalogue PDF] Download failed", {mode,category,productCount:count}, error);
       setFailed(true);
-      setMessage(error instanceof Error && error.message.startsWith("The original catalogue cover")
-        ? error.message : "Unable to create the PDF. Refresh the page and try again.");
+      setMessage(error instanceof Error && /^(The original catalogue cover|The PDF module|PDF page rendering failed|PDF rendering is unavailable|No published products)/.test(error.message)
+        ? error.message : "Unable to create the PDF. Refresh the page and try again. If the issue continues, contact Brutti.");
     }
     finally {running.current=false;setProgress(null);}
   };
