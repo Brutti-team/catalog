@@ -5,6 +5,8 @@ import {
   BedDouble, PanelsTopLeft, BookOpen, Store, Armchair, CalendarDays, Sparkles,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
+import { formatProductDimensions } from "../lib/dimensions";
+import MaterialsEditor from "./MaterialsEditor";
 import {
   albumPhotoCategoryIds, combineAlbumPhotos, listAlbumRecords,
   removeUnassignedAlbumPhoto, saveAlbumPhotoDetails, albumDetailSpec, uploadAlbumPhotos,
@@ -263,6 +265,26 @@ export default function AlbumLibrary({
     ? selectedProductFolder==="__standalone__"?matchingStandalone:currentProductGroup?.items || []
     : visible.map(photo=>({...photo,name:productNames.get(photo.key) || photo.name}));
   const displayedName=(photo:AlbumPhoto)=>currentProductGroup?.items.find(item=>item.key===photo.key)?.name || productNames.get(photo.key) || photo.name;
+  // Linked photo details are a live view of the actual product, not a
+  // separate editable copy of its metadata. Prefer the current folder when
+  // a photo belongs to more than one product.
+  const linkedProduct = preview
+    ? (currentProductGroup?.items.some(item=>item.key===preview.key)
+      ? currentProductGroup.product
+      : productGroups.find(group=>group.items.some(item=>item.key===preview.key))?.product)
+    : undefined;
+  const linkedSpec = (pattern: RegExp) => linkedProduct?.specifications
+    ?.filter(row=>row.kind!=="section" && pattern.test(row.name.trim()))
+    .map(row=>row.value).filter(Boolean).join("; ") || "";
+  const editorDetails: AlbumPhotoDetailsUpdate = linkedProduct && preview ? {
+    name: displayedName(preview),
+    description: linkedProduct.description,
+    categoryId: linkedProduct.categoryId || null,
+    size: formatProductDimensions(linkedProduct) || linkedSpec(/^(dimensions?|size)$/i),
+    materials: linkedProduct.materials || linkedSpec(/^materials?$/i),
+    colour: linkedSpec(/^(colou?r|colou?rs)$/i),
+    finishing: linkedSpec(/^(finish|finishing)$/i),
+  } : detailsDraft;
   async function exportProductFolder() {
     if(exportingFolder || !displayedPhotos.length)return;
     setExportingFolder(true);setError("");
@@ -313,7 +335,7 @@ export default function AlbumLibrary({
     setDetailsError("");
     setPreview(photo);
   }
-  const detailsDirty = !!preview && (
+  const detailsDirty = !!preview && !linkedProduct && (
     detailsDraft.name !== preview.name ||
     detailsDraft.description !== (preview.sourceDetails.description || "") ||
     detailsDraft.categoryId !== preview.manualCategoryId ||
@@ -369,6 +391,10 @@ export default function AlbumLibrary({
   // Product publishing always happens through the existing Product Editor.
   async function persistPhotoDetails(photo: AlbumPhoto): Promise<AlbumPhoto | null> {
     if (savingDetails) return null;
+    if (linkedProduct) {
+      setDetailsError("Edit the linked product to change its details.");
+      return null;
+    }
     if (!photo.id) {
       setDetailsError("This photo has no Album record yet. Refresh Album before saving its details.");
       return null;
@@ -414,7 +440,7 @@ export default function AlbumLibrary({
     }
   }
   async function startProductFromPhoto(photo: AlbumPhoto, targetProductId?: string) {
-    if (!detailsDraft.name.trim()) {
+    if (!editorDetails.name.trim()) {
       setDetailsError("Name is required before using this photo in a product.");
       return;
     }
@@ -423,13 +449,13 @@ export default function AlbumLibrary({
     const savedPhoto = photo.id && detailsDirty ? await persistPhotoDetails(photo) : photo;
     if (!savedPhoto) return;
     const details: AlbumPhotoDetailsUpdate = {
-      name: detailsDraft.name.trim(),
-      categoryId: detailsDraft.categoryId,
-      description: detailsDraft.description,
-      size: detailsDraft.size,
-      materials: detailsDraft.materials,
-      colour: detailsDraft.colour,
-      finishing: detailsDraft.finishing,
+      name: editorDetails.name.trim(),
+      categoryId: editorDetails.categoryId,
+      description: editorDetails.description,
+      size: editorDetails.size,
+      materials: editorDetails.materials,
+      colour: editorDetails.colour,
+      finishing: editorDetails.finishing,
     };
     setPreview(null);
     if (targetProductId) {
@@ -829,12 +855,12 @@ export default function AlbumLibrary({
               </button>
               <div className="catalog-editor-header-title">
                 <span className="catalog-editor-header-eyebrow">BRUTTI CATALOG / PHOTO EDITOR</span>
-                <strong title={detailsDraft.name || preview.name}>{detailsDraft.name || preview.name}</strong>
+                <strong title={editorDetails.name || preview.name}>{editorDetails.name || preview.name}</strong>
               </div>
             </div>
             <div className="catalog-editor-header-actions">
               <div className="catalog-editor-header-meta" aria-label="Photo information">
-                <span className="catalog-editor-header-sku">{preview.sourceCode || "Album photo"}</span>
+                <span className="catalog-editor-header-sku">{linkedProduct?.sku || preview.sourceCode || "Album photo"}</span>
                 <span className="catalog-editor-header-status catalog-editor-header-status--draft">
                   {preview.usedBy.length ? "In use" : "In Album"}
                 </span>
@@ -870,7 +896,7 @@ export default function AlbumLibrary({
             <div className="brutti-album__editable-details">
               <label className="brutti-album__editor-field">
                 <span>Name <b aria-hidden="true">*</b></span>
-                <input type="text" maxLength={120} required value={detailsDraft.name}
+                <input type="text" maxLength={120} required value={editorDetails.name}
                   placeholder="e.g. Sulob Shoe Rack"
                   readOnly={preview.usedBy.length>0}
                   disabled={savingDetails}
@@ -881,10 +907,10 @@ export default function AlbumLibrary({
                 <div className="catalog-product-id-field brutti-album__editor-field">
                   <span className="catalog-product-id-label">Product ID</span>
                   <output className="catalog-product-id-display brutti-album__reference-id">
-                    <strong>{preview.sourceCode || "Assigned in Product Editor"}</strong>
+                    <strong>{linkedProduct?.sku || preview.sourceCode || "Assigned in Product Editor"}</strong>
                     <LockKeyhole size={16} strokeWidth={1.8} aria-hidden="true"/>
                   </output>
-                  <small>{preview.sourceCode
+                  <small>{linkedProduct ? "Synced from Product Editor" : preview.sourceCode
                     ? "Original library reference · cannot be changed here"
                     : "A unique Product ID is generated when you create the product"}</small>
                 </div>
@@ -892,23 +918,24 @@ export default function AlbumLibrary({
                   <span className="catalog-editor-category-label">Category</span>
                   <EditorCategoryPicker
                     categories={categories}
-                    value={detailsDraft.categoryId || "none"}
+                    value={editorDetails.categoryId || "none"}
                     allowUncategorised
-                    disabled={savingDetails || !preview.id}
+                    disabled={savingDetails || !preview.id || !!linkedProduct}
                     onChange={value => setDetailsDraft(current => ({...current,categoryId:value === "none" ? null : value}))}
                   />
-                  <small>Saved in Album; used as the initial category for a new product.</small>
+                  <small>{linkedProduct ? "Synced from Product Editor." : "Saved in Album; used as the initial category for a new product."}</small>
                 </div>
               </div>
               <label className="brutti-album__editor-field">
-                <span>Description <small className="product-editor-publish-hint">Required to publish</small></span>
-                <textarea rows={4} maxLength={10000} value={detailsDraft.description}
+                <span>Description <small className="product-editor-publish-hint">{linkedProduct ? "From Product Editor" : "Required to publish"}</small></span>
+                <textarea rows={4} maxLength={10000} value={editorDetails.description}
+                  readOnly={!!linkedProduct}
                   placeholder="Describe the furniture, materials, finish or important photo notes."
                   disabled={savingDetails}
                   onChange={e => setDetailsDraft(current => ({...current,description:e.target.value}))}/>
               </label>
               {detailsError && <p className="brutti-album__error" role="alert">{detailsError}</p>}
-              {!preview.id && <p className="brutti-album__details-note">This image has no Album record yet. You can open its linked product, but Album metadata cannot be saved until it is indexed.</p>}
+              {!preview.id && !linkedProduct && <p className="brutti-album__details-note">This image has no Album record yet. You can open its linked product, but Album metadata cannot be saved until it is indexed.</p>}
             </div>
           </section>
           <section id="brutti-media-section" className="brutti-product-media brutti-editor-section-card brutti-album__editor-section">
@@ -992,35 +1019,45 @@ export default function AlbumLibrary({
             <div className="brutti-album__editable-details">
               <label className="brutti-album__editor-field">
                 <span>Dimensions / Size</span>
-                <input value={detailsDraft.size} maxLength={2000}
+                <input value={editorDetails.size} readOnly={!!linkedProduct} maxLength={2000}
                   placeholder="e.g. 7ft H × 4ft W"
                   disabled={savingDetails}
                   onChange={event=>setDetailsDraft(current=>({...current,size:event.target.value}))}/>
               </label>
               <label className="brutti-album__editor-field">
                 <span>Materials</span>
-                <input value={detailsDraft.materials} maxLength={2000}
-                  placeholder="e.g. Solid timber and plywood"
-                  disabled={savingDetails}
-                  onChange={event=>setDetailsDraft(current=>({...current,materials:event.target.value}))}/>
+                {linkedProduct ? <MaterialsEditor value={editorDetails.materials} disabled onChange={()=>{}}/> :
+                  <input value={editorDetails.materials} maxLength={2000}
+                    placeholder="e.g. Solid timber and plywood"
+                    disabled={savingDetails}
+                    onChange={event=>setDetailsDraft(current=>({...current,materials:event.target.value}))}/>} 
               </label>
               <div className="brutti-album__field-pair">
                 <label className="brutti-album__editor-field">
                   <span>Colour</span>
-                  <input value={detailsDraft.colour} maxLength={2000}
+                  <input value={editorDetails.colour} readOnly={!!linkedProduct} maxLength={2000}
                     placeholder="e.g. Natural timber"
                     disabled={savingDetails}
                     onChange={event=>setDetailsDraft(current=>({...current,colour:event.target.value}))}/>
                 </label>
                 <label className="brutti-album__editor-field">
                   <span>Finishing</span>
-                  <input value={detailsDraft.finishing} maxLength={2000}
+                  <input value={editorDetails.finishing} readOnly={!!linkedProduct} maxLength={2000}
                     placeholder="e.g. Satin clear coat"
                     disabled={savingDetails}
                     onChange={event=>setDetailsDraft(current=>({...current,finishing:event.target.value}))}/>
                 </label>
               </div>
-              <p className="brutti-album__details-note">Specifications are saved with the photo in Album. They will prefill the Product Editor when you create a product; verify measurements before publishing.</p>
+              {linkedProduct && <>
+                <div className="brutti-album__field-pair">
+                  <label className="brutti-album__editor-field"><span>Price (RM)</span><input readOnly value={linkedProduct.price == null ? "" : String(linkedProduct.price)} placeholder="Price on enquiry"/></label>
+                  <label className="brutti-album__editor-field"><span>Availability</span><input readOnly value={linkedProduct.availability.replace(/-/g," ")}/></label>
+                </div>
+                {linkedProduct.specifications?.map(row=>row.kind==="section"
+                  ? <strong key={row.id}>{row.name}</strong>
+                  : <label className="brutti-album__editor-field" key={row.id}><span>{row.name}</span><textarea readOnly rows={2} value={[row.value,row.quantity!=null ? `Quantity: ${row.quantity}` : "",row.description].filter(Boolean).join("\n")}/></label>)}
+              </>}
+              <p className="brutti-album__details-note">{linkedProduct ? "Specifications are synced from the linked product. Edit them in Product Editor." : "Specifications are saved with the photo in Album. They will prefill the Product Editor when you create a product; verify measurements before publishing."}</p>
             </div>
           </section>
           <section id="product-editor-publish" className="form-section product-editor-section brutti-editor-section-card brutti-album__editor-section">
@@ -1035,7 +1072,7 @@ export default function AlbumLibrary({
                 <p>A photo in Album is not a published product. Only Product Editor can publish the finished product to Public Catalog.</p>
               </div>
               {onCreateProductFromPhoto && <button type="button" className="brutti-album__publish-create"
-                disabled={savingDetails || !detailsDraft.name.trim()}
+                disabled={savingDetails || !editorDetails.name.trim()}
                 onClick={()=>void startProductFromPhoto(preview)}>
                 <Plus size={17} aria-hidden="true"/> Create product draft from this photo
                 <ArrowUpRight size={16} aria-hidden="true"/>
@@ -1068,16 +1105,19 @@ export default function AlbumLibrary({
             </div>
           </div>
           <footer className="editor-footer brutti-album__editor-footer">
-            <span className="tiny muted">Changes are saved when you select Save.</span>
+            <span className="tiny muted">{linkedProduct ? "Details synced from Product Editor." : "Changes are saved when you select Save."}</span>
             <div className="button-row brutti-album__editor-footer-actions">
-              <button type="button" className="button primary brutti-album__editor-edit"
+              {linkedProduct ? <button type="button" className="button primary brutti-album__editor-edit"
+                disabled={!onEditProduct} onClick={()=>{setPreview(null);onEditProduct?.(linkedProduct.id);}}>
+                <Package size={16}/> Edit product
+              </button> : <button type="button" className="button primary brutti-album__editor-edit"
                 disabled={savingDetails || !detailsDraft.name.trim() || !preview.id}
                 onClick={()=>void persistPhotoDetails(preview)}>
                 {savingDetails ? <LoaderCircle size={16} className="brutti-album__spin"/> : <Save size={16}/>}
                 {savingDetails ? "Saving…" : "Save details"}
-              </button>
+              </button>}
               {onCreateProductFromPhoto && <button type="button" className="button secondary brutti-album__editor-create"
-                disabled={savingDetails || !detailsDraft.name.trim()}
+                disabled={savingDetails || !editorDetails.name.trim()}
                 onClick={()=>void startProductFromPhoto(preview)}>
                 <Plus size={16} aria-hidden="true"/> Create product
               </button>}
