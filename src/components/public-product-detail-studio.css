@@ -1579,7 +1579,7 @@
    full-screen panel. Long specifications scroll within the desktop budget. */
 @media(min-width:851px) and (min-height:600px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section:has(> .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image) {
-    padding-block:clamp(14px,2dvh,22px) 24px !important;
+    padding-block:clamp(26px,3.8dvh,38px) 24px !important;
     max-width:1380px;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) {
@@ -1662,3 +1662,22 @@
   font-weight:500 !important;
   line-height:1.4 !important;
 }
+
+
+/* Product-detail Best Seller: translucent ruby glass, distinct from Featured. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image > .pub-featured-tag.catalog-best-public-tag {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 11px;
+  border:1px solid rgba(255,224,224,.42) !important;
+  border-radius:999px !important;
+  background:linear-gradient(140deg,rgba(255,255,255,.20),rgba(255,255,255,.02)),rgba(155,38,45,.88) !important;
+  color:#fff !important;
+  -webkit-backdrop-filter:blur(12px) saturate(135%);
+  backdrop-filter:blur(12px) saturate(135%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.23),0 3px 10px rgba(103,22,28,.18) !important;
+  font:600 11px/1.35 "Inter","DM Sans",system-ui,sans-serif !important;
+  letter-spacing:0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image > .pub-featured-tag.catalog-best-public-tag svg {color:#fff !important;}
