@@ -715,7 +715,7 @@ export default function App() {
           {tab === "overview" ? (
             <section className="catalog-command brutti-editorial-hero" aria-labelledby="catalog-overview-title">
               <div className="catalog-command-content">
-                <div className="catalog-command-eyebrow">BENUA BRUTTI / COLLECTION STUDIO</div>
+                <div className="catalog-command-eyebrow">BRUTTI'S COLLECTION</div>
                 <h1 id="catalog-overview-title">Catalog overview</h1>
                 <p>A considered home for every piece, from workshop photography to the final published collection.</p>
                 <div className="catalog-command-actions">
