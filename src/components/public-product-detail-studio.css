@@ -1573,3 +1573,90 @@
 @media(max-width:850px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > h1 {font-size:clamp(25px,5.5vw,33px);}
 }
+
+
+/* Customer detail: fit the primary product section in the desktop viewport.
+   Keep the recommendations and footer below it; long specs scroll internally.
+   Very short screens retain normal page scrolling for accessibility. */
+@media(min-width:851px) and (min-height:600px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section:has(> .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image) {
+    padding-block:clamp(14px,2dvh,22px) 24px !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) {
+    box-sizing:border-box;
+    height:calc(100dvh - 112px) !important;
+    min-height:0;
+    grid-template-rows:minmax(0,1fr);
+    align-items:stretch;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-gallery {
+    height:100% !important;
+    min-height:0;
+    max-height:100%;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy {
+    height:100% !important;
+    max-height:100%;
+    min-height:0;
+    align-self:stretch;
+    grid-template-rows:auto auto auto auto minmax(0,1fr) auto;
+    align-items:start;
+    align-content:stretch;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-eyebrow,
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-detail-availability {grid-row:1;align-self:center;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > h1 {grid-row:2;margin:8px 0 6px;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-detail-description {grid-row:3;margin:0 0 8px;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-detail-description:empty {display:none;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-detail-price {grid-row:4;padding-top:8px !important;margin-bottom:10px !important;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-specifications {
+    grid-row:5;
+    box-sizing:border-box;
+    align-self:start;
+    min-height:0;
+    max-height:100%;
+    overflow:hidden;
+    padding:clamp(12px,1.2vw,17px);
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll {
+    flex:1 1 auto;
+    min-height:0;
+    max-height:none;
+    overflow-y:auto;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-detail-promise {
+    grid-row:6;
+    align-self:end;
+    margin:10px 0 0;
+    padding-top:10px;
+  }
+}
+@media(min-width:851px) and (min-height:600px) and (max-height:740px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > h1 {font-size:clamp(23px,2.1vw,30px) !important;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-detail-price .catalog-price-current {font-size:23px !important;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-specifications .pub-spec-section {padding-block:9px;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-specifications dl > div {padding-block:6px;}
+}
+
+/* Fill the photo card, without stretching the image. Lower-centred framing
+   favours furniture near the floor in portrait source photos. The zoom viewer
+   remains available for the full, uncropped original. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-gallery > .pub-detail-main-image > .pub-detail-photo-frame > img,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-gallery > .pub-detail-main-image.has-saved-framing > .pub-detail-photo-frame > img {
+  object-fit:cover !important;
+  object-position:center 70% !important;
+  transform:none !important;
+}
+/* Keep the price caption separated, including styles loaded after this file. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price .catalog-price-current--stacked {
+  display:inline-flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:3px !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price .catalog-price-basis {
+  display:block !important;
+  font-size:11px !important;
+  font-weight:500 !important;
+  line-height:1.4 !important;
+}
