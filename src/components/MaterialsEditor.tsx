@@ -12,6 +12,8 @@ type Props = {
   onChange: (value: string) => void;
   disabled?: boolean;
   placeholder?: string;
+  label?: string;
+  maxLength?: number;
 };
 
 const MAX_LENGTH = 2000;
@@ -29,7 +31,7 @@ const inlineOptions: { value: InlineMaterialFormat; label: string; shortcut: str
 ];
 
 /** Editable rich text, with the existing safe text-based storage format. */
-export default function MaterialsEditor({value,onChange,disabled=false,placeholder}:Props) {
+export default function MaterialsEditor({value,onChange,disabled=false,placeholder,label="Materials",maxLength=MAX_LENGTH}:Props) {
   const editorRef=useRef<HTMLDivElement>(null);
   const savedValue=useRef<string|null>(null);
   const selection=useRef<Range|null>(null);
@@ -54,8 +56,8 @@ export default function MaterialsEditor({value,onChange,disabled=false,placehold
   const publish=()=>{
     const el=editorRef.current;if(!el)return;
     const next=serializeMaterialEditor(el);
-    if(next.length>MAX_LENGTH){
-      setWarning("Materials cannot exceed 2,000 characters.");
+    if(next.length>maxLength){
+      setWarning(`${label} cannot exceed ${maxLength.toLocaleString("en-MY")} characters.`);
       el.innerHTML=savedValue.current ? materialEditorHtml(savedValue.current) : "";
       selection.current=null;
       const range=document.createRange();range.selectNodeContents(el);range.collapse(false);
@@ -100,7 +102,7 @@ export default function MaterialsEditor({value,onChange,disabled=false,placehold
   const help="Select text or choose a format before typing.";
   return (
     <div className="catalog-materials-editor">
-      <div className="catalog-materials-toolbar" role="toolbar" aria-label="Materials formatting tools"
+      <div className="catalog-materials-toolbar" role="toolbar" aria-label={`${label} formatting tools`}
         onMouseDown={preserveSelection}>
         <div className="catalog-materials-tool-group catalog-materials-list-tools" role="group" aria-label="List formatting">
           {options.map(({ value: style, label, Icon }) => (
@@ -148,7 +150,7 @@ export default function MaterialsEditor({value,onChange,disabled=false,placehold
       <div
         ref={editorRef}
         className="catalog-materials-live"
-        role="textbox" aria-label="Materials" aria-multiline="true" aria-disabled={disabled}
+        role="textbox" aria-label={label} aria-multiline="true" aria-disabled={disabled}
         contentEditable={!disabled} suppressContentEditableWarning
         data-placeholder={placeholder ?? "Describe materials and finishing…"}
         onInput={publish} onKeyDown={onKeyDown}
