@@ -1333,33 +1333,31 @@
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image.has-saved-framing > .pub-detail-photo-frame { width:min(100%,calc(100cqh * var(--catalog-card-photo-ratio,1.18))); height:auto; }
 }
 
-/* Customer detail photography: one compact, full-bleed card with no letterbox.
-   The zoom viewer still shows the original image; saved crop metadata is retained. */
+
+/* Full original photo in the customer detail gallery. Thumbnail/card crop
+   metadata remains stored and is still used by the public listing cards. */
 .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-detail-main-image) {
+  --detail-photo-height: min(570px,max(220px,calc(100dvh - 145px)));
   justify-content:flex-start;
 }
-.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image {
-  --pub-detail-card-cap: min(570px,max(240px,calc(100dvh - 145px)));
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image,.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image.has-saved-framing {
   position:relative;
   display:block;
   flex:0 0 auto;
-  align-self:stretch;
+  align-self:start;
   width:100%;
-  height:auto !important;
+  height:var(--detail-photo-height) !important;
   min-height:0 !important;
-  max-height:var(--pub-detail-card-cap);
-  aspect-ratio:1 / 1;
+  max-height:none !important;
+  aspect-ratio:auto;
+  container-type:normal;
   padding:0;
   margin:0;
   overflow:hidden;
   border:0;
   border-radius:15px;
-  background:transparent;
+  background:rgba(132,145,132,.08);
   box-shadow:none;
-}
-.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image.has-saved-framing {
-  aspect-ratio:var(--catalog-card-photo-ratio,1.18);
-  container-type:normal;
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image > .pub-detail-photo-frame,
 .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image.has-saved-framing > .pub-detail-photo-frame {
@@ -1368,6 +1366,8 @@
   display:block;
   width:100%;
   height:100%;
+  min-width:0;
+  min-height:0;
   max-width:none;
   max-height:none;
   aspect-ratio:auto;
@@ -1377,41 +1377,78 @@
 .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image > .pub-detail-photo-frame > img,
 .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image.has-saved-framing > .pub-detail-photo-frame > img {
   display:block;
-  width:100%;
-  height:100%;
-  max-width:none;
-  max-height:none;
-  object-fit:cover !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  transform:none !important;
+  scale:1 !important;
   border-radius:0;
   margin:0;
 }
-.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image:not(.has-saved-framing) > .pub-detail-photo-frame > img {
-  object-position:center 75% !important;
-}
 .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image > .pub-photo-zoom-trigger {
-  position:absolute;
-  right:14px;
-  bottom:14px;
-  z-index:2;
+  position:absolute;right:14px;bottom:14px;z-index:2;
 }
-@media(min-width:851px) and (min-height:600px) {
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-gallery-thumbnails) > .pub-detail-main-image {
-    --pub-detail-card-cap:min(540px,max(180px,calc(100dvh - 225px)));
+@media(min-width:851px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-detail-main-image):has(> .pub-gallery-thumbnails) {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 76px;
+    grid-template-rows:auto;
+    align-items:start;
+    align-content:start;
+    column-gap:12px;
+    row-gap:10px;
+    justify-content:stretch;
   }
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-media-switch) > .pub-detail-main-image {
-    --pub-detail-card-cap:min(540px,max(180px,calc(100dvh - 195px)));
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-detail-main-image) > .pub-media-switch {
+    grid-column:1 / -1;
+    margin:0;
   }
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-gallery-thumbnails):has(> .pub-media-switch) > .pub-detail-main-image {
-    --pub-detail-card-cap:min(500px,max(160px,calc(100dvh - 275px)));
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-media-switch):has(> .pub-detail-main-image) {
+    --detail-photo-height:min(540px,max(200px,calc(100dvh - 195px)));
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-detail-main-image) > .pub-detail-main-image {grid-column:1;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-detail-main-image) > .pub-gallery-thumbnails {
+    grid-column:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    flex-wrap:nowrap;
+    width:76px;
+    max-width:100%;
+    max-height:var(--detail-photo-height);
+    box-sizing:border-box;
+    margin:0;
+    padding:3px;
+    gap:9px;
+    overflow-x:hidden;
+    overflow-y:auto;
+    scrollbar-width:none;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-detail-main-image) > .pub-gallery-thumbnails::-webkit-scrollbar {display:none;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-detail-main-image) > .pub-gallery-thumbnails > button {
+    flex:0 0 66px;
+    width:66px;
+    height:66px;
   }
 }
 @media(max-width:850px) {
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image {
-    --pub-detail-card-cap:min(560px,100vw);
-    border-radius:12px;
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-detail-main-image) {
+    --detail-photo-height:clamp(240px,78vw,520px);
   }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image,.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image.has-saved-framing {border-radius:12px;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-detail-main-image) > .pub-gallery-thumbnails {
+    flex-direction:row;
+    flex-wrap:nowrap;
+    justify-content:safe center;
+    overflow-x:auto;
+    overflow-y:hidden;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-detail-main-image) > .pub-gallery-thumbnails > button {flex-shrink:0;}
 }
-
 
 /* Stock labels on the full public product page. */
 .pub-app.pub-refined:not(.pub-private-preview) .pub-product-detail .pub-detail-copy > .pub-detail-availability.pub-available {background:#1f5a43 !important;border-color:#1f5a43 !important;color:#fff !important;}
