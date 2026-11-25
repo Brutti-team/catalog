@@ -601,14 +601,13 @@ export default function AlbumLibrary({
                 <button type="button" className="brutti-album__thumb" aria-label={`Open ${product.name}: ${items.length} photos`} onClick={()=>setSelectedProductFolder(product.id)}>
                   <SafeImage src={items[0].url} alt={product.name} loading="lazy"/>
                 </button>
-                {!picker && onDeleteProduct && <button type="button" title="Delete entire product" aria-label={`Delete product ${product.name}`} onClick={()=>onDeleteProduct(product.id)}
-                  style={{position:"absolute",top:10,right:10,zIndex:6,display:"grid",placeItems:"center",width:34,height:34,padding:0,border:"1px solid #f3c7c9",borderRadius:10,background:"#fff1f1",color:"#a63136",boxShadow:"0 2px 8px rgba(0,0,0,.1)",cursor:"pointer"}}><Trash2 size={16} aria-hidden="true"/></button>}
                 <div className="brutti-album__card-info">
                   <strong title={product.name}>{product.name}</strong>
                   <small>{product.sku} · {items.length} photo{items.length===1?"":"s"}</small>
                   <span className="brutti-album__list-category">{categories.find(item=>item.id===product.categoryId)?.name || "Uncategorised"}</span>
                   <div className="brutti-album__card-actions"><button type="button" onClick={()=>setSelectedProductFolder(product.id)}><FolderOpen size={14}/> Open photos</button>
                     {!picker && onEditProduct && <button type="button" onClick={()=>onEditProduct(product.id)}><Package size={14}/> Product</button>}
+                    {!picker && onDeleteProduct && <button type="button" className="brutti-album__product-delete-action" title="Delete entire product" aria-label={`Delete product ${product.name}`} onClick={()=>onDeleteProduct(product.id)} style={{flex:"0 0 auto",color:"#a63136",background:"#fff1f1",border:"1px solid #f3c7c9",padding:"6px 9px"}}><Trash2 size={15} aria-hidden="true"/> Delete</button>}
                   </div>
                 </div>
               </div>)}
