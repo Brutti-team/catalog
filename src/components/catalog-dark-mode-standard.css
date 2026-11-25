@@ -1,0 +1,190 @@
+/* Standard staff dark theme — paint only, after legacy glass layers.
+   Never affect public catalog, light mode, sizing, routes or media. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] {
+  --dark-canvas:#101012;
+  --dark-panel:#1c1c20;
+  --dark-control:#252529;
+  --dark-hover:#2c2c31;
+  --dark-line:#343439;
+  --dark-text:#f1f1f3;
+  --dark-muted:#a8a8b0;
+  --dark-accent:#82c7a0;
+  --brutti-dark-canvas:var(--dark-canvas);
+  --brutti-dark-surface:var(--dark-panel);
+  --brutti-dark-raised:var(--dark-panel);
+  --brutti-dark-panel:var(--dark-panel);
+  --brutti-dark-border:var(--dark-line);
+  --brutti-dark-secondary:var(--dark-muted);
+  --brutti-dark-toplight:rgba(255,255,255,.035);
+  --brutti-dark-elevation:0 3px 12px rgba(0,0,0,.15);
+  --brutti-dark-elevation-hover:0 5px 16px rgba(0,0,0,.22);
+  --admin-surface:var(--dark-panel);
+  --admin-surface-soft:var(--dark-control);
+  --admin-text:var(--dark-text);
+  --admin-muted:var(--dark-muted);
+  --admin-border:var(--dark-line);
+  --admin-accent:var(--dark-accent);
+  --catalog-os-ink:var(--dark-text);
+  --catalog-os-muted:var(--dark-muted);
+  --catalog-os-border:var(--dark-line);
+  --catalog-os-pale:var(--dark-control);
+  background:var(--dark-canvas) !important;
+  color:var(--dark-text);
+  color-scheme:dark;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .admin-main, .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .admin-main > .admin-content {
+  background:var(--dark-canvas) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar, .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar.catalog-os-topbar {
+  background:#18181b !important;
+  border-color:var(--dark-line) !important;
+  box-shadow:none !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar .catalog-sidebar-head {border-color:var(--dark-line) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar .catalog-sidebar-logo {background:transparent !important;box-shadow:none !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar .catalog-sidebar-head::after,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar .sidebar-utility {border-color:var(--dark-line) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar :is(.catalog-header-search,.catalog-header-icon-button,.theme-toggle,.header-profile),
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar .catalog-sidebar-toggle,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .catalog-header-popover {
+  background:var(--dark-control) !important;
+  border-color:var(--dark-line) !important;
+  color:var(--dark-text) !important;
+  box-shadow:none !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar :is(.catalog-header-search,.header-profile,.theme-toggle,.catalog-header-icon-button):hover {
+  background:var(--dark-hover) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item:not(.active) {color:var(--dark-muted) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active {color:var(--dark-text) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active .nav-icon {color:var(--dark-accent) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab]:not(.catalog-sidebar-collapsed) > .sidebar nav .nav-count,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab]:not(.catalog-sidebar-collapsed) > .sidebar nav .nav-item.active .nav-count {
+  background:#303036 !important;color:#e5e5e8 !important;border-color:transparent !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] :is(.catalog-header-popover .catalog-notification-item,.catalog-account-menu > button,.catalog-popover-footer):hover {
+  background:var(--dark-hover) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] {
+  --og-panel:var(--dark-panel);
+  --og-inner:#17171a;
+  --og-tile:var(--dark-control);
+  --og-border:var(--dark-line);
+  --og-line:var(--dark-line);
+  --og-ink:var(--dark-text);
+  --og-muted:var(--dark-muted);
+  --og-accent:var(--dark-accent);
+  --og-track:#3b3b41;
+  --og-fill:#65ac84;
+  --og-hover:var(--dark-hover);
+  --og-depth:0 3px 12px rgba(0,0,0,.12);
+  --og-tile-shadow:none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.customer-insights-panel.is-compact,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.brutti-category-panel.atelier-categories,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.customer-insights-panel.is-compact:hover,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench > section.brutti-category-panel.atelier-categories:hover {
+  background:var(--dark-panel) !important;
+  background-image:none !important;
+  border-color:var(--dark-line) !important;
+  box-shadow:var(--og-depth) !important;
+  backdrop-filter:none !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview :is(.brutti-glass-kpi-featured,.brutti-metric-tray,.brutti-overview-audit .catalog-last-activity) {
+  background-color:var(--dark-panel) !important;
+  border-color:var(--dark-line) !important;
+  box-shadow:var(--og-depth) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray {background:var(--dark-panel) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench .brutti-category-row.atelier-category-row,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench .brutti-category-row.atelier-category-row:last-child {
+  background:var(--dark-control) !important;
+  border-color:var(--dark-line) !important;
+  box-shadow:none !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench .brutti-category-row.atelier-category-row:hover {
+  background:var(--dark-hover) !important;
+  border-color:#505058 !important;
+  box-shadow:none !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench .brutti-category-count {
+  background:#333338 !important;
+  border-color:var(--dark-line) !important;
+  color:var(--dark-text) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench .brutti-category-row .atelier-category-track {background:#3b3b41 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench .brutti-category-row .atelier-category-track > span {background:#65ac84 !important;box-shadow:none !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench :is(.brutti-category-manage,.brutti-all-categories) {color:var(--dark-accent) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench .brutti-category-image {border-color:var(--dark-line) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench .brutti-category-image img {filter:none !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-period-picker {
+  --period-surface:var(--dark-control);
+  --period-menu:#252529;
+  --period-selected:#333b36;
+  --period-hover:var(--dark-hover);
+  --period-border:var(--dark-line);
+  --period-ink:var(--dark-text);
+  --period-muted:var(--dark-muted);
+}
+/* Secondary surfaces, not semantic status badges or primary action colours. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] :is(.catalog-management-heading,.catalog-product-hero,.catalog-products-panel,.brutti-album__header-v2,.brutti-album__toolbar,.brutti-album__table-shell,.account-heading,.account-table-wrap,.account-identity,.account-settings,.account-mini,.catalog-pending-staff,.catalog-last-activity) {
+  background:var(--dark-panel) !important;
+  border-color:var(--dark-line) !important;
+  box-shadow:var(--brutti-dark-elevation) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] :is(.category-card,.category-card.category-card--without-cover,.catalog-gallery-card,.brutti-album__folder,.brutti-album__card) {
+  background:var(--dark-panel) !important;
+  border-color:var(--dark-line) !important;
+  box-shadow:var(--brutti-dark-elevation) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] :is(.category-card,.catalog-gallery-card,.brutti-album__folder,.brutti-album__card):hover {
+  border-color:#505058 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .category-card .category-card-body {background:var(--dark-panel) !important;border-color:var(--dark-line) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .catalog-products-panel :is(.catalog-product-controls,.table-toolbar,.catalog-products-filter-summary) {
+  background:var(--dark-panel) !important;border-color:var(--dark-line) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .catalog-products-panel :is(.catalog-category-filter-trigger,.catalog-sort-trigger),
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] :is(.brutti-album__tabs,.brutti-album__view-switch,.brutti-album__category-trigger,.brutti-album__refresh) {
+  background:var(--dark-control) !important;border-color:var(--dark-line) !important;color:var(--dark-text) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .catalog-products-panel .table-scroll thead th,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .brutti-album__table thead th,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .account-center--users .account-table th {
+  background:var(--dark-control) !important;border-color:var(--dark-line) !important;color:var(--dark-muted) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row td,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .account-center--users .account-table td {
+  background:var(--dark-panel) !important;border-color:var(--dark-line) !important;color:var(--dark-text) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:nth-child(even) td,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .account-center--users .account-table tr:nth-child(even) td {
+  background:#202024 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .catalog-products-panel .table-scroll tbody tr.catalog-inventory-row:hover td,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .brutti-album__table tbody tr:hover,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .account-center--activity .account-event:hover {background:var(--dark-hover) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .account-center--activity :is(.account-activity-panel,.account-activity-toolbar,.account-activity-filters,.account-activity-period),
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .account-center--users :is(.account-identity,.account-settings,.account-mini,.account-table-wrap,.account-empty,.account-table-title,.account-table-hint) {
+  background:var(--dark-panel) !important;border-color:var(--dark-line) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] :is(.modal.product-editor-dialog,.category-editor-dialog,.catalog-private-preview-dialog,.brutti-album-preview-modal,.catalog-user-invite-dialog) {
+  background:var(--dark-panel) !important;
+  border-color:var(--dark-line) !important;
+  color:var(--dark-text) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .modal.product-editor-dialog--editing :is(.catalog-editor-actionbar,.editor-footer,.editor-side,.brutti-editor-section-card,.form-section),
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .catalog-private-preview-dialog :is(.pub-private-preview,.pub-detail-copy,.pub-detail-gallery),
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .brutti-album-preview-modal .brutti-album__detail-content {
+  background:var(--dark-panel) !important;border-color:var(--dark-line) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),select,textarea) {
+  background-color:var(--dark-control) !important;
+  border-color:var(--dark-line) !important;
+  color:var(--dark-text) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] :is(input,textarea)::placeholder {color:var(--dark-muted) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] :is(.button.secondary,.brutti-album__secondary) {
+  background:var(--dark-control) !important;border-color:var(--dark-line) !important;color:var(--dark-text) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] :is(.button.secondary,.brutti-album__secondary):hover:not(:disabled) {background:var(--dark-hover) !important;}
