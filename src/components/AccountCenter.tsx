@@ -531,7 +531,7 @@ export default function AccountCenter({
           <form className="catalog-user-invite-form" onSubmit={event => { void submitInvite(event); }}>
             <label htmlFor="catalog-invite-name">Full name <span>*</span></label>
             <input id="catalog-invite-name" type="text" autoComplete="name"
-              minLength={2} maxLength={80} required placeholder="e.g. Arnie"
+              minLength={2} maxLength={80} required placeholder="e.g. Wani"
               value={inviteName} onChange={e => setInviteName(e.target.value)}
               disabled={busyId === "invite"}/>
             <label htmlFor="catalog-invite-email">Email address <span>*</span></label>
