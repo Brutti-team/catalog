@@ -78,12 +78,15 @@ function InsightPeriodPicker({ value, onChange }: { value: InsightPeriod; onChan
   </div>;
 }
 
-function CustomerInterestChart({ data, days }: { data: CustomerInsightData; days: InsightPeriod }) {
+type InsightDrilldown = { kind: "trend"; start?: string; end?: string } | { kind: "top" | "ratio" | "average" };
+
+function CustomerInterestChart({ data, days, onOpen }: { data: CustomerInsightData; days: InsightPeriod; onOpen: (detail: InsightDrilldown) => void }) {
   const id = useId().replace(/:/g, "");
   const binSize = days === 7 ? 1 : days === 30 ? 5 : 15;
   const bins = Array.from({ length: Math.ceil(data.trend.length / binSize) }, (_, index) => {
     const rows = data.trend.slice(index * binSize, index * binSize + binSize);
     return {
+      start: rows[0]?.date, end: rows[rows.length - 1]?.date,
       views: rows.reduce((sum, row) => sum + row.views, 0),
       label: rows.length ? fdate(rows[Math.floor((rows.length - 1) / 2)].date) : "",
       range: rows.length ? fdate(rows[0].date) + " – " + fdate(rows[rows.length - 1].date) : "",
@@ -97,12 +100,12 @@ function CustomerInterestChart({ data, days }: { data: CustomerInsightData; days
   const y = (v: number) => yBase - v / max * (yBase - yTop);
   const grid = [max, Math.round(max / 2), 0];
   return (
-    <div className="customer-insights-chart">
-      <div className="customer-insights-chart-heading">
+    <div className="customer-insights-chart customer-insights-chart-interactive" onClick={() => onOpen({ kind: "trend" })}>
+      <div className="customer-insights-chart-heading" role="button" tabIndex={0} aria-label="View daily product interest" title="View daily product interest" onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onOpen({ kind: "trend" }); } }}>
         <div><span className="customer-insights-chart-dot" /><strong>Product interest (views)</strong></div>
         <span>{days === 7 ? "Daily" : days === 30 ? "5-day groups" : "15-day groups"}</span>
       </div>
-      <svg viewBox="0 0 766 238" role="img"
+      <svg viewBox="0 0 766 238" role="group"
         aria-label={`Product views in the last ${days} days: ${compact(data.totalViews)}. Each bar represents a date group.`}>
         <defs><linearGradient id={`customer-gradient-${id}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#1f5a43" />
@@ -115,7 +118,8 @@ function CustomerInterestChart({ data, days }: { data: CustomerInsightData; days
         {bins.map((bin, index) => {
           const x = xStart + (index + .5) * slot;
           const height = bin.views / max * (yBase - yTop);
-          return <g key={bin.range}>
+          return <g key={bin.range} className="customer-insights-bin" role="button" tabIndex={0} aria-label={`${bin.range}: ${bin.views} views. View breakdown`} onClick={event => { event.stopPropagation(); onOpen({ kind: "trend", start: bin.start, end: bin.end }); }} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); event.stopPropagation(); onOpen({ kind: "trend", start: bin.start, end: bin.end }); } }}>
+            <rect className="customer-insights-bin-hit" x={x-slot/2+3} y={yTop-8} width={Math.max(1,slot-6)} height={218} rx="8" fill="transparent" />
             <title>{bin.range}: {bin.views} views</title>
             {bin.views > 0
               ? <rect x={x - bw / 2} y={yBase - height} width={bw} height={height}
@@ -139,6 +143,8 @@ export default function CustomerInsights({ products, categories, loading: produc
   const [error, setError] = useState<string | null>(null);
   const [refresh, setRefresh] = useState(0);
   const [activeMetric, setActiveMetric] = useState<CustomerMetricKey | null>(null);
+  const [drilldown, setDrilldown] = useState<InsightDrilldown | null>(null);
+  const openDrilldown = (detail: InsightDrilldown) => { if (!busy && data) setDrilldown(detail); };
   const [sessionDetails, setSessionDetails] = useState<CustomerSessionDetails | null>(null);
   const [sessionBusy, setSessionBusy] = useState(false);
   const [sessionError, setSessionError] = useState<string | null>(null);
@@ -242,7 +248,7 @@ export default function CustomerInsights({ products, categories, loading: produc
           </div>
           <div className="customer-insights-mid">
             <div className="customer-insights-chart-wrap">
-              {!busy && data ? <CustomerInterestChart data={data} days={days} /> :
+              {!busy && data ? <CustomerInterestChart data={data} days={days} onOpen={openDrilldown} /> :
                 <p className="customer-insights-loading">Loading customer interest…</p>}
             </div>
             {!compactLayout && <div className="customer-insights-categories">
@@ -257,7 +263,7 @@ export default function CustomerInsights({ products, categories, loading: produc
             </div>}
           </div>
           <footer className="customer-insights-footer">
-            <div className="customer-insights-footer-top">
+            <div className="customer-insights-footer-top customer-insights-summary-action" role="button" tabIndex={busy || !data ? -1 : 0} aria-disabled={busy || !data} title="View top product details" onClick={() => openDrilldown({kind:"top"})} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openDrilldown({kind:"top"}); } }}>
               <span className="customer-insights-feature-photo">
                 {topProduct?.images[0]?.url ? <SafeImage src={topProduct.images[0].url} alt={topProduct.name} loading="lazy" /> : <Layers3 size={22} aria-hidden="true" />}
               </span>
@@ -267,11 +273,11 @@ export default function CustomerInsights({ products, categories, loading: produc
                 <span>{data?.topProductViews ? `${compact(data.topProductViews)} views · ${compact(data.topProductClicks)} clicks` : "Based on actual catalog visits"}</span>
               </div>
             </div>
-            <div className="customer-insights-footer-metric">
+            <div className="customer-insights-footer-metric customer-insights-summary-action" role="button" tabIndex={busy || !data ? -1 : 0} aria-disabled={busy || !data} title="View click-to-view ratio details" onClick={() => openDrilldown({kind:"ratio"})} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openDrilldown({kind:"ratio"}); } }}>
               <span className="customer-insights-footer-icon"><Zap size={20} aria-hidden="true" /></span>
               <div><small>Click-to-view ratio</small><strong>{busy ? "—" : clickRate}</strong><span>Product card clicks ÷ detail views</span></div>
             </div>
-            <div className="customer-insights-footer-metric">
+            <div className="customer-insights-footer-metric customer-insights-summary-action" role="button" tabIndex={busy || !data ? -1 : 0} aria-disabled={busy || !data} title="View views per session details" onClick={() => openDrilldown({kind:"average"})} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openDrilldown({kind:"average"}); } }}>
               <span className="customer-insights-footer-icon"><UsersRound size={20} aria-hidden="true" /></span>
               <div><small>Views per session</small><strong>{busy ? "—" : viewsPerSession}</strong><span>Sessions are not unique people</span></div>
             </div>
@@ -284,6 +290,29 @@ export default function CustomerInsights({ products, categories, loading: produc
           </p>
         </>
       )}
+      {drilldown && data && <Modal
+        title={drilldown.kind === "trend" ? "Product interest" : drilldown.kind === "top" ? "Top product" : drilldown.kind === "ratio" ? "Click-to-view ratio" : "Views per session"}
+        eyebrow="PRODUCT VIEW ANALYTICS"
+        description={drilldown.kind === "trend" && drilldown.start && drilldown.end ? fdate(drilldown.start) + " – " + fdate(drilldown.end) + " · Malaysia time" : "Last " + days + " days · Malaysia time"}
+        className="customer-session-dialog customer-metric-dialog" onClose={() => setDrilldown(null)}>
+        <div className="customer-metric-detail customer-insights-drilldown">
+          {drilldown.kind === "trend" ? (() => {
+            const rows = data.trend.filter(row => (!drilldown.start || row.date >= drilldown.start) && (!drilldown.end || row.date <= drilldown.end));
+            return <>
+              <section className="customer-metric-detail-summary"><div className="customer-metric-detail-summary-copy"><small>Product views in selected dates</small><strong>{compact(rows.reduce((sum,row) => sum + row.views, 0))}</strong><p>Recorded product detail views by date.</p></div></section>
+              <div className="customer-metric-detail-list">{rows.map(row => <div className="customer-metric-detail-row" key={row.date}><div className="customer-metric-detail-product"><strong>{fdate(row.date)}</strong><small>{row.date}</small></div><div className="customer-metric-detail-stat"><strong>{compact(row.views)}</strong><small> views</small></div></div>)}</div>
+              {!rows.length && <p className="customer-metric-detail-empty">No daily records for this period.</p>}
+            </>;
+          })() : drilldown.kind === "top" ? <>
+            <section className="customer-metric-detail-summary"><span className="customer-metric-detail-image">{topProduct?.images[0]?.url ? <SafeImage src={topProduct.images[0].url} alt="" /> : <Layers3 size={22}/>}</span><div className="customer-metric-detail-summary-copy"><small>Most viewed product</small><strong>{topProduct?.name ?? (data.topProductId ? "Product unavailable" : "No product views yet")}</strong><p>{data.topProductId ? compact(data.topProductViews) + " views · " + compact(data.topProductClicks) + " clicks" : "No recorded product interest for this period."}</p></div></section>
+            <div className="customer-metric-detail-list"><div className="customer-metric-detail-row"><div className="customer-metric-detail-product"><strong>Product views</strong></div><div className="customer-metric-detail-stat"><strong>{compact(data.topProductViews)}</strong></div></div><div className="customer-metric-detail-row"><div className="customer-metric-detail-product"><strong>Product clicks</strong></div><div className="customer-metric-detail-stat"><strong>{compact(data.topProductClicks)}</strong></div></div></div>
+          </> : <>
+            <section className="customer-metric-detail-summary"><div className="customer-metric-detail-summary-copy"><small>{drilldown.kind === "ratio" ? "Clicks ÷ views × 100" : "Views ÷ sessions"}</small><strong>{drilldown.kind === "ratio" ? clickRate : viewsPerSession}</strong><p>{drilldown.kind === "ratio" ? "Ratio of recorded product card clicks to detail views; not a conversion rate." : "Average product detail views per recorded browser session."}</p></div></section>
+            <div className="customer-metric-detail-list">{(drilldown.kind === "ratio" ? [{label:"Product clicks",value:data.productClicks},{label:"Product views",value:data.totalViews}] : [{label:"Product views",value:data.totalViews},{label:"Visitor sessions",value:data.visitorSessions}]).map(row => <div className="customer-metric-detail-row" key={row.label}><div className="customer-metric-detail-product"><strong>{row.label}</strong></div><div className="customer-metric-detail-stat"><strong>{compact(row.value)}</strong></div></div>)}</div>
+            <p className="customer-metric-detail-footnote">{drilldown.kind === "ratio" ? "A ratio is unavailable when there are no views." : "Sessions are anonymous browser sessions, not unique people."}</p>
+          </>}
+        </div>
+      </Modal>}
       {activeMetric === "sessions" && <Modal
         title="Visitor sessions"
         eyebrow="PRODUCT VIEW ANALYTICS"
