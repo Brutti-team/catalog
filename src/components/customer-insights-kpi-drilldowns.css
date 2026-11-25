@@ -421,3 +421,69 @@
 @media(prefers-reduced-motion:reduce) {
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi.customer-insights-kpi--interactive:enabled:hover {transform:none !important;}
 }
+
+
+/* Analytics period — a custom glass dropdown instead of the native blue menu. */
+.admin-app .customer-insights-panel .customer-insights-period-picker {
+  position:relative;
+  flex:0 0 auto;
+  width:142px;
+  color:#244d38;
+  --period-surface:#f4f8f4;
+  --period-menu:rgba(250,253,250,.97);
+  --period-selected:#e0eee4;
+  --period-hover:#eaf2eb;
+  --period-border:rgba(43,94,65,.16);
+  --period-ink:#244d38;
+  --period-muted:#647c6b;
+}
+.admin-app .customer-insights-panel .customer-insights-period-picker.is-open {z-index:30;}
+.admin-app .customer-insights-panel .customer-insights-period-trigger {
+  box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:7px;
+  width:100%;min-height:36px;padding:8px 10px;border:1px solid var(--period-border);
+  border-radius:10px;background:var(--period-surface);color:var(--period-ink);
+  font:650 11px/1.4 "DM Sans",system-ui,sans-serif;white-space:nowrap;cursor:pointer;
+  box-shadow:0 2px 8px rgba(26,57,32,.05);
+  transition:background .18s,border-color .18s;
+}
+.admin-app .customer-insights-panel .customer-insights-period-trigger:hover,
+.admin-app .customer-insights-panel .is-open .customer-insights-period-trigger {background:var(--period-selected);border-color:#7ca78b;}
+.admin-app .customer-insights-panel .customer-insights-period-trigger svg {flex-shrink:0;}
+.admin-app .customer-insights-panel .customer-insights-period-chevron {transition:transform .18s;}
+.admin-app .customer-insights-panel .is-open .customer-insights-period-chevron {transform:rotate(180deg);}
+.admin-app .customer-insights-panel .customer-insights-period-menu {
+  position:absolute;top:calc(100% + 7px);right:0;z-index:31;
+  box-sizing:border-box;width:166px;padding:6px;
+  border:1px solid var(--period-border);border-radius:12px;
+  background:var(--period-menu);
+  box-shadow:0 12px 28px rgba(24,55,37,.14),inset 0 1px 0 rgba(255,255,255,.2);
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+}
+.admin-app .customer-insights-panel .customer-insights-period-menu > small {
+  display:block;padding:7px 8px 5px;color:var(--period-muted);
+  font:650 9px/1.4 "DM Sans",system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;
+}
+.admin-app .customer-insights-panel .customer-insights-period-menu > button {
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+  box-sizing:border-box;width:100%;min-height:34px;margin:2px 0;padding:7px 8px;
+  border:0;border-radius:7px;background:transparent;color:var(--period-ink);
+  font:550 11px/1.4 "DM Sans",system-ui,sans-serif;text-align:left;cursor:pointer;
+}
+.admin-app .customer-insights-panel .customer-insights-period-menu > button:hover {background:var(--period-hover);}
+.admin-app .customer-insights-panel .customer-insights-period-menu > button.is-selected {background:var(--period-selected);font-weight:700;}
+.admin-app .customer-insights-panel .customer-insights-period-trigger:focus-visible,
+.admin-app .customer-insights-panel .customer-insights-period-menu > button:focus-visible {outline:2px solid #629773;outline-offset:1px;}
+.admin-app[data-theme="dark"] .customer-insights-panel .customer-insights-period-picker {
+  --period-surface:#2a3a31;--period-menu:rgba(39,52,44,.98);
+  --period-selected:#365b46;--period-hover:#30483a;--period-border:rgba(148,188,159,.23);
+  --period-ink:#e5f2e8;--period-muted:#a4bcad;
+}
+.admin-app .customer-insights-panel:has(.customer-insights-period-picker.is-open) {overflow:visible !important;z-index:12;}
+.admin-app .customer-insights-panel:has(.customer-insights-period-picker.is-open) .customer-insights-header {position:relative;z-index:20;overflow:visible !important;}
+@media(max-width:480px) {
+  .admin-app .customer-insights-panel .customer-insights-period-picker {width:132px;}
+  .admin-app .customer-insights-panel .customer-insights-period-menu {right:auto;left:0;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .admin-app .customer-insights-panel .customer-insights-period-trigger,.admin-app .customer-insights-panel .customer-insights-period-chevron {transition:none;}
+}
