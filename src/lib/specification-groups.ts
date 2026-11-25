@@ -54,3 +54,20 @@ export function compactSpecifications(specifications: ProductSpecification[] = [
     return children.some(isFilled);
   });
 }
+
+
+/** A dedicated finishing field is stored as an ordinary primary specification.
+ * Only adopt simple legacy rows; grouped or component-specific finishes stay intact. */
+export function primaryFinishingRow(specifications: ProductSpecification[] = []): ProductSpecification | undefined {
+  return splitSpecifications(specifications).primary.find(row =>
+    !row.kind && row.name.trim().toLowerCase() === "finishing" && !row.quantity && !row.description?.trim());
+}
+
+export function setPrimaryFinishing(specifications: ProductSpecification[] = [], value: string): ProductSpecification[] {
+  const existing = primaryFinishingRow(specifications);
+  if (existing) return value.trim()
+    ? specifications.map(row => row.id === existing.id ? { ...row, value } : row)
+    : specifications.filter(row => row.id !== existing.id);
+  if (!value.trim() || specifications.length >= 24) return specifications;
+  return [{ id: crypto.randomUUID(), name: "Finishing", value }, ...specifications];
+}
