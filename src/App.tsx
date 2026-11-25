@@ -74,10 +74,11 @@ import Modal from "./components/Modal";
 import AccountCenter from "./components/AccountCenter";
 import CataloguePhotoImport from "./components/CataloguePhotoImport";
 import AlbumLibrary from "./components/AlbumLibrary";
-import { albumPhotoToProductImage } from "./lib/album";
+import { albumPhotoToProductImage, combineAlbumPhotos, listAlbumRecords, setAlbumPhotoCategory } from "./lib/album";
 import LastChange from "./components/LastChange";
 import CategoryFilter from "./components/CategoryFilter";
-import CategoryCoverPicker from "./components/CategoryCoverPicker";
+import CategoryAlbumPicker from "./components/CategoryAlbumPicker";
+import "./components/category-cover-picker.css";
 import SortFilter from "./components/SortFilter";
 import { getAccountSummary, initials, type StaffRole } from "./lib/account-center";
 import { useAdminTheme } from "./lib/admin-theme";
@@ -158,8 +159,8 @@ export default function App() {
   const [categoryDeleteInput, setCategoryDeleteInput] = useState("");
   const [categoryDeleteError, setCategoryDeleteError] = useState("");
   const [catName, setCatName] = useState("");
-  const [catDescription, setCatDescription] = useState("");
-  const [catCoverImageUrl, setCatCoverImageUrl] = useState<string | null>(null);
+  const [categoryAlbumSelection, setCategoryAlbumSelection] = useState<string[]>([]);
+  const [albumRevision, setAlbumRevision] = useState(0);
   const [actionError, setActionError] = useState("");
   const [toast, setToast] = useState("");
   const [menu, setMenu] = useState<string | null>(null);
@@ -387,8 +388,7 @@ export default function App() {
   function editCategory(c: Category) {
     setCatEditor(c);
     setCatName(c.name);
-    setCatDescription(c.description);
-    setCatCoverImageUrl(c.cover_image_url ?? null);
+    setCategoryAlbumSelection([]);
     setActionError("");
   }
   async function submitCategory(e: FormEvent) {
@@ -397,15 +397,38 @@ export default function App() {
     setBusy(true);
     setActionError("");
     try {
-      await saveCategory({
-        ...catEditor,
-        name: catName.trim(),
-        description: catDescription.trim(),
-        cover_image_url: catCoverImageUrl,
-      });
+      // Recheck Album eligibility before writing: never move an already assigned photo.
+      const selectedIds = [...categoryAlbumSelection];
+      if (selectedIds.length) {
+        const available = combineAlbumPhotos(await listAlbumRecords(), data.products, data.categories);
+        if (selectedIds.some(id => !available.some(photo=>photo.id===id && !photo.manualCategoryId && !photo.usedBy.length && !photo.categoryCovers.length))) {
+          throw new Error("Some selected photos are no longer unassigned. Refresh your selection and try again.");
+        }
+      }
+      // Preserve existing description and public cover metadata; this form
+      // edits the category name and assigns Album photos only.
+      const saved = await saveCategory({...catEditor,name:catName.trim()});
+      setCatEditor(saved);
+      const failed: string[] = [];
+      let assignedCount = 0;
+      for (const id of selectedIds) {
+        try {
+          const assigned = await setAlbumPhotoCategory(id,saved.id);
+          if (assigned !== saved.id) throw new Error("Photo assignment was not confirmed.");
+          assignedCount++;
+          setCategoryAlbumSelection(current=>current.filter(item=>item!==id));
+        } catch (err) {
+          failed.push(err instanceof Error?err.message:"Could not assign photo.");
+        }
+      }
+      setAlbumRevision(value=>value+1);
       await refresh();
+      if (failed.length) {
+        setActionError(`Category saved. ${assignedCount} photos assigned; ${failed.length} failed. ${failed[0]} Retry to assign the remaining photos.`);
+        return;
+      }
       setCatEditor(null);
-      setToast("Category saved");
+      setToast(selectedIds.length ? `Category saved · ${assignedCount} photo${assignedCount===1?"":"s"} added` : "Category saved");
     } catch (e) {
       setActionError(
         e instanceof Error ? e.message : "Unable to save category.",
@@ -777,7 +800,7 @@ export default function App() {
             </div>
           )}
           {tab === "album" && (
-            <AlbumLibrary products={data.products} categories={data.categories}
+            <AlbumLibrary key={albumRevision} products={data.products} categories={data.categories}
               onDeleteProduct={(id) => {
                 if (busy) return;
                 const product = data.products.find(item => item.id === id);
@@ -1427,21 +1450,11 @@ export default function App() {
                 placeholder="e.g. Seating"
               />
             </label>
-            <label className="category-editor-field">
-              <span className="category-editor-label">Description <span className="category-optional">Optional</span></span>
-              <textarea
-                maxLength={500}
-                rows={3}
-                value={catDescription}
-                onChange={(e) => setCatDescription(e.target.value)}
-                placeholder="What belongs in this collection?"
-              />
-            </label>
-            <CategoryCoverPicker
-              categoryId={catEditor.id}
-              products={data.products.filter(product => product.categoryId === catEditor.id)}
-              value={catCoverImageUrl}
-              onChange={setCatCoverImageUrl}
+            <CategoryAlbumPicker
+              products={data.products}
+              categories={data.categories}
+              selected={categoryAlbumSelection}
+              onChange={setCategoryAlbumSelection}
               disabled={busy}
             />
             {actionError && (
