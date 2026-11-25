@@ -1332,3 +1332,82 @@
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image > .pub-detail-photo-frame > img { width:100%; height:100%; max-height:100%; min-height:0; }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image.has-saved-framing > .pub-detail-photo-frame { width:min(100%,calc(100cqh * var(--catalog-card-photo-ratio,1.18))); height:auto; }
 }
+
+/* Customer detail photography: one compact, full-bleed card with no letterbox.
+   The zoom viewer still shows the original image; saved crop metadata is retained. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-detail-main-image) {
+  justify-content:flex-start;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image {
+  --pub-detail-card-cap: min(570px,max(240px,calc(100dvh - 145px)));
+  position:relative;
+  display:block;
+  flex:0 0 auto;
+  align-self:stretch;
+  width:100%;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:var(--pub-detail-card-cap);
+  aspect-ratio:1 / 1;
+  padding:0;
+  margin:0;
+  overflow:hidden;
+  border:0;
+  border-radius:15px;
+  background:transparent;
+  box-shadow:none;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image.has-saved-framing {
+  aspect-ratio:var(--catalog-card-photo-ratio,1.18);
+  container-type:normal;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image > .pub-detail-photo-frame,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image.has-saved-framing > .pub-detail-photo-frame {
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:none;
+  max-height:none;
+  aspect-ratio:auto;
+  overflow:hidden;
+  border-radius:inherit;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image > .pub-detail-photo-frame > img,
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image.has-saved-framing > .pub-detail-photo-frame > img {
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:none;
+  max-height:none;
+  object-fit:cover !important;
+  border-radius:0;
+  margin:0;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image:not(.has-saved-framing) > .pub-detail-photo-frame > img {
+  object-position:center 75% !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image > .pub-photo-zoom-trigger {
+  position:absolute;
+  right:14px;
+  bottom:14px;
+  z-index:2;
+}
+@media(min-width:851px) and (min-height:600px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-gallery-thumbnails) > .pub-detail-main-image {
+    --pub-detail-card-cap:min(540px,max(180px,calc(100dvh - 225px)));
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-media-switch) > .pub-detail-main-image {
+    --pub-detail-card-cap:min(540px,max(180px,calc(100dvh - 195px)));
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery:has(> .pub-gallery-thumbnails):has(> .pub-media-switch) > .pub-detail-main-image {
+    --pub-detail-card-cap:min(500px,max(160px,calc(100dvh - 275px)));
+  }
+}
+@media(max-width:850px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image {
+    --pub-detail-card-cap:min(560px,100vw);
+    border-radius:12px;
+  }
+}
