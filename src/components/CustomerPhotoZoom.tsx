@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { ChevronLeft, ChevronRight, Minus, Plus, RotateCcw, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { ProductImage } from "../lib/types";
 import { publicAssetUrl } from "../lib/assets";
 import { boundZoom, initialZoom, zoomAt, type ZoomView } from "../lib/photo-zoom";
@@ -19,6 +19,7 @@ export default function CustomerPhotoZoom({images,productName,initialIndex,onClo
   const [view,setView]=useState(initialZoom);
   const [index,setIndex]=useState(Math.min(Math.max(0,initialIndex),Math.max(0,images.length-1)));
   const [failed,setFailed]=useState(false);
+  const [ratio,setRatio]=useState(1);
   const [dragging,setDragging]=useState(false);
   const active=images[index];
   const update=(next:ZoomView)=>{
@@ -92,6 +93,8 @@ export default function CustomerPhotoZoom({images,productName,initialIndex,onClo
     gesture.current=null;
   };
   return <dialog ref={modal} className="customer-photo-zoom" aria-label={productName+" photo viewer"}
+    style={{width:`min(920px, calc(100vw - 32px), calc((100dvh - 64px) * ${ratio}))`}}
+    onClick={event=>{if(event.target===event.currentTarget)onClose();}}
     onCancel={event=>{event.preventDefault();onClose();}}
     onKeyDown={event=>{
       if(event.key==="+"||event.key==="="){event.preventDefault();zoom(1.25);}
@@ -103,31 +106,18 @@ export default function CustomerPhotoZoom({images,productName,initialIndex,onClo
       }
       if(view.scale>1&&(event.key==="ArrowUp"||event.key==="ArrowDown")){event.preventDefault();update({...live.current,y:live.current.y+(event.key==="ArrowUp"?60:-60)});}
     }}>
-    <header className="customer-photo-zoom-header">
-      <div><strong>{productName}</strong><span>Explore the details</span></div>
-      <button type="button" autoFocus aria-label="Close photo viewer" onClick={onClose}><X size={23}/></button>
-    </header>
-    <div ref={stage} className={"customer-photo-zoom-stage"+(dragging?" is-dragging":view.scale>1?" is-zoomed":"")}
+    <button className="customer-photo-close" type="button" autoFocus aria-label="Close photo viewer" onClick={onClose}><X size={21}/></button>
+    <div ref={stage} style={{aspectRatio:ratio}} className={"customer-photo-zoom-stage"+(dragging?" is-dragging":view.scale>1?" is-zoomed":"")}
       onPointerDown={start} onPointerMove={move} onPointerUp={event=>end(event)}
       onPointerCancel={event=>end(event,true)} onLostPointerCapture={event=>end(event,true)}>
       {active&&!failed?<img key={active.id} ref={imageRef} src={publicAssetUrl(active.url)} alt={active.alt||productName}
-        draggable={false} onLoad={()=>update(live.current)} onError={()=>{setFailed(true);reset();}}
+        draggable={false} onLoad={event=>{const image=event.currentTarget;if(image.naturalHeight>0)setRatio(image.naturalWidth/image.naturalHeight);update(live.current);}} onError={()=>{setFailed(true);reset();}}
         style={{transform:`translate(${view.x}px,${view.y}px) scale(${view.scale})`}}/>:
         <p role="status">This photo is unavailable.</p>}
     </div>
-    <footer className="customer-photo-zoom-footer">
-      <div className="customer-photo-zoom-pagination">
-        {images.length>1&&<button type="button" aria-label="Previous photo" onClick={()=>changePhoto(-1)}><ChevronLeft size={20}/></button>}
-        <span>{index+1} / {images.length}</span>
-        {images.length>1&&<button type="button" aria-label="Next photo" onClick={()=>changePhoto(1)}><ChevronRight size={20}/></button>}
-      </div>
-      <div className="customer-photo-zoom-tools">
-        <button type="button" aria-label="Zoom out" disabled={view.scale<=1||failed} onClick={()=>zoom(.8)}><Minus size={20}/></button>
-        <span aria-live="polite">{Math.round(view.scale*100)}%</span>
-        <button type="button" aria-label="Zoom in" disabled={view.scale>=4||failed} onClick={()=>zoom(1.25)}><Plus size={20}/></button>
-        <button type="button" aria-label="Reset zoom" disabled={view.scale<=1||failed} onClick={reset}><RotateCcw size={17}/></button>
-      </div>
-      <span className="customer-photo-zoom-hint">Click or pinch to zoom · Drag to explore</span>
-    </footer>
+    {images.length>1&&<>
+      <button className="customer-photo-prev" type="button" aria-label="Previous photo" onClick={()=>changePhoto(-1)}><ChevronLeft size={21}/></button>
+      <button className="customer-photo-next" type="button" aria-label="Next photo" onClick={()=>changePhoto(1)}><ChevronRight size={21}/></button>
+    </>}
   </dialog>;
 }
