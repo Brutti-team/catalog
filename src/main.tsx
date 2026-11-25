@@ -106,6 +106,7 @@ import "./components/catalog-materials-richtext.css";
 import "./components/catalog-overview-categories-motion.css";
 import "./components/public-neutral-palette.css";
 import "./components/public-collection-green-header.css";
+import "./components/catalog-dark-mode-standard.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
