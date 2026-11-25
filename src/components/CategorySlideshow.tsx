@@ -14,43 +14,59 @@ export default function CategorySlideshow({slides, name, offset=0}:{slides:Categ
     query.addEventListener("change",change);
     return ()=>query.removeEventListener("change",change);
   },[]);
-  useEffect(()=>{setActive(0);setPrevious(null);},[signature,reduced,offset]);
+  useEffect(()=>{setActive(0);setPrevious(null);},[signature]);
   useEffect(()=>{
-    if(reduced || slides.length<2)return;
+    if(slides.length<2)return;
     let cancelled=false;
     let timer:number|undefined;
     let fadeTimer:number|undefined;
+    let loadTimer:number|undefined;
     let cursor=0;
     let visibleIndex=0;
+    let pending:HTMLImageElement|undefined;
     const advance=()=>{
       if(cancelled)return;
-      if(document.hidden){timer=window.setTimeout(advance,4000);return;}
       const next=(cursor+1)%slides.length;
       const image=new Image();
-      image.onload=()=>{
-        if(cancelled)return;
-        setPrevious(visibleIndex);setActive(next);cursor=next;visibleIndex=next;
-        fadeTimer=window.setTimeout(()=>setPrevious(null),650);
-        timer=window.setTimeout(advance,4000);
-      };
-      image.onerror=()=>{
-        if(cancelled)return;
-        // Continue past broken URLs without replacing the current visible image.
+      pending=image;
+      let settled=false;
+      const finish=(loaded:boolean)=>{
+        if(settled||cancelled)return;
+        settled=true;
+        window.clearTimeout(loadTimer);
         cursor=next;
-        timer=window.setTimeout(advance,4000);
+        if(loaded){
+          setPrevious(visibleIndex);
+          setActive(next);
+          visibleIndex=next;
+          window.clearTimeout(fadeTimer);
+          fadeTimer=window.setTimeout(()=>setPrevious(null),650);
+        }
+        timer=window.setTimeout(advance,loaded?3200:250);
       };
+      image.onload=()=>finish(true);
+      image.onerror=()=>finish(false);
+      // A stalled image must not freeze the entire slideshow.
+      loadTimer=window.setTimeout(()=>finish(false),5000);
       image.src=publicAssetUrl(slides[next].src);
+      if(image.complete && image.naturalWidth>0)finish(true);
     };
-    timer=window.setTimeout(advance,4000+(offset%4)*350);
-    return ()=>{cancelled=true;window.clearTimeout(timer);window.clearTimeout(fadeTimer);};
-    // The stable signature avoids restarting when the parent updates.
+    timer=window.setTimeout(advance,1800+(offset%4)*200);
+    return ()=>{
+      cancelled=true;
+      window.clearTimeout(timer);
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(loadTimer);
+      if(pending){pending.onload=null;pending.onerror=null;}
+    };
+    // Reduced-motion users still see each photo, without the fade animation.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[signature,reduced,offset]);
+  },[signature,offset]);
   const current=slides[active]||slides[0];
   const last=previous===null?undefined:slides[previous];
   if(!current)return null;
   return <div className="category-slideshow" aria-hidden="true">
-    {last && last.src!==current.src && <SafeImage className="category-slide-image category-slide-previous" src={last.src} alt="" style={{objectPosition:last.position}}/>}
-    <SafeImage key={current.src} className={`category-slide-image${last&&!reduced?" category-slide-enter":""}`} src={current.src} alt={name} loading="lazy" decoding="async" style={{objectPosition:current.position}}/>
+    {!reduced && last && last.src!==current.src && <SafeImage className="category-slide-image category-slide-previous" src={last.src} alt="" style={{objectPosition:last.position}}/>}
+    <SafeImage key={current.src} className={`category-slide-image${last&&!reduced?" category-slide-enter":""}`} src={current.src} alt={name} loading="eager" decoding="async" style={{objectPosition:current.position}}/>
   </div>;
 }
