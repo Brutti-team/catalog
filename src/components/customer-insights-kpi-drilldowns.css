@@ -361,3 +361,63 @@
     transform: none !important;
   }
 }
+
+
+/* Compact analytics polish — only the Overview analytics panel. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi.customer-insights-kpi--interactive {
+  min-height:82px !important;
+  padding:10px 8px !important;
+  gap:6px !important;
+  border-radius:12px !important;
+  border-color:rgba(90,130,101,.15) !important;
+  background:var(--og-tile) !important;
+  box-shadow:var(--og-tile-shadow) !important;
+  cursor:pointer !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi.customer-insights-kpi--interactive:enabled:hover {
+  background:var(--og-hover) !important;
+  border-color:#82ac90 !important;
+  transform:translateY(-2px) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi.customer-insights-kpi--interactive .customer-insights-kpi-icon {
+  border-radius:8px !important;
+  background:var(--metric-bg,#e1eee6) !important;
+  color:var(--metric-ink,#1f5a43) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:nth-child(2) {--metric-bg:#e5edf8;--metric-ink:#365e8c;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:nth-child(3) {--metric-bg:#f3ead9;--metric-ink:#8a6530;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:nth-child(4) {--metric-bg:#ece8f5;--metric-ink:#715a91;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:nth-child(1) {--metric-bg:#304b3d;--metric-ink:#b0dfbf;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:nth-child(2) {--metric-bg:#30465e;--metric-ink:#b9d4f7;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:nth-child(3) {--metric-bg:#50442f;--metric-ink:#ecd4a1;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi:nth-child(4) {--metric-bg:#463b56;--metric-ink:#d8c8ed;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi strong {font-variant-numeric:tabular-nums;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-mid {
+  display:flex !important;
+  flex-direction:column;
+  justify-content:center;
+  min-height:0 !important;
+  padding:13px 14px !important;
+  border-radius:12px !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart-wrap {width:100%;min-height:0 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart {width:100%;min-height:0 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg {
+  display:block;
+  width:100%;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:visible;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart-heading {margin-bottom:8px !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-gridline text,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-x-label {font-size:12px !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-bar-number {fill:var(--og-ink) !important;font-size:13px !important;font-weight:700;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-footer {border-radius:12px !important;padding:10px !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-footer > .customer-insights-footer-metric strong {font-variant-numeric:tabular-nums;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-footer-top > div {min-width:0;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-footer-top strong {overflow-wrap:anywhere;}
+@media(prefers-reduced-motion:reduce) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi.customer-insights-kpi--interactive:enabled:hover {transform:none !important;}
+}
