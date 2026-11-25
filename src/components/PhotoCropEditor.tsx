@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type PointerEvent } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type PointerEvent, type CSSProperties } from "react";
 import {
   Check, CheckCircle2, Crop, FlipHorizontal2, Layers3, Image as ImageIcon,
   LoaderCircle, Palette, RotateCcw, RotateCw, Scan,
@@ -565,7 +565,7 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
             <div className={"brutti-photo-studio-stage" + (showCropPreview ? " is-crop-preview" : "")}
               aria-label="Photo canvas; drag the product to reposition">
               <div className={`brutti-photo-crop-image-frame${hasCutout && background === "transparent" && !previewOriginal ? " is-transparent" : ""}${brushMode && tool === "background" ? " is-erasing" : ""}`}
-                style={{ aspectRatio: displayRatio }}
+                style={{ aspectRatio: displayRatio, "--crop-preview-ratio": displayRatio } as CSSProperties}
                 onPointerDown={onPointerDown} onPointerMove={onPointerMove}
                 onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
                 <canvas ref={canvasRef} width={displayWidth} height={displayHeight}
