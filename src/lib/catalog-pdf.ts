@@ -5,10 +5,10 @@ import { publicAssetUrl } from "./assets";
 import { IMPACT_FRONT, IMPACT_BACK, planPdfSections, type PdfSelection } from "./catalog-pdf-plan";
 import { makeCatalogPdf, type PdfRasterPage, type PdfLink } from "./catalog-pdf-file";
 
-const PW=620, PH=877, SCALE=2.5;
+const PW=620, PH=877, SCALE=2;
 const GREEN="#1f5a43", INK="#243b31", MUTED="#64746b", PAPER="#faf9f6", BRONZE="#896a4d", RULE="#dce3d9";
 const font=(size:number, weight=400)=> `${weight} ${size}px Inter, "Segoe UI", Arial, sans-serif`;
-const clean=(value:string)=>value.replace(/\r/g,"").trim();
+const clean=(value:string)=>String(value??"").replace(/\r/g,"").trim();
 function lines(ctx:CanvasRenderingContext2D, value:string, width:number, size:number, weight=400):string[] {
   ctx.font=font(size,weight);
   const result:string[]=[];
@@ -41,19 +41,26 @@ function sheet() {
   return {canvas,ctx};
 }
 async function jpeg(canvas:HTMLCanvasElement,links?:PdfLink[]):Promise<PdfRasterPage> {
-  const blob=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error("Unable to encode PDF page.")),"image/jpeg",.94));
+  const blob=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error("Unable to encode PDF page.")),"image/jpeg",.89));
   const page={jpeg:await blob.arrayBuffer(),width:canvas.width,height:canvas.height,
     links:links?.map(l=>({...l,x:l.x*SCALE,y:l.y*SCALE,w:l.w*SCALE,h:l.h*SCALE}))};
   canvas.width=1;canvas.height=1;return page;
 }
 async function photo(url:string):Promise<HTMLImageElement> {
-  const controller=new AbortController();const timeout=window.setTimeout(()=>controller.abort(),15000);
+  const controller=new AbortController();const timeout=window.setTimeout(()=>controller.abort(),20000);
   try {
     const response=await fetch(publicAssetUrl(url),{signal:controller.signal,mode:"cors",credentials:"omit"});
     if(!response.ok)throw new Error(`Image unavailable (HTTP ${response.status}): ${url}`);
-    const objectUrl=URL.createObjectURL(await response.blob());
+    const blob=await response.blob();
+    if (!blob.size || /text\/html/i.test(blob.type)) throw new Error("Image response is empty or HTML: "+url);
+    const objectUrl=URL.createObjectURL(blob);
     try {
-      const image=new Image();image.src=objectUrl;await image.decode();return image;
+      const image=new Image();
+      await new Promise<void>((resolve,reject)=>{
+        image.onload=()=>resolve();image.onerror=()=>reject(new Error("Image decoding failed: "+url));image.src=objectUrl;
+      });
+      if (!image.naturalWidth || !image.naturalHeight) throw new Error("Invalid image dimensions: "+url);
+      return image;
     } finally {URL.revokeObjectURL(objectUrl);}
   } finally {window.clearTimeout(timeout);}
 }
@@ -82,7 +89,7 @@ type DetailRow={value:string;size:number;weight:number;color:string;height:numbe
 function productLines(ctx:CanvasRenderingContext2D,p:Product):DetailRow[] {
   const result:DetailRow[]=[];
   const add=(label:string,value:string)=>{
-    if(!value.trim())return;
+    if(!clean(value))return;
     if(label) result.push({value:label.toUpperCase(),size:11,weight:600,color:BRONZE,height:18,heading:true});
     const wrapped=lines(ctx,value,540,15,400);
     wrapped.forEach((line,i)=>result.push({value:line,size:15,weight:400,color:INK,height:20+(i===wrapped.length-1?8:0)}));
@@ -92,13 +99,13 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product):DetailRow[] {
   add("Materials & finishing",plainMaterials(p.materials||"").replace(/^(?:[•\s]*)(?:materials?|material)\s*:\s*/i,""));
   for(const row of p.specifications??[]) {
     if(row.kind==="section") {
-      if(row.name.trim()) {
+      if(clean(row.name)) {
         for(const line of lines(ctx,row.name.toUpperCase(),540,11,600))result.push({value:line,size:11,weight:600,color:BRONZE,height:19,heading:true});
       }
       continue;
     }
     const details=[row.value,row.quantity&&row.quantity>0?row.quantity+" pcs":"",row.description].filter(Boolean).join(" · ");
-    if(row.name.trim()&&details)add(row.name,plainMaterials(details));
+    if(clean(row.name)&&details)add(row.name,plainMaterials(details));
   }
   return result;
 }
@@ -119,7 +126,7 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   if(!sections.length)throw new Error("No published products match this selection.");
   // Wait for the same font used by the public catalogue before measuring text.
   // A system sans-serif remains available if the external font cannot load.
-  if(document.fonts)await Promise.race([
+  if(document.fonts && typeof document.fonts.load==="function")await Promise.race([
     Promise.all([400,500,600,700].map(weight=>document.fonts.load(font(16,weight),"Brutti Catalogue"))).catch(()=>[]),
     new Promise<void>(resolve=>window.setTimeout(resolve,4500))
   ]);
@@ -148,7 +155,13 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   const total=pageNumber;
   const pages:PdfRasterPage[]=[];
   let missing=0;
-  const push=async(canvas:HTMLCanvasElement,links?:PdfLink[])=>{pages.push(await jpeg(canvas,links));onProgress(pages.length,total);};
+  const push=async(canvas:HTMLCanvasElement,links?:PdfLink[])=>{
+    try { pages.push(await jpeg(canvas,links)); }
+    catch(error) { console.error("[Catalogue PDF] Page encoding failed",{page:pages.length+1},error);throw new Error("PDF page rendering failed at page "+(pages.length+1)+". Refresh the page and retry."); }
+    finally {canvas.width=1;canvas.height=1;}
+    onProgress(pages.length,total);
+    await new Promise<void>(resolve=>window.setTimeout(resolve,0));
+  };
   const originalCover=async(url:string)=>{
     const {canvas,ctx}=sheet();
     try {
