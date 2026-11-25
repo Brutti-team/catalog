@@ -18,6 +18,7 @@ import {
   Upload,
   Crop,
   MoreHorizontal,
+  GripVertical,
   ChevronDown,
   Ruler,
   Hash,
@@ -331,6 +332,10 @@ export default function ProductEditor({
   const [photoMenuId, setPhotoMenuId] = useState<string | null>(null);
   const draggedPhotoId = useRef<string | null>(null);
   const [photoDropTarget, setPhotoDropTarget] = useState<string | null>(null);
+  const [activePhotoDrag, setActivePhotoDrag] = useState<string | null>(null);
+  const pointerPhotoDrag = useRef<{id: string; pointerId: number} | null>(null);
+  const photoAtPoint = (x: number, y: number) =>
+    document.elementFromPoint(x, y)?.closest<HTMLElement>("[data-reorder-photo-id]")?.dataset.reorderPhotoId ?? null;
   function movePhotoTo(id: string, targetIndex: number) {
     setDraft(current => {
       const from = current.images.findIndex(image => image.id === id);
@@ -345,6 +350,8 @@ export default function ProductEditor({
   }
   function finishPhotoDrag() {
     draggedPhotoId.current = null;
+    pointerPhotoDrag.current = null;
+    setActivePhotoDrag(null);
     setPhotoDropTarget(null);
   }
   const [previewPhotoId, setPreviewPhotoId] = useState<string | null>(null);
@@ -716,7 +723,11 @@ export default function ProductEditor({
                 <div className="brutti-media-gallery" aria-label="Product photos">
                   {draft.images.map((img,index)=>(
                     <div className="brutti-media-photo-item" key={img.id}
-                      style={photoDropTarget===img.id?{outline:"2px solid #4a9265",outlineOffset:3}:undefined}
+                      data-reorder-photo-id={img.id}
+                      style={{
+                        ...(photoDropTarget===img.id?{outline:"2px solid #4a9265",outlineOffset:3}:{}),
+                        ...(activePhotoDrag===img.id?{opacity:.55}:{}),
+                      }}
                       onDragOver={event=>{
                         if(!draggedPhotoId.current || busy || uploading)return;
                         event.preventDefault();
@@ -742,6 +753,7 @@ export default function ProductEditor({
                         onDragStart={event=>{
                           if(busy||uploading||draft.images.length<2){event.preventDefault();return;}
                           draggedPhotoId.current=img.id;
+                          setActivePhotoDrag(img.id);
                           event.dataTransfer.effectAllowed="move";
                           event.dataTransfer.setData("text/plain",img.id);
                           setPhotoMenuId(null);
@@ -751,6 +763,46 @@ export default function ProductEditor({
                         <SafeImage src={img.url} alt={img.alt||draft.name} style={photoCropStyle(img)} draggable={false}/>
                         {index===0 && <span className="brutti-media-cover-badge"><CheckCircle2 size={12} aria-hidden="true"/> Cover</span>}
                       </button>
+                      {draft.images.length>1 && <button type="button"
+                        className="brutti-media-photo-drag-handle"
+                        aria-label={`Drag photo ${index+1} to reorder. Use arrow keys to move.`}
+                        title="Hold and drag to reorder photos"
+                        disabled={busy||uploading}
+                        style={{position:"absolute",bottom:8,left:8,zIndex:3,display:"grid",placeItems:"center",
+                          width:33,height:33,padding:0,border:"1px solid rgba(255,255,255,.7)",
+                          borderRadius:10,background:"rgba(24,34,29,.8)",color:"#fff",
+                          cursor:activePhotoDrag===img.id?"grabbing":"grab",touchAction:"none",userSelect:"none"}}
+                        onPointerDown={event=>{
+                          if(busy||uploading||!event.isPrimary||event.button!==0)return;
+                          event.preventDefault();
+                          event.currentTarget.setPointerCapture(event.pointerId);
+                          pointerPhotoDrag.current={id:img.id,pointerId:event.pointerId};
+                          setActivePhotoDrag(img.id);
+                          setPhotoMenuId(null);
+                        }}
+                        onPointerMove={event=>{
+                          const drag=pointerPhotoDrag.current;
+                          if(!drag||drag.pointerId!==event.pointerId)return;
+                          const target=photoAtPoint(event.clientX,event.clientY);
+                          setPhotoDropTarget(target===drag.id?null:target);
+                        }}
+                        onPointerUp={event=>{
+                          const drag=pointerPhotoDrag.current;
+                          if(!drag||drag.pointerId!==event.pointerId)return;
+                          const target=photoAtPoint(event.clientX,event.clientY);
+                          const targetIndex=draft.images.findIndex(image=>image.id===target);
+                          if(!busy&&!uploading&&targetIndex>=0)movePhotoTo(drag.id,targetIndex);
+                          finishPhotoDrag();
+                          if(event.currentTarget.hasPointerCapture(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId);
+                        }}
+                        onPointerCancel={finishPhotoDrag}
+                        onLostPointerCapture={finishPhotoDrag}
+                        onKeyDown={event=>{
+                          const step=event.key==="ArrowLeft"||event.key==="ArrowUp"?-1:event.key==="ArrowRight"||event.key==="ArrowDown"?1:0;
+                          if(step){event.preventDefault();movePhotoTo(img.id,index+step);}
+                        }}>
+                        <GripVertical size={18} aria-hidden="true"/>
+                      </button>}
                       <button type="button" className="brutti-media-quick-edit"
                         aria-label={`Edit photo ${index+1}`}
                         disabled={busy||uploading} title="Crop and rotate"
@@ -809,7 +861,7 @@ export default function ProductEditor({
                     <span>Add Photo</span>
                   </button>}
                 </div>
-                <p className="brutti-media-gallery-help">Drag photos to reorder, or use the three-dot menu to move photos and set the cover. The first photo is the cover. Save product to apply the order.</p>
+                <p className="brutti-media-gallery-help">Hold and drag the grip icon to reorder photos, or use the three-dot menu to move photos and set the cover. The first photo is the cover. Save product to apply the order.</p>
                 {cover && <>
                   {coverChanged && <p className="brutti-customer-crop-pending" role="status">Cover changes are not published yet. Select Save product to update the customer catalog.</p>}
                   <details className="brutti-customer-crop">
