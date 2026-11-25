@@ -402,3 +402,30 @@
   .admin-app .brutti-album__product-parity .editor-footer > .button-row button {flex:1 1 0;white-space:normal;padding:9px 7px;font-size:10px;}
 }
 @media (prefers-reduced-motion:reduce) {.admin-app .brutti-album__product-parity .editor-primary {scroll-behavior:auto !important;}}
+
+
+/* Match the Media (02) header across every section in both editors.
+   Use the same specificity for Media and the other numbered sections. */
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > :is(#brutti-media-section, section.brutti-editor-section-card).brutti-editor-section-card > .product-editor-section-heading {
+  background: radial-gradient(ellipse 38% 145% at 0% 50%,rgba(177,218,187,.37),transparent 94%),
+    linear-gradient(105deg,rgba(222,239,226,.94) 0%,rgba(237,246,238,.93) 51%,rgba(250,252,248,.91) 100%) !important;
+  border-bottom-color: rgba(156,192,164,.46) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.92),inset 0 -1px 0 rgba(255,255,255,.48) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > :is(#brutti-media-section, section.brutti-editor-section-card).brutti-editor-section-card > .product-editor-section-heading > .product-editor-step {
+  background: rgba(247,252,248,.88) !important;
+  border-color: rgba(145,191,155,.55) !important;
+  color: #286043 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > :is(#brutti-media-section, section.brutti-editor-section-card).brutti-editor-section-card > .product-editor-section-heading {
+  background: linear-gradient(110deg,#304a3b,#2b3d35 63%,#2a3330) !important;
+  border-bottom-color: #4c6d55 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.055) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-primary > :is(#brutti-media-section, section.brutti-editor-section-card).brutti-editor-section-card > .product-editor-section-heading > .product-editor-step {
+  background: #31483a !important;
+  border-color: #638c6d !important;
+  color: #d5efdc !important;
+  box-shadow: none !important;
+}
