@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
-  ChartNoAxesCombined, ChevronDown, Eye, Layers3, MousePointerClick,
+  ChartNoAxesCombined, CalendarDays, Check, ChevronDown, Eye, Layers3, MousePointerClick,
   RefreshCw, UsersRound, Zap
 } from "lucide-react";
 import SafeImage from "./SafeImage";
@@ -22,6 +22,61 @@ const nfmt = new Intl.NumberFormat("en-MY");
 const fdate = (date: string) => new Intl.DateTimeFormat("en-MY", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(date + "T12:00:00Z"));
 const compact = (value: number) => nfmt.format(value);
 const sessionTimestamp = (iso: string) => new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(iso)) + " MYT";
+
+const insightPeriods: InsightPeriod[] = [7, 30, 90];
+
+function InsightPeriodPicker({ value, onChange }: { value: InsightPeriod; onChange: (period: InsightPeriod) => void }) {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const options = useRef<Array<HTMLButtonElement | null>>([]);
+  const menuId = useId();
+  useEffect(() => {
+    if (!open) return;
+    options.current[insightPeriods.indexOf(value)]?.focus({ preventScroll: true });
+    const outside = (event: PointerEvent) => {
+      if (event.target instanceof Node && !root.current?.contains(event.target)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", outside);
+    return () => document.removeEventListener("pointerdown", outside);
+  }, [open, value]);
+  function close() {
+    setOpen(false);
+    trigger.current?.focus({ preventScroll: true });
+  }
+  return <div ref={root} className={"customer-insights-period-picker" + (open ? " is-open" : "")}
+    onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false); }}
+    onKeyDown={event => {
+      if (event.key === "Escape" && open) { event.preventDefault(); event.stopPropagation(); close(); }
+      if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Home" || event.key === "End") {
+        if (!open) { event.preventDefault(); setOpen(true); return; }
+        event.preventDefault();
+        const index = options.current.findIndex(option => option === document.activeElement);
+        const next = event.key === "Home" ? 0 : event.key === "End" ? insightPeriods.length - 1
+          : (index + (event.key === "ArrowDown" ? 1 : -1) + insightPeriods.length) % insightPeriods.length;
+        options.current[next]?.focus({ preventScroll: true });
+      }
+    }}>
+    <button ref={trigger} type="button" className="customer-insights-period-trigger"
+      aria-expanded={open} aria-controls={open ? menuId : undefined}
+      aria-label={`Analytics date range: Last ${value} days`}
+      onClick={() => setOpen(current => !current)}>
+      <CalendarDays size={15} aria-hidden="true" />
+      <span>Last {value} days</span>
+      <ChevronDown className="customer-insights-period-chevron" size={15} aria-hidden="true" />
+    </button>
+    {open && <div id={menuId} className="customer-insights-period-menu" role="group" aria-label="Date range">
+      <small>Date range</small>
+      {insightPeriods.map((period, index) => <button key={period} type="button"
+        ref={element => { options.current[index] = element; }}
+        className={period === value ? "is-selected" : undefined} aria-pressed={period === value}
+        onClick={() => { close(); onChange(period); }}>
+        <span>Last {period} days</span>
+        {period === value && <Check size={15} aria-hidden="true" />}
+      </button>)}
+    </div>}
+  </div>;
+}
 
 function CustomerInterestChart({ data, days }: { data: CustomerInsightData; days: InsightPeriod }) {
   const id = useId().replace(/:/g, "");
@@ -158,15 +213,9 @@ export default function CustomerInsights({ products, categories, loading: produc
             <p>Understand what customers explore in your public catalog.</p>
           </div>
         </div>
-        <label className="customer-insights-period">
-          <span className="sr-only">Customer insights time range</span>
-          <select value={days} onChange={event => { setDays(Number(event.target.value) as InsightPeriod); setBusy(true); }}>
-            <option value={7}>Last 7 days</option>
-            <option value={30}>Last 30 days</option>
-            <option value={90}>Last 90 days</option>
-          </select>
-          <ChevronDown size={17} aria-hidden="true" />
-        </label>
+        <InsightPeriodPicker value={days} onChange={next => {
+          if (next !== days) { setDays(next); setBusy(true); }
+        }} />
       </header>
       {error ? <div className="customer-insights-error" role="alert">
         <span>{error}</span>
