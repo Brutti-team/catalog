@@ -345,7 +345,11 @@ export default function App() {
       const result = await deleteProduct(product.id);
       await refresh();
       setProductToDelete(null);
-      setToast(result.cleanupWarning || "Product deleted");
+      if (editor?.id === product.id) {
+        setEditor(null);
+        setPhotoOpenRequest(null);
+      }
+      setToast(result.cleanupWarning || `${product.name} deleted successfully.`);
     } catch (error) {
       setProductDeleteError(error instanceof Error ? error.message : "Unable to delete product. Please try again.");
     } finally {
@@ -1292,6 +1296,14 @@ export default function App() {
             else switchTab(target);
           }}
           onSave={persist}
+          onDelete={() => {
+            if (busy) return;
+            const savedProduct = data.products.find(item => item.id === editor.id);
+            if (savedProduct) {
+              setProductDeleteError("");
+              setProductToDelete(savedProduct);
+            }
+          }}
           onClose={(warning) => {
             setEditor(null);
             setPhotoOpenRequest(null);
@@ -1320,7 +1332,7 @@ export default function App() {
             </div>
             {productDeleteError && <p className="notice error" role="alert">{productDeleteError}</p>}
             <div className="catalog-delete-confirm-actions">
-              <button type="button" className="button secondary" disabled={busy}
+              <button type="button" className="button secondary" disabled={busy} autoFocus
                 onClick={() => { setProductToDelete(null); setProductDeleteError(""); }}>
                 Cancel
               </button>
