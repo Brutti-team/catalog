@@ -13,7 +13,7 @@ import {
   type AlbumPhoto, type AlbumRecord, type AlbumPhotoDetailsUpdate,
 } from "../lib/album";
 import EditorCategoryPicker from "./EditorCategoryPicker";
-import Modal from "./Modal";
+import Modal, { EditorConfirmation } from "./Modal";
 import SafeImage from "./SafeImage";
 import { AlbumCategoryTable, AlbumPhotoTable } from "./AlbumTableView";
 import PhotoCoverStudio from "./PhotoCoverStudio";
@@ -75,6 +75,7 @@ export default function AlbumLibrary({
   const uploadTriggerRef = useRef<HTMLButtonElement>(null);
   const [savingDetails, setSavingDetails] = useState(false);
   const [detailsError, setDetailsError] = useState("");
+  const [confirmClosePhoto, setConfirmClosePhoto] = useState(false);
   const [detailsDraft, setDetailsDraft] = useState<AlbumPhotoDetailsUpdate>({
     name: "", description: "", categoryId: null, size: "", materials: "", colour: "", finishing: "",
   });
@@ -372,9 +373,13 @@ export default function AlbumLibrary({
     (["size", "materials", "colour", "finishing"] as const)
       .some(field => detailsDraft[field] !== albumDetailSpec(preview, field))
   );
-  function closePhotoEditor() {
+  function closePhotoEditor(confirmed = false) {
     if (savingDetails) return;
-    if (detailsDirty && !window.confirm("Discard unsaved Album details?")) return;
+    if (detailsDirty && !confirmed) {
+      setConfirmClosePhoto(true);
+      return;
+    }
+    setConfirmClosePhoto(false);
     setPreview(null);
     setDetailsError("");
   }
@@ -879,12 +884,12 @@ export default function AlbumLibrary({
           </button>
         </div>
       </div>}
-      {preview && <Modal title="Edit photo" wide eyebrow="BRUTTI CATALOG / PHOTO EDITOR" className="product-editor-dialog product-editor-dialog--editing brutti-album-preview-modal brutti-album-editor-dialog brutti-album__product-parity" onClose={closePhotoEditor}>
+      {preview && <Modal title="Edit photo" wide eyebrow="BRUTTI CATALOG / PHOTO EDITOR" className="product-editor-dialog product-editor-dialog--editing brutti-album-preview-modal brutti-album-editor-dialog brutti-album__product-parity" onClose={()=>closePhotoEditor()}>
         <div className="editor-form product-editor-v2 brutti-album__parity-form">
           <header className="catalog-editor-actionbar" aria-label="Album photo editor actions">
             <div className="catalog-editor-actionbar-identity">
               <button type="button" className="catalog-editor-back catalog-editor-back-icon"
-                title="Back to Album" aria-label="Back to Album" disabled={savingDetails} onClick={closePhotoEditor}>
+                title="Back to Album" aria-label="Back to Album" disabled={savingDetails} onClick={()=>closePhotoEditor()}>
                 <ArrowLeft size={19} aria-hidden="true"/>
               </button>
               <div className="catalog-editor-header-title">
@@ -900,7 +905,7 @@ export default function AlbumLibrary({
                 </span>
               </div>
               <button type="button" className="catalog-editor-header-close" title="Close editor"
-                aria-label="Close photo editor" disabled={savingDetails} onClick={closePhotoEditor}>
+                aria-label="Close photo editor" disabled={savingDetails} onClick={()=>closePhotoEditor()}>
                 <X size={20} strokeWidth={1.9} aria-hidden="true"/>
               </button>
             </div>
@@ -1159,6 +1164,13 @@ export default function AlbumLibrary({
           </footer>
         </div>
       </Modal>}
+      {preview && confirmClosePhoto && <EditorConfirmation
+        title="Unsaved changes"
+        description="You have unsaved Album details. If you leave now, your changes will be discarded."
+        confirmLabel="Discard changes"
+        onCancel={()=>setConfirmClosePhoto(false)}
+        onConfirm={()=>closePhotoEditor(true)}
+      />}
       {deleteTarget && <Modal
         title="Delete photo?"
         eyebrow="BRUTTI / ALBUM"
