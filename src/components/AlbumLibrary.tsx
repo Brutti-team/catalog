@@ -637,10 +637,10 @@ export default function AlbumLibrary({
       {picker && albumStats}
       <div className="brutti-album__toolbar">
         <div className="brutti-album__tabs" aria-label="Album views">
+          <button type="button" className={filter==="published"?"is-current":""} aria-pressed={filter==="published"} onClick={()=>selectFilter("published")}>Published</button>
+          <button type="button" className={filter==="by-category"?"is-current":""} aria-pressed={filter==="by-category"} onClick={()=>selectFilter("by-category")}><Folder size={14}/> By category</button>
           <button type="button" className={filter==="by-product"?"is-current":""} aria-pressed={filter==="by-product"} onClick={()=>selectFilter("by-product")}><Package size={14}/> By product</button>
           <button type="button" className={filter==="all"?"is-current":""} aria-pressed={filter==="all"} onClick={()=>selectFilter("all")}>All photos</button>
-          <button type="button" className={filter==="by-category"?"is-current":""} aria-pressed={filter==="by-category"} onClick={()=>selectFilter("by-category")}><Folder size={14}/> By category</button>
-          <button type="button" className={filter==="published"?"is-current":""} aria-pressed={filter==="published"} onClick={()=>selectFilter("published")}>Published</button>
         </div>
         <label className="brutti-album__search"><Search size={17}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search photos or product names…" aria-label="Search Album"/></label>
         {!categoryFolderView && <div ref={categoryMenuRef}
