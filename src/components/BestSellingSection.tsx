@@ -1,10 +1,7 @@
 import { useMemo, useState } from "react";
 import { ArrowRight, Star } from "lucide-react";
 import type { Category, Product } from "../lib/types";
-import { catalogCardPhotoStyle } from "../lib/photo-crop";
-import SafeImage from "./SafeImage";
-import { recordCatalogEvent } from "../lib/customer-analytics";
-import ProductPrice from "./ProductPrice";
+import PublicCollectionSpotlight from "./PublicCollectionSpotlight";
 import "./best-selling-section.css";
 
 type Props = {
@@ -13,6 +10,7 @@ type Props = {
   loading: boolean;
   onBrowse: () => void;
   onBrowseBestSellers: () => void;
+  onView?: (id: string) => void;
 };
 
 /**
@@ -20,7 +18,7 @@ type Props = {
  * Featured. It only displays Published products with an uploaded photograph.
  * These are editorial picks: no fabricated sales counts or discounts.
  */
-export default function BestSellingSection({ products, categories, loading, onBrowse, onBrowseBestSellers }: Props) {
+export default function BestSellingSection({ products, categories, loading, onBrowse, onBrowseBestSellers, onView }: Props) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const curated = useMemo(() => (
     products
@@ -78,36 +76,15 @@ export default function BestSellingSection({ products, categories, loading, onBr
               </button>
             ))}
           </div>}
-          <div className={`brutti-best-selling__grid${filtered.length === 1 ? " is-single" : ""}`}>
-            {filtered.map(product => {
-              const photo = product.images.find(image => Boolean(image.url?.trim()));
-              if (!photo) return null;
-              return (
-                <a
-                  key={product.id}
-                  href={`#/product/${encodeURIComponent(product.id)}`}
-                  className="brutti-best-selling__item"
-                  aria-label={`View ${product.name}`}
-                  onClick={() => recordCatalogEvent("product_click", product.id)}
-                >
-                  <span className="brutti-best-selling__photo">
-                    <SafeImage
-                      src={photo.url}
-                      alt={photo.alt || product.name}
-                      loading="lazy"
-                      decoding="async"
-                      style={catalogCardPhotoStyle(photo, product.sku)}
-                    />
-                    <span className="brutti-best-selling__flag"><Star size={12} fill="currentColor" aria-hidden="true"/> Best Seller</span>
-                  </span>
-                  <span className="brutti-best-selling__product-copy">
-                    <span className="brutti-best-selling__category">{categoryName(product.categoryId)}</span>
-                    <strong>{product.name}</strong>
-                    <span className="brutti-best-selling__price"><ProductPrice product={product} stackedBasis /></span>
-                  </span>
-                </a>
-              );
-            })}
+          <div id="pub-best-selling-product-grid" className="pub-products-grid pub-products-grid--catalog">
+            {filtered.map(product => (
+              <PublicCollectionSpotlight
+                key={product.id}
+                product={product}
+                categoryName={categoryName(product.categoryId)}
+                onView={onView}
+              />
+            ))}
           </div>
           <div className="brutti-best-selling__footer" style={{justifyContent:"flex-end"}}>
             <button type="button" onClick={onBrowseBestSellers}>View All Best Sellers <ArrowRight size={17} aria-hidden="true" /></button>
