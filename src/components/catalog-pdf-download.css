@@ -276,3 +276,147 @@ dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-options-content {d
   :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-furniture-loader > svg {max-width:195px !important;}
   :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-category-menu {max-height:min(120px,20dvh);}
 }
+
+
+/* Glass document review — the frame uses all space between header and footer.
+   Scope strictly to the staff PDF preview; the export/options dialog is unchanged. */
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog {
+  --review-surface:rgba(248,252,249,.92);
+  --review-ink:#214535;
+  --review-muted:#6a8071;
+  --review-line:rgba(101,141,114,.22);
+  --review-control:rgba(227,240,230,.66);
+  --review-hover:#e0eee3;
+  --review-stage:#e1e8e2;
+  width:min(1180px,calc(100vw - 48px)) !important;
+  height:min(900px,calc(100dvh - 48px)) !important;
+  max-width:none !important;
+  max-height:calc(100dvh - 48px) !important;
+  padding:0 !important;
+  border:1px solid rgba(255,255,255,.7) !important;
+  border-radius:18px !important;
+  overflow:hidden !important;
+  background:var(--review-surface) !important;
+  color:var(--review-ink) !important;
+  box-shadow:0 24px 75px rgba(12,35,25,.30),inset 0 1px rgba(255,255,255,.65) !important;
+  -webkit-backdrop-filter:blur(24px);
+  backdrop-filter:blur(24px);
+}
+.admin-app[data-theme="dark"] dialog.pub-pdf-dialog.staff-pdf-preview-dialog {
+  --review-surface:rgba(28,28,32,.97);
+  --review-ink:#f1f1f3;
+  --review-muted:#afb6b1;
+  --review-line:#363c39;
+  --review-control:#2b3430;
+  --review-hover:#37463d;
+  --review-stage:#141619;
+  border-color:#424743 !important;
+}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog > .staff-pdf-preview {
+  position:absolute !important;
+  inset:0 !important;
+  display:flex !important;
+  flex-direction:column;
+  width:auto !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden;
+  background:transparent;
+}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog :is(.staff-pdf-preview-head,.staff-pdf-preview-footer) {
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:12px 17px;
+  background:var(--review-surface) !important;
+  color:var(--review-ink);
+  -webkit-backdrop-filter:blur(18px);
+  backdrop-filter:blur(18px);
+}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-head {border-bottom:1px solid var(--review-line);}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-head h2 {
+  color:var(--review-ink) !important;
+  font:700 17px/1.3 Inter,"DM Sans",system-ui,sans-serif;
+  letter-spacing:-.025em;
+}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-head p {
+  color:var(--review-muted) !important;
+  font-size:11px;
+  opacity:1;
+}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-head button,
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-external {
+  background:var(--review-control) !important;
+  border:1px solid var(--review-line) !important;
+  color:var(--review-ink) !important;
+  border-radius:9px;
+  box-shadow:inset 0 1px rgba(255,255,255,.14);
+}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-head button:hover,
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-external:hover {background:var(--review-hover) !important;}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-warning {flex:0 0 auto;}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-stage {
+  position:relative;
+  flex:1 1 0%;
+  min-height:0;
+  min-width:0;
+  margin:10px 12px;
+  border:1px solid var(--review-line);
+  border-radius:11px;
+  overflow:hidden;
+  background:var(--review-stage);
+}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-stage > iframe.staff-pdf-preview-frame {
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:none !important;
+  max-width:none !important;
+  margin:0 !important;
+  border:0 !important;
+  display:block !important;
+}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-opening {
+  position:absolute;inset:0;display:grid;place-items:center;margin:0;color:var(--review-muted);
+}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-footer {
+  justify-content:space-between;
+  border-top:1px solid var(--review-line);
+  padding:10px 17px;
+}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-external {
+  display:inline-flex;align-items:center;gap:7px;
+  min-height:36px;padding:7px 11px;
+  font-size:12px;
+}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-download {
+  min-height:38px !important;
+  padding:8px 15px !important;
+  border-radius:9px !important;
+  background:linear-gradient(145deg,#326b4f,#214f39) !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.22),0 3px 9px rgba(21,71,45,.16);
+  color:#fff !important;
+  font-size:12px;
+}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-download:hover {background:#367858 !important;}
+.admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog :is(button,a):focus-visible {outline:2px solid #82b89a;outline-offset:2px;}
+html:has(dialog.staff-pdf-preview-dialog[open]),body:has(dialog.staff-pdf-preview-dialog[open]) {overflow:hidden;overscroll-behavior:none;}
+@media(max-width:650px) {
+  .admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog {
+    width:calc(100vw - 16px) !important;
+    height:calc(100dvh - 20px) !important;
+    max-height:calc(100dvh - 20px) !important;
+    border-radius:13px !important;
+  }
+  .admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog :is(.staff-pdf-preview-head,.staff-pdf-preview-footer) {padding:9px 10px;gap:7px;}
+  .admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-stage {margin:6px;}
+  .admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-head h2 {font-size:15px;}
+  .admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-external {font-size:11px;padding:6px 8px;}
+  .admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-download {padding:7px 10px !important;}
+}
