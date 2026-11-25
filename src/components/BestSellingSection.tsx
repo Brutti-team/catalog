@@ -109,8 +109,7 @@ export default function BestSellingSection({ products, categories, loading, onBr
               );
             })}
           </div>
-          <div className="brutti-best-selling__footer">
-            <span>{matching.length} {matching.length === 1 ? "piece" : "pieces"} in this selection</span>
+          <div className="brutti-best-selling__footer" style={{justifyContent:"flex-end"}}>
             <button type="button" onClick={onBrowseBestSellers}>View All Best Sellers <ArrowRight size={17} aria-hidden="true" /></button>
           </div>
         </>
