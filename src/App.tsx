@@ -207,6 +207,22 @@ export default function App() {
     };
   }, [sidebarCollapsed, tab, route]);
   const [notificationOpen, setNotificationOpen] = useState(false);
+  // Read receipts are local to this browser and scoped to the signed-in account.
+  const notificationReadKey = auth.isAdmin && auth.email
+    ? "brutti-catalog-notification-read:" + auth.email.trim().toLowerCase() : "";
+  const [notificationReceipts, setNotificationReceipts] = useState<{ key: string; seen: Record<string, string> }>({ key: "", seen: {} });
+  useEffect(() => {
+    let seen: Record<string, string> = {};
+    if (notificationReadKey) {
+      try {
+        const raw = JSON.parse(window.localStorage.getItem(notificationReadKey) || "{}");
+        if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+          seen = Object.fromEntries(Object.entries(raw).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
+        }
+      } catch { /* Use an empty receipt list if storage is unavailable. */ }
+    }
+    setNotificationReceipts({ key: notificationReadKey, seen });
+  }, [notificationReadKey]);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const headerSearchRef = useRef<HTMLInputElement>(null);
   const toggleSidebar = () => {
@@ -561,6 +577,17 @@ export default function App() {
     .filter(product => product.updatedAt)
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
     .slice(0, 5);
+  const receiptsReady = !!notificationReadKey && notificationReceipts.key === notificationReadKey;
+  const isUnreadUpdate = (product: Product) => receiptsReady && notificationReceipts.seen[product.id] !== product.updatedAt;
+  const unreadNotificationCount = recentUpdates.filter(isUnreadUpdate).length;
+  const markUpdatesRead = (products: Product[]) => {
+    if (!receiptsReady) return;
+    const seen = { ...notificationReceipts.seen };
+    for (const product of products) seen[product.id] = product.updatedAt;
+    setNotificationReceipts({ key: notificationReadKey, seen });
+    try { window.localStorage.setItem(notificationReadKey, JSON.stringify(seen)); }
+    catch { /* Receipts still work for this session. */ }
+  };
   return (
     <div className={"admin-app brutti-staff-redesign catalog-os-layout" + (sidebarCollapsed ? " catalog-sidebar-collapsed" : "")} data-theme={theme} data-active-tab={tab}>
       <aside className={"sidebar" + (mobileNav ? " sidebar-open" : "")}
@@ -707,19 +734,20 @@ export default function App() {
             </button>
             <div className="catalog-header-popover-anchor">
               <button type="button" className={"catalog-header-icon-button" + (notificationOpen ? " is-open" : "")}
-                aria-label="Recent catalog activity" aria-expanded={notificationOpen} aria-haspopup="dialog"
+                aria-label={unreadNotificationCount ? `Recent catalog activity, ${unreadNotificationCount} unread` : "Recent catalog activity"} aria-expanded={notificationOpen} aria-haspopup="dialog"
                 title="Catalog activity" onClick={() => { setNotificationOpen(open => !open); setAccountMenuOpen(false); }}>
                 <Bell size={19} aria-hidden="true" />
-                {error && <span className="catalog-bell-alert" aria-label="Sync needs attention" />}
+                {unreadNotificationCount > 0 ? <span className="catalog-bell-count" aria-hidden="true">{unreadNotificationCount > 99 ? "99+" : unreadNotificationCount}</span> : error ? <span className="catalog-bell-alert" aria-label="Sync needs attention" /> : null}
               </button>
               {notificationOpen && (
                 <section className="catalog-header-popover catalog-notification-menu" role="dialog" aria-label="Recent catalog activity">
                   <div className="catalog-popover-heading"><strong>Catalog updates</strong><span>Recent product changes</span></div>
+                  {unreadNotificationCount > 0 && <button type="button" className="catalog-notification-mark-read" onClick={() => markUpdatesRead(recentUpdates)}>Mark all as read</button>}
                   {error && <p className="catalog-sync-warning">Sync needs attention. Check your connection and retry.</p>}
                   {recentUpdates.length ? recentUpdates.map(product => (
                     <button type="button" className="catalog-notification-item" key={product.id}
-                      onClick={() => { switchTab("products"); setSearch(product.name); }}>
-                      <span className="catalog-notification-dot" aria-hidden="true" />
+                      onClick={() => { markUpdatesRead([product]); switchTab("products"); setSearch(product.name); }}>
+                      <span className={"catalog-notification-dot" + (isUnreadUpdate(product) ? "" : " is-read")} aria-hidden="true" />
                       <span><strong>{product.name || "Untitled product"}</strong>
                         <small>Updated {new Date(product.updatedAt).toLocaleDateString("en-MY", { day: "numeric", month: "short", year: "numeric" })}</small>
                       </span>
