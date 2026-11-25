@@ -32,8 +32,8 @@ function CatalogueLoading({ progress }: { progress: number }) {
   </g>;
   return <div className="pub-pdf-progress pub-pdf-furniture-loader" role="progressbar"
     aria-label="Preparing PDF" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}
-    style={{display:"grid",gap:9,margin:"2px 0 15px",padding:"12px 14px",border:"1px solid rgba(111,157,126,.25)",borderRadius:13,background:"var(--scan-surface, rgba(125,165,140,.08))"}}>
-    <svg aria-hidden="true" viewBox="0 0 300 76" width="300" height="76" style={{display:"block",width:"100%",maxWidth:300,height:"auto",margin:"0 auto",overflow:"hidden"}}>
+    style={{display:"grid",gap:6,margin:"2px 0 10px",padding:"8px 12px",border:"1px solid rgba(111,157,126,.25)",borderRadius:13,background:"var(--scan-surface, rgba(125,165,140,.08))"}}>
+    <svg aria-hidden="true" viewBox="0 0 300 76" width="228" height="58" style={{display:"block",width:"100%",maxWidth:228,height:"auto",margin:"0 auto",overflow:"hidden"}}>
       <defs>
         <clipPath id={lensId}><circle cx="150" cy="34" r="24" /></clipPath>
         <linearGradient id={fadeId}><stop offset="0" stopColor="white" stopOpacity="0"/><stop offset=".22" stopColor="white"/><stop offset=".78" stopColor="white"/><stop offset="1" stopColor="white" stopOpacity="0"/></linearGradient>
@@ -47,11 +47,11 @@ function CatalogueLoading({ progress }: { progress: number }) {
       <circle cx="150" cy="34" r="24" fill="none" stroke="#b8dfc5" strokeOpacity=".65" strokeWidth="1.5"/>
       <path d="M132 22 A22 22 0 0 1 149 12" fill="none" stroke="white" strokeOpacity=".32" strokeWidth="1.5" strokeLinecap="round"/>
     </svg>
-    <div className="pub-pdf-furniture-caption" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10}}>
-      <div style={{display:"grid",gap:3,minWidth:0}}><strong style={{fontSize:12}}>Preparing your catalogue</strong><small style={{fontSize:11,opacity:.75}}>Creating your PDF</small></div>
-      <strong className="pub-pdf-furniture-percent" style={{fontSize:21,fontVariantNumeric:"tabular-nums"}}>{progress}%</strong>
+    <div className="pub-pdf-furniture-caption" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
+      <div style={{display:"grid",gap:2,minWidth:0}}><strong style={{fontSize:12}}>Preparing your catalogue</strong><small style={{fontSize:11,opacity:.75}}>Creating your PDF</small></div>
+      <strong className="pub-pdf-furniture-percent" style={{fontSize:17,fontVariantNumeric:"tabular-nums"}}>{progress}%</strong>
     </div>
-    <div className="pub-pdf-furniture-rail" aria-hidden="true" style={{height:5,borderRadius:999,background:"var(--scan-rail,rgba(105,145,116,.2))",overflow:"hidden"}}>
+    <div className="pub-pdf-furniture-rail" aria-hidden="true" style={{height:4,borderRadius:999,background:"var(--scan-rail,rgba(105,145,116,.2))",overflow:"hidden"}}>
       <span style={{display:"block",height:"100%",borderRadius:999,width:progress+"%",background:"linear-gradient(90deg,#245a43,#65a57c)",transition:reducedMotion?"none":"width .25s ease-out"}}/>
     </div>
   </div>;
