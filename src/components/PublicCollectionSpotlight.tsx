@@ -117,10 +117,19 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
     if (!quickViewOpen && dialog.open) dialog.close();
   }, [quickViewOpen]);
 
+  // Recording a recommendation signal can rerank the shelf and unmount
+  // this card. Defer that signal until the modal has actually closed.
+  const pendingQuickViewId = useRef<string | null>(null);
   const openQuickView = () => {
-    onView?.(product.id);
+    pendingQuickViewId.current = product.id;
     recordCatalogEvent("product_click", product.id);
     setQuickViewOpen(true);
+  };
+  const finishQuickView = () => {
+    setQuickViewOpen(false);
+    const viewedId = pendingQuickViewId.current;
+    pendingQuickViewId.current = null;
+    if (viewedId) onView?.(viewedId);
   };
   const openDetails = () => {
     recordCatalogEvent("product_click", product.id);
@@ -225,7 +234,7 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
         ref={dialogRef}
         className="pub-quickview"
         aria-labelledby={quickViewTitleId}
-        onClose={() => setQuickViewOpen(false)}
+        onClose={finishQuickView}
         onClick={event => {
           if (event.target === event.currentTarget) event.currentTarget.close();
         }}
