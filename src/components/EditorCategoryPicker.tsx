@@ -76,11 +76,14 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
       // Cover the editor form when needed while staying in the visible dialog.
       const low = Math.max(10, box.top + 12 * sy);
       const high = Math.min(window.innerHeight - 10, box.bottom - 12 * sy);
-      const desired = Math.min(640, 100 + Math.max(filtered.length, 1) * 48) * sy;
+      const maxHeight = Math.max(0, Math.min(640 * sy, high - low));
+      // Let the menu shrink to its actual rows (including search results).
+      // Use measured height for placement, never force a tall empty panel.
+      const naturalHeight = (menuRef.current?.offsetHeight || 100 + Math.max(filtered.length, 1) * 42) * sy;
+      const height = Math.min(naturalHeight, maxHeight);
       const below = Math.max(0, high - anchor.bottom - gap);
       const above = Math.max(0, anchor.top - low - gap);
-      const placeBelow = below >= desired || below >= above;
-      const height = Math.max(0, Math.min(desired, high - low));
+      const placeBelow = below >= height || below >= above;
       const preferredTop = placeBelow ? anchor.bottom + gap : anchor.top - gap - height;
       const top = Math.max(low, Math.min(preferredTop, high - height));
       setLayout({
@@ -88,15 +91,19 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
         top: Math.round((top - box.top) / sy + host.scrollTop - host.clientTop),
         left: Math.round((left - box.left) / sx + host.scrollLeft - host.clientLeft),
         width: Math.max(0, Math.floor(width / sx)),
-        height: Math.max(0, Math.floor(height / sy)),
-        maxHeight: Math.max(0, Math.floor(height / sy)),
+        maxHeight: Math.max(0, Math.floor(maxHeight / sy)),
         zIndex: 120,
       });
     };
     position();
+    // Reposition once the natural menu size changes after width constraints,
+    // search, or viewport resizing. Keep the list itself content-sized.
+    const observer = new ResizeObserver(position);
+    if (menuRef.current) observer.observe(menuRef.current);
     window.addEventListener("resize", position);
     document.addEventListener("scroll", position, true);
     return () => {
+      observer.disconnect();
       window.removeEventListener("resize", position);
       document.removeEventListener("scroll", position, true);
     };
