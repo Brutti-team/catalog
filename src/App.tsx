@@ -1218,28 +1218,38 @@ export default function App() {
                       : categoryCover(c.name, items);
                   return (
                     <article className={`category-card${cover.src ? "" : " category-card--without-cover"}`} key={c.id}>
-                      {!cover.src && <span className="category-card-index">0{index + 1}</span>}
-                      {cover.src && (
-                        <button
-                          type="button"
-                          className="category-cover"
-                          aria-label={`View products in ${c.name}`}
-                          onClick={() => { switchTab("products"); setCategory(c.id); }}
-                        >
-                          <SafeImage
-                            className="category-cover-image"
-                            src={cover.src}
-                            alt={`${c.name} category cover`}
-                            loading="lazy"
-                            decoding="async"
-                            style={{ objectPosition: cover.position }}
-                          />
-                          <span>0{index + 1}</span>
+                      <button
+                        type="button"
+                        className="category-cover"
+                        aria-label={`View products in ${c.name}`}
+                        onClick={() => { switchTab("products"); setCategory(c.id); }}
+                      >
+                        {cover.src && <SafeImage
+                          className="category-cover-image"
+                          src={cover.src}
+                          alt={`${c.name} category cover`}
+                          loading="lazy"
+                          decoding="async"
+                          style={{ objectPosition: cover.position }}
+                        />}
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                      </button>
+                      <div className="category-card-corner-actions">
+                        <button type="button" className="category-corner-edit"
+                          title="Edit category" aria-label={`Edit ${c.name} category`}
+                          disabled={busy} onClick={() => editCategory(c)}>
+                          <Pencil size={15} aria-hidden="true" />
                         </button>
-                      )}
-                      <div className="category-card-body">
+                        <button type="button" className="category-corner-delete"
+                          disabled={busy} title={`Delete ${c.name} category — confirmation required`}
+                          aria-label={`Delete ${c.name} category`}
+                          onClick={() => requestCategoryDeletion(c)}>
+                          <Trash2 size={16} aria-hidden="true" />
+                        </button>
+                      </div>
+                      <div className="category-card-body" onClick={() => { switchTab("products"); setCategory(c.id); }}>
                         <div className="section-title">
-                          <h2 title={c.name}>{c.name}</h2>
+                          <h2 title={c.name}><button type="button" className="category-title-link" aria-label={`View products in ${c.name}`} onClick={event=>{event.stopPropagation();switchTab("products");setCategory(c.id);}}>{c.name}</button></h2>
                           <span className="category-count">
                             {items.length} pieces
                           </span>
@@ -1248,29 +1258,6 @@ export default function App() {
                           {c.description ||
                             "A thoughtful category for your collection."}
                         </p>
-                        <div className="category-card-actions">
-                          <button type="button" className="text-button category-view-products"
-                            onClick={() => { switchTab("products"); setCategory(c.id); }}>
-                            View products <ArrowRight size={14} aria-hidden="true" />
-                          </button>
-                          <button
-                            className="text-button"
-                            onClick={() => editCategory(c)}
-                          >
-                            <Pencil size={14} />
-                            Edit category
-                          </button>
-                          <button
-                            type="button"
-                            className="icon-button danger-text"
-                            disabled={busy}
-                            title={`Delete ${c.name} category — confirmation required`}
-                            aria-label={`Delete ${c.name} category`}
-                            onClick={() => requestCategoryDeletion(c)}
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
                       </div>
                     </article>
                   );
