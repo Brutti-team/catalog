@@ -420,3 +420,27 @@ html:has(dialog.staff-pdf-preview-dialog[open]),body:has(dialog.staff-pdf-previe
   .admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-external {font-size:11px;padding:6px 8px;}
   .admin-app dialog.pub-pdf-dialog.staff-pdf-preview-dialog .staff-pdf-preview-download {padding:7px 10px !important;}
 }
+
+
+/* Keep all four rounded corners and focus rings inside the visible viewport. */
+dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog), :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) {
+  position:fixed !important;
+  inset:0 !important;
+  margin:auto !important;
+  width:min(470px,var(--pdf-options-max-width,calc(100vw - 48px))) !important;
+  max-width:var(--pdf-options-max-width,calc(100vw - 48px)) !important;
+  max-height:var(--pdf-options-max-height,calc(100dvh - 48px)) !important;
+}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog)[open] {animation:none !important;transform:none !important;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-option:focus-within {
+  outline-offset:-3px;
+}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-option:focus-within:not(:has(input:focus-visible)) {
+  outline:none;
+}
+@media(max-width:500px) {
+  dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog), :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) {
+    width:min(470px,var(--pdf-options-max-width,calc(100vw - 28px))) !important;
+    max-width:var(--pdf-options-max-width,calc(100vw - 28px)) !important;
+  }
+}
