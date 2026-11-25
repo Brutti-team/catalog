@@ -232,7 +232,7 @@ export default function AlbumLibrary({
       product,
       items: product.images.flatMap((image,index)=>{
         const photo=byKey.get(image.storagePath || image.url) || byUrl.get(image.url);
-        return photo?[{...photo,name:`${product.name}_${index+1}`}]:[];
+        return photo?[{...photo,name:index===0 ? product.name : `${product.name}_${index+1}`}]:[];
       }),
     })).filter(group=>group.items.length>0);
   },[photos,products]);
