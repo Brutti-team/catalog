@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
-import { X } from "lucide-react";
+import { X, AlertCircle } from "lucide-react";
 export default function Modal({
   title,
   onClose,
@@ -60,5 +60,33 @@ export default function Modal({
       </header>
       {children}
     </dialog>
+  );
+}
+
+
+/** In-app confirmation; uses the same glass dialog as publishing actions. */
+export function EditorConfirmation({title, description, confirmLabel, onCancel, onConfirm}: {
+  title: string;
+  description: string;
+  confirmLabel: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <Modal title={title} eyebrow="BRUTTI CATALOG / CONFIRM ACTION"
+      className="catalog-publish-confirm-dialog" onClose={onCancel}>
+      <div className="catalog-publish-confirm-body">
+        <div className="catalog-publish-confirm-intro">
+          <div className="catalog-publish-confirm-icon is-draft">
+            <AlertCircle size={21} strokeWidth={1.8} aria-hidden="true"/>
+          </div>
+          <p className="catalog-publish-confirm-description">{description}</p>
+        </div>
+        <div className="catalog-publish-confirm-actions">
+          <button type="button" className="catalog-publish-confirm-cancel" autoFocus onClick={onCancel}>Cancel</button>
+          <button type="button" className="catalog-publish-confirm-submit is-draft" onClick={onConfirm}>{confirmLabel}</button>
+        </div>
+      </div>
+    </Modal>
   );
 }
