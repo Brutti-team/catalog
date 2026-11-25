@@ -457,7 +457,7 @@ export default function PublicCatalog({
                   <ArrowUpRight size={23} />
                 </div>
                 <span className="pub-hero-number">
-                  BENUA BRUTTI / BESPOKE BY NATURE
+                  BRUTTI / BESPOKE BY NATURE
                 </span>
               </div>
             </section>
@@ -472,7 +472,7 @@ export default function PublicCatalog({
                 <Check size={15} /> Crafted for real spaces
               </span>
               <span className="pub-strip-location">
-                BENUA BRUTTI SDN. BHD. <ArrowDown size={14} />
+                BRUTTI <ArrowDown size={14} />
               </span>
             </div>
             <ShowroomSections onExplore={exploreShowroom} onCategorySelect={(categoryId) => { setQuery(""); setCategory(categoryId); setBestOnly(false); browseCollection(); }} categories={categories} publishedProducts={published} loading={loading} />
@@ -640,7 +640,7 @@ export default function PublicCatalog({
               ) : published.length === 0 && !query && category === "all" ? (
                 <div className="pub-empty-state pub-empty-state--unpublished">
                   <div className="pub-empty-editorial">
-                    <span className="pub-empty-eyebrow">BENUA BRUTTI · THE COLLECTION</span>
+                    <span className="pub-empty-eyebrow">BRUTTI · THE COLLECTION</span>
                     <span className="pub-empty-icon" aria-hidden="true"><BoxIcon size={21} /></span>
                     <h3>A collection in the making.</h3>
                     <p>We're preparing our furniture and bespoke fit-out projects for this gallery. Explore the kinds of spaces we create in the meantime.</p>
@@ -651,7 +651,7 @@ export default function PublicCatalog({
                   <div className="pub-empty-visual">
                     <img
                       src="https://brutti.my/assets/what-we-build/built%20in%20cabinet.webp"
-                      alt="A built-in cabinet project by Benua Brutti"
+                      alt="A built-in cabinet project by Brutti"
                       loading="lazy"
                       onError={(event) => { event.currentTarget.closest(".pub-empty-visual")?.classList.add("is-image-unavailable"); }}
                     />
@@ -900,7 +900,7 @@ export default function PublicCatalog({
                       <p>
                         Made for the spaces you imagine.
                         <br />
-                        <span>Crafted with care by Benua Brutti.</span>
+                        <span>Crafted with care by Brutti.</span>
                       </p>
                       {!previewProduct && (
                         <a className="pub-primary-button pub-enquiry-button pub-whatsapp-enquiry pub-promise-enquiry"
@@ -937,12 +937,12 @@ export default function PublicCatalog({
               <h2>For enquiries, collaborations and careers.</h2>
             </div>
             <div className="pub-footer__emails">
-              <a className="pub-footer__email" href={`mailto:${enquiryEmail ?? "hi@brutti.my"}`} aria-label="Email Benua Brutti general enquiries">
+              <a className="pub-footer__email" href={`mailto:${enquiryEmail ?? "hi@brutti.my"}`} aria-label="Email Brutti general enquiries">
                 <span className="pub-footer__email-icon" aria-hidden="true"><GmailLogo /></span>
                 <span className="pub-footer__email-copy"><span>GENERAL ENQUIRIES</span><strong>{enquiryEmail ?? "hi@brutti.my"}</strong></span>
                 <ArrowUpRight className="pub-footer__email-arrow" size={17} aria-hidden="true" />
               </a>
-              <a className="pub-footer__email" href="mailto:hr@brutti.my" aria-label="Email Benua Brutti HR">
+              <a className="pub-footer__email" href="mailto:hr@brutti.my" aria-label="Email Brutti HR">
                 <span className="pub-footer__email-icon" aria-hidden="true"><GmailLogo /></span>
                 <span className="pub-footer__email-copy"><span>CAREERS & HR</span><strong>hr@brutti.my</strong></span>
                 <ArrowUpRight className="pub-footer__email-arrow" size={17} aria-hidden="true" />
@@ -951,7 +951,7 @@ export default function PublicCatalog({
           </div>
 
           <div className="pub-footer__connect">
-            <div className="pub-footer__social" aria-label="Follow Benua Brutti">
+            <div className="pub-footer__social" aria-label="Follow Brutti">
               <p className="pub-footer__eyebrow">FOLLOW BRUTTI</p>
               <div className="pub-footer__social-links">
                 <a href="https://www.tiktok.com/@brutti.my?_r=1&_t=ZS-99FmWlcm2fQ" target="_blank" rel="noopener noreferrer" aria-label="Brutti TikTok" title="TikTok" className="pub-footer__social-link pub-footer__social-link--tiktok"><SocialBrandIcon brand="tiktok" /></a>
@@ -971,7 +971,7 @@ export default function PublicCatalog({
             </div>
           </div>
         </div>
-        <div className="pub-footer__bottom">© {new Date().getFullYear()} Benua Brutti. Crafted in Sabah.</div>
+        <div className="pub-footer__bottom">© {new Date().getFullYear()} Brutti. Crafted in Sabah.</div>
       </footer>}
     </div>
   );
