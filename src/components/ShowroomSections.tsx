@@ -255,7 +255,7 @@ export default function ShowroomSections({
       <section id="pub-showroom" className="pub-category-marquee" aria-label="Browse product categories">
         <div className="pub-category-marquee-heading">
           <div>
-            <p className="pub-category-marquee-eyebrow">THE BENUA BRUTTI COLLECTION</p>
+            <p className="pub-category-marquee-eyebrow">BRUTTI'S COLLECTION</p>
             <h2 style={{ fontFamily: '"Manrope", "DM Sans", system-ui, sans-serif', fontWeight: 650, letterSpacing: "-0.043em" }}>Shop Furniture by Category</h2>
           </div>
           <button type="button" className="pub-category-marquee-all" onClick={() => onExplore("")}>
