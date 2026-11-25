@@ -75,7 +75,7 @@ function footer(ctx:CanvasRenderingContext2D,page:number) {
   ctx.textAlign="right";text(ctx,String(page).padStart(2,"0"),580,850,11,GREEN,600);ctx.textAlign="left";
 }
 function header(ctx:CanvasRenderingContext2D,label:string) {
-  text(ctx,"BRUTTI",40,43,13,GREEN,700);
+  text(ctx,"BRUTTI’S CATALOG",40,43,13,GREEN,700);
   ctx.textAlign="right";ctx.font=font(10,600);ctx.fillStyle=MUTED;ctx.fillText(label,580,43,370);ctx.textAlign="left";
 }
 function plainMaterials(value:string) {
