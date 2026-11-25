@@ -369,6 +369,7 @@ export default function AlbumLibrary({
     }
   }
   function requestDelete(photo: AlbumPhoto) {
+    photo = photos.find(item=>item.key===photo.key) || photo;
     if (photo.usedBy.length || photo.categoryCovers.length) {
       setDownloadError("This photo is still linked to a product or category cover. Unlink it before deleting.");
       return;
@@ -644,17 +645,22 @@ export default function AlbumLibrary({
             onView={openPhotoEditor}
             onSelect={toggle}
             onEditCover={setEditingAlbumPhoto}
+            onDelete={requestDelete}
           />
         ) : (
           <div className="brutti-album__grid">
             {displayedPhotos.map(photo=>{
               const checked=selected.includes(photo.key);
               const disabled=picker && excludedUrls.includes(photo.url);
-              return <div key={photo.key} className={`brutti-album__card${checked?" is-selected":""}`}>
+              return <div key={photo.key} className={`brutti-album__card${checked?" is-selected":""}`} style={{position:"relative"}}>
                 <button type="button" className="brutti-album__thumb" onClick={()=>picker?toggle(photo):openPhotoEditor(photo)} disabled={disabled} aria-label={picker?`Select ${photo.name}`:`Edit ${photo.name}`}>
                   <SafeImage src={photo.url} alt={photo.name} loading="lazy"/>
                   {picker && <span className="brutti-album__check">{checked?<Check size={16}/>:disabled?"Added":<span/>}</span>}
                 </button>
+                {!picker && !photo.usedBy.length && !photo.categoryCovers.length && photo.id && <button type="button" title="Delete photo" aria-label={`Delete ${photo.name}`} disabled={deleting} onClick={()=>requestDelete(photo)}
+                  style={{position:"absolute",top:10,right:10,zIndex:6,display:"grid",placeItems:"center",width:34,height:34,padding:0,border:"1px solid #f3c7c9",borderRadius:10,background:"#fff1f1",color:"#a63136",boxShadow:"0 2px 8px rgba(0,0,0,.1)",cursor:"pointer"}}>
+                  <Trash2 size={16} aria-hidden="true"/>
+                </button>}
                 <div className="brutti-album__card-info">
                   <strong title={photo.name}>{photo.name}</strong>
                   <small>{disabled?"Already added":photo.usedBy.length?`${photo.usedBy.length} product${photo.usedBy.length>1?"s":""}`:photo.categoryCovers.length?"Category cover":photo.sourceKind==="external"?"Product Library":"Unassigned"}</small>
