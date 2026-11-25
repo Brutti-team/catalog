@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type SyntheticEvent } from "react";
+import { useEffect, useId, useRef, useState, type SyntheticEvent } from "react";
 import { ArrowRight, Eye, Heart, Sparkles, Star, X } from "lucide-react";
 import type { Product } from "../lib/types";
 import { publicPhotoCropStyle, isStudioEditedPhoto, catalogCardPhotoStyle, effectivePhotoCrop } from "../lib/photo-crop";
@@ -80,6 +80,7 @@ const referencePhotoColours: Record<string, { label: string; hex: string }[]> = 
 export default function PublicCollectionSpotlight({ product, categoryName, onView, showColours = false }: Props) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const quickViewTitleId = useId();
   const photo = product.images[0];
   const detailUrl = "#/product/" + encodeURIComponent(product.id);
   const description = product.description?.trim();
@@ -218,7 +219,7 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
       <dialog
         ref={dialogRef}
         className="pub-quickview"
-        aria-labelledby={"pub-quickview-title-" + product.id}
+        aria-labelledby={quickViewTitleId}
         onClose={() => setQuickViewOpen(false)}
         onClick={event => {
           if (event.target === event.currentTarget) event.currentTarget.close();
@@ -247,7 +248,7 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
           <div className="pub-quickview__content">
             <span className="pub-quickview__eyebrow">QUICK VIEW</span>
             <span className="pub-quickview__category">{categoryName}</span>
-            <h2 id={"pub-quickview-title-" + product.id}>{product.name}</h2>
+            <h2 id={quickViewTitleId}>{product.name}</h2>
             <span className="pub-quickview__availability">
               <span className={"pub-catalog-tile__dot pub-catalog-tile__dot--" + product.availability} />
               {availabilityLabels[product.availability]}
