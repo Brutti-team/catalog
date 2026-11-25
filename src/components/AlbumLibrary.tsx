@@ -14,7 +14,7 @@ import Modal from "./Modal";
 import SafeImage from "./SafeImage";
 import { AlbumCategoryTable, AlbumPhotoTable } from "./AlbumTableView";
 import PhotoCoverStudio from "./PhotoCoverStudio";
-import { downloadCatalogPhoto, type PhotoDownloadFormat } from "../lib/photo-download";
+import { downloadCatalogPhoto, downloadCatalogPhotosHtml, type PhotoDownloadFormat } from "../lib/photo-download";
 import "./album-library.css";
 
 type Props = {
@@ -38,7 +38,9 @@ export default function AlbumLibrary({
   const [records, setRecords] = useState<AlbumRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | "by-category" | "published">("all");
+  const [filter, setFilter] = useState<"all" | "by-category" | "by-product" | "published">(picker?"all":"by-product");
+  const [selectedProductFolder, setSelectedProductFolder] = useState<string | null>(null);
+  const [exportingFolder, setExportingFolder] = useState(false);
   const [viewMode, setViewMode] = useState<"gallery" | "table">("gallery");
   const [category, setCategory] = useState("all");
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
@@ -60,7 +62,7 @@ export default function AlbumLibrary({
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
   const [editingAlbumPhoto, setEditingAlbumPhoto] = useState<AlbumPhoto | null>(null);
-  const [downloadFormat, setDownloadFormat] = useState<PhotoDownloadFormat>("jpg");
+  const [downloadFormat, setDownloadFormat] = useState<PhotoDownloadFormat | "html">("jpg");
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
   const [progress, setProgress] = useState<{done:number,total:number}|null>(null);
@@ -123,6 +125,7 @@ export default function AlbumLibrary({
   };
   const selectAlbumCategory = (value: string) => {
     setCategory(value);
+    setSelectedProductFolder(null);
     setCategoryMenuOpen(false);
     categoryTriggerRef.current?.focus();
   };
@@ -153,9 +156,51 @@ export default function AlbumLibrary({
       (filter==="by-category" || category==="all" || ids.includes(category)) &&
       (!search.trim() || text.includes(search.trim().toLowerCase()));
   }),[photos,filter,category,selectedFolder,search,categories,publishedIds]);
+  // Group by the real product UUID, never by filename or similar-looking photos.
+  // Preserve product image order (the first image is its cover).
+  const productGroups = useMemo(() => {
+    const byKey = new Map(photos.map(photo=>[photo.key,photo]));
+    const byUrl = new Map(photos.map(photo=>[photo.url,photo]));
+    return products.map(product=>({
+      product,
+      items: product.images.flatMap((image,index)=>{
+        const photo=byKey.get(image.storagePath || image.url) || byUrl.get(image.url);
+        return photo?[{...photo,name:`${product.name}_${index+1}`}]:[];
+      }),
+    })).filter(group=>group.items.length>0);
+  },[photos,products]);
+  const productNames = useMemo(()=>{
+    const names=new Map<string,string>();
+    for(const group of productGroups) for(const photo of group.items)
+      if(!names.has(photo.key))names.set(photo.key,photo.name);
+    return names;
+  },[productGroups]);
+  const standalonePhotos=photos.filter(photo=>photo.usedBy.length===0);
+  const currentProductGroup=productGroups.find(group=>group.product.id===selectedProductFolder);
+  const needle=search.trim().toLowerCase();
+  const matchingProductGroups=productGroups.filter(({product,items})=>
+    (category==="all" || product.categoryId===category) &&
+    (!needle || [product.name,product.sku,categories.find(item=>item.id===product.categoryId)?.name || ""].some(value=>value.toLowerCase().includes(needle))
+      || items.some(photo=>(photo.name+" "+(photos.find(item=>item.key===photo.key)?.name || "")).toLowerCase().includes(needle))));
+  const matchingStandalone=standalonePhotos.filter(photo=>
+    (category==="all" || albumPhotoCategoryIds(photo).includes(category)) &&
+    (!needle || photo.name.toLowerCase().includes(needle)));
+  const displayedPhotos=filter==="by-product"
+    ? selectedProductFolder==="__standalone__"?matchingStandalone:currentProductGroup?.items || []
+    : visible.map(photo=>({...photo,name:productNames.get(photo.key) || photo.name}));
+  const displayedName=(photo:AlbumPhoto)=>currentProductGroup?.items.find(item=>item.key===photo.key)?.name || productNames.get(photo.key) || photo.name;
+  async function exportProductFolder() {
+    if(exportingFolder || !displayedPhotos.length)return;
+    setExportingFolder(true);setError("");
+    try {
+      await downloadCatalogPhotosHtml(currentProductGroup?.product.name || "Unassigned photos",displayedPhotos);
+    } catch(error) {setError(error instanceof Error?error.message:"HTML export failed.");}
+    finally {setExportingFolder(false);}
+  }
   const folderTitle = selectedFolder === "__uncategorized__" ? "Uncategorised" :
     categories.find(item => item.id === selectedFolder)?.name || "Category";
-  function selectFilter(next: "all" | "by-category" | "published") {
+  function selectFilter(next: "all" | "by-category" | "by-product" | "published") {
+    setSelectedProductFolder(null);
     setFilter(next);
     setSelectedFolder(null);
     setCategory("all");
@@ -171,6 +216,8 @@ export default function AlbumLibrary({
   // Standalone Album/legacy library photos do not have a product record, so open
   // the matching Photo Editor instead of inventing an editable product.
   function openPhotoEditor(photo: AlbumPhoto) {
+    // Display names are generated per product; preserve the original media metadata.
+    photo = photos.find(item=>item.key===photo.key) || photo;
     setDownloadError("");
     setDownloadFormat("jpg");
     // Album is the media library. Open its Photo Editor for every image,
@@ -312,11 +359,9 @@ export default function AlbumLibrary({
     setDownloading(true);
     setDownloadError("");
     try {
-      await downloadCatalogPhoto({
-        url: photo.url,
-        storagePath: photo.storagePath,
-        name: photo.name,
-      }, downloadFormat);
+      const namedPhoto={url:photo.url,storagePath:photo.storagePath,name:displayedName(photo)};
+      if(downloadFormat==="html")await downloadCatalogPhotosHtml(namedPhoto.name,[namedPhoto]);
+      else await downloadCatalogPhoto(namedPhoto,downloadFormat);
     } catch (error) {
       setDownloadError(error instanceof Error ? error.message : "Image download failed.");
     } finally {
@@ -408,6 +453,7 @@ export default function AlbumLibrary({
       {picker && albumStats}
       <div className="brutti-album__toolbar">
         <div className="brutti-album__tabs" aria-label="Album views">
+          <button type="button" className={filter==="by-product"?"is-current":""} aria-pressed={filter==="by-product"} onClick={()=>selectFilter("by-product")}><Package size={14}/> By product</button>
           <button type="button" className={filter==="all"?"is-current":""} aria-pressed={filter==="all"} onClick={()=>selectFilter("all")}>All photos</button>
           <button type="button" className={filter==="by-category"?"is-current":""} aria-pressed={filter==="by-category"} onClick={()=>selectFilter("by-category")}><Folder size={14}/> By category</button>
           <button type="button" className={filter==="published"?"is-current":""} aria-pressed={filter==="published"} onClick={()=>selectFilter("published")}>Published</button>
@@ -499,11 +545,53 @@ export default function AlbumLibrary({
           <Plus size={16}/> Add photos
         </button>
       </div>}
+      {filter==="by-product" && selectedProductFolder!==null && <div className="brutti-album__folder-path">
+        <button type="button" onClick={()=>setSelectedProductFolder(null)}><ArrowLeft size={16}/> All products</button>
+        <span aria-hidden="true">/</span>
+        <strong>{currentProductGroup?.product.name || "Unassigned photos"}</strong>
+        <span className="brutti-album__folder-items">{displayedPhotos.length} photos</span>
+        {!picker && <button type="button" className="brutti-album__folder-add" disabled={exportingFolder||!displayedPhotos.length}
+          onClick={()=>void exportProductFolder()}>{exportingFolder?<LoaderCircle size={16} className="brutti-album__spin"/>:<Download size={16}/>} Download HTML</button>}
+      </div>}
       {progress && <p className="brutti-album__message" role="status"><LoaderCircle className="brutti-album__spin" size={16}/> Uploading {progress.done} / {progress.total} photos…</p>}
       {error && <p className="brutti-album__error" role="alert">{error}</p>}
       {notice && <p className="brutti-album__success" role="status">{notice}</p>}
       {loading ? <div className="brutti-album__empty" role="status"><LoaderCircle className="brutti-album__spin"/>Loading your photos…</div> :
-        filter === "by-category" && selectedFolder === null ? (
+        filter==="by-product" && selectedProductFolder===null ? (
+          !matchingProductGroups.length && !matchingStandalone.length ? <div className="brutti-album__empty"><ImageOff size={28}/><strong>No matching products or photos</strong></div> :
+          viewMode==="table" ? (
+            <div className="brutti-album__table-shell"><table className="brutti-album__table brutti-album__table--folders">
+              <thead><tr><th scope="col">Cover</th><th scope="col">Product</th><th scope="col">Photos</th><th scope="col">Action</th></tr></thead>
+              <tbody>{matchingProductGroups.map(({product,items})=><tr key={product.id}>
+                <td className="brutti-album__table-preview"><span className="brutti-album__table-thumb"><SafeImage src={items[0].url} alt="" loading="lazy"/></span></td>
+                <td className="brutti-album__table-title"><strong>{product.name}</strong><small>{product.sku}</small></td>
+                <td className="brutti-album__table-count">{items.length} photos</td>
+                <td className="brutti-album__table-action"><button type="button" onClick={()=>setSelectedProductFolder(product.id)}>Open <ArrowUpRight size={15}/></button></td>
+              </tr>)}
+              {!!matchingStandalone.length&&<tr><td className="brutti-album__table-preview"><span className="brutti-album__table-thumb"><Folder size={24}/></span></td><td className="brutti-album__table-title"><strong>Unassigned photos</strong><small>Not linked to a product</small></td><td className="brutti-album__table-count">{matchingStandalone.length} photos</td><td className="brutti-album__table-action"><button type="button" onClick={()=>setSelectedProductFolder("__standalone__")}>Open <ArrowUpRight size={15}/></button></td></tr>}
+              </tbody></table></div>
+          ) : (
+            <div className="brutti-album__grid" aria-label="Photo folders by product">
+              {matchingProductGroups.map(({product,items})=><div className="brutti-album__card" key={product.id}>
+                <button type="button" className="brutti-album__thumb" aria-label={`Open ${product.name}: ${items.length} photos`} onClick={()=>setSelectedProductFolder(product.id)}>
+                  <SafeImage src={items[0].url} alt={product.name} loading="lazy"/>
+                </button>
+                <div className="brutti-album__card-info">
+                  <strong title={product.name}>{product.name}</strong>
+                  <small>{product.sku} · {items.length} photo{items.length===1?"":"s"}</small>
+                  <span className="brutti-album__list-category">{categories.find(item=>item.id===product.categoryId)?.name || "Uncategorised"}</span>
+                  <div className="brutti-album__card-actions"><button type="button" onClick={()=>setSelectedProductFolder(product.id)}><FolderOpen size={14}/> Open photos</button>
+                    {!picker && onEditProduct && <button type="button" onClick={()=>onEditProduct(product.id)}><Package size={14}/> Product</button>}
+                  </div>
+                </div>
+              </div>)}
+              {!!matchingStandalone.length&&<div className="brutti-album__card">
+                <button type="button" className="brutti-album__thumb" onClick={()=>setSelectedProductFolder("__standalone__")} aria-label="Open unassigned photos"><SafeImage src={matchingStandalone[0].url} alt="" loading="lazy"/></button>
+                <div className="brutti-album__card-info"><strong>Unassigned photos</strong><small>{matchingStandalone.length} photos</small><div className="brutti-album__card-actions"><button type="button" onClick={()=>setSelectedProductFolder("__standalone__")}><FolderOpen size={14}/> Open photos</button></div></div>
+              </div>}
+            </div>
+          )
+        ) : filter === "by-category" && selectedFolder === null ? (
           viewMode === "table" ? (
             <AlbumCategoryTable
               groups={groups}
@@ -539,7 +627,7 @@ export default function AlbumLibrary({
             )}
           </div>
           )
-        ) : visible.length===0 ? (
+        ) : displayedPhotos.length===0 ? (
           <div className="brutti-album__empty">
             <ImageOff size={28}/>
             <strong>{search || filter!=="all" || category!=="all" ? "No matching photos" : "Your Album is ready"}</strong>
@@ -547,7 +635,7 @@ export default function AlbumLibrary({
           </div>
         ) : viewMode === "table" ? (
           <AlbumPhotoTable
-            photos={visible}
+            photos={displayedPhotos}
             categories={categories}
             publishedIds={publishedIds}
             picker={picker}
@@ -559,7 +647,7 @@ export default function AlbumLibrary({
           />
         ) : (
           <div className="brutti-album__grid">
-            {visible.map(photo=>{
+            {displayedPhotos.map(photo=>{
               const checked=selected.includes(photo.key);
               const disabled=picker && excludedUrls.includes(photo.url);
               return <div key={photo.key} className={`brutti-album__card${checked?" is-selected":""}`}>
@@ -727,12 +815,12 @@ export default function AlbumLibrary({
                 <div className="brutti-album__detail-download">
                   <span className="brutti-album__detail-label">DOWNLOAD PHOTO</span>
                   <div className="brutti-album__format-switch" role="group" aria-label="Download file format">
-                    {(["jpg","png","webp"] as const).map(format => (
+                    {(["jpg","png","webp","html"] as const).map(format => (
                       <button key={format} type="button"
                         className={downloadFormat === format ? "is-selected" : ""}
                         aria-pressed={downloadFormat === format}
                         disabled={downloading} onClick={() => setDownloadFormat(format)}>
-                        {format === "jpg" ? "JPG" : format === "png" ? "PNG" : "WebP"}
+                        {format === "jpg" ? "JPG" : format === "png" ? "PNG" : format === "html" ? "HTML" : "WebP"}
                       </button>
                     ))}
                   </div>
