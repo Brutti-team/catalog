@@ -178,14 +178,23 @@ export default function AlbumLibrary({
   const standalonePhotos=photos.filter(photo=>photo.usedBy.length===0);
   const currentProductGroup=productGroups.find(group=>group.product.id===selectedProductFolder);
   const needle=search.trim().toLowerCase();
+  const inCategoryFolder = filter==="by-category" && selectedFolder!==null;
+  const showProductFolders = filter==="by-product" || inCategoryFolder;
+  const matchesFolderCategory = (id: string) => inCategoryFolder
+    ? (selectedFolder==="__uncategorized__" ? !id || !categories.some(item=>item.id===id) : id===selectedFolder)
+    : category==="all" || id===category;
   const matchingProductGroups=productGroups.filter(({product,items})=>
-    (category==="all" || product.categoryId===category) &&
+    matchesFolderCategory(product.categoryId) &&
     (!needle || [product.name,product.sku,categories.find(item=>item.id===product.categoryId)?.name || ""].some(value=>value.toLowerCase().includes(needle))
       || items.some(photo=>(photo.name+" "+(photos.find(item=>item.key===photo.key)?.name || "")).toLowerCase().includes(needle))));
-  const matchingStandalone=standalonePhotos.filter(photo=>
-    (category==="all" || albumPhotoCategoryIds(photo).includes(category)) &&
-    (!needle || photo.name.toLowerCase().includes(needle)));
-  const displayedPhotos=filter==="by-product"
+  const matchingStandalone=standalonePhotos.filter(photo=>{
+    const ids=albumPhotoCategoryIds(photo);
+    const inScope=inCategoryFolder
+      ? (selectedFolder==="__uncategorized__" ? ids.length===0 : ids.includes(selectedFolder!))
+      : category==="all" || ids.includes(category);
+    return inScope && (!needle || photo.name.toLowerCase().includes(needle));
+  });
+  const displayedPhotos=showProductFolders
     ? selectedProductFolder==="__standalone__"?matchingStandalone:currentProductGroup?.items || []
     : visible.map(photo=>({...photo,name:productNames.get(photo.key) || photo.name}));
   const displayedName=(photo:AlbumPhoto)=>currentProductGroup?.items.find(item=>item.key===photo.key)?.name || productNames.get(photo.key) || photo.name;
@@ -209,6 +218,7 @@ export default function AlbumLibrary({
   }
   function openFolder(id: string) {
     setFilter("by-category");
+    setSelectedProductFolder(null);
     setSelectedFolder(id);
     setUploadCategory(id === "__uncategorized__" ? "none" : id);
   }
@@ -537,14 +547,20 @@ export default function AlbumLibrary({
         </button>
       </div>}
       {filter==="by-category" && selectedFolder!==null && <div className="brutti-album__folder-path">
-        <button type="button" onClick={()=>setSelectedFolder(null)}><ArrowLeft size={16}/> All categories</button>
+        <button type="button" onClick={()=>{setSelectedProductFolder(null);setSelectedFolder(null);}}><ArrowLeft size={16}/> All categories</button>
         <span aria-hidden="true">/</span>
-        <strong>{folderTitle}</strong>
-        <span className="brutti-album__folder-items">{visible.length} photos</span>
-        <button type="button" className="brutti-album__folder-add" disabled={busy}
+        {selectedProductFolder!==null ? <button type="button" onClick={()=>setSelectedProductFolder(null)}>{folderTitle}</button> : <strong>{folderTitle}</strong>}
+        {selectedProductFolder!==null && <>
+          <span aria-hidden="true">/</span>
+          <strong>{currentProductGroup?.product.name || "Unassigned photos"}{currentProductGroup?.product.sku ? ` · ${currentProductGroup.product.sku}` : ""}</strong>
+        </>}
+        <span className="brutti-album__folder-items">{selectedProductFolder===null ? `${matchingProductGroups.length} products` : `${displayedPhotos.length} photos`}</span>
+        {selectedProductFolder!==null && !picker && <button type="button" className="brutti-album__folder-add" disabled={exportingFolder||!displayedPhotos.length}
+          onClick={()=>void exportProductFolder()}>{exportingFolder?<LoaderCircle size={16} className="brutti-album__spin"/>:<Download size={16}/>} Download HTML</button>}
+        {selectedProductFolder===null && <button type="button" className="brutti-album__folder-add" disabled={busy}
           onClick={()=>{setUploadCategory(selectedFolder==="__uncategorized__"?"none":selectedFolder);fileRef.current?.click();}}>
           <Plus size={16}/> Add photos
-        </button>
+        </button>}
       </div>}
       {filter==="by-product" && selectedProductFolder!==null && <div className="brutti-album__folder-path">
         <button type="button" onClick={()=>setSelectedProductFolder(null)}><ArrowLeft size={16}/> All products</button>
@@ -558,7 +574,7 @@ export default function AlbumLibrary({
       {error && <p className="brutti-album__error" role="alert">{error}</p>}
       {notice && <p className="brutti-album__success" role="status">{notice}</p>}
       {loading ? <div className="brutti-album__empty" role="status"><LoaderCircle className="brutti-album__spin"/>Loading your photos…</div> :
-        filter==="by-product" && selectedProductFolder===null ? (
+        showProductFolders && selectedProductFolder===null ? (
           !matchingProductGroups.length && !matchingStandalone.length ? <div className="brutti-album__empty"><ImageOff size={28}/><strong>No matching products or photos</strong></div> :
           viewMode==="table" ? (
             <div className="brutti-album__table-shell"><table className="brutti-album__table brutti-album__table--folders">
