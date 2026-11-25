@@ -1579,7 +1579,7 @@
    full-screen panel. Long specifications scroll within the desktop budget. */
 @media(min-width:851px) and (min-height:600px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section:has(> .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image) {
-    padding-block:clamp(26px,3.8dvh,38px) 24px !important;
+    padding-block:clamp(44px,6.5dvh,60px) 24px !important;
     max-width:1380px;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) {
