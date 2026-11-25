@@ -104,7 +104,6 @@ export default function BestSellingSection({ products, categories, loading, onBr
                     <span className="brutti-best-selling__category">{categoryName(product.categoryId)}</span>
                     <strong>{product.name}</strong>
                     <span className="brutti-best-selling__price"><ProductPrice product={product} stackedBasis /></span>
-                    <span className="brutti-best-selling__view">View details <ArrowRight size={16} aria-hidden="true"/></span>
                   </span>
                 </a>
               );
