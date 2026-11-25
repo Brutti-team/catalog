@@ -2545,3 +2545,11 @@
   scale:1 !important;
   transform:none !important;
 }
+
+/* Consistent stock availability colours across public cards and Quick View. */
+.pub-app.pub-refined :is(.pub-catalog-tile__availability,.pub-quickview__availability):has(.pub-catalog-tile__dot--available) {color:#1f5a43 !important;}
+.pub-app.pub-refined :is(.pub-catalog-tile__availability,.pub-quickview__availability):has(.pub-catalog-tile__dot--made-to-order) {color:#315d92 !important;}
+.pub-app.pub-refined :is(.pub-catalog-tile__availability,.pub-quickview__availability):has(.pub-catalog-tile__dot--unavailable) {color:#a13732 !important;}
+.pub-app.pub-refined .pub-catalog-tile__dot--available {background:#1f5a43 !important;}
+.pub-app.pub-refined .pub-catalog-tile__dot--made-to-order {background:#4779b5 !important;box-shadow:0 0 0 2px rgba(71,121,181,.12) !important;}
+.pub-app.pub-refined .pub-catalog-tile__dot--unavailable {background:#a13732 !important;}
