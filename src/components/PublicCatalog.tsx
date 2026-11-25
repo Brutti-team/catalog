@@ -964,9 +964,9 @@ export default function PublicCatalog({
               </div>
             </div>
             <div className="pub-footer__actions">
-              <button type="button" className="pub-footer__browse" onClick={() => browseCollection()}>
-                View our work <ArrowUpRight size={16} aria-hidden="true"/>
-              </button>
+              <a href="https://brutti.my" className="pub-footer__browse">
+                Back to website <ArrowUpRight size={16} aria-hidden="true"/>
+              </a>
               <button type="button" className="pub-footer__backtop" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
                 Back to top <ArrowUp size={17} aria-hidden="true" />
               </button>
