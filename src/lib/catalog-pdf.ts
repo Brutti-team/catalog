@@ -180,18 +180,29 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   await originalCover(IMPACT_FRONT);
   for(let i=0;i<contentsCount;i++) {
     const {canvas,ctx}=sheet();header(ctx,"COLLECTION INDEX");
-    text(ctx,"Product Catalogue",40,105,36,GREEN,700);
-    text(ctx,"Explore our physical & creative works",40,138,15,MUTED);
-    ctx.fillStyle=GREEN;ctx.fillRect(40,155,44,3);
+    // Editorial contents: measured columns, vertically centred rows and consistent rules.
+    text(ctx,"Product Catalogue",40,101,34,GREEN,600);
+    text(ctx,"Explore our physical & creative works",40,129,13,MUTED,400);
+    ctx.fillStyle=GREEN;ctx.fillRect(40,148,32,2);
     const links:PdfLink[]=[];
+    const rowStart=207,rowHeight=40;
+    ctx.fillStyle="#eaf0e9";ctx.fillRect(40,173,540,29);
+    text(ctx,"NO.",52,191,10,MUTED,600);
+    text(ctx,"COLLECTION",92,191,10,MUTED,600);
+    ctx.textAlign="right";text(ctx,"PAGE",568,191,10,MUTED,600);ctx.textAlign="left";
     plan.slice(i*15,(i+1)*15).forEach((s,j)=>{
-      const idx=i*15+j,y=194+j*40;
-      text(ctx,String(idx+1).padStart(2,"0"),40,y,12,BRONZE,600);
-      const title=lines(ctx,s.name,430,17,600);text(ctx,title[0]||s.name,78,y,17,INK,600);
-      if(title.length>1)text(ctx,title.slice(1).join(" "),78,y+17,12,MUTED);
-      ctx.textAlign="right";text(ctx,String(sectionPages[idx]),580,y,17,GREEN,700);ctx.textAlign="left";
-      ctx.fillStyle=RULE;ctx.fillRect(40,y+23,540,1);
-      links.push({x:40,y:y-18,w:540,h:39,page:sectionPages[idx]-1});
+      const idx=i*15+j,top=rowStart+j*rowHeight,baseline=top+24;
+      text(ctx,String(idx+1).padStart(2,"0"),52,baseline,11,BRONZE,500);
+      const title=lines(ctx,s.name,420,15,600);
+      ctx.font=font(15,600);ctx.fillStyle=INK;
+      if(title.length<=1)ctx.fillText(title[0]||s.name,92,baseline,420);
+      else {
+        ctx.fillText(title[0],92,top+17,420);
+        ctx.font=font(13,500);ctx.fillText(title.slice(1).join(" "),92,top+32,420);
+      }
+      ctx.textAlign="right";text(ctx,String(sectionPages[idx]),568,baseline,15,GREEN,600);ctx.textAlign="left";
+      ctx.fillStyle=RULE;ctx.fillRect(40,top+rowHeight-1,540,0.7);
+      links.push({x:40,y:top,w:540,h:rowHeight,page:sectionPages[idx]-1});
     });
     footer(ctx,pages.length+1);await push(canvas,links);
   }
