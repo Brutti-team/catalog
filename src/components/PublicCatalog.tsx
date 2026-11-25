@@ -95,9 +95,9 @@ const enquiryEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(configuredEmail)
   : null;
 
 const availabilityLabels = {
-  available: "Available",
-  "made-to-order": "Made to order",
-  unavailable: "Currently unavailable",
+  available: "Ready Stock",
+  "made-to-order": "Pre-order",
+  unavailable: "Unavailable",
 };
 function currentProductId() {
   return productIdFromHash(window.location.hash);
