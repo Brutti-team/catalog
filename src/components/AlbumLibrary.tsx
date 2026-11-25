@@ -50,6 +50,10 @@ export default function AlbumLibrary({
   const categoryTriggerRef = useRef<HTMLButtonElement>(null);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [uploadCategory, setUploadCategory] = useState("none");
+  const [uploadMenuOpen, setUploadMenuOpen] = useState(false);
+  const [uploadMenuLayout, setUploadMenuLayout] = useState({ above: false, left: 0, width: 270, listHeight: 280 });
+  const uploadMenuRef = useRef<HTMLDivElement>(null);
+  const uploadTriggerRef = useRef<HTMLButtonElement>(null);
   const [savingDetails, setSavingDetails] = useState(false);
   const [detailsError, setDetailsError] = useState("");
   const [detailsDraft, setDetailsDraft] = useState<AlbumPhotoDetailsUpdate>({
@@ -116,6 +120,49 @@ export default function AlbumLibrary({
       window.removeEventListener("scroll", closeOnScroll, true);
     };
   }, [categoryMenuOpen]);
+  useEffect(() => {
+    if (!uploadMenuOpen) return;
+    const root = uploadMenuRef.current;
+    root?.querySelector<HTMLButtonElement>('[aria-selected="true"]')?.focus({ preventScroll: true });
+    const outside = (event: PointerEvent) => {
+      if (event.target instanceof Node && !root?.contains(event.target)) setUploadMenuOpen(false);
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setUploadMenuOpen(false);
+        uploadTriggerRef.current?.focus({ preventScroll: true });
+      }
+    };
+    const reposition = (event: Event) => {
+      if (event.target instanceof Node && root?.contains(event.target)) return;
+      setUploadMenuOpen(false);
+    };
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", escape);
+    window.addEventListener("resize", reposition);
+    window.addEventListener("scroll", reposition, true);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("keydown", escape);
+      window.removeEventListener("resize", reposition);
+      window.removeEventListener("scroll", reposition, true);
+    };
+  }, [uploadMenuOpen]);
+  function toggleUploadMenu() {
+    if (uploadMenuOpen) { setUploadMenuOpen(false); return; }
+    const rect = uploadTriggerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const width = Math.min(Math.max(rect.width, 270), window.innerWidth - 24);
+    const left = Math.max(12, Math.min(rect.left, window.innerWidth - width - 12)) - rect.left;
+    const below = window.innerHeight - rect.bottom - 16;
+    const above = rect.top - 16;
+    const natural = Math.min(350, (categories.length + 1) * 41 + 50);
+    const placeAbove = below < natural && above > below;
+    setUploadMenuLayout({ above: placeAbove, left, width, listHeight: Math.max(48, Math.min(300, (placeAbove ? above : below) - 49)) });
+    setCategoryMenuOpen(false);
+    setUploadMenuOpen(true);
+  }
   const toggleCategoryMenu = () => {
     if (!categoryMenuOpen && categoryTriggerRef.current) {
       const rect = categoryTriggerRef.current.getBoundingClientRect();
@@ -435,7 +482,7 @@ export default function AlbumLibrary({
   return (
     <section className={`brutti-album ${picker?"brutti-album--picker":""}`} aria-label={picker?"Choose photos from Album":"Brutti media Album"}>
       {!picker && (
-        <header className="brutti-album__heading brutti-album__header-v2">
+        <header className="brutti-album__heading brutti-album__header-v2" style={uploadMenuOpen ? { zIndex: 24, overflow: "visible" } : undefined}>
           <div className="brutti-album__heading-copy">
             <p className="brutti-album__eyebrow">BRUTTI CATALOG / MEDIA LIBRARY</p>
             <h1>Album</h1>
@@ -443,14 +490,57 @@ export default function AlbumLibrary({
             {albumStats}
           </div>
           <div className="brutti-album__heading-actions">
-            <label className="brutti-album__destination">
+            <div className="brutti-album__destination">
               <span>Upload photos to</span>
-              <select aria-label="Category for new uploads" value={uploadCategory}
-                onChange={event=>setUploadCategory(event.target.value)} disabled={busy}>
-                <option value="none">Uncategorised</option>
-                {categories.map(item=><option value={item.id} key={item.id}>{item.name}</option>)}
-              </select>
-            </label>
+              <div ref={uploadMenuRef}
+                className={`brutti-album__category-picker${uploadMenuOpen ? " is-open" : ""}${uploadMenuLayout.above ? " is-above" : ""}`}
+                style={{ width: "100%", minWidth: 0, flex: "none" }}>
+                <button ref={uploadTriggerRef} type="button" className="brutti-album__category-trigger"
+                  aria-label="Category for new uploads" aria-haspopup="listbox" aria-expanded={uploadMenuOpen}
+                  disabled={busy} onClick={toggleUploadMenu}
+                  onKeyDown={event => {
+                    if (!uploadMenuOpen && (event.key === "ArrowDown" || event.key === "ArrowUp")) {
+                      event.preventDefault(); toggleUploadMenu();
+                    }
+                  }} style={{ opacity: busy ? .55 : 1, cursor: busy ? "not-allowed" : "pointer", height: "var(--album-upload-control-height, 43px)" }}>
+                  <Folder size={17} strokeWidth={1.7} aria-hidden="true"/>
+                  <span>{categories.find(item => item.id === uploadCategory)?.name || "Uncategorised"}</span>
+                  <ChevronDown size={16} className="brutti-album__category-chevron" aria-hidden="true"/>
+                </button>
+                {uploadMenuOpen && <div className="brutti-album__category-menu"
+                  style={{ left: uploadMenuLayout.left, right: "auto", width: uploadMenuLayout.width }}
+                  onBlur={event => {
+                    if (!uploadMenuRef.current?.contains(event.relatedTarget as Node | null)) setUploadMenuOpen(false);
+                  }}>
+                  <div className="brutti-album__category-menu-title">UPLOAD DESTINATION</div>
+                  <div className="brutti-album__category-options" role="listbox" aria-label="Category for new uploads"
+                    style={{ maxHeight: uploadMenuLayout.listHeight }}
+                    onKeyDown={event => {
+                      if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+                      event.preventDefault();
+                      const options = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="option"]'));
+                      const current = options.indexOf(document.activeElement as HTMLButtonElement);
+                      const next = event.key === "Home" ? 0 : event.key === "End" ? options.length - 1
+                        : event.key === "ArrowDown" ? (current + 1) % options.length
+                        : (current + options.length - 1) % options.length;
+                      options[next]?.focus();
+                    }}>
+                    {[{ id: "none", name: "Uncategorised" }, ...categories].map(item => (
+                      <button type="button" role="option" key={item.id} aria-selected={uploadCategory === item.id}
+                        className={uploadCategory === item.id ? "is-active" : ""}
+                        onClick={() => {
+                          setUploadCategory(item.id);
+                          setUploadMenuOpen(false);
+                          uploadTriggerRef.current?.focus({ preventScroll: true });
+                        }}>
+                        <span>{item.name}</span>
+                        {uploadCategory === item.id && <Check size={16} aria-hidden="true"/>}
+                      </button>
+                    ))}
+                  </div>
+                </div>}
+              </div>
+            </div>
             <div className="brutti-album__action-buttons">
               {onAddCategory && <button type="button" className="brutti-album__secondary" onClick={onAddCategory}>
                 <Plus size={16} aria-hidden="true"/> Add category
