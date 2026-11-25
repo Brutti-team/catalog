@@ -1,5 +1,5 @@
 import { useEffect, useImperativeHandle, useRef, useState, useId, useLayoutEffect, type Ref } from "react";
-import { ArrowLeft, Armchair, BedDouble, BookOpen, Check, Download, Eye, FileText, Heart, LampFloor, Layers3, LibraryBig, Sofa, Star, Table2, X } from "lucide-react";
+import { ArrowLeft, Armchair, BedDouble, BookOpen, Check, Download, ExternalLink, Eye, FileText, Heart, LampFloor, Layers3, LibraryBig, Sofa, Star, Table2, X } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import { selectPdfProducts, type PdfSelection } from "../lib/catalog-pdf-plan";
 import PdfCategoryDropdown from "./PdfCategoryDropdown";
@@ -157,9 +157,9 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
           <button type="button" className="staff-pdf-preview-close" onClick={()=>dialog.current?.close()} aria-label="Close preview"><X size={20}/></button>
         </header>
         {preview.missing>0&&<p className="staff-pdf-preview-warning" role="status">{preview.missing} product or category image(s) could not be loaded.</p>}
-        {previewUrl?<iframe className="staff-pdf-preview-frame" src={previewUrl+"#view=FitH"} title="Catalogue PDF preview"/>:<p role="status">Opening preview…</p>}
+        <div className="staff-pdf-preview-stage">{previewUrl?<iframe className="staff-pdf-preview-frame" src={previewUrl+"#view=Fit"} title="Catalogue PDF preview"/>:<p className="staff-pdf-preview-opening" role="status">Opening preview…</p>}</div>
         <footer className="staff-pdf-preview-footer">
-          <a href={previewUrl||undefined} target="_blank" rel="noopener noreferrer" aria-disabled={!previewUrl}>Open PDF in new tab</a>
+          <a className="staff-pdf-preview-external" href={previewUrl||undefined} target="_blank" rel="noopener noreferrer" aria-disabled={!previewUrl}><ExternalLink size={15} aria-hidden="true"/> Open PDF in new tab</a>
           <a className="staff-pdf-preview-download" href={previewUrl||undefined} download={preview.filename} aria-disabled={!previewUrl}><Download size={17}/> Download PDF</a>
         </footer>
       </div>:<div ref={optionsViewport} className="pub-pdf-options-viewport"><div ref={optionsContent} className="pub-pdf-options-content">
