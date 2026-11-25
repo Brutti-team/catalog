@@ -741,19 +741,33 @@ export default function App() {
               </button>
               {notificationOpen && (
                 <section className="catalog-header-popover catalog-notification-menu" role="dialog" aria-label="Recent catalog activity">
-                  <div className="catalog-popover-heading"><strong>Catalog updates</strong><span>Recent product changes</span></div>
-                  {unreadNotificationCount > 0 && <button type="button" className="catalog-notification-mark-read" onClick={() => markUpdatesRead(recentUpdates)}>Mark all as read</button>}
+                  <div className="catalog-notification-heading">
+                    <span className="catalog-notification-heading-icon"><Bell size={18} aria-hidden="true" /></span>
+                    <div className="catalog-notification-heading-copy"><strong>Notifications</strong><small>Recent catalog updates</small></div>
+                    {unreadNotificationCount > 0 && <span className="catalog-notification-unread-total">{unreadNotificationCount} unread</span>}
+                  </div>
+                  {unreadNotificationCount > 0 && <div className="catalog-notification-toolbar">
+                    <span>Recent activity</span>
+                    <button type="button" className="catalog-notification-mark-read" onClick={() => markUpdatesRead(recentUpdates)}><CheckCircle2 size={13} aria-hidden="true" /> Mark all as read</button>
+                  </div>}
                   {error && <p className="catalog-sync-warning">Sync needs attention. Check your connection and retry.</p>}
-                  {recentUpdates.length ? recentUpdates.map(product => (
-                    <button type="button" className="catalog-notification-item" key={product.id}
-                      onClick={() => { markUpdatesRead([product]); switchTab("products"); setSearch(product.name); }}>
-                      <span className={"catalog-notification-dot" + (isUnreadUpdate(product) ? "" : " is-read")} aria-hidden="true" />
-                      <span><strong>{product.name || "Untitled product"}</strong>
-                        <small>Updated {new Date(product.updatedAt).toLocaleDateString("en-MY", { day: "numeric", month: "short", year: "numeric" })}</small>
-                      </span>
-                    </button>
-                  )) : <p className="catalog-empty-updates">No recent product updates.</p>}
-                  <button type="button" className="catalog-popover-footer" onClick={() => switchTab("activity")}>View activity log <ArrowRight size={15} aria-hidden="true" /></button>
+                  <div className="catalog-notification-list">
+                    {recentUpdates.length ? recentUpdates.map(product => {
+                      const unread = isUnreadUpdate(product);
+                      return <button type="button" className={"catalog-notification-item" + (unread ? " is-unread" : "")} key={product.id}
+                        aria-label={(product.name || "Untitled product") + (unread ? ", unread update" : ", read update")}
+                        onClick={() => { markUpdatesRead([product]); switchTab("products"); setSearch(product.name); }}>
+                        <span className="catalog-notification-photo" aria-hidden="true">
+                          {product.images[0]?.url ? <SafeImage src={product.images[0].url} alt="" loading="lazy" /> : <Package size={19} />}
+                        </span>
+                        <span className="catalog-notification-copy"><strong>{product.name || "Untitled product"}</strong>
+                          <small>Updated {new Date(product.updatedAt).toLocaleDateString("en-MY", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" })}</small>
+                        </span>
+                        <span className={"catalog-notification-dot" + (unread ? "" : " is-read")} aria-hidden="true" />
+                      </button>;
+                    }) : <div className="catalog-empty-updates"><Bell size={25} aria-hidden="true" /><strong>No recent updates</strong><span>Product updates will appear here.</span></div>}
+                  </div>
+                  <button type="button" className="catalog-popover-footer" onClick={() => switchTab("activity")}><History size={15} aria-hidden="true" /> View activity log <ArrowRight size={15} aria-hidden="true" /></button>
                 </section>
               )}
             </div>
