@@ -1,4 +1,4 @@
-import { ArrowUpRight, Check, Crop, Eye, Folder, Package } from "lucide-react";
+import { ArrowUpRight, Check, Crop, Eye, Folder, Package, Trash2 } from "lucide-react";
 import type { Category } from "../lib/types";
 import { albumPhotoCategoryIds, type AlbumPhoto } from "../lib/album";
 import SafeImage from "./SafeImage";
@@ -80,7 +80,7 @@ export function AlbumCategoryTable({
 }
 
 export function AlbumPhotoTable({
-  photos, categories, publishedIds, picker, selectedKeys, excludedUrls, onView, onSelect, onEditCover,
+  photos, categories, publishedIds, picker, selectedKeys, excludedUrls, onView, onSelect, onEditCover, onDelete,
 }: {
   photos: AlbumPhoto[];
   categories: Category[];
@@ -91,6 +91,7 @@ export function AlbumPhotoTable({
   onView: (photo: AlbumPhoto) => void;
   onSelect: (photo: AlbumPhoto) => void;
   onEditCover: (photo: AlbumPhoto) => void;
+  onDelete?: (photo: AlbumPhoto) => void;
 }) {
   const categoryNames = new Map(categories.map(item => [item.id,item.name]));
   return (
@@ -155,6 +156,7 @@ export function AlbumPhotoTable({
                       onClick={() => onEditCover(photo)}>
                       <Crop size={15} aria-hidden="true"/>
                     </button>}
+                    {!picker && onDelete && !linked && !covered && photo.id && <button type="button" style={{color:"#a63136",background:"#fff1f1",borderColor:"#f3c7c9"}} title="Delete photo" aria-label={`Delete ${photo.name}`} onClick={()=>onDelete(photo)}><Trash2 size={15} aria-hidden="true"/></button>}
                   </div>
                 </td>
               </tr>
