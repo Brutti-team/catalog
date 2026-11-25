@@ -1093,3 +1093,49 @@
     gap: 12px;
   }
 }
+
+
+/* Album category folders — soft glass finish while keeping captions below
+   the cover photo. Gallery only; table layout and image crop stay unchanged. */
+.admin-app .brutti-album__folders:not(.is-list) .brutti-album__folder {
+  background:linear-gradient(145deg,rgba(255,255,255,.73),rgba(230,241,233,.58)) !important;
+  border-color:rgba(177,205,185,.48) !important;
+  box-shadow:0 7px 22px rgba(31,65,44,.075) !important;
+  backdrop-filter:blur(18px) saturate(125%);
+  -webkit-backdrop-filter:blur(18px) saturate(125%);
+}
+.admin-app .brutti-album__folders:not(.is-list) .brutti-album__folder-copy {
+  position:relative;
+  width:100%;
+  box-sizing:border-box;
+  background:linear-gradient(125deg,rgba(255,255,255,.34),rgba(237,246,239,.46)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42);
+  backdrop-filter:blur(18px) saturate(135%);
+  -webkit-backdrop-filter:blur(18px) saturate(135%);
+}
+.admin-app .brutti-album__folders:not(.is-list) .brutti-album__folder-mark {
+  background:rgba(247,252,248,.76) !important;
+  border:1px solid rgba(255,255,255,.5);
+  backdrop-filter:blur(12px) saturate(135%);
+  -webkit-backdrop-filter:blur(12px) saturate(135%);
+}
+.admin-app .brutti-album__folders:not(.is-list) .brutti-album__folder:hover {
+  border-color:rgba(111,164,129,.72) !important;
+  box-shadow:0 12px 28px rgba(30,67,42,.14) !important;
+}
+.admin-app[data-theme="dark"] .brutti-album__folders:not(.is-list) .brutti-album__folder {
+  background:linear-gradient(145deg,rgba(49,62,55,.8),rgba(30,38,34,.72)) !important;
+  border-color:rgba(122,158,134,.3) !important;
+  box-shadow:0 7px 22px rgba(0,0,0,.23) !important;
+}
+.admin-app[data-theme="dark"] .brutti-album__folders:not(.is-list) .brutti-album__folder-copy {
+  background:linear-gradient(130deg,rgba(81,103,89,.22),rgba(33,46,38,.4)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07);
+}
+.admin-app[data-theme="dark"] .brutti-album__folders:not(.is-list) .brutti-album__folder-copy strong {color:#e5f1e8;}
+.admin-app[data-theme="dark"] .brutti-album__folders:not(.is-list) .brutti-album__folder-copy small {color:#b1c6b7;}
+.admin-app[data-theme="dark"] .brutti-album__folders:not(.is-list) .brutti-album__folder-mark {
+  background:rgba(36,53,43,.76) !important;
+  border-color:rgba(164,195,174,.35);
+  color:#d4eadb;
+}
