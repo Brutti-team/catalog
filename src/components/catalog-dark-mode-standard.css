@@ -419,3 +419,21 @@
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat {padding:10px 8px;gap:6px;}
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat-icon {width:28px;height:28px;flex-basis:28px;}
 }
+
+/* Override legacy emerald SVG stops in dark mode only. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(1) stop:first-child {stop-color:#aabce8 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(1) stop:last-child {stop-color:#7895d0 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(2) stop:first-child {stop-color:#d4c3e9 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(2) stop:last-child {stop-color:#a58bc9 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(3) stop:first-child {stop-color:#f0ccbc !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(3) stop:last-child {stop-color:#d59b86 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(4) stop:first-child {stop-color:#b5cde8 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(4) stop:last-child {stop-color:#83a6ce !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(5) stop:first-child {stop-color:#e6c0d2 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(5) stop:last-child {stop-color:#c693b3 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(6) stop:first-child {stop-color:#c5b8e8 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(6) stop:last-child {stop-color:#9a8bc9 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(7) stop:first-child {stop-color:#e8d2ad !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg linearGradient:nth-of-type(7) stop:last-child {stop-color:#c3a477 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-chart svg .customer-insights-zero {fill:#9694b1 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-zero {fill:#a9a7c1 !important;}
