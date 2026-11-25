@@ -7,6 +7,7 @@ import { publicAssetUrl } from "../lib/assets";
 import { recordCatalogEvent } from "../lib/customer-analytics";
 import ProductPrice from "./ProductPrice";
 import MaterialsContent from "./MaterialsContent";
+import { primaryFinishingRow } from "../lib/specification-groups";
 import { discountPercent, hasProductDiscount } from "../lib/discount-price";
 import "./public-spotlight.css";
 import { useFavouriteIds, toggleFavouriteId } from "../lib/customer-favourites";
@@ -84,6 +85,7 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
   const photo = product.images[0];
   const detailUrl = "#/product/" + encodeURIComponent(product.id);
   const description = product.description?.trim();
+  const finishing = primaryFinishingRow(product.specifications)?.value;
   const savedColours = showColours ? recordedColours(product) : [];
   const referenceKey = product.name.trim().toLowerCase();
   const photoColours = showColours && photo?.url && Object.prototype.hasOwnProperty.call(referencePhotoColours, referenceKey)
@@ -270,6 +272,9 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
             {description && <p className="pub-quickview__description">{description}</p>}
             {product.materials?.trim() && (
               <div className="pub-quickview__spec"><span className="pub-quickview__section-label">Materials</span><MaterialsContent value={product.materials} /></div>
+            )}
+            {finishing?.trim() && (
+              <div className="pub-quickview__spec"><span className="pub-quickview__section-label">Finishing</span><MaterialsContent value={finishing} /></div>
             )}
             <div className="pub-quickview__price">
               <div className="pub-quickview__price-value"><ProductPrice product={product} stackedBasis /></div>
