@@ -58,9 +58,10 @@
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item:not(.active) {color:var(--dark-muted) !important;}
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active {color:var(--dark-text) !important;}
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar nav .nav-item.active .nav-icon {color:var(--dark-accent) !important;}
-.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab]:not(.catalog-sidebar-collapsed) > .sidebar nav .nav-count,
-.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab]:not(.catalog-sidebar-collapsed) > .sidebar nav .nav-item.active .nav-count {
-  background:#303036 !important;color:#e5e5e8 !important;border-color:transparent !important;
+/* Expanded sidebar counts match the collapsed red badges in both themes. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab]:not(.catalog-sidebar-collapsed) > .sidebar nav .nav-count,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab]:not(.catalog-sidebar-collapsed) > .sidebar nav .nav-item.active .nav-count {
+  background:#b9434c !important;color:#fff !important;border-color:transparent !important;
 }
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] :is(.catalog-header-popover .catalog-notification-item,.catalog-account-menu > button,.catalog-popover-footer):hover {
   background:var(--dark-hover) !important;
