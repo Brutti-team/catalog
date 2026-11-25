@@ -640,3 +640,15 @@
   .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__browse::after,
   .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling .brutti-best-selling__browse svg {transition:none;}
 }
+
+
+/* Leave breathing room before the public footer only when Best Sellers
+   is the final section. Keep the compact gap to recommendations unchanged. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling:last-child {
+  padding-bottom:clamp(48px,4vw,64px) !important;
+}
+@media(max-width:600px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling:last-child {
+    padding-bottom:36px !important;
+  }
+}
