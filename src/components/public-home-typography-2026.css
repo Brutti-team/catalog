@@ -1412,14 +1412,32 @@
 }
 
 
-/* Image-free Brutti hero. Preserve the existing text and visual labels. */
+/* Homepage hero uses the supplied Brutti collection photo when the local
+   asset has been uploaded; retain the established layout and green fallback. */
 .pub-app.pub-refined:not(.pub-private-preview) .pub-hero {
   background:#1f5a43 !important;
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-hero-visual {
   background:transparent !important;
-  background-image:none !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero-visual > .pub-brutti-collection-hero {
+  display:block;position:absolute;inset:0 0 0 auto;width:62%;height:100%;
+  object-fit:cover;object-position:center 72%;filter:none;
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-hero-visual::after {
   background:linear-gradient(110deg,#174634 0%,#1f5a43 60%,#28694f 100%) !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero-visual:has(> .pub-brutti-collection-hero.is-loaded) {
+  background:#32170e !important;
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero-visual:has(> .pub-brutti-collection-hero.is-loaded)::after {
+  background:linear-gradient(90deg,#32170e 0%,rgba(50,23,14,.96) 30%,rgba(50,23,14,.62) 48%,rgba(50,23,14,.05) 72%),
+    linear-gradient(0deg,rgba(25,13,8,.35),transparent 40%) !important;
+}
+@media(max-width:760px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero-visual > .pub-brutti-collection-hero {width:100%;object-position:center 68%;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero-visual:has(> .pub-brutti-collection-hero.is-loaded)::after {
+    background:linear-gradient(90deg,rgba(31,14,8,.82),rgba(31,14,8,.4)),
+      linear-gradient(0deg,rgba(31,14,8,.55),transparent 85%) !important;
+  }
 }
