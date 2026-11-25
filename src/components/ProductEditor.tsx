@@ -37,7 +37,8 @@ import EditorCategoryPicker from "./EditorCategoryPicker";
 import ProductModelEditor from "./ProductModelEditor";
 import PublicCatalog from "./PublicCatalog";
 import { categoryProductPrefix, nextProductId } from "../lib/product-ids";
-import { cmToUnit, parseDimensionInput, parseMeasurementValue, DIMENSION_UNIT_OPTIONS, type DimensionUnit } from "../lib/dimensions";
+import { cmToUnit, parseDimensionInput, parseMeasurementValue, type DimensionUnit } from "../lib/dimensions";
+import InlineDimensionUnitMenu from "./InlineDimensionUnitMenu";
 import OverallDimensionFields from "./OverallDimensionFields";
 import MeasurementTypePicker from "./MeasurementTypePicker";
 import MaterialsEditor from "./MaterialsEditor";
@@ -171,21 +172,17 @@ function SpecificationRowFields({
             value={amount}
             onChange={(event) => onChange(row.id, "value", event.target.value + " " + unit)}
           />
-          <select
-            aria-label={label + " measurement unit"}
+          <InlineDimensionUnitMenu
+            label={label + " measurement"}
             value={unit}
-            title="Measurement unit"
-            onChange={(event) => {
-              const nextUnit = event.target.value as DimensionUnit;
+            onChange={nextUnit => {
               const cm = parseDimensionInput(amount, unit);
               const nextAmount = amount && cm !== null && cm > 0
                 ? String(cmToUnit(cm, nextUnit))
                 : amount;
               onChange(row.id, "value", nextAmount + " " + nextUnit);
             }}
-          >
-            {DIMENSION_UNIT_OPTIONS.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
-          </select>
+          />
         </div>
       ) : (
         <input
@@ -1039,9 +1036,16 @@ export default function ProductEditor({
               <div className="catalog-spec-extra-heading">
                 <div>
                   <h4>Additional details</h4>
-                  <p>Organise components, drawer dimensions and finishes in separate specification sections.</p>
+                  <p>Group measurements, components and finishes in separate sections.</p>
                 </div>
-                <span className="catalog-spec-extra-count">{(draft.specifications ?? []).length} / 24</span>
+                <div className="catalog-spec-extra-actions">
+                  <span className="catalog-spec-extra-count">{(draft.specifications ?? []).length} / 24</span>
+                  <button type="button" className="catalog-spec-add-section"
+                    disabled={(draft.specifications ?? []).length > 22 || busy}
+                    onClick={addSpecificationSection}>
+                    <Plus size={16} aria-hidden="true" /> Add specification
+                  </button>
+                </div>
               </div>
               {specificationSections.map((section, index) => (
                 <div className="catalog-spec-new-section" key={section.id}>
@@ -1085,15 +1089,7 @@ export default function ProductEditor({
                   />
                 </div>
               ))}
-              <button
-                type="button"
-                className="catalog-spec-add-section"
-                disabled={(draft.specifications ?? []).length > 22 || busy}
-                onClick={addSpecificationSection}
-              >
-                <Plus size={17} aria-hidden="true" /> Add specification
-                <span>New section</span>
-              </button>
+              
             </section>
 
           </div>
