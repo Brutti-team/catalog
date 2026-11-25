@@ -235,3 +235,44 @@
   :is(.pub-app,.admin-app) .pub-pdf-dialog .pub-pdf-furniture-loader .pub-pdf-furniture-track {animation:none;transform:translateY(-50%);will-change:auto;}
   :is(.pub-app,.admin-app) .pub-pdf-dialog .pub-pdf-furniture-loader .pub-pdf-furniture-rail > span {transition:none;}
 }
+
+
+/* Download options fit a single visible viewport, including the active loader.
+   The actual staff PDF document preview keeps its own independent scrolling. */
+dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog), :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) {
+  box-sizing:border-box;
+  max-height:calc(100dvh - 24px) !important;
+  overflow:hidden !important;
+  overscroll-behavior:none;
+  scrollbar-width:none;
+  padding:20px 24px !important;
+}
+dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog)::-webkit-scrollbar {display:none;}
+html:has(dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog)[open]), body:has(dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog)[open]) {overflow:hidden;overscroll-behavior:none;}
+dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-options-viewport {width:100%;min-width:0;overflow:hidden;}
+dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-options-content {display:flow-root;width:100%;min-width:0;transform-origin:top center;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-dialog-head {margin:0 0 15px !important;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-dialog-head h2 {margin-bottom:3px !important;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) fieldset {gap:6px !important;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) legend {margin-bottom:6px !important;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-option {
+  min-height:52px !important;padding:7px 10px !important;gap:10px !important;
+}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-option-icon {width:32px;height:32px;flex-basis:32px;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-option small {margin-top:2px;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-summary {padding:8px 0 !important;margin:10px 0 8px !important;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) button.pub-pdf-download {min-height:42px !important;padding:9px 12px !important;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-furniture-loader {margin:2px 0 8px !important;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-category-menu {max-height:min(144px,22dvh);}
+@media (max-width:640px) {
+  dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog), :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) {padding:16px 17px !important;}
+}
+@media (max-height:680px) {
+  dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog), :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) {padding:15px 20px !important;}
+  :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-dialog-head {margin-bottom:11px !important;}
+  :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-option {min-height:46px !important;padding:5px 9px !important;}
+  :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) fieldset {gap:5px !important;}
+  :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-summary {padding:6px 0 !important;margin:8px 0 6px !important;}
+  :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-furniture-loader > svg {max-width:195px !important;}
+  :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-category-menu {max-height:min(120px,20dvh);}
+}
