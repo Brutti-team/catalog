@@ -152,6 +152,8 @@ export default function App() {
   } | null>(null);
   const [photoImportOpen, setPhotoImportOpen] = useState(false);
   const [catEditor, setCatEditor] = useState<Category | null>(null);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const [productDeleteError, setProductDeleteError] = useState("");
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
   const [categoryDeleteInput, setCategoryDeleteInput] = useState("");
   const [categoryDeleteError, setCategoryDeleteError] = useState("");
@@ -333,6 +335,22 @@ export default function App() {
     const selected = p.bestSelling !== true;
     void action(() => setProductBestSelling(p.id, selected),
       selected ? "Added to Best Sellers" : "Removed from Best Sellers");
+  }
+  async function confirmProductDeletion() {
+    const product = productToDelete;
+    if (!product || busy) return;
+    setBusy(true);
+    setProductDeleteError("");
+    try {
+      const result = await deleteProduct(product.id);
+      await refresh();
+      setProductToDelete(null);
+      setToast(result.cleanupWarning || "Product deleted");
+    } catch (error) {
+      setProductDeleteError(error instanceof Error ? error.message : "Unable to delete product. Please try again.");
+    } finally {
+      setBusy(false);
+    }
   }
   function requestCategoryDeletion(category: Category) {
     setCategoryToDelete(category);
@@ -916,12 +934,19 @@ export default function App() {
                         </div>
                       </button>
                       <button type="button" className="catalog-best-toggle catalog-best-gallery-toggle"
+                        style={{ right: 48 }}
                         disabled={busy} aria-pressed={p.bestSelling === true}
                         aria-label={`${p.bestSelling ? "Remove" : "Mark"} ${p.name} ${p.bestSelling ? "from" : "as"} Best Seller`}
                         title={p.bestSelling ? "Remove from Best Sellers" : "Mark as Best Seller"}
                         onClick={() => toggleBestSeller(p)}>
                         <Star size={15} fill={p.bestSelling ? "currentColor" : "none"} aria-hidden="true" />
                         <span>{p.bestSelling ? "Best Seller" : "Set Best Seller"}</span>
+                      </button>
+                      <button type="button" className="catalog-best-toggle catalog-best-gallery-toggle"
+                        style={{ color: "#a63136", background: "#fff1f1", borderColor: "#f3c7c9", padding: "7px", minWidth: 32, justifyContent: "center" }}
+                        disabled={busy} aria-label={`Delete ${p.name}`} title="Delete product"
+                        onClick={() => { setProductDeleteError(""); setProductToDelete(p); }}>
+                        <Trash2 size={15} aria-hidden="true" />
                       </button>
                       </div>
                     ))}
@@ -1269,6 +1294,40 @@ export default function App() {
           }}
         />
       )}{" "}
+      {productToDelete && (
+        <Modal
+          title="Delete product?"
+          eyebrow="CONFIRM DELETION"
+          className="catalog-category-delete-dialog"
+          description="Review this product before permanently deleting it."
+          onClose={() => {
+            if (!busy) { setProductToDelete(null); setProductDeleteError(""); }
+          }}
+        >
+          <div className="catalog-delete-confirmation" aria-busy={busy}>
+            <div className="catalog-delete-warning">
+              <AlertCircle size={22} strokeWidth={1.8} aria-hidden="true" />
+              <div>
+                <strong>{productToDelete.name}</strong>
+                <p>Product ID: {productToDelete.sku || productToDelete.id}</p>
+                <p>This product will be permanently removed from the catalog. This cannot be undone.</p>
+              </div>
+            </div>
+            {productDeleteError && <p className="notice error" role="alert">{productDeleteError}</p>}
+            <div className="catalog-delete-confirm-actions">
+              <button type="button" className="button secondary" disabled={busy}
+                onClick={() => { setProductToDelete(null); setProductDeleteError(""); }}>
+                Cancel
+              </button>
+              <button type="button" className="button catalog-delete-confirm-button"
+                disabled={busy} onClick={() => void confirmProductDeletion()}>
+                <Trash2 size={16} aria-hidden="true" />
+                {busy ? "Deleting…" : "Delete product"}
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
       {categoryToDelete && (
         <Modal
           title={`Delete ${categoryToDelete.name}?`}
