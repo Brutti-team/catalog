@@ -164,3 +164,26 @@
   .admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-footer .catalog-editor-save-error { animation:catalog-save-error-enter .18s ease-out both; }
 }
 @keyframes catalog-save-error-enter { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+
+/* Unpublish is a reversible visibility action, not permanent deletion.
+   Keep soft red consistent across editor entry points and themes. */
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-footer .button.catalog-editor-footer-unpublish {
+  background: #fff0f0 !important;
+  border-color: #f1c5c8 !important;
+  color: #a63136 !important;
+}
+.admin-app .modal.product-editor-dialog--editing .product-editor-v2 .editor-footer .button.catalog-editor-footer-unpublish:not(:disabled):is(:hover,:focus-visible) {
+  background: #ffe3e5 !important;
+  border-color: #e6a6aa !important;
+  color: #922c32 !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-footer .button.catalog-editor-footer-unpublish {
+  background: #482d31 !important;
+  border-color: #795057 !important;
+  color: #ffc4c8 !important;
+}
+.admin-app[data-theme="dark"] .modal.product-editor-dialog--editing .product-editor-v2 .editor-footer .button.catalog-editor-footer-unpublish:not(:disabled):is(:hover,:focus-visible) {
+  background: #59353a !important;
+  border-color: #a46a73 !important;
+}
