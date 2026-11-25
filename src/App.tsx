@@ -1416,6 +1416,7 @@ export default function App() {
           onClose={() => !busy && setCatEditor(null)}
         >
           <form className="category-form" onSubmit={submitCategory} aria-busy={busy}>
+            <div className="category-editor-scroll-body">
             <label className="category-editor-field">
               <span className="category-editor-label">Category name <span className="category-required" aria-hidden="true">*</span></span>
               <input
@@ -1448,6 +1449,7 @@ export default function App() {
                 {actionError}
               </div>
             )}
+            </div>
             <div className="button-row justify-end category-editor-actions">
               <button
                 type="button"
