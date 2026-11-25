@@ -80,8 +80,8 @@ export default function AccountCenter({
     document.addEventListener("keydown", key);
     return () => { document.removeEventListener("pointerdown", close); document.removeEventListener("keydown", key); };
   }, [activityMenuOpen]);
-  useEffect(() => { setActivityMenuOpen(false); }, [view, activityPeriod]);
   const [activityPeriod, setActivityPeriod] = useState<ActivityPeriod>("today");
+  useEffect(() => { setActivityMenuOpen(false); }, [view, activityPeriod]);
   const [mytTodayStart, setMytTodayStart] = useState(() => catalogActivityMYTRange("today").start);
   const activityLoadRequest = useRef(0);
   const [draftRoles, setDraftRoles] = useState<Record<string, string>>({});
