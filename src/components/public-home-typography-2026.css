@@ -1459,56 +1459,72 @@
 }
 
 
-/* Warm ivory glass values strip complements the timber hero without a competing green band. */
+/* Values strip — clear frosted glass with a soft light sweep and icon motion. */
 .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
   display:grid !important;
   grid-template-columns:repeat(3,minmax(0,1fr));
   align-items:center;
   gap:0 !important;
-  background:linear-gradient(110deg,rgba(255,253,248,.88),rgba(239,227,212,.66)) !important;
-  border:1px solid rgba(127,88,54,.13) !important;
+  background:linear-gradient(115deg,rgba(255,255,255,.72),rgba(255,255,255,.30) 50%,rgba(220,231,223,.42)) !important;
+  border:1px solid rgba(134,158,141,.19) !important;
   border-radius:12px;
   padding:10px 14px !important;
-  box-shadow:0 4px 18px rgba(66,38,20,.06) !important;
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72),0 7px 22px rgba(29,55,39,.07) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(135%);
+  backdrop-filter:blur(22px) saturate(135%);
+}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(115deg,transparent 18%,rgba(255,255,255,.64) 46%,transparent 72%);
+  transform:translateX(-110%);
+  animation:brutti-values-shimmer 8s ease-in-out infinite;
+}
+@keyframes brutti-values-shimmer {
+  0%,55% {transform:translateX(-110%);}
+  85%,100% {transform:translateX(110%);}
 }
 .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span {
+  display:flex;
   justify-content:center;
+  align-items:center;
+  position:relative;
   min-width:0;
   min-height:28px;
   padding:0 10px;
   gap:9px;
-  color:#503b2e !important;
+  color:#325442 !important;
   font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   font-size:clamp(11px,.95vw,13px);
   font-weight:600;
   line-height:1.4;
   letter-spacing:0;
   white-space:normal;
+  transition:color .25s ease,background .25s ease;
 }
-.pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span + span {
-  border-left:1px solid rgba(127,88,54,.16);
-}
+.pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span + span {border-left:1px solid rgba(110,143,121,.20);}
 .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span svg {
   box-sizing:content-box;
   flex:0 0 auto;
-  width:13px;
-  height:13px;
-  padding:5px;
+  width:13px;height:13px;padding:5px;
   border-radius:50%;
-  background:rgba(174,125,76,.12);
-  color:#886039 !important;
+  background:rgba(66,124,87,.10);
+  color:#39724f !important;
   stroke-width:2;
+  transition:transform .25s ease,background .25s ease,color .25s ease,box-shadow .25s ease;
+}
+@media(hover:hover) and (pointer:fine) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span:hover {color:#194d32 !important;background:rgba(255,255,255,.26);}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span:hover svg {transform:scale(1.13);background:#347450;color:#fff !important;box-shadow:0 3px 10px rgba(43,103,67,.20);}
+}
+@media(prefers-reduced-motion:reduce) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip::before {animation:none;}
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span,.pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span svg {transition:none;}
 }
 @media(max-width:600px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip {padding:9px 5px !important;}
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span {
-    flex-direction:column;
-    text-align:center;
-    font-size:10px;
-    gap:5px;
-    padding:2px 6px;
-  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span {flex-direction:column;text-align:center;font-size:10px;gap:5px;padding:2px 6px;}
   .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span svg {width:12px;height:12px;padding:4px;}
 }
