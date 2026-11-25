@@ -527,3 +527,147 @@
     transform: none !important;
   }
 }
+
+
+/* Private preview: signature Brutti glass with warmer neutral surfaces.
+   Keep all preview actions, photo framing, data and scroll behaviour intact. */
+.admin-app dialog.modal.catalog-private-preview-dialog[open] {
+  border:0 !important;
+  background:linear-gradient(135deg,#e6eee7,#eeece4) !important;
+  box-shadow:0 24px 70px rgba(12,31,23,.30) !important;
+  border-radius:20px !important;
+}
+.admin-app .catalog-private-preview-dialog > .modal-heading {
+  background:linear-gradient(115deg,#174634,#1f5a43 65%,#39765d) !important;
+  border-bottom:0 !important;
+  box-shadow:none !important;
+}
+.admin-app .catalog-private-preview-dialog > .modal-heading h2 {
+  color:#fff !important;
+  font:650 15px/1.4 "Inter","DM Sans",system-ui,sans-serif !important;
+  letter-spacing:-.015em !important;
+}
+.admin-app .catalog-private-preview-dialog > .modal-heading > .icon-button {
+  background:rgba(255,255,255,.12) !important;
+  border:1px solid rgba(255,255,255,.22) !important;
+  color:#fff !important;
+  box-shadow:none !important;
+  border-radius:10px !important;
+}
+.admin-app .catalog-private-preview-dialog > .modal-heading > .icon-button:hover {
+  background:rgba(255,255,255,.23) !important;
+  border-color:rgba(255,255,255,.38) !important;
+  transform:none;
+}
+.admin-app .catalog-private-preview-dialog > .catalog-private-preview-note {
+  background:rgba(31,90,67,.075) !important;
+  border:0 !important;
+  color:#416452 !important;
+  border-radius:8px !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery {
+  padding:10px !important;
+  border:0 !important;
+  border-radius:15px !important;
+  background:rgba(255,255,255,.30) !important;
+  box-shadow:none !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image {
+  border:0 !important;
+  border-radius:12px !important;
+  background:#e2dfd5 !important;
+  box-shadow:0 5px 18px rgba(31,61,43,.08) !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs {
+  background:rgba(250,252,249,.82) !important;
+  border:0 !important;
+  border-radius:10px !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs button.is-active {background:#1f5a43 !important;}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-photo-caption {
+  border:0 !important;
+  background:rgba(24,49,37,.78) !important;
+  color:#fff !important;
+  border-radius:8px !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {
+  padding:clamp(18px,2.1vw,30px) !important;
+  border:0 !important;
+  border-radius:15px !important;
+  background:linear-gradient(145deg,rgba(255,253,248,.88),rgba(241,246,239,.80)) !important;
+  box-shadow:0 5px 20px rgba(31,61,43,.055) !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {
+  color:#795d42 !important;
+  margin-bottom:8px !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {
+  font-size:clamp(25px,2.4vw,34px) !important;
+  color:#173e2e !important;
+  margin-bottom:10px !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {
+  color:#53675b !important;
+  margin-bottom:15px !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {
+  min-height:0 !important;
+  padding:12px 15px !important;
+  margin-bottom:16px !important;
+  border:0 !important;
+  border-left:3px solid #1f5a43 !important;
+  border-radius:9px !important;
+  background:linear-gradient(110deg,rgba(31,90,67,.12),rgba(31,90,67,.045)) !important;
+  box-shadow:none !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price::before {content:none !important;}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-current {
+  font-size:clamp(20px,1.9vw,27px) !important;
+  color:#1f5a43 !important;
+  letter-spacing:-.025em !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-specifications {margin-bottom:16px !important;}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications > h2 {
+  margin:0 0 8px !important;
+  padding:9px 12px !important;
+  border-radius:8px !important;
+  background:#1f5a43 !important;
+  color:#fff !important;
+  font:650 12px/1.4 "Inter","DM Sans",system-ui,sans-serif !important;
+  letter-spacing:0 !important;
+  text-transform:none !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl {border:0 !important;border-radius:9px !important;}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div {background:#e7efe6 !important;}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div:nth-child(even) {background:#f3f5ee !important;}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div + div {border-top:1px solid rgba(31,90,67,.10) !important;}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-enquiry-button.pub-whatsapp-enquiry {
+  min-height:42px !important;
+  padding:10px 15px !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.14),transparent 70%),#1f5a43 !important;
+  border:0 !important;
+  border-radius:9px !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.18),0 4px 12px rgba(31,90,67,.14) !important;
+}
+.admin-app[data-theme="dark"] dialog.modal.catalog-private-preview-dialog[open] {background:#202825 !important;border:0 !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog > .modal-heading {background:linear-gradient(115deg,#173b2c,#24543e) !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog > .modal-heading > .icon-button {color:#fff !important;background:rgba(255,255,255,.12) !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog > .catalog-private-preview-note {color:#c4d9cc !important;background:rgba(88,145,108,.16) !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-gallery {background:#29332e !important;border:0 !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image {background:#303934 !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {background:linear-gradient(145deg,#303b35,#252e29) !important;border:0 !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-eyebrow {color:#cbb08e !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > h1 {color:#f0f9f1 !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-description {color:#c2d4c5 !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy > .pub-detail-price {background:#31483b !important;border-left-color:#78ac8e !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-detail-price .catalog-price-current {color:#e1f3e6 !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications > h2 {background:#285741 !important;color:#fff !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div {background:#304138 !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div:nth-child(even) {background:#29362f !important;}
+.admin-app[data-theme="dark"] .catalog-private-preview-dialog .pub-private-preview .pub-specifications dl > div + div {border-top-color:rgba(154,195,167,.14) !important;}
+@media(max-width:899px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {padding:18px !important;}
+}
+@media(max-width:480px) {
+  .admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-copy {padding:15px !important;}
+}
