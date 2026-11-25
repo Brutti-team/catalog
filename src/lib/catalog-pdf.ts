@@ -50,7 +50,7 @@ async function photo(url:string):Promise<HTMLImageElement> {
   const controller=new AbortController();const timeout=window.setTimeout(()=>controller.abort(),15000);
   try {
     const response=await fetch(publicAssetUrl(url),{signal:controller.signal,mode:"cors",credentials:"omit"});
-    if(!response.ok)throw new Error("Image unavailable");
+    if(!response.ok)throw new Error(`Image unavailable (HTTP ${response.status}): ${url}`);
     const objectUrl=URL.createObjectURL(await response.blob());
     try {
       const image=new Image();image.src=objectUrl;await image.decode();return image;
@@ -150,8 +150,18 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   let missing=0;
   const push=async(canvas:HTMLCanvasElement,links?:PdfLink[])=>{pages.push(await jpeg(canvas,links));onProgress(pages.length,total);};
   const originalCover=async(url:string)=>{
-    const {canvas,ctx}=sheet();const img=await photo(url);
-    ctx.fillStyle="#fff";ctx.fillRect(0,0,PW,PH);fit(ctx,img,0,0,PW,PH);await push(canvas);
+    const {canvas,ctx}=sheet();
+    try {
+      let img:HTMLImageElement;
+      try { img=await photo(url); } catch(firstError) {
+        console.warn("[Catalogue PDF] Retrying original cover",url,firstError);
+        try { img=await photo(url); } catch(error) {
+          console.error("[Catalogue PDF] Original cover unavailable",url,error);
+          throw new Error("The original catalogue cover could not be loaded. Refresh the page and try again.");
+        }
+      }
+      ctx.fillStyle="#fff";ctx.fillRect(0,0,PW,PH);fit(ctx,img,0,0,PW,PH);await push(canvas);
+    } finally {canvas.width=1;canvas.height=1;}
   };
   // Mandatory originals; never silently substitute a generic front/back cover.
   await originalCover(IMPACT_FRONT);
@@ -174,13 +184,20 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   }
   for(const [index,section] of plan.entries()) {
     const {canvas,ctx}=sheet();
+    let referenceLoaded=false;
     if(section.cover && section.reference) {
-      const img=await photo(section.cover);ctx.fillStyle="#fff";ctx.fillRect(0,0,PW,PH);fit(ctx,img,0,0,PW,PH);
-      // Preserve the original art in full; page number sits in the white margin if possible.
-    } else {
+      try {
+        const img=await photo(section.cover);ctx.fillStyle="#fff";ctx.fillRect(0,0,PW,PH);fit(ctx,img,0,0,PW,PH);
+        referenceLoaded=true;
+      } catch(error) {
+        missing++;
+        console.warn("[Catalogue PDF] Category cover unavailable",section.name,error);
+      }
+    }
+    if(!referenceLoaded) {
       header(ctx,"SECTION "+String(index+1).padStart(2,"0"));
       text(ctx,section.name,40,112,30,GREEN,700);
-      if(section.cover)try {fit(ctx,await photo(section.cover),40,145,540,630);}catch {missing++;}
+      if(section.cover && !section.reference)try {fit(ctx,await photo(section.cover),40,145,540,630);}catch(error) {missing++;console.warn("[Catalogue PDF] Category image unavailable",section.name,error);}
       footer(ctx,pages.length+1);
     }
     await push(canvas);

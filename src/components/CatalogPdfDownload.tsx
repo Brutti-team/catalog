@@ -30,7 +30,12 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
     try {
       const result=await downloadCustomerCatalogue(products,categories,mode,category,favourites,(done,total)=>setProgress(Math.round(done/total*100)));
       setMessage(result.missing ? "PDF created. "+result.missing+" product or category image(s) could not be loaded." : "Your catalogue PDF is ready.");
-    } catch {setFailed(true);setMessage("Unable to create the PDF. Check your connection and try again.");}
+    } catch(error) {
+      console.error("[Catalogue PDF] Download failed", {mode,category,productCount:count}, error);
+      setFailed(true);
+      setMessage(error instanceof Error && error.message.startsWith("The original catalogue cover")
+        ? error.message : "Unable to create the PDF. Refresh the page and try again.");
+    }
     finally {running.current=false;setProgress(null);}
   };
   return <>

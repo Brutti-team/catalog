@@ -1,7 +1,8 @@
 import type { Category, Product } from "./types";
 
 export type PdfSelection = "all" | "best" | "category" | "favourites";
-const assets = "https://raw.githubusercontent.com/Brutti-team/benua-brutti-website/ad24b1dba287369fee0acbf7e2998d5b3d4cdaee/public/assets/";
+// Bundle the original Brutti artwork locally to avoid cross-origin failures.
+const assets = "/reference/pdf/";
 export const IMPACT_FRONT = assets + "impact-report/page-01.webp";
 export const IMPACT_BACK = assets + "impact-report/page-40.webp";
 
