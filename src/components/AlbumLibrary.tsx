@@ -207,8 +207,13 @@ export default function AlbumLibrary({
   const publishedCount = photos.filter(isPublishedPhoto).length;
   const groups = useMemo(() => categories.map(item => {
     const items = photos.filter(photo => albumPhotoCategoryIds(photo).includes(item.id));
-    return { category: item, items, cover: items.find(photo => photo.url)?.url };
-  }), [categories, photos]);
+    // Prefer a deliberately selected product cover, then the first actual
+    // product's primary photo, before falling back to loose Album images.
+    const productImages = products.filter(product=>product.categoryId===item.id)
+      .flatMap(product=>product.images.filter(image=>image.url));
+    const curatedCover = productImages.find(image=>image.url===item.cover_image_url)?.url;
+    return { category: item, items, cover: curatedCover || productImages[0]?.url || items.find(photo => photo.url)?.url };
+  }), [categories, photos, products]);
   const ungrouped = useMemo(() => photos.filter(uncategorised), [photos]);
   const visible = useMemo(()=>photos.filter(photo=>{
     const ids = albumPhotoCategoryIds(photo);
@@ -255,7 +260,8 @@ export default function AlbumLibrary({
   const uniqueFolderPhotos = (items: AlbumPhoto[]) => Array.from(new Map(items.map(photo=>[photo.key,photo])).values());
   const folderGroups = publishedView ? categories.map(item=>{
     const items = uniqueFolderPhotos(publishedSearchGroups.filter(group=>group.product.categoryId===item.id).flatMap(group=>group.items));
-    return {category:item,items,cover:items[0]?.url};
+    const curatedCover = items.find(photo=>photo.url===item.cover_image_url)?.url;
+    return {category:item,items,cover:curatedCover || items[0]?.url};
   }).filter(group=>group.items.length>0) : groups;
   const folderUngrouped = publishedView
     ? uniqueFolderPhotos(publishedSearchGroups.filter(group=>!categories.some(item=>item.id===group.product.categoryId)).flatMap(group=>group.items))
@@ -797,7 +803,10 @@ export default function AlbumLibrary({
               <button type="button" key={item.id} className="brutti-album__folder"
                 onClick={()=>openFolder(item.id)} aria-label={`Open ${item.name}: ${items.length} photos`}>
                 <span className="brutti-album__folder-cover">
-                  {cover?<SafeImage src={cover} alt="" loading="lazy"/>:<Folder size={44}/>}
+                  {cover?<SafeImage src={cover} alt="" loading="lazy" style={{
+                    position:"absolute",inset:0,width:"100%",height:"100%",maxWidth:"100%",maxHeight:"100%",
+                    objectFit:"contain",objectPosition:"center",transform:"none",display:"block"
+                  }}/>:<Folder size={44}/>} 
                   <span className="brutti-album__folder-mark"><FolderOpen size={18}/></span>
                 </span>
                 <span className="brutti-album__folder-copy"><strong>{item.name}</strong><small>{items.length} photos</small></span>
