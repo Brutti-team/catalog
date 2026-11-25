@@ -774,6 +774,11 @@ export default function App() {
           )}
           {tab === "album" && (
             <AlbumLibrary products={data.products} categories={data.categories}
+              onDeleteProduct={(id) => {
+                if (busy) return;
+                const product = data.products.find(item => item.id === id);
+                if (product) { setProductDeleteError(""); setProductToDelete(product); }
+              }}
               onAddCategory={accountRole !== "editor"
                 ? () => editCategory({ id: crypto.randomUUID(), name: "", description: "" })
                 : undefined}
