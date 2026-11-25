@@ -34,8 +34,9 @@ function CustomerInterestChart({ data, days }: { data: CustomerInsightData; days
       range: rows.length ? fdate(rows[0].date) + " – " + fdate(rows[rows.length - 1].date) : "",
     };
   });
-  const max = Math.max(2, ...bins.map(bin => bin.views));
-  const yTop = 18, yBase = 131, xStart = 52, xEnd = 736;
+  const peak = Math.max(0, ...bins.map(bin => bin.views));
+  const max = Math.max(2, Math.ceil(peak / 2) * 2);
+  const yTop = 24, yBase = 204, xStart = 52, xEnd = 736;
   const slot = (xEnd - xStart) / Math.max(1, bins.length);
   const bw = Math.min(66, slot * .63);
   const y = (v: number) => yBase - v / max * (yBase - yTop);
@@ -46,11 +47,11 @@ function CustomerInterestChart({ data, days }: { data: CustomerInsightData; days
         <div><span className="customer-insights-chart-dot" /><strong>Product interest (views)</strong></div>
         <span>{days === 7 ? "Daily" : days === 30 ? "5-day groups" : "15-day groups"}</span>
       </div>
-      <svg viewBox="0 0 766 165" role="img"
+      <svg viewBox="0 0 766 238" role="img"
         aria-label={`Product views in the last ${days} days: ${compact(data.totalViews)}. Each bar represents a date group.`}>
         <defs><linearGradient id={`customer-gradient-${id}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#236344" />
-          <stop offset="100%" stopColor="#a1c3a5" />
+          <stop offset="0%" stopColor="#1f5a43" />
+          <stop offset="100%" stopColor="#6ca584" />
         </linearGradient></defs>
         {grid.map((value, index) => <g key={index} className="customer-insights-gridline">
           <line x1={xStart} x2={xEnd} y1={y(value)} y2={y(value)} />
@@ -61,14 +62,13 @@ function CustomerInterestChart({ data, days }: { data: CustomerInsightData; days
           const height = bin.views / max * (yBase - yTop);
           return <g key={bin.range}>
             <title>{bin.range}: {bin.views} views</title>
-            <rect className="customer-insights-bar-track" x={x - bw / 2} y={yTop} width={bw} height={yBase - yTop} rx="9" />
             {bin.views > 0
               ? <rect x={x - bw / 2} y={yBase - height} width={bw} height={height}
                   rx={Math.min(9, height / 2)} fill={`url(#customer-gradient-${id})`} />
               : <rect className="customer-insights-zero" x={x - bw / 2} y={yBase - 2} width={bw} height={2} rx="1" />}
             {bin.views > 0 && <text className="customer-insights-bar-number" x={x}
-              y={Math.max(18, yBase - height - 8)} textAnchor="middle">{compact(bin.views)}</text>}
-            <text className="customer-insights-x-label" x={x} y="156" textAnchor="middle">{bin.label}</text>
+              y={yBase - height - 8} textAnchor="middle">{compact(bin.views)}</text>}
+            <text className="customer-insights-x-label" x={x} y="226" textAnchor="middle">{bin.label}</text>
           </g>;
         })}
       </svg>
@@ -193,7 +193,7 @@ export default function CustomerInsights({ products, categories, loading: produc
           </div>
           <div className="customer-insights-mid">
             <div className="customer-insights-chart-wrap">
-              {data ? <CustomerInterestChart data={data} days={days} /> :
+              {!busy && data ? <CustomerInterestChart data={data} days={days} /> :
                 <p className="customer-insights-loading">Loading customer interest…</p>}
             </div>
             {!compactLayout && <div className="customer-insights-categories">
