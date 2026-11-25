@@ -58,7 +58,7 @@ export default function AlbumLibrary({
   const [records, setRecords] = useState<AlbumRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | "by-category" | "by-product" | "published">(picker?"all":"by-product");
+  const [filter, setFilter] = useState<"all" | "by-category" | "by-product" | "published">(picker?"all":"published");
   const [selectedProductFolder, setSelectedProductFolder] = useState<string | null>(null);
   const [exportingFolder, setExportingFolder] = useState(false);
   const [viewMode, setViewMode] = useState<"gallery" | "table">("gallery");
@@ -637,10 +637,10 @@ export default function AlbumLibrary({
       {picker && albumStats}
       <div className="brutti-album__toolbar">
         <div className="brutti-album__tabs" aria-label="Album views">
-          <button type="button" className={filter==="published"?"is-current":""} aria-pressed={filter==="published"} onClick={()=>selectFilter("published")}>Published</button>
+          <button type="button" className={filter==="published"?"is-current":""} aria-pressed={filter==="published"} onClick={()=>selectFilter("published")}><Check size={14} aria-hidden="true"/> Published</button>
           <button type="button" className={filter==="by-category"?"is-current":""} aria-pressed={filter==="by-category"} onClick={()=>selectFilter("by-category")}><Folder size={14}/> By category</button>
           <button type="button" className={filter==="by-product"?"is-current":""} aria-pressed={filter==="by-product"} onClick={()=>selectFilter("by-product")}><Package size={14}/> By product</button>
-          <button type="button" className={filter==="all"?"is-current":""} aria-pressed={filter==="all"} onClick={()=>selectFilter("all")}>All photos</button>
+          <button type="button" className={filter==="all"?"is-current":""} aria-pressed={filter==="all"} onClick={()=>selectFilter("all")}><Images size={14} aria-hidden="true"/> All photos</button>
         </div>
         <label className="brutti-album__search"><Search size={17}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search photos or product names…" aria-label="Search Album"/></label>
         {!categoryFolderView && <div ref={categoryMenuRef}
