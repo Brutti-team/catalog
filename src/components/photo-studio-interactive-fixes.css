@@ -515,3 +515,26 @@
     display: none;
   }
 }
+
+
+/* Expand the exact selected crop to the largest proportional size available.
+   The crop selection itself stays intact until the user applies the edit. */
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-stage.is-crop-preview {
+  container-type:size;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-stage.is-crop-preview .brutti-photo-crop-image-frame {
+  width:auto !important;
+  height:auto !important;
+  max-width:100cqw !important;
+  max-height:100cqh !important;
+  border:0;
+  overflow:hidden !important;
+  cursor:default !important;
+}
+.admin-app .brutti-photo-studio-v2 .brutti-photo-studio-stage.is-crop-preview .brutti-photo-crop-image-frame canvas {
+  width:auto;
+  height:auto;
+  max-width:100cqw;
+  max-height:100cqh;
+  object-fit:contain;
+}
