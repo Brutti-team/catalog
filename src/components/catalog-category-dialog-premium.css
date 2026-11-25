@@ -444,3 +444,15 @@
 .admin-app.brutti-staff-redesign .category-editor-dialog .category-album-picker .category-cover-option {cursor:pointer;}
 .admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .category-album-search {background:#29382f;border-color:#4b6253;color:#c2ddca;}
 .admin-app.brutti-staff-redesign[data-theme="dark"] .category-editor-dialog .category-album-search input {background:transparent;}
+
+
+/* Hide visual scrollbars without disabling scrolling or keyboard navigation. */
+.admin-app.brutti-staff-redesign .category-editor-dialog :is(.category-editor-scroll-body,.category-cover-picker-grid,textarea) {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none;
+}
+.admin-app.brutti-staff-redesign .category-editor-dialog :is(.category-editor-scroll-body,.category-cover-picker-grid,textarea)::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
