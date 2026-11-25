@@ -99,6 +99,7 @@ function CustomerInterestChart({ data, days, onOpen }: { data: CustomerInsightDa
   const bw = Math.min(66, slot * .63);
   const y = (v: number) => yBase - v / max * (yBase - yTop);
   const grid = [max, Math.round(max / 2), 0];
+  const pastel = [["#aabce8","#7895d0"],["#d4c3e9","#a58bc9"],["#f0ccbc","#d59b86"],["#b5cde8","#83a6ce"],["#e6c0d2","#c693b3"],["#c5b8e8","#9a8bc9"],["#e8d2ad","#c3a477"]];
   return (
     <div className="customer-insights-chart customer-insights-chart-interactive" onClick={() => onOpen({ kind: "trend" })}>
       <div className="customer-insights-chart-heading" role="button" tabIndex={0} aria-label="View daily product interest" title="View daily product interest" onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onOpen({ kind: "trend" }); } }}>
@@ -107,10 +108,10 @@ function CustomerInterestChart({ data, days, onOpen }: { data: CustomerInsightDa
       </div>
       <svg viewBox="0 0 766 238" role="group"
         aria-label={`Product views in the last ${days} days: ${compact(data.totalViews)}. Each bar represents a date group.`}>
-        <defs><linearGradient id={`customer-gradient-${id}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#1f5a43" />
-          <stop offset="100%" stopColor="#6ca584" />
-        </linearGradient></defs>
+        <defs>{pastel.map(([light, shade], index) => <linearGradient key={index} id={`customer-gradient-${id}-${index}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={light} />
+          <stop offset="100%" stopColor={shade} />
+        </linearGradient>)}</defs>
         {grid.map((value, index) => <g key={index} className="customer-insights-gridline">
           <line x1={xStart} x2={xEnd} y1={y(value)} y2={y(value)} />
           <text x={xStart - 15} y={y(value) + 5} textAnchor="end">{value}</text>
@@ -123,7 +124,7 @@ function CustomerInterestChart({ data, days, onOpen }: { data: CustomerInsightDa
             <title>{bin.range}: {bin.views} views</title>
             {bin.views > 0
               ? <rect x={x - bw / 2} y={yBase - height} width={bw} height={height}
-                  rx={Math.min(9, height / 2)} fill={`url(#customer-gradient-${id})`} />
+                  rx={Math.min(9, height / 2)} fill={`url(#customer-gradient-${id}-${index % pastel.length})`} />
               : <rect className="customer-insights-zero" x={x - bw / 2} y={yBase - 2} width={bw} height={2} rx="1" />}
             {bin.views > 0 && <text className="customer-insights-bar-number" x={x}
               y={yBase - height - 8} textAnchor="middle">{compact(bin.views)}</text>}
@@ -294,22 +295,39 @@ export default function CustomerInsights({ products, categories, loading: produc
         title={drilldown.kind === "trend" ? "Product interest" : drilldown.kind === "top" ? "Top product" : drilldown.kind === "ratio" ? "Click-to-view ratio" : "Views per session"}
         eyebrow="PRODUCT VIEW ANALYTICS"
         description={drilldown.kind === "trend" && drilldown.start && drilldown.end ? fdate(drilldown.start) + " – " + fdate(drilldown.end) + " · Malaysia time" : "Last " + days + " days · Malaysia time"}
-        className="customer-session-dialog customer-metric-dialog" onClose={() => setDrilldown(null)}>
+        className={`customer-session-dialog customer-metric-dialog customer-insights-glass-dialog is-${drilldown.kind}`} onClose={() => setDrilldown(null)}>
         <div className="customer-metric-detail customer-insights-drilldown">
           {drilldown.kind === "trend" ? (() => {
             const rows = data.trend.filter(row => (!drilldown.start || row.date >= drilldown.start) && (!drilldown.end || row.date <= drilldown.end));
+            const peak = Math.max(1, ...rows.map(row => row.views));
             return <>
-              <section className="customer-metric-detail-summary"><div className="customer-metric-detail-summary-copy"><small>Product views in selected dates</small><strong>{compact(rows.reduce((sum,row) => sum + row.views, 0))}</strong><p>Recorded product detail views by date.</p></div></section>
-              <div className="customer-metric-detail-list">{rows.map(row => <div className="customer-metric-detail-row" key={row.date}><div className="customer-metric-detail-product"><strong>{fdate(row.date)}</strong><small>{row.date}</small></div><div className="customer-metric-detail-stat"><strong>{compact(row.views)}</strong><small> views</small></div></div>)}</div>
-              {!rows.length && <p className="customer-metric-detail-empty">No daily records for this period.</p>}
+              <section className="insight-glass-hero">
+                <span className="insight-glass-icon"><ChartNoAxesCombined size={21} aria-hidden="true"/></span>
+                <div className="insight-glass-copy"><small>Total product views</small><strong>{compact(rows.reduce((sum,row) => sum + row.views, 0))}</strong><p>Detail views in the selected dates</p></div>
+              </section>
+              <div className="insight-glass-section-head"><strong>Daily breakdown</strong><small>{rows.length} {rows.length === 1 ? "day" : "days"}</small></div>
+              {rows.length ? <div className="insight-glass-days">{rows.map(row => <div className="insight-glass-day" key={row.date}>
+                <time dateTime={row.date}>{fdate(row.date)}</time>
+                <span className="insight-glass-track" aria-hidden="true"><i style={{width: (row.views / peak * 100) + "%"}} /></span>
+                <strong>{compact(row.views)} <small>views</small></strong>
+              </div>)}</div> : <p className="customer-metric-detail-empty">No daily records for this period.</p>}
             </>;
           })() : drilldown.kind === "top" ? <>
-            <section className="customer-metric-detail-summary"><span className="customer-metric-detail-image">{topProduct?.images[0]?.url ? <SafeImage src={topProduct.images[0].url} alt="" /> : <Layers3 size={22}/>}</span><div className="customer-metric-detail-summary-copy"><small>Most viewed product</small><strong>{topProduct?.name ?? (data.topProductId ? "Product unavailable" : "No product views yet")}</strong><p>{data.topProductId ? compact(data.topProductViews) + " views · " + compact(data.topProductClicks) + " clicks" : "No recorded product interest for this period."}</p></div></section>
-            <div className="customer-metric-detail-list"><div className="customer-metric-detail-row"><div className="customer-metric-detail-product"><strong>Product views</strong></div><div className="customer-metric-detail-stat"><strong>{compact(data.topProductViews)}</strong></div></div><div className="customer-metric-detail-row"><div className="customer-metric-detail-product"><strong>Product clicks</strong></div><div className="customer-metric-detail-stat"><strong>{compact(data.topProductClicks)}</strong></div></div></div>
+            <section className="insight-glass-hero insight-glass-product">
+              <span className="insight-glass-photo">{topProduct?.images[0]?.url ? <SafeImage src={topProduct.images[0].url} alt="" /> : <Layers3 size={25} aria-hidden="true"/>}</span>
+              <div className="insight-glass-copy"><small>Most viewed product</small><strong>{topProduct?.name ?? (data.topProductId ? "Product unavailable" : "No product views yet")}</strong><p>{topProduct?.sku || (data.topProductId ? "Catalog product" : "No recorded interest for this period.")}</p></div>
+            </section>
+            <div className="insight-glass-stat-grid">
+              <div className="insight-glass-stat"><span className="insight-glass-stat-icon is-blue"><Eye size={17} aria-hidden="true"/></span><div><small>Product views</small><strong>{compact(data.topProductViews)}</strong></div></div>
+              <div className="insight-glass-stat"><span className="insight-glass-stat-icon is-peach"><MousePointerClick size={17} aria-hidden="true"/></span><div><small>Product clicks</small><strong>{compact(data.topProductClicks)}</strong></div></div>
+            </div>
           </> : <>
-            <section className="customer-metric-detail-summary"><div className="customer-metric-detail-summary-copy"><small>{drilldown.kind === "ratio" ? "Clicks ÷ views × 100" : "Views ÷ sessions"}</small><strong>{drilldown.kind === "ratio" ? clickRate : viewsPerSession}</strong><p>{drilldown.kind === "ratio" ? "Ratio of recorded product card clicks to detail views; not a conversion rate." : "Average product detail views per recorded browser session."}</p></div></section>
-            <div className="customer-metric-detail-list">{(drilldown.kind === "ratio" ? [{label:"Product clicks",value:data.productClicks},{label:"Product views",value:data.totalViews}] : [{label:"Product views",value:data.totalViews},{label:"Visitor sessions",value:data.visitorSessions}]).map(row => <div className="customer-metric-detail-row" key={row.label}><div className="customer-metric-detail-product"><strong>{row.label}</strong></div><div className="customer-metric-detail-stat"><strong>{compact(row.value)}</strong></div></div>)}</div>
-            <p className="customer-metric-detail-footnote">{drilldown.kind === "ratio" ? "A ratio is unavailable when there are no views." : "Sessions are anonymous browser sessions, not unique people."}</p>
+            <section className="insight-glass-hero">
+              <span className="insight-glass-icon">{drilldown.kind === "ratio" ? <Zap size={21} aria-hidden="true"/> : <UsersRound size={21} aria-hidden="true"/>}</span>
+              <div className="insight-glass-copy"><small>{drilldown.kind === "ratio" ? "Click-to-view ratio" : "Average views per session"}</small><strong>{drilldown.kind === "ratio" ? clickRate : viewsPerSession}</strong><p>{drilldown.kind === "ratio" ? "Clicks ÷ views × 100" : "Views ÷ sessions"}</p></div>
+            </section>
+            <div className="insight-glass-stat-grid">{(drilldown.kind === "ratio" ? [{label:"Product clicks",value:data.productClicks,Icon:MousePointerClick,tone:"peach"},{label:"Product views",value:data.totalViews,Icon:Eye,tone:"blue"}] : [{label:"Product views",value:data.totalViews,Icon:Eye,tone:"blue"},{label:"Visitor sessions",value:data.visitorSessions,Icon:UsersRound,tone:"lavender"}]).map(row => <div className="insight-glass-stat" key={row.label}><span className={"insight-glass-stat-icon is-"+row.tone}><row.Icon size={17} aria-hidden="true"/></span><div><small>{row.label}</small><strong>{compact(row.value)}</strong></div></div>)}</div>
+            <p className="insight-glass-note">{drilldown.kind === "ratio" ? "This is a ratio of card clicks to detail views, not a conversion rate. Unavailable when there are no views." : "Sessions are anonymous browser sessions, not unique people."}</p>
           </>}
         </div>
       </Modal>}
