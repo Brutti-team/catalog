@@ -930,15 +930,11 @@ export default function App() {
                   <SortFilter value={sort} onChange={setSort} />
                 </div>
               </div>
-              {tab === "products" && (
-                <div className="catalog-products-filter-summary" aria-live="polite">
-                  <span><strong>{filtered.length}</strong> matching {filtered.length === 1 ? "product" : "products"}</span>
-                  {(search || status !== "all" || category !== "all") && (
-                    <button type="button" onClick={() => { setSearch(""); setStatus("all"); setCategory("all"); }}>
-                      <X size={13} aria-hidden="true" /> Clear filters
-                    </button>
-                  )}
-                  <span className="catalog-products-summary-hint">Select a product to view and edit its details</span>
+              {tab === "products" && (search || status !== "all" || category !== "all") && (
+                <div className="catalog-products-filter-summary">
+                  <button type="button" onClick={() => { setSearch(""); setStatus("all"); setCategory("all"); }}>
+                    <X size={13} aria-hidden="true" /> Clear filters
+                  </button>
                 </div>
               )}
               {tab === "products" && productView === "gallery" ? (
