@@ -55,15 +55,16 @@ export default function ShowroomSections({
     const viewport = viewportRef.current;
     if (!viewport) return;
 
-    // Show the same first category as Staff Portal after any Admin change.
-    // Slow automatic motion resumes after a short reading pause.
+    // Begin autoplay as soon as the category rail mounts after a refresh.
+    // Keep the first category aligned, without an initial reading delay.
     viewport.scrollLeft = 0;
-    manualUntil.current = performance.now() + 4500;
+    manualUntil.current = 0;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
     let lastTime = 0;
     let loopWidth = 0;
+    let carry = 0;
     const measure = () => {
       loopWidth = viewport.querySelector<HTMLElement>(".pub-category-rail-group")?.offsetWidth ?? 0;
     };
@@ -72,9 +73,18 @@ export default function ShowroomSections({
       if (lastTime === 0) lastTime = now;
       const delta = Math.min(now - lastTime, 60);
       lastTime = now;
-      if (!document.hidden && !reducedMotion.matches && !pointerPaused.current && now > manualUntil.current && loopWidth > 0) {
-        const next = viewport.scrollLeft + delta * 0.027;
-        viewport.scrollLeft = next >= loopWidth ? next - loopWidth : next;
+      if (!document.hidden && !reducedMotion.matches && !pointerPaused.current && now > manualUntil.current && loopWidth > 0 && viewport.scrollWidth - viewport.clientWidth >= loopWidth) {
+        // Carry fractional pixels between frames: assigning subpixel increments
+        // to scrollLeft alone can round to zero on high-refresh displays.
+        carry += delta * 0.036;
+        const step = Math.floor(carry);
+        if (step > 0) {
+          carry -= step;
+          const next = (viewport.scrollLeft + step) % loopWidth;
+          viewport.scrollTo({ left: next, behavior: "instant" });
+        }
+      } else {
+        carry = 0;
       }
       frame = window.requestAnimationFrame(animate);
     };
