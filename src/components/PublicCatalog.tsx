@@ -805,6 +805,7 @@ export default function PublicCatalog({
 
                   </div>
                   <div className="pub-detail-copy">
+                    {previewProduct && <p className="catalog-preview-kicker" title="Current edits only. Opening this preview does not save or publish changes.">PRIVATE CATALOG PREVIEW</p>}
                     <p className="pub-eyebrow">
                       {categoryName(product.categoryId)}{previewProduct ? "" : ` · ${product.sku}`}
                     </p>
@@ -821,7 +822,7 @@ export default function PublicCatalog({
                     <p className="pub-detail-price">
                       {previewProduct && product.price === null
                         ? <span className="catalog-price-current">Price on request</span>
-                        : <ProductPrice product={product} />}
+                        : <ProductPrice product={product} stackedBasis={Boolean(previewProduct)} />}
                     </p>
                     {previewProduct && (
                       <>
