@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
-import { AlertCircle, CalendarDays, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight, UserPlus, Send, Mail } from "lucide-react";
+import { AlertCircle, CalendarDays, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight, UserPlus, Send, Mail, ChevronDown, Check, ListFilter, Pencil, Eye, EyeOff, Archive, type LucideIcon } from "lucide-react";
 import {
   catalogActivityMYTRange, getAccountSummary, initials, listCatalogActivity, listCatalogStaff,
   roleLabel, updateOwnDisplayName, updateStaffRole, inviteCatalogStaff, listPendingCatalogStaff,
@@ -31,6 +31,9 @@ function actionText(event: ActivityEntry): string {
     products_updated: "Product updated",
     products_deleted: "Product deleted",
     products_id_migrated: "Product IDs migrated",
+    products_published: "Product published",
+    products_unpublished: "Product unpublished",
+    products_archived: "Product archived",
     categories_created: "Category added",
     categories_updated: "Category updated",
     categories_deleted: "Category deleted",
@@ -61,7 +64,23 @@ export default function AccountCenter({
   const [members, setMembers] = useState<StaffMember[]>([]);
   const [pendingStaff, setPendingStaff] = useState<PendingCatalogStaff[]>([]);
   const [events, setEvents] = useState<ActivityEntry[]>([]);
-  const [activityFilter, setActivityFilter] = useState<"all" | "products" | "categories">("all");
+  const [activityFilter, setActivityFilter] = useState("all");
+  const [activityMenuOpen, setActivityMenuOpen] = useState(false);
+  const activityMenuRef = useRef<HTMLDivElement>(null);
+  const activityTriggerRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!activityMenuOpen) return;
+    const close = (event: PointerEvent) => {
+      if (!activityMenuRef.current?.contains(event.target as Node)) setActivityMenuOpen(false);
+    };
+    const key = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { setActivityMenuOpen(false); activityTriggerRef.current?.focus(); }
+    };
+    document.addEventListener("pointerdown", close);
+    document.addEventListener("keydown", key);
+    return () => { document.removeEventListener("pointerdown", close); document.removeEventListener("keydown", key); };
+  }, [activityMenuOpen]);
+  useEffect(() => { setActivityMenuOpen(false); }, [view, activityPeriod]);
   const [activityPeriod, setActivityPeriod] = useState<ActivityPeriod>("today");
   const [mytTodayStart, setMytTodayStart] = useState(() => catalogActivityMYTRange("today").start);
   const activityLoadRequest = useRef(0);
@@ -192,8 +211,29 @@ export default function AccountCenter({
     setInviteOpen(true);
   }
 
-  const visibleEvents = activityFilter === "all"
-    ? events : events.filter(item => item.resource_type === activityFilter);
+  type FilterOption = { id: string; label: string; icon: LucideIcon; group: string; tone?: string; matches: (entry: ActivityEntry) => boolean };
+  const actionMatches = (entry: ActivityEntry, pattern: RegExp) => pattern.test(entry.action.toLowerCase());
+  const options: FilterOption[] = [
+    {id:"all",label:"All activity",icon:ListFilter,group:"Overview",matches:()=>true},
+    {id:"products",label:"Products",icon:Package,group:"Overview",matches:e=>e.resource_type==="products"},
+    {id:"categories",label:"Categories",icon:Layers3,group:"Overview",matches:e=>e.resource_type==="categories"},
+    {id:"system",label:"System",icon:ShieldCheck,group:"Overview",matches:e=>activityType(e)==="system"},
+    {id:"created",label:"Added / created",icon:Plus,group:"Actions",matches:e=>actionMatches(e,/(?:^|_)(created|added|inserted)(?:_|$)/)},
+    {id:"updated",label:"Edited / updated",icon:Pencil,group:"Actions",matches:e=>actionMatches(e,/(?:^|_)(updated|edited|modified)(?:_|$)/)},
+    {id:"published",label:"Published",icon:Eye,group:"Actions",matches:e=>actionMatches(e,/(?:^|_)(published|publish)(?:_|$)/)},
+    {id:"unpublished",label:"Unpublished",icon:EyeOff,group:"Actions",matches:e=>actionMatches(e,/(?:^|_)(unpublished|unpublish)(?:_|$)/)},
+    {id:"deleted",label:"Deleted",icon:Trash2,group:"Actions",tone:"danger",matches:e=>actionMatches(e,/(?:^|_)(deleted|removed|delete)(?:_|$)/)},
+    {id:"archived",label:"Archived",icon:Archive,group:"Actions",matches:e=>actionMatches(e,/(?:^|_)(archived|archive)(?:_|$)/)},
+    {id:"migrated",label:"ID migration",icon:ArrowLeftRight,group:"Actions",matches:e=>actionMatches(e,/migrated|migration/)},
+  ];
+  const knownActions=options.filter(option=>option.group==="Actions");
+  for(const action of [...new Set(events.map(e=>e.action))].sort()){
+    if(events.some(e=>e.action===action&&knownActions.some(option=>option.matches(e))))continue;
+    const example=events.find(e=>e.action===action);
+    if(example)options.push({id:"action:"+action,label:actionText(example),icon:Clock3,group:"Other recorded actions",matches:e=>e.action===action});
+  }
+  const selectedFilter=options.find(option=>option.id===activityFilter)??options[0];
+  const visibleEvents=events.filter(selectedFilter.matches);
   return (
     <section className={`account-center account-center--${view}`}>
       <div className="account-heading">
@@ -351,22 +391,29 @@ export default function AccountCenter({
                   >{period.label}</button>
                 ))}
               </div>
-              <div className="account-activity-filters" role="group" aria-label="Filter activity by type">
-              {([
-                { id: "all", label: "All activity" },
-                { id: "products", label: "Products" },
-                { id: "categories", label: "Categories" },
-              ] as const).map(filter => (
-                <button
-                  type="button"
-                  key={filter.id}
-                  className={`account-activity-filter${activityFilter === filter.id ? " is-active" : ""}`}
-                  aria-pressed={activityFilter === filter.id}
-                  onClick={() => setActivityFilter(filter.id)}
-                >
-                  {filter.label}
+              <div className="activity-type-dropdown" ref={activityMenuRef}>
+                <button ref={activityTriggerRef} type="button" className={"activity-type-trigger"+(activityMenuOpen?" is-open":"")}
+                  aria-expanded={activityMenuOpen} aria-controls={activityMenuOpen?"activity-type-options":undefined}
+                  onClick={()=>setActivityMenuOpen(open=>!open)}>
+                  <selectedFilter.icon size={17} strokeWidth={1.8} aria-hidden="true"/>
+                  <span>{selectedFilter.label}</span>
+                  <ChevronDown className="activity-type-chevron" size={16} aria-hidden="true"/>
                 </button>
-              ))}
+                {activityMenuOpen&&<div id="activity-type-options" className="activity-type-menu" role="group" aria-label="Filter activity by type"
+                  onBlur={event=>{if(event.relatedTarget&&!activityMenuRef.current?.contains(event.relatedTarget as Node))setActivityMenuOpen(false);}}>
+                  {[...new Set(options.map(option=>option.group))].map(group=><div className="activity-type-group" key={group}>
+                    <p>{group}</p>
+                    {options.filter(option=>option.group===group).map(option=><button type="button" key={option.id}
+                      className={"activity-type-option"+(selectedFilter.id===option.id?" is-selected":"")+(option.tone?" is-"+option.tone:"")}
+                      aria-pressed={selectedFilter.id===option.id}
+                      onClick={()=>{setActivityFilter(option.id);setActivityMenuOpen(false);activityTriggerRef.current?.focus();}}>
+                      <option.icon size={16} strokeWidth={1.8} aria-hidden="true"/>
+                      <span>{option.label}</span>
+                      <small>{events.filter(option.matches).length}</small>
+                      <span className="activity-type-check">{selectedFilter.id===option.id&&<Check size={15} aria-hidden="true"/>}</span>
+                    </button>)}
+                  </div>)}
+                </div>}
               </div>
             </div>
           </div>
@@ -379,17 +426,19 @@ export default function AccountCenter({
           ) : !visibleEvents.length ? (
             <div className="account-activity-empty account-activity-empty-state" role="status">
               <span className="account-activity-empty-icon" aria-hidden="true"><Clock3 size={23} strokeWidth={1.7}/></span>
-              <strong>No {activityFilter} changes in the latest records.</strong>
+              <strong>No matching {selectedFilter.label.toLowerCase()} records.</strong>
               <p>Try another activity type or date to see more changes.</p>
             </div>
           ) : (
             <div className="account-timeline" role="list" aria-label="Recent catalog changes">
               {visibleEvents.map(item => {
                 const type = activityType(item);
-                const deleted = item.action.endsWith("_deleted");
+                const deleted = /(?:^|_)(deleted|removed|delete)(?:_|$)/.test(item.action);
+                const published = /(?:^|_)(published|publish)(?:_|$)/.test(item.action);
+                const unpublished = /(?:^|_)(unpublished|unpublish)(?:_|$)/.test(item.action);
                 const added = item.action.endsWith("_created");
                 const migrated = item.action.includes("migrated");
-                const Icon = migrated ? ArrowLeftRight : deleted ? Trash2 : added ? Plus : type === "categories" ? Layers3 : type === "products" ? Package : ShieldCheck;
+                const Icon = migrated ? ArrowLeftRight : deleted ? Trash2 : published ? Eye : unpublished ? EyeOff : added ? Plus : type === "categories" ? Layers3 : type === "products" ? Package : ShieldCheck;
                 const typeLabel = type === "products" ? "Product" : type === "categories" ? "Category" : "System";
                 return (
                   <article className={`account-event account-event--${type}`} key={item.id} role="listitem">
