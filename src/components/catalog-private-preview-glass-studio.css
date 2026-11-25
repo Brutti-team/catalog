@@ -741,13 +741,23 @@
   border:0 !important;border-radius:0 !important;
   background:#e4ece4 !important;box-shadow:none !important;
 }
-.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image:not(.has-saved-framing) .pub-detail-photo-frame {
-  position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;
-  display:grid;place-items:center;
+/* Match the public Quick View photo panel, retaining saved crop focus and zoom. */
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image > .pub-detail-photo-frame,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image.has-saved-framing > .pub-detail-photo-frame {
+  position:absolute;inset:0;display:block;
+  width:100%;height:100%;max-width:none;max-height:none;
+  aspect-ratio:auto;overflow:hidden;border-radius:0;
+  margin:0;padding:0;
 }
-.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image:not(.has-saved-framing) .pub-detail-photo-frame img {
-  width:100% !important;height:100% !important;max-width:none;max-height:none;
-  object-fit:contain !important;object-position:center !important;transform:none !important;
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image > .pub-detail-photo-frame img,
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image.has-saved-framing > .pub-detail-photo-frame img {
+  display:block;width:100% !important;height:100% !important;
+  max-width:none !important;max-height:none !important;
+  object-fit:cover !important;margin:0 !important;padding:0 !important;
+  border-radius:0 !important;
+}
+.admin-app .catalog-private-preview-dialog .pub-private-preview .pub-detail-main-image:not(.has-saved-framing) > .pub-detail-photo-frame img {
+  object-position:50% 50% !important;transform:none !important;
 }
 .admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-media-tabs {top:14px !important;right:14px !important;}
 .admin-app .catalog-private-preview-dialog .pub-private-preview .catalog-preview-photo-caption {display:none !important;}
