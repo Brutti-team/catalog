@@ -351,9 +351,7 @@ export default function AlbumLibrary({
     photo = {...original, name:displayedName(original)};
     setDownloadError("");
     setDownloadFormat("jpg");
-    // Only standalone photos (or a host without a product editor callback)
-    // need the Album photo details form.
-    setDetailsDraft({
+    const initialDetails: AlbumPhotoDetailsUpdate = {
       name: photo.name,
       description: photo.sourceDetails.description || "",
       categoryId: photo.manualCategoryId,
@@ -361,7 +359,17 @@ export default function AlbumLibrary({
       materials: albumDetailSpec(photo, "materials"),
       colour: albumDetailSpec(photo, "colour"),
       finishing: albumDetailSpec(photo, "finishing"),
-    });
+    };
+    // Open the real Product Editor with an unsaved draft, even for a
+    // standalone Album photo. Opening/closing it does not persist a product.
+    if (!picker && !product && onCreateProductFromPhoto) {
+      setPreview(null);
+      setDetailsError("");
+      onCreateProductFromPhoto(photo, initialDetails);
+      return;
+    }
+    // Retain the standalone metadata form as a fallback for other hosts.
+    setDetailsDraft(initialDetails);
     setAttachProductId("");
     setDetailsError("");
     setPreview(photo);
