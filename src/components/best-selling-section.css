@@ -664,3 +664,11 @@
     padding-bottom:36px !important;
   }
 }
+
+/* Give the divider after Best Sellers breathing room, without affecting the footer or product detail recommendations. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling:has(+ #pub-recommendations) {
+  padding-bottom:clamp(38px,3.5vw,52px) !important;
+}
+@media(max-width:600px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-best-selling:has(+ #pub-recommendations) {padding-bottom:28px !important;}
+}
