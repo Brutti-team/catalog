@@ -27,7 +27,7 @@
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-filter-row {
   border-bottom-color: #dfe7df;
 }
-.pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-products-grid--catalog > .pub-catalog-tile {
+.pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection,#pub-best-selling) .pub-products-grid--catalog > .pub-catalog-tile {
   background:
     radial-gradient(ellipse at 90% 100%,rgba(203,228,210,.20),transparent 60%),
     linear-gradient(145deg,rgba(255,255,255,.89),rgba(243,249,245,.69));
