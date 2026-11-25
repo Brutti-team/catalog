@@ -225,3 +225,23 @@ export async function listCatalogActivity(period: ActivityPeriod = "all"): Promi
   if (error) throw new Error(error.message);
   return (data || []) as ActivityEntry[];
 }
+
+
+/** Overview only: three newest real product additions/edits for the current MYT day. */
+export async function getTodayProductUpdates(now: Date = new Date()): Promise<ActivityEntry[]> {
+  const access = await getAuthState();
+  if (!access.authenticated || !access.isAdmin)
+    throw new Error("An approved catalog administrator is required to view activity.");
+  const { start, end } = catalogActivityMYTRange("today", now);
+  const { data, error } = await catalogClient()
+    .from("catalog_activity")
+    .select("id,actor_id,actor_email,action,resource_type,resource_name,resource_id,created_at")
+    .eq("resource_type", "products")
+    .in("action", ["products_created", "products_updated"])
+    .gte("created_at", start).lt("created_at", end)
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
+    .limit(3);
+  if (error) throw new Error(error.message);
+  return (data || []) as ActivityEntry[];
+}
