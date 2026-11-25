@@ -7,6 +7,7 @@ import { categoryCover } from "./lib/category-covers";
 import { curatedCategoryCover } from "./lib/curated-category-covers";
 import { resolveAppRoute } from "./lib/routes";
 import { useState, useEffect, useCallback, useRef, type FormEvent } from "react";
+import { createPortal } from "react-dom";
 import {
   LayoutDashboard,
   Package,
@@ -179,6 +180,32 @@ export default function App() {
   const [mobileNav, setMobileNav] = useState(false);
   // Open the full sidebar by default so names and live counts stay visible.
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [railTooltip, setRailTooltip] = useState<{ label: string; left: number; top: number } | null>(null);
+  const showRailTooltip = (target: EventTarget | null, rail: HTMLElement) => {
+    if (!sidebarCollapsed || !window.matchMedia("(min-width: 801px)").matches || !(target instanceof Element)) return;
+    const item = target.closest<HTMLElement>("[data-rail-label]");
+    if (!item || !rail.contains(item) || !item.dataset.railLabel) return;
+    const bounds = item.getBoundingClientRect();
+    setRailTooltip({
+      label: item.dataset.railLabel,
+      left: rail.getBoundingClientRect().right + 9,
+      top: Math.max(20, Math.min(window.innerHeight - 20, bounds.top + bounds.height / 2)),
+    });
+  };
+  useEffect(() => {
+    setRailTooltip(null);
+    if (!sidebarCollapsed) return;
+    const hide = () => setRailTooltip(null);
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") hide(); };
+    window.addEventListener("resize", hide);
+    window.addEventListener("scroll", hide, true);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("resize", hide);
+      window.removeEventListener("scroll", hide, true);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [sidebarCollapsed, tab, route]);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const headerSearchRef = useRef<HTMLInputElement>(null);
@@ -536,7 +563,16 @@ export default function App() {
     .slice(0, 5);
   return (
     <div className={"admin-app brutti-staff-redesign catalog-os-layout" + (sidebarCollapsed ? " catalog-sidebar-collapsed" : "")} data-theme={theme} data-active-tab={tab}>
-      <aside className={"sidebar" + (mobileNav ? " sidebar-open" : "")}>
+      <aside className={"sidebar" + (mobileNav ? " sidebar-open" : "")}
+        onPointerOver={event => { if (event.pointerType === "mouse" || event.pointerType === "pen") showRailTooltip(event.target, event.currentTarget); }}
+        onPointerOut={event => {
+          const item = event.target instanceof Element ? event.target.closest("[data-rail-label]") : null;
+          if (item && (!(event.relatedTarget instanceof Node) || !item.contains(event.relatedTarget))) setRailTooltip(null);
+        }}
+        onPointerLeave={() => setRailTooltip(null)}
+        onFocus={event => { if (event.target.matches(":focus-visible")) showRailTooltip(event.target, event.currentTarget); }}
+        onBlur={() => setRailTooltip(null)}
+        onClickCapture={() => setRailTooltip(null)}>
         <div className="catalog-sidebar-head">
           <a href="#/admin" className="catalog-sidebar-identity" onClick={() => switchTab("overview")} aria-label="Brutti Catalog overview">
             <span className="catalog-sidebar-logo">
@@ -546,7 +582,8 @@ export default function App() {
           </a>
           <button type="button" className="catalog-sidebar-toggle" onClick={toggleSidebar}
             aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}>
+            data-rail-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={sidebarCollapsed ? undefined : "Collapse sidebar"}>
             <Menu size={19} aria-hidden="true" />
           </button>
         </div>
@@ -564,7 +601,8 @@ export default function App() {
               key={n.id}
               className={`nav-item ${tab === n.id ? "active" : ""}`}
               aria-current={tab === n.id ? "page" : undefined}
-              title={n.text}
+              data-rail-label={n.text}
+              title={sidebarCollapsed ? undefined : n.text}
               onClick={() => switchTab(n.id)}
             >
               <span className="nav-icon" aria-hidden="true"><n.icon size={19} strokeWidth={1.9} /></span>
@@ -582,7 +620,8 @@ export default function App() {
           {auth.isAdmin && (
             <button className={`nav-item ${tab === "activity" ? "active" : ""}`}
               aria-current={tab === "activity" ? "page" : undefined}
-              title="Activity log"
+              data-rail-label="Activity log"
+              title={sidebarCollapsed ? undefined : "Activity log"}
               onClick={() => switchTab("activity")}>
               <span className="nav-icon" aria-hidden="true"><History size={19} strokeWidth={1.9} /></span> Activity log
             </button>
@@ -590,7 +629,8 @@ export default function App() {
           {auth.isAdmin && accountsReady && (accountRole === "super_admin" || accountRole === "admin") && (
             <button className={`nav-item ${tab === "users" ? "active" : ""}`}
               aria-current={tab === "users" ? "page" : undefined}
-              title="Account Permission"
+              data-rail-label="Account Permission"
+              title={sidebarCollapsed ? undefined : "Account Permission"}
               onClick={() => switchTab("users")}>
               <span className="nav-icon" aria-hidden="true"><ShieldCheck size={19} strokeWidth={1.9} /></span> Account Permission
             </button>
@@ -600,7 +640,7 @@ export default function App() {
           aria-label="Photo background removal progress"/>
         <div className="sidebar-utility">
           <button type="button" className="sidebar-public-link catalog-photo-link"
-            onClick={() => navigate("/catalog")} aria-label="View public catalog" title="View public catalog">
+            onClick={() => navigate("/catalog")} aria-label="View public catalog" data-rail-label="View public catalog" title={sidebarCollapsed ? undefined : "View public catalog"}>
             <SafeImage
               className="catalog-sidebar-product-photo"
               src="/reference/sofa.jpg"
@@ -622,6 +662,15 @@ export default function App() {
           </button>
         </div>
       </aside>
+      {sidebarCollapsed && railTooltip && createPortal(
+        <div aria-hidden="true" className="catalog-rail-tooltip" style={{
+          position: "fixed", zIndex: 10000, left: railTooltip.left, top: railTooltip.top,
+          transform: "translateY(-50%)", pointerEvents: "none",
+          whiteSpace: "nowrap", padding: "8px 12px", borderRadius: 9,
+          background: theme === "dark" ? "rgba(43,65,54,.96)" : "rgba(32,79,56,.94)",
+          color: "#fff", font: '600 12px/1.4 Inter, "DM Sans", system-ui, sans-serif',
+          boxShadow: "0 5px 16px rgba(16,44,29,.18)", backdropFilter: "blur(12px)",
+        }}>{railTooltip.label}</div>, document.body)}
       {mobileNav && (
         <button
           className="nav-backdrop"
