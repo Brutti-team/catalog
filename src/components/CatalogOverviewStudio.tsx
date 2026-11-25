@@ -65,17 +65,9 @@ export default function CatalogOverviewStudio({
       product.categoryId === category.id && product.images.length > 0)?.images[0],
   })).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
   const maxCategoryCount = Math.max(1, ...categoryInsights.map(item => item.count));
-  // Use the earlier white cabinet photograph consistently. Picking the first
-  // database row made the cover unexpectedly switch to event/party images.
-  const featuredPhoto =
-    products.find(product =>
-      product.name === "White Base Cabinet With Timber Display Shelves" &&
-      product.images.length > 0
-    )?.images[0]
-    ?? products.find(product =>
-      product.sku === "PNL-16" && product.images.length > 0
-    )?.images[0]
-    ?? products.find(product => product.images.length > 0)?.images[0];
+  // Fixed dashboard artwork: White Base Cabinet With Timber Display Shelves.
+  // Never derive it from product order, SKU, name, status, or Best Seller flags.
+  const featuredPhoto = { url: "https://lgdjoxafleqnbomtfzqt.supabase.co/storage/v1/object/public/product-images/b38404cc-fb0a-4877-af13-8b63a765f2cf/brutti2025/BRT25-P086/aa6fe1fc6d3903da93b27601725cbb64014207a9dbb29d33dae47cfac07e0352.webp" };
 
   const cards = [
     { title: "Categories", value: categories.length, caption: "Collection groups", icon: Layers3, status: "categories" as const },
