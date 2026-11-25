@@ -306,3 +306,116 @@
 @media(prefers-reduced-motion:reduce) {
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-popover.catalog-notification-menu .catalog-notification-item {transition:none;}
 }
+
+
+/* Analytics detail: compact neutral glass and soft pastel accents.
+   Only the four new drilldowns and product interest chart are affected. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog {
+  --ig-bg:rgba(249,250,252,.96);
+  --ig-surface:rgba(255,255,255,.61);
+  --ig-border:rgba(116,128,152,.18);
+  --ig-ink:#263a37;
+  --ig-muted:#657479;
+  --ig-accent:#65568c;
+  --ig-tint:rgba(222,213,242,.57);
+  --ig-track:rgba(145,143,172,.15);
+  box-sizing:border-box;
+  width:min(490px,calc(100vw - 36px)) !important;
+  max-width:calc(100vw - 36px) !important;
+  max-height:calc(100dvh - 40px) !important;
+  padding:0 !important;
+  border:1px solid rgba(255,255,255,.8) !important;
+  border-radius:19px !important;
+  background:var(--ig-bg) !important;
+  color:var(--ig-ink) !important;
+  box-shadow:0 20px 65px rgba(27,38,48,.20),inset 0 1px 0 rgba(255,255,255,.7) !important;
+  backdrop-filter:blur(28px) saturate(115%);
+  overflow-y:auto;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog.is-trend {width:min(520px,calc(100vw - 36px)) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog.is-ratio {--ig-accent:#93664c;--ig-tint:rgba(245,221,204,.65);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog.is-average {--ig-accent:#516f9a;--ig-tint:rgba(217,230,247,.68);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .modal.customer-insights-glass-dialog {
+  --ig-bg:rgba(29,29,34,.98);
+  --ig-surface:rgba(48,48,55,.64);
+  --ig-border:rgba(191,194,214,.15);
+  --ig-ink:#f0f0f4;
+  --ig-muted:#b0b2bd;
+  --ig-accent:#d0c1f0;
+  --ig-tint:rgba(142,116,185,.19);
+  --ig-track:rgba(190,184,214,.15);
+  border-color:#414149 !important;
+  box-shadow:0 20px 65px rgba(0,0,0,.42) !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .modal.customer-insights-glass-dialog.is-ratio {--ig-accent:#e8bea4;--ig-tint:rgba(199,143,109,.17);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .modal.customer-insights-glass-dialog.is-average {--ig-accent:#aec8ee;--ig-tint:rgba(116,152,204,.18);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog::backdrop {background:rgba(24,33,36,.42);backdrop-filter:blur(9px);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .modal-heading {
+  padding:17px 20px 15px !important;
+  background:var(--ig-bg) !important;
+  border-bottom:1px solid var(--ig-border) !important;
+  box-shadow:none !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .modal-heading .eyebrow {font:650 9px/1.4 Inter,system-ui,sans-serif !important;letter-spacing:.11em !important;color:var(--ig-muted) !important;margin:0 0 5px !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .modal-heading h2 {font:700 20px/1.3 Inter,system-ui,sans-serif !important;letter-spacing:-.035em !important;color:var(--ig-ink) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .modal-heading .modal-description {font:500 11px/1.4 Inter,system-ui,sans-serif !important;color:var(--ig-muted) !important;margin:4px 0 0 !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .modal-heading > .icon-button {width:32px !important;height:32px !important;border:1px solid var(--ig-border) !important;border-radius:9px !important;background:var(--ig-surface) !important;color:var(--ig-ink) !important;box-shadow:none !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .modal-heading > .icon-button:hover {background:var(--ig-tint) !important;transform:none !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .customer-insights-drilldown {
+  display:flex;flex-direction:column;gap:12px !important;
+  padding:15px 20px 20px !important;
+  font-family:Inter,"DM Sans",system-ui,sans-serif;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-hero {
+  display:flex;align-items:center;gap:13px;min-width:0;
+  padding:15px;border:1px solid var(--ig-border);border-radius:13px;
+  background:linear-gradient(130deg,var(--ig-surface),var(--ig-tint));
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-icon {
+  display:grid;place-items:center;width:44px;height:44px;flex:0 0 44px;
+  background:var(--ig-surface);border:1px solid var(--ig-border);
+  color:var(--ig-accent);border-radius:12px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-photo {display:grid;place-items:center;width:70px;height:70px;flex:0 0 70px;overflow:hidden;border-radius:10px;background:var(--ig-tint);color:var(--ig-accent);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-photo img {display:block;width:100%;height:100%;object-fit:cover;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-copy {min-width:0;display:flex;flex-direction:column;gap:3px;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-copy small {font-size:11px;font-weight:600;color:var(--ig-muted);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-copy strong {font-size:29px;font-weight:730;letter-spacing:-.045em;line-height:1.15;color:var(--ig-ink);overflow-wrap:anywhere;font-variant-numeric:tabular-nums;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-product .insight-glass-copy strong {font-size:17px;letter-spacing:-.02em;line-height:1.35;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-copy p {margin:2px 0 0;font-size:11px;line-height:1.4;color:var(--ig-muted);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat {display:flex;align-items:center;gap:9px;padding:12px 10px;border:1px solid var(--ig-border);border-radius:12px;background:var(--ig-surface);min-width:0;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat-icon {display:grid;place-items:center;width:32px;height:32px;flex:0 0 32px;border-radius:9px;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat-icon.is-blue {background:#e1eaf8;color:#52739f;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat-icon.is-peach {background:#f8e9df;color:#a06b4d;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat-icon.is-lavender {background:#ebe4f7;color:#7a64a4;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat-icon.is-blue {background:#35445a;color:#c0d5f4;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat-icon.is-peach {background:#514033;color:#f0c3a5;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat-icon.is-lavender {background:#473c5a;color:#d8c8f2;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat > div {display:flex;flex-direction:column;gap:3px;min-width:0;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat small {font-size:10px;font-weight:550;color:var(--ig-muted);line-height:1.3;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat strong {font-size:21px;font-weight:720;color:var(--ig-ink);line-height:1.15;font-variant-numeric:tabular-nums;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-section-head {display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 1px 0;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-section-head strong {font-size:12px;color:var(--ig-ink);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-section-head small {font-size:10px;color:var(--ig-muted);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-days {display:flex;flex-direction:column;border:1px solid var(--ig-border);border-radius:12px;background:var(--ig-surface);overflow:hidden;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-day {display:grid;grid-template-columns:53px minmax(0,1fr) 55px;align-items:center;gap:10px;min-height:35px;padding:7px 11px;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-day + .insight-glass-day {border-top:1px solid var(--ig-border);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-day time {font-size:11px;font-weight:600;color:var(--ig-ink);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-day strong {font-size:12px;color:var(--ig-ink);text-align:right;font-variant-numeric:tabular-nums;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-day strong small {font-weight:400;font-size:9px;color:var(--ig-muted);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-track {display:block;height:6px;background:var(--ig-track);border-radius:99px;overflow:hidden;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-track i {display:block;height:100%;background:linear-gradient(90deg,#aabce8,#a58bc9);border-radius:99px;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-note {margin:0;padding:0 2px;color:var(--ig-muted);font-size:10.5px;line-height:1.5;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .customer-insights-panel .customer-insights-chart-dot {background:#a89bcf !important;box-shadow:0 0 0 3px rgba(168,155,207,.17) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .customer-insights-panel .customer-insights-zero {fill:#b7b5cb !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .customer-insights-panel .customer-insights-bin:is(:hover,:focus-visible) .customer-insights-bin-hit {fill:rgba(163,155,205,.15) !important;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .customer-insights-panel .customer-insights-bin:focus-visible {outline-color:#a597cc;}
+@media(max-width:520px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog {width:calc(100vw - 24px) !important;max-width:calc(100vw - 24px) !important;border-radius:15px !important;}
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .modal-heading {padding:14px !important;}
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .customer-insights-drilldown {padding:12px 14px 15px !important;}
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-hero {padding:12px;gap:10px;}
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat {padding:10px 8px;gap:6px;}
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .modal.customer-insights-glass-dialog .insight-glass-stat-icon {width:28px;height:28px;flex-basis:28px;}
+}
