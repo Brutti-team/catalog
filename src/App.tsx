@@ -1314,31 +1314,37 @@ export default function App() {
       {productToDelete && (
         <Modal
           title="Delete product?"
-          eyebrow="CONFIRM DELETION"
-          className="catalog-category-delete-dialog"
-          description="Review this product before permanently deleting it."
+          eyebrow="PERMANENT ACTION"
+          className="catalog-product-delete-dialog"
           onClose={() => {
             if (!busy) { setProductToDelete(null); setProductDeleteError(""); }
           }}
         >
-          <div className="catalog-delete-confirmation" aria-busy={busy}>
-            <div className="catalog-delete-warning">
-              <AlertCircle size={22} strokeWidth={1.8} aria-hidden="true" />
-              <div>
+          <div className="product-delete-body" aria-busy={busy}>
+            <div className="product-delete-card">
+              <span className="product-delete-thumb" aria-hidden="true">
+                {productToDelete.images[0]?.url
+                  ? <SafeImage src={productToDelete.images[0].url} alt="" />
+                  : <Package size={24} strokeWidth={1.6} />}
+              </span>
+              <div className="product-delete-name">
                 <strong>{productToDelete.name}</strong>
-                <p>Product ID: {productToDelete.sku || productToDelete.id}</p>
-                <p>This product will be permanently removed from the catalog. This cannot be undone.</p>
+                <small>Product ID: {productToDelete.sku || productToDelete.id}</small>
               </div>
             </div>
+            <div className="product-delete-message">
+              <AlertCircle size={17} strokeWidth={1.8} aria-hidden="true" />
+              <p>This product will be permanently removed from the catalog. This action cannot be undone.</p>
+            </div>
             {productDeleteError && <p className="notice error" role="alert">{productDeleteError}</p>}
-            <div className="catalog-delete-confirm-actions">
-              <button type="button" className="button secondary" disabled={busy} autoFocus
+            <div className="product-delete-actions">
+              <button type="button" disabled={busy} autoFocus
                 onClick={() => { setProductToDelete(null); setProductDeleteError(""); }}>
                 Cancel
               </button>
-              <button type="button" className="button catalog-delete-confirm-button"
+              <button type="button" className="product-delete-submit"
                 disabled={busy} onClick={() => void confirmProductDeletion()}>
-                <Trash2 size={16} aria-hidden="true" />
+                {busy ? <LoaderCircle size={15} className="spin" aria-hidden="true" /> : <Trash2 size={15} aria-hidden="true" />}
                 {busy ? "Deleting…" : "Delete product"}
               </button>
             </div>
