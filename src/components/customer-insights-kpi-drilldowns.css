@@ -487,3 +487,36 @@
 @media(prefers-reduced-motion:reduce) {
   .admin-app .customer-insights-panel .customer-insights-period-trigger,.admin-app .customer-insights-panel .customer-insights-period-chevron {transition:none;}
 }
+
+
+/* Interactive chart and summary: retain original dimensions and grid layout. */
+.admin-app .customer-insights-panel .customer-insights-chart-interactive,
+.admin-app .customer-insights-panel .customer-insights-bin,
+.admin-app .customer-insights-panel .customer-insights-summary-action:not([aria-disabled="true"]) {
+  cursor:pointer;
+}
+.admin-app .customer-insights-panel .customer-insights-bin-hit {
+  fill:transparent;
+  pointer-events:all;
+  transition:fill .16s ease;
+}
+.admin-app .customer-insights-panel .customer-insights-bin:is(:hover,:focus-visible) .customer-insights-bin-hit {
+  fill:rgba(106,169,128,.15);
+}
+.admin-app .customer-insights-panel .customer-insights-summary-action {
+  transition:background-color .16s ease,box-shadow .16s ease;
+  border-radius:7px;
+}
+.admin-app .customer-insights-panel .customer-insights-summary-action:not([aria-disabled="true"]):is(:hover,:focus-visible) {
+  background:var(--og-hover,rgba(106,169,128,.13)) !important;
+  box-shadow:0 0 0 1px rgba(91,153,112,.25);
+}
+.admin-app .customer-insights-panel :is(.customer-insights-summary-action,.customer-insights-chart-heading,.customer-insights-bin):focus-visible {
+  outline:2px solid #619c75;
+  outline-offset:2px;
+}
+.admin-app .customer-insights-panel .customer-insights-summary-action[aria-disabled="true"] {cursor:default;}
+.admin-app .customer-insights-drilldown .customer-metric-detail-stat small {color:var(--admin-muted,#708675);font-size:10px;}
+@media(prefers-reduced-motion:reduce) {
+  .admin-app .customer-insights-panel :is(.customer-insights-bin-hit,.customer-insights-summary-action) {transition:none;}
+}
