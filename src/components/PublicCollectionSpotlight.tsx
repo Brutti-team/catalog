@@ -19,9 +19,9 @@ interface Props {
 }
 
 const availabilityLabels: Record<Product["availability"], string> = {
-  available: "Available",
-  "made-to-order": "Made to order",
-  unavailable: "Currently unavailable",
+  available: "Ready Stock",
+  "made-to-order": "Pre-order",
+  unavailable: "Unavailable",
 };
 
 /** Only use explicitly recorded product colours, not inferred photo backgrounds. */
