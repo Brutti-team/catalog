@@ -85,14 +85,25 @@ function plainMaterials(value:string) {
   doc.querySelectorAll("p,div").forEach(el=>el.append("\n"));
   return (doc.body.textContent||"").replace(/\*\*|__|==/g,"").replace(/\*([^*\n]+)\*/g,"$1").trim();
 }
-type DetailRow={value:string;size:number;weight:number;color:string;height:number;heading?:boolean};
+type DetailRow={value:string;size:number;weight:number;color:string;height:number;heading?:boolean;indent?:number};
 function productLines(ctx:CanvasRenderingContext2D,p:Product):DetailRow[] {
   const result:DetailRow[]=[];
   const add=(label:string,value:string)=>{
     if(!clean(value))return;
-    if(label) result.push({value:label.toUpperCase(),size:11,weight:600,color:BRONZE,height:18,heading:true});
-    const wrapped=lines(ctx,value,540,15,400);
-    wrapped.forEach((line,i)=>result.push({value:line,size:15,weight:400,color:INK,height:20+(i===wrapped.length-1?8:0)}));
+    if(label) {
+      const headings=lines(ctx,label.toUpperCase(),540,11,600);
+      headings.forEach(line=>result.push({value:line,size:11,weight:600,color:GREEN,height:18,heading:true}));
+    }
+    const paragraphs=clean(value).split("\n").map(line=>line.trim()).filter(Boolean);
+    paragraphs.forEach((paragraph,paragraphIndex)=>{
+      const bullet=paragraph.match(/^(?:[•–-])\s+(.+)$/);
+      const wrapped=lines(ctx,bullet?bullet[1]:paragraph,bullet?522:540,14,400);
+      wrapped.forEach((line,i)=>result.push({
+        value:bullet&&i===0?"•  "+line:line,size:14,weight:400,color:INK,
+        indent:bullet&&i>0?18:0,
+        height:20+(i===wrapped.length-1?(paragraphIndex===paragraphs.length-1?12:3):0)
+      }));
+    });
   };
   add("",plainMaterials(p.description||""));
   if([p.width,p.depth,p.height].some(v=>Number.isFinite(v)&&v>0)) add("Dimensions",formatProductDimensions(p));
@@ -100,7 +111,7 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product):DetailRow[] {
   for(const row of p.specifications??[]) {
     if(row.kind==="section") {
       if(clean(row.name)) {
-        for(const line of lines(ctx,row.name.toUpperCase(),540,11,600))result.push({value:line,size:11,weight:600,color:BRONZE,height:19,heading:true});
+        for(const line of lines(ctx,row.name.toUpperCase(),540,11,600))result.push({value:line,size:12,weight:600,color:GREEN,height:22,heading:true});
       }
       continue;
     }
@@ -118,7 +129,7 @@ function takeRows(rows:DetailRow[],start:number,capacity:number) {
 }
 function drawRows(ctx:CanvasRenderingContext2D,rows:DetailRow[],top:number) {
   let y=top;
-  for(const row of rows){text(ctx,row.value,40,y+row.size,row.size,row.color,row.weight);y+=row.height;}
+  for(const row of rows){text(ctx,row.value,40+(row.indent??0),y+row.size,row.size,row.color,row.weight);y+=row.height;}
 }
 type ProductPlan={product:Product;title:string[];price:string[];basis:string;photoHeight:number;detailTop:number;continuationTop:number;detail:DetailRow[][]};
 export async function generateCatalogPdf(products:Product[],categories:Category[],mode:PdfSelection,categoryId:string,favourites:string[],onProgress:(done:number,total:number)=>void) {
@@ -132,17 +143,18 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   ]);
   const measure=sheet();
   const plan=sections.map(section=>({...section,entries:section.products.map(product=>{
-    const title=lines(measure.ctx,product.name,335,29,700);
+    const title=lines(measure.ctx,product.name,335,27,600);
     const formatted=formatProductPrice(product,"public");
     const basis=formatted.startsWith("Starting from ")?"Starting from":"";
-    const price=lines(measure.ctx,basis?formatted.slice(14):formatted,182,22,600);
+    const priceSize=formatted==="On enquiry"?17:21;
+    const price=lines(measure.ctx,basis?formatted.slice(14):formatted,182,priceSize,600);
     const detail=productLines(measure.ctx,product);
-    const titleHeight=Math.max(title.length*34,price.length*27+(basis?18:0));
+    const titleHeight=Math.max((title.length-1)*32,(price.length-1)*26,0);
     // Use a generous image by default; reclaim space only for longer specifications.
     const detailHeight=detail.reduce((n,row)=>n+row.height,0);
-    const photoHeight=Math.max(250,Math.min(408,Math.floor(810-65-58-titleHeight-detailHeight)));
-    const detailTop=65+photoHeight+58+titleHeight;
-    const continuationTop=105+lines(measure.ctx,product.name,540,26,700).length*31+20;
+    const photoHeight=Math.max(230,Math.min(408,Math.floor(810-65-86-titleHeight-detailHeight)));
+    const detailTop=65+photoHeight+86+titleHeight;
+    const continuationTop=105+lines(measure.ctx,product.name,540,25,600).length*31+20;
     const first=takeRows(detail,0,810-detailTop);
     const chunks=[detail.slice(0,first)];
     for(let i=first;i<detail.length;){const end=takeRows(detail,i,810-continuationTop);chunks.push(detail.slice(i,end));i=end;}
@@ -231,27 +243,27 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
         const {canvas:pc,ctx:cx}=sheet();header(cx,section.name.toUpperCase());
         if(part===0) {
           const imageBottom=65+entry.photoHeight;
-          cx.fillStyle="#eeeee8";cx.fillRect(40,65,540,entry.photoHeight);
           const image=p.images.find(img=>Boolean(img.url?.trim()));
           if(image)try {fit(cx,await photo(image.url),40,65,540,entry.photoHeight);}catch{missing++;text(cx,"Photo unavailable",55,65+entry.photoHeight/2,15,MUTED);}
           else text(cx,"Photo not provided",55,65+entry.photoHeight/2,15,MUTED);
-          text(cx,p.sku,40,imageBottom+23,11,BRONZE,600);
+          text(cx,p.sku,40,imageBottom+24,10,BRONZE,600);
           if(p.bestSelling) {
             cx.fillStyle="#a13732";cx.fillRect(474,imageBottom+8,106,23);
             cx.textAlign="center";text(cx,"BEST SELLER",527,imageBottom+24,10,"#ffffff",600);cx.textAlign="left";
           }
-          const titleY=imageBottom+52;
-          entry.title.forEach((line,i)=>text(cx,line,40,titleY+i*34,29,GREEN,700));
+          const titleY=imageBottom+55;
+          entry.title.forEach((line,i)=>text(cx,line,40,titleY+i*32,27,GREEN,600));
           cx.textAlign="right";
-          if(entry.basis)text(cx,entry.basis,580,titleY-15,11,MUTED,500);
-          entry.price.forEach((line,i)=>text(cx,line,580,titleY+i*27+(entry.basis?7:0),22,GREEN,600));
+          if(entry.basis)text(cx,entry.basis,580,titleY-19,10,MUTED,500);
+          const priceSize=formatProductPrice(p,"public")==="On enquiry"?17:21;
+          entry.price.forEach((line,i)=>text(cx,line,580,titleY+i*26,priceSize,GREEN,600));
           cx.textAlign="left";
           cx.fillStyle=RULE;cx.fillRect(40,entry.detailTop-8,540,1);
           drawRows(cx,detail,entry.detailTop);
         } else {
-          const title=lines(cx,p.name,540,26,700);
+          const title=lines(cx,p.name,540,25,600);
           text(cx,p.sku+"  /  CONTINUED",40,75,11,BRONZE,600);
-          title.forEach((line,i)=>text(cx,line,40,105+i*31,26,GREEN,700));
+          title.forEach((line,i)=>text(cx,line,40,105+i*31,25,GREEN,600));
           cx.fillStyle=RULE;cx.fillRect(40,entry.continuationTop-8,540,1);
           drawRows(cx,detail,entry.continuationTop);
         }
