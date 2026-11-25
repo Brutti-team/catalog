@@ -22,6 +22,7 @@ type Props = {
   categories: Category[];
   onSelect?: (photos: AlbumPhoto[]) => void;
   onEditProduct?: (id: string) => void;
+  onDeleteProduct?: (id: string) => void;
   onCreateProductFromPhoto?: (photo: AlbumPhoto, details: AlbumPhotoDetailsUpdate) => void;
   onAttachPhotoToProduct?: (productId: string, photo: AlbumPhoto, details: AlbumPhotoDetailsUpdate) => void;
   onAddCategory?: () => void;
@@ -31,7 +32,7 @@ type Props = {
 };
 
 export default function AlbumLibrary({
-  products, categories, onSelect, onEditProduct, onCreateProductFromPhoto, onAttachPhotoToProduct, onAddCategory, onClose,
+  products, categories, onSelect, onEditProduct, onDeleteProduct, onCreateProductFromPhoto, onAttachPhotoToProduct, onAddCategory, onClose,
   maxSelect = 8, excludedUrls = [],
 }: Props) {
   const picker = Boolean(onSelect);
@@ -588,16 +589,20 @@ export default function AlbumLibrary({
                 <td className="brutti-album__table-preview"><span className="brutti-album__table-thumb"><SafeImage src={items[0].url} alt="" loading="lazy"/></span></td>
                 <td className="brutti-album__table-title"><strong>{product.name}</strong><small>{product.sku}</small></td>
                 <td className="brutti-album__table-count">{items.length} photos</td>
-                <td className="brutti-album__table-action"><button type="button" onClick={()=>setSelectedProductFolder(product.id)}>Open <ArrowUpRight size={15}/></button></td>
+                <td className="brutti-album__table-action"><div className="brutti-album__table-actions"><button type="button" onClick={()=>setSelectedProductFolder(product.id)}>Open <ArrowUpRight size={15}/></button>
+                  {!picker && onDeleteProduct && <button type="button" style={{color:"#a63136",background:"#fff1f1",borderColor:"#f3c7c9"}} title="Delete entire product" aria-label={`Delete product ${product.name}`} onClick={()=>onDeleteProduct(product.id)}><Trash2 size={15} aria-hidden="true"/></button>}
+                </div></td>
               </tr>)}
               {!!matchingStandalone.length&&<tr><td className="brutti-album__table-preview"><span className="brutti-album__table-thumb"><Folder size={24}/></span></td><td className="brutti-album__table-title"><strong>Unassigned photos</strong><small>Not linked to a product</small></td><td className="brutti-album__table-count">{matchingStandalone.length} photos</td><td className="brutti-album__table-action"><button type="button" onClick={()=>setSelectedProductFolder("__standalone__")}>Open <ArrowUpRight size={15}/></button></td></tr>}
               </tbody></table></div>
           ) : (
             <div className="brutti-album__grid" aria-label="Photo folders by product">
-              {matchingProductGroups.map(({product,items})=><div className="brutti-album__card" key={product.id}>
+              {matchingProductGroups.map(({product,items})=><div className="brutti-album__card" key={product.id} style={{position:"relative"}}>
                 <button type="button" className="brutti-album__thumb" aria-label={`Open ${product.name}: ${items.length} photos`} onClick={()=>setSelectedProductFolder(product.id)}>
                   <SafeImage src={items[0].url} alt={product.name} loading="lazy"/>
                 </button>
+                {!picker && onDeleteProduct && <button type="button" title="Delete entire product" aria-label={`Delete product ${product.name}`} onClick={()=>onDeleteProduct(product.id)}
+                  style={{position:"absolute",top:10,right:10,zIndex:6,display:"grid",placeItems:"center",width:34,height:34,padding:0,border:"1px solid #f3c7c9",borderRadius:10,background:"#fff1f1",color:"#a63136",boxShadow:"0 2px 8px rgba(0,0,0,.1)",cursor:"pointer"}}><Trash2 size={16} aria-hidden="true"/></button>}
                 <div className="brutti-album__card-info">
                   <strong title={product.name}>{product.name}</strong>
                   <small>{product.sku} · {items.length} photo{items.length===1?"":"s"}</small>
