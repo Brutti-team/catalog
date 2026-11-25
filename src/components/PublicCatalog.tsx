@@ -575,16 +575,16 @@ export default function PublicCatalog({
                 </div>
               </div>
               </div>
-              <div className="pub-results-label" role="status">
-                {loading
-                  ? "Loading the collection…"
-                  : `${filtered.length} ${filtered.length === 1 ? "project" : "projects"}${query ? ` matching “${query}”` : " in the collection"}`}
-                {(query || category !== "all" || bestOnly) && (
-                  <button onClick={resetFilters}>
-                    Clear filters <X size={12} />
-                  </button>
-                )}
-              </div>
+              {(loading || query || category !== "all" || bestOnly) && (
+                <div className="pub-results-label" role="status">
+                  {loading && "Loading the collection…"}
+                  {(query || category !== "all" || bestOnly) && (
+                    <button onClick={resetFilters}>
+                      Clear filters <X size={12} />
+                    </button>
+                  )}
+                </div>
+              )}
               {loading ? (
                 <div
                   className="pub-products-grid"
