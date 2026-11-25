@@ -889,8 +889,8 @@
   display: block;
   width: 100%;
   min-width: 0;
-  min-height: 302px;
-  aspect-ratio: .88 / 1;
+  min-height: 235px;
+  aspect-ratio: 1.12 / 1;
   border-radius: 17px;
   border: 1px solid rgba(185,210,193,.75);
   background: #e6eee7;
@@ -1042,11 +1042,11 @@
 .admin-app[data-theme="dark"] .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions button { background: rgba(75,113,88,.32);color:#e3f2e6;border-color:rgba(142,180,150,.28); }
 .admin-app[data-theme="dark"] .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions button:first-child { background: #37694b; border-color: #37694b; color:#fff; }
 @media (max-width: 980px) {
-  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card { min-height: 290px; }
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card { min-height: 225px; }
 }
 @media (max-width: 600px) {
   .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) { gap: 11px; }
-  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card { min-height: 247px; aspect-ratio: auto; }
+  .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card { min-height: 210px; aspect-ratio: 1 / 1; }
   .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-info { left: 7px;right: 7px;bottom: 7px;height: 108px;padding: 9px 8px 8px; }
   .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-info strong { font-size: 11px; }
   .admin-app .brutti-album:not(.brutti-album--picker) .brutti-album__grid:not(.is-list) .brutti-album__card-actions { gap: 3px;padding-top: 6px; }
