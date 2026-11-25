@@ -78,13 +78,15 @@ export default function EditorCategoryPicker({ categories, value, onChange, disa
       const outerHigh = Math.min(window.innerHeight - 10, box.bottom - 12 * sy);
       let low = Math.max(outerLow, header && header.bottom <= anchor.top ? header.bottom + gap : outerLow);
       let high = Math.min(outerHigh, footer && footer.top >= anchor.bottom ? footer.top - gap : outerHigh);
-      if (high - low < 200 * sy) { low = outerLow; high = outerHigh; }
-      const desired = Math.min(420, 82 + Math.max(filtered.length, 1) * 41) * sy;
+      // Give the list enough vertical room to browse categories comfortably.
+      // If neither side fits, allow the popover to overlap the trigger rather
+      // than shrinking to just a few rows; stay within the visible dialog.
+      const desired = Math.min(520, 86 + Math.max(filtered.length, 1) * 42) * sy;
+      if (high - low < Math.min(desired, 360 * sy)) { low = outerLow; high = outerHigh; }
       const below = Math.max(0, high - anchor.bottom - gap);
       const above = Math.max(0, anchor.top - low - gap);
-      const placeBelow = below >= Math.min(desired, 220 * sy) || below >= above;
-      const free = placeBelow ? below : above;
-      const height = Math.max(0, Math.min(desired, free >= 190 * sy ? free : high - low));
+      const placeBelow = below >= desired || below >= above;
+      const height = Math.max(0, Math.min(desired, high - low));
       const preferredTop = placeBelow ? anchor.bottom + gap : anchor.top - gap - height;
       const top = Math.max(low, Math.min(preferredTop, high - height));
       setLayout({
