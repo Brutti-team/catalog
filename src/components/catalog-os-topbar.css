@@ -1688,3 +1688,49 @@
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .sidebar .catalog-sidebar-logo img {
   filter:brightness(0) invert(1) !important;
 }
+
+
+/* Unread catalog activity: small red count without changing topbar geometry. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-header-icon-button {
+  position:relative;
+  overflow:visible !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-bell-count {
+  position:absolute;
+  z-index:2;
+  top:-5px;
+  right:-5px;
+  min-width:18px;
+  height:18px;
+  box-sizing:border-box;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 4px;
+  border:1.5px solid #f4f8f4;
+  border-radius:999px;
+  background:#c23e49;
+  color:#fff !important;
+  font:700 10px/1 Inter,"DM Sans",system-ui,sans-serif;
+  font-variant-numeric:tabular-nums;
+  box-shadow:0 2px 5px rgba(90,24,30,.15);
+  pointer-events:none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .catalog-bell-count {
+  border-color:#18181b;
+  background:#c23e49;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-notification-mark-read {
+  display:block;
+  margin:0 12px 8px auto;
+  padding:5px 8px;
+  border:0;
+  border-radius:6px;
+  background:transparent;
+  color:#286044;
+  font:600 11px/1.4 Inter,"DM Sans",system-ui,sans-serif;
+  cursor:pointer;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-notification-mark-read:hover {background:rgba(100,160,120,.12);}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .catalog-notification-mark-read {color:#82c7a0;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-notification-dot.is-read {visibility:hidden;}
