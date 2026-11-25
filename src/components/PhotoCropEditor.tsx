@@ -27,6 +27,11 @@ type Pan = { x: number; y: number };
 type CropRect = { x: number; y: number; w: number; h: number };
 type CropHandle = "nw" | "n" | "ne" | "e" | "se" | "s" | "sw" | "w";
 const initialCrop = (): CropRect => ({ x: 0, y: 0, w: 1, h: 1 });
+const fullCrop = initialCrop();
+
+function cropWithinFrame(crop: CropRect, frame: CropRect): CropRect {
+  return { x: (crop.x - frame.x) / frame.w, y: (crop.y - frame.y) / frame.h, w: crop.w / frame.w, h: crop.h / frame.h };
+}
 const cropHandles: CropHandle[] = ["nw","n","ne","e","se","s","sw","w"];
 
 // Detect resize zones from coordinates too, so CSS overlays and touch hit
@@ -92,6 +97,18 @@ const backdropOptions: { id: Backdrop; label: string; color?: string }[] = [
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
+/** Resize within the currently displayed crop; keep an exportable minimum. */
+function resizeCrop(current: CropRect, frame: CropRect, handle: CropHandle, dx: number, dy: number): CropRect {
+  const minW = Math.min(current.w, Math.max(.065, frame.w * .12));
+  const minH = Math.min(current.h, Math.max(.065, frame.h * .12));
+  let l = current.x, r = current.x + current.w, t = current.y, b = current.y + current.h;
+  if (handle.includes("w")) l = clamp(l + dx, frame.x, r - minW);
+  if (handle.includes("e")) r = clamp(r + dx, l + minW, frame.x + frame.w);
+  if (handle.includes("n")) t = clamp(t + dy, frame.y, b - minH);
+  if (handle.includes("s")) b = clamp(b + dy, t + minH, frame.y + frame.h);
+  return { x: l, y: t, w: r - l, h: b - t };
+}
+
 function placement(sw: number, sh: number, width: number, height: number, angle: number, zoom: number, pan: Pan) {
   const radians = angle * Math.PI / 180;
   const cos = Math.cos(radians), sin = Math.sin(radians);
@@ -156,7 +173,9 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
   const [mirror, setMirror] = useState(false);
   const [pan, setPan] = useState<Pan>({ x: 0, y: 0 });
   const [crop, setCrop] = useState<CropRect>(initialCrop);
-  const [cropPreview, setCropPreview] = useState(false);
+  // Store the enlarged viewport separately from the pending crop rectangle.
+  // All crop coordinates remain relative to the original, never a re-encoded photo.
+  const [cropPreview, setCropPreview] = useState<CropRect | null>(null);
   const [edgeStrength, setEdgeStrength] = useState(0);
   const [brushMode, setBrushMode] = useState<"erase" | "restore" | null>(null);
   const [brushSize, setBrushSize] = useState(30);
@@ -183,15 +202,17 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
   const previousBrushPoint = useRef<{ x: number; y: number } | null>(null);
   const gesture = useRef<{
     id: number; x: number; y: number; px: number; py: number;
-    mode: "pan" | "crop" | "paint"; handle?: CropHandle; startCrop: CropRect; changed?: boolean;
+    mode: "pan" | "crop" | "paint"; handle?: CropHandle; startCrop: CropRect; frameCrop: CropRect; latestCrop?: CropRect; changed?: boolean;
   } | null>(null);
   const totalAngle = quarterTurn + tilt;
   const width = 900, height = Math.round(width / aspectRatios[ratio]);
   const hasCutout = !!cutout;
   const hasCropSelection = crop.w < .999 || crop.h < .999;
-  const showCropPreview = tool === "crop" && cropPreview && hasCropSelection && !aiBusy;
-  const displayWidth = showCropPreview ? Math.max(1, Math.round(width * crop.w)) : width;
-  const displayHeight = showCropPreview ? Math.max(1, Math.round(height * crop.h)) : height;
+  const showCropPreview = tool === "crop" && cropPreview !== null && !aiBusy;
+  const frameCrop = showCropPreview && cropPreview ? cropPreview : fullCrop;
+  const selectionCrop = cropWithinFrame(crop, frameCrop);
+  const displayWidth = Math.max(1, Math.round(width * frameCrop.w));
+  const displayHeight = Math.max(1, Math.round(height * frameCrop.h));
   const displayRatio = displayWidth / displayHeight;
   // Apply alpha correction once when the slider changes, not for every drag frame.
   const refinedCutout = useMemo(
@@ -298,13 +319,13 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
         const context = canvas.getContext("2d");
         if (!context) throw new Error("Unable to preview this crop.");
         context.clearRect(0, 0, displayWidth, displayHeight);
-        context.drawImage(full, width * crop.x, height * crop.y, width * crop.w, height * crop.h,
+        context.drawImage(full, width * frameCrop.x, height * frameCrop.y, width * frameCrop.w, height * frameCrop.h,
           0, 0, displayWidth, displayHeight);
       }
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Unable to preview this photo.");
     }
-  }, [source, refinedCutout, background, customColor, totalAngle, zoom, pan, mirror, previewOriginal, width, height, showCropPreview, displayWidth, displayHeight, crop]);
+  }, [source, refinedCutout, background, customColor, totalAngle, zoom, pan, mirror, previewOriginal, width, height, showCropPreview, displayWidth, displayHeight, frameCrop]);
 
   function removeBackground() {
     if (!source || saving || aiBusy) return;
@@ -352,7 +373,7 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
 
   function reset() {
     if (aiBusy) cancelAI();
-    setPan({ x: 0, y: 0 }); setCrop(initialCrop()); setCropPreview(false); setEdgeStrength(0);
+    setPan({ x: 0, y: 0 }); setCrop(initialCrop()); setCropPreview(null); setEdgeStrength(0);
     setZoom(1); setTilt(0); setQuarterTurn(0);
     setMirror(false); setCutout(null); workingCutout.current = null;
     setMaskRevision(0); setBrushMode(null); setBackground("original");
@@ -413,20 +434,21 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
   }
 
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
-    if (event.button !== 0 || saving || aiBusy || !source || showCropPreview) return;
+    if (event.button !== 0 || saving || aiBusy || !source) return;
     event.preventDefault();
     const el = event.target as HTMLElement;
     const requested = el.closest<HTMLElement>("[data-crop-handle]")?.dataset.cropHandle as CropHandle | undefined;
     const handle = tool === "crop"
       ? (requested && cropHandles.includes(requested) ? requested :
-        hitTestCropHandle(event.clientX, event.clientY, event.currentTarget.getBoundingClientRect(), crop))
+        hitTestCropHandle(event.clientX, event.clientY, event.currentTarget.getBoundingClientRect(), selectionCrop))
       : undefined;
+    if (showCropPreview && !handle) return;
     const painting = tool === "background" && brushMode !== null && !!workingCutout.current;
     previousBrushPoint.current = null;
     gesture.current = {
       id: event.pointerId, x: event.clientX, y: event.clientY,
       px: pan.x, py: pan.y, mode: painting ? "paint" : handle ? "crop" : "pan",
-      handle, startCrop: crop,
+      handle, startCrop: crop, frameCrop,
     };
     if (painting) paintAt(event);
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -441,15 +463,11 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
     const dy = (event.clientY - start.y) / bounds.height;
     if (start.mode === "crop" && start.handle) {
       const current = start.startCrop;
-      const minSize = 0.12;
-      let left = current.x, right = current.x + current.w;
-      let top = current.y, bottom = current.y + current.h;
-      if (start.handle.includes("w")) left = clamp(current.x + dx, 0, right - minSize);
-      if (start.handle.includes("e")) right = clamp(current.x + current.w + dx, left + minSize, 1);
-      if (start.handle.includes("n")) top = clamp(current.y + dy, 0, bottom - minSize);
-      if (start.handle.includes("s")) bottom = clamp(current.y + current.h + dy, top + minSize, 1);
-      start.changed = Math.abs(left-current.x) + Math.abs(top-current.y) + Math.abs(right-current.x-current.w) + Math.abs(bottom-current.y-current.h) > .001;
-      setCrop({ x: left, y: top, w: right - left, h: bottom - top });
+      const frame = start.frameCrop;
+      const next = resizeCrop(current, frame, start.handle, dx * frame.w, dy * frame.h);
+      start.changed = Math.abs(next.x-current.x) + Math.abs(next.y-current.y) + Math.abs(next.w-current.w) + Math.abs(next.h-current.h) > .0001;
+      start.latestCrop = next;
+      setCrop(next);
       return;
     }
     setPan({ x: start.px + dx, y: start.py + dy });
@@ -458,21 +476,20 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
     const horizontal = key === "ArrowLeft" ? -.01 : key === "ArrowRight" ? .01 : 0;
     const vertical = key === "ArrowUp" ? -.01 : key === "ArrowDown" ? .01 : 0;
     if (!horizontal && !vertical) return;
-    setCrop(current => {
-      const minSize = .12;
-      let l = current.x, r = current.x + current.w, t = current.y, b = current.y + current.h;
-      if (handle.includes("w")) l = clamp(l + horizontal, 0, r - minSize);
-      if (handle.includes("e")) r = clamp(r + horizontal, l + minSize, 1);
-      if (handle.includes("n")) t = clamp(t + vertical, 0, b - minSize);
-      if (handle.includes("s")) b = clamp(b + vertical, t + minSize, 1);
-      return { x: l, y: t, w: r - l, h: b - t };
-    });
+    setCrop(current => resizeCrop(current, frameCrop, handle, horizontal * frameCrop.w, vertical * frameCrop.h));
   }
   function onPointerUp(event: PointerEvent<HTMLDivElement>) {
     const finished = gesture.current;
     if (finished?.id !== event.pointerId) return;
     gesture.current = null;
-    if (event.type === "pointerup" && finished.mode === "crop" && finished.changed) setCropPreview(true);
+    if (finished.mode === "crop") {
+      if (event.type === "pointerup" && finished.changed && finished.latestCrop) {
+        setCrop(finished.latestCrop);
+        setCropPreview(finished.latestCrop);
+      } else if (event.type === "pointercancel") {
+        setCrop(finished.startCrop);
+      }
+    }
     previousBrushPoint.current = null;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
@@ -587,11 +604,11 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
                 {showAiReveal && !aiBusy && (
                   <div className="brutti-photo-studio-ai-finish" aria-hidden="true" />
                 )}
-                {tool === "crop" && !showCropPreview && (
+                {tool === "crop" && (
                   <div className="brutti-photo-crop-selection"
                     style={{
-                      left: `${crop.x * 100}%`, top: `${crop.y * 100}%`,
-                      width: `${crop.w * 100}%`, height: `${crop.h * 100}%`,
+                      left: `${selectionCrop.x * 100}%`, top: `${selectionCrop.y * 100}%`,
+                      width: `${selectionCrop.w * 100}%`, height: `${selectionCrop.h * 100}%`,
                     }} aria-label="Resize the crop by dragging corners or edges">
                     <span className="brutti-photo-crop-grid-guide" aria-hidden="true"/>
                     {cropHandles.map(handle => (
@@ -605,7 +622,8 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
                             event.preventDefault();
                             nudgeCrop(handle, event.key);
                           }
-                        }}/>
+                        }}
+                        onKeyUp={event => { if (event.key.startsWith("Arrow") && hasCropSelection) setCropPreview(crop); }}/>
                     ))}
                   </div>
                 )}
@@ -613,8 +631,8 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
               </div>
             </div>
             <div className="brutti-photo-studio-preview-caption">
-              <Scan size={14} aria-hidden="true"/> {showCropPreview ? "Cropped preview · Original photo retained" : "Drag photo to reposition · Drag crop corners to resize"}
-              {tool === "crop" && hasCropSelection && <button type="button" disabled={locked} onClick={() => setCropPreview(v => !v)}>{showCropPreview ? "Adjust crop" : "Preview crop"}</button>}
+              <Scan size={14} aria-hidden="true"/> {showCropPreview ? "Drag corners to crop again · Original photo retained" : "Drag photo to reposition · Drag crop corners to resize"}
+              {tool === "crop" && hasCropSelection && <button type="button" disabled={locked} onClick={() => setCropPreview(showCropPreview ? null : crop)}>{showCropPreview ? "Adjust crop" : "Preview crop"}</button>}
               {hasCutout && <button type="button" onClick={() => setPreviewOriginal(v => !v)}
                 disabled={locked} aria-pressed={previewOriginal}>
                 {previewOriginal ? "Show edited" : "Before / After"}
@@ -635,7 +653,7 @@ export default function PhotoCropEditor({ image, productId, onApply, onClose }: 
                     {(["4:3", "1:1", "3:4", "9:16"] as Ratio[]).map(item => (
                       <button type="button" key={item} className={ratio === item ? "is-active" : ""}
                         aria-pressed={ratio === item} disabled={locked}
-                        onClick={() => { setRatio(item); setCrop(initialCrop()); setCropPreview(false); setPan({ x: 0, y: 0 }); }}>{item}</button>
+                        onClick={() => { setRatio(item); setCrop(initialCrop()); setCropPreview(null); setPan({ x: 0, y: 0 }); }}>{item}</button>
                     ))}
                   </div>
                 </div>
