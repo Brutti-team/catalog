@@ -45,6 +45,7 @@ import {
   UsersRound,
   History,
   Star,
+  FileDown,
 } from "lucide-react";
 import type { Product, Category, CatalogData } from "./lib/types";
 import {
@@ -71,6 +72,7 @@ import BackgroundGalleryOverlay from "./components/BackgroundGalleryOverlay";
 import { getBackgroundJobSnapshot } from "./lib/photo-background-jobs";
 import CatalogOverviewStudio from "./components/CatalogOverviewStudio";
 import PublicCatalog from "./components/PublicCatalog";
+import CatalogPdfDownload, { type CatalogPdfDownloadHandle } from "./components/CatalogPdfDownload";
 import Modal from "./components/Modal";
 import AccountCenter from "./components/AccountCenter";
 import CataloguePhotoImport from "./components/CataloguePhotoImport";
@@ -178,6 +180,7 @@ export default function App() {
   const [toast, setToast] = useState("");
   const [menu, setMenu] = useState<string | null>(null);
   const [mobileNav, setMobileNav] = useState(false);
+  const staffPdfRef = useRef<CatalogPdfDownloadHandle>(null);
   // Open the full sidebar by default so names and live counts stay visible.
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [railTooltip, setRailTooltip] = useState<{ label: string; left: number; top: number } | null>(null);
@@ -662,6 +665,18 @@ export default function App() {
               <span className="nav-icon" aria-hidden="true"><ShieldCheck size={19} strokeWidth={1.9} /></span> Account Permission
             </button>
           )}
+          <button type="button" className="nav-item"
+            data-rail-label="Download Catalogue"
+            title={sidebarCollapsed ? undefined : "Download Catalogue"}
+            aria-haspopup="dialog"
+            disabled={loading || publishedCount === 0}
+            onClick={() => {
+              setMobileNav(false);
+              setRailTooltip(null);
+              staffPdfRef.current?.open();
+            }}>
+            <span className="nav-icon" aria-hidden="true"><FileDown size={19} strokeWidth={1.9} /></span> Download Catalogue
+          </button>
         </nav>
         <div className="brutti-background-sidebar-host" id="brutti-background-sidebar-host"
           aria-label="Photo background removal progress"/>
@@ -1383,6 +1398,8 @@ export default function App() {
           </>)}
         </div>
       </main>
+      <CatalogPdfDownload products={data.products} categories={data.categories}
+        disabled={loading || publishedCount === 0} openRef={staffPdfRef} hideTrigger />
       {photoImportOpen && (
         <CataloguePhotoImport
           onClose={() => setPhotoImportOpen(false)}
