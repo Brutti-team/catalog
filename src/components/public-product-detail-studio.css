@@ -1575,33 +1575,35 @@
 }
 
 
-/* Customer detail: fit the primary product section in the desktop viewport.
-   Keep the recommendations and footer below it; long specs scroll internally.
-   Very short screens retain normal page scrolling for accessibility. */
+/* Compact customer detail: natural content height instead of a forced
+   full-screen panel. Long specifications scroll within the desktop budget. */
 @media(min-width:851px) and (min-height:600px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section:has(> .pub-product-detail > .pub-detail-gallery > .pub-detail-main-image) {
     padding-block:clamp(14px,2dvh,22px) 24px !important;
+    max-width:1380px;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) {
     box-sizing:border-box;
-    height:calc(100dvh - 112px) !important;
+    height:auto !important;
     min-height:0;
-    grid-template-rows:minmax(0,1fr);
+    grid-template-columns:minmax(0,.92fr) minmax(0,1fr);
+    grid-template-rows:auto;
     align-items:stretch;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-gallery {
-    height:100% !important;
+    height:auto !important;
     min-height:0;
-    max-height:100%;
+    max-height:none;
+    align-self:stretch;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy {
-    height:100% !important;
-    max-height:100%;
+    height:auto !important;
+    max-height:min(520px,calc(100dvh - 112px));
     min-height:0;
-    align-self:stretch;
-    grid-template-rows:auto auto auto auto minmax(0,1fr) auto;
+    align-self:start;
+    grid-template-rows:auto auto auto auto minmax(0,max-content) auto;
     align-items:start;
-    align-content:stretch;
+    align-content:start;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-eyebrow,
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-detail-availability {grid-row:1;align-self:center;}
@@ -1626,8 +1628,8 @@
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-detail-promise {
     grid-row:6;
-    align-self:end;
-    margin:10px 0 0;
+    align-self:start;
+    margin:12px 0 0;
     padding-top:10px;
   }
 }
