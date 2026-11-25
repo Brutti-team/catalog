@@ -810,7 +810,7 @@ export default function AlbumLibrary({
                 <span className="brutti-album__folder-cover">
                   {cover?<SafeImage src={cover} alt="" loading="lazy" style={{
                     position:"absolute",inset:0,width:"100%",height:"100%",maxWidth:"100%",maxHeight:"100%",
-                    objectFit:"cover",objectPosition:"center 67%",transform:"none",display:"block"
+                    objectFit:"cover",objectPosition:["displays & mementos","kiosks"].includes(item.name.trim().toLowerCase()) ? "center 48%" : "center 67%",transform:"none",display:"block"
                   }}/>:<Folder size={44}/>} 
                   <span className="brutti-album__folder-mark"><FolderOpen size={18}/></span>
                 </span>
