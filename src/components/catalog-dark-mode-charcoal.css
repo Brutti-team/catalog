@@ -2077,8 +2077,8 @@ body:has(.admin-app.catalog-os-layout[data-theme="dark"]) {
     --rail-active:#245b41;
     --rail-hover:rgba(66,113,83,.08);
     --rail-selected:linear-gradient(145deg,#dceee1,#c9e2d1);
-    --rail-count:#e0ede3;
-    --rail-count-ink:#37694b;
+    --rail-count:#b9434c;
+    --rail-count-ink:#fff;
     --rail-toggle:rgba(255,255,255,.40);
     --rail-focus:#679a78;
     padding-inline:8px !important;
@@ -2088,18 +2088,19 @@ body:has(.admin-app.catalog-os-layout[data-theme="dark"]) {
     --rail-active:#b4e9c5;
     --rail-hover:#242e2a;
     --rail-selected:linear-gradient(145deg,#304239,#24332b);
-    --rail-count:#34463b;
-    --rail-count-ink:#d8efdf;
+    --rail-count:#b9434c;
+    --rail-count-ink:#fff;
     --rail-toggle:#242e29;
     --rail-focus:#94d4aa;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] > .sidebar .catalog-sidebar-head {
     align-items:center;
-    gap:4px;
+    justify-content:center !important;
+    gap:0;
     margin-bottom:13px;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] > .sidebar .catalog-sidebar-identity {
-    justify-content:center;
+    display:none !important;
     padding:0;
     margin:0;
   }
@@ -2112,7 +2113,7 @@ body:has(.admin-app.catalog-os-layout[data-theme="dark"]) {
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] > .sidebar .catalog-sidebar-toggle {
     display:grid;place-items:center;
-    width:29px;height:27px;min-width:29px;flex-basis:27px;
+    width:36px;height:36px;min-width:36px;flex-basis:36px;
     padding:0;
     border:0 !important;
     border-radius:7px;
@@ -2190,7 +2191,7 @@ body:has(.admin-app.catalog-os-layout[data-theme="dark"]) {
     box-shadow:none !important;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] > .sidebar nav .nav-item.active .nav-count {
-    background:#286044 !important;color:#fff !important;
+    background:#a9323c !important;color:#fff !important;
   }
   .admin-app.brutti-staff-redesign.catalog-os-layout.catalog-sidebar-collapsed[data-theme][data-active-tab] > .sidebar .sidebar-utility {
     align-items:center;
