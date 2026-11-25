@@ -1,11 +1,33 @@
 import { useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
-import { ArrowLeft, BookOpen, Check, Download, Eye, FileText, Heart, Layers3, Star, X } from "lucide-react";
+import { ArrowLeft, Armchair, BedDouble, BookOpen, Check, Download, Eye, FileText, Heart, LampFloor, Layers3, LibraryBig, Sofa, Star, Table2, X } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import { selectPdfProducts, type PdfSelection } from "../lib/catalog-pdf-plan";
 import PdfCategoryDropdown from "./PdfCategoryDropdown";
 import "./catalog-pdf-download.css";
 import { useFavouriteIds } from "../lib/customer-favourites";
 import { customerCatalogueFilename, downloadCustomerCatalogue, prepareCustomerCatalogue } from "../lib/download-customer-catalogue";
+
+// Decorative repeating furniture scan, independent of real export progress.
+const furnitureIcons = [BedDouble, Sofa, Armchair, Table2, LibraryBig, LampFloor];
+const furnitureSequence = [...furnitureIcons, ...furnitureIcons, ...furnitureIcons];
+
+function CatalogueLoading({ progress }: { progress: number }) {
+  const track = () => <div className="pub-pdf-furniture-track">
+    {furnitureSequence.map((Furniture, index) => <span key={index}><Furniture size={23} strokeWidth={1.7} /></span>)}
+  </div>;
+  return <div className="pub-pdf-progress pub-pdf-furniture-loader" role="progressbar"
+    aria-label="Preparing PDF" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
+    <div className="pub-pdf-furniture-animation" aria-hidden="true">
+      <div className="pub-pdf-furniture-window">{track()}</div>
+      <div className="pub-pdf-furniture-magnifier"><div className="pub-pdf-furniture-lens">{track()}</div></div>
+    </div>
+    <div className="pub-pdf-furniture-caption">
+      <div><strong>Preparing your catalogue</strong><small>Creating your PDF</small></div>
+      <strong className="pub-pdf-furniture-percent">{progress}%</strong>
+    </div>
+    <div className="pub-pdf-furniture-rail" aria-hidden="true"><span style={{width: progress + "%"}} /></div>
+  </div>;
+}
 
 export type CatalogPdfDownloadHandle = { open: () => void };
 type Props = {products:Product[];categories:Category[];disabled:boolean;openRef?:Ref<CatalogPdfDownloadHandle>;hideTrigger?:boolean;staffPreview?:boolean};
@@ -90,7 +112,7 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
           disabled={progress!==null} onChange={id=>{setCategory(id);setMessage("");setFailed(false);}} />}
       </fieldset>
       <div className="pub-pdf-summary"><span className="pub-pdf-summary-icon"><FileText size={17} strokeWidth={1.7} aria-hidden="true"/></span><div><strong>{count} {count===1?"product":"products"} selected</strong><small>PDF · A4 portrait · Original Brutti covers</small></div></div>
-      {progress!==null&&<div role="status" className="pub-pdf-progress"><progress max={100} value={progress}/><span>Preparing PDF · {progress}%</span></div>}
+      {progress!==null&&<CatalogueLoading progress={progress}/>}
       {message&&<p role={failed?"alert":"status"} className="pub-pdf-message">{message}</p>}
       <button type="button" className="pub-pdf-download" disabled={progress!==null||!count} onClick={()=>void download()}>{staffPreview?<Eye size={17}/>:<Download size={17}/>} {progress!==null?"Preparing catalogue…":staffPreview?"Preview PDF":"Download PDF"}</button>
       </>}
