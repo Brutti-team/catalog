@@ -283,6 +283,7 @@ export default function ProductEditor({
   photoOpenRequest,
   onNavigate,
   onSave,
+  onDelete,
   onClose,
 }: {
   product: Product;
@@ -297,6 +298,7 @@ export default function ProductEditor({
   productCount?: number;
   onNavigate: (target: CatalogEditorNavigation) => void;
   onSave: (p: Product, modelChange?: ProductModelChange, autoProductId?: boolean) => Promise<Product | void>;
+  onDelete?: () => void;
   onClose: (warning?: string) => void;
 }) {
   // Keep the assigned ID for ordinary edits. Moving a product to a new
@@ -1107,9 +1109,19 @@ export default function ProductEditor({
               </button>
             </div>
           )}
-          <span className="tiny muted">
-            Changes are saved when you select Save.
-          </span>
+          {!isNewProduct && onDelete ? (
+            <span className="tiny muted" style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", marginRight: "auto", minWidth: 0 }}>
+              <button type="button" className="button secondary catalog-editor-footer-unpublish"
+                style={{ flex: "0 0 auto" }}
+                disabled={busy || uploading}
+                onClick={() => { if (!uploadLock.current) onDelete(); }}
+                title="Permanently delete this product from the catalog">
+                <Trash2 size={16} aria-hidden="true" /> Delete product
+              </button>
+            </span>
+          ) : (
+            <span className="tiny muted">Changes are saved when you select Save.</span>
+          )}
           <div className="button-row">
             <button
               className={draft.status !== "published"
