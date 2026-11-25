@@ -147,8 +147,13 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
               src={publicAssetUrl(photo?.url)}
               alt={photo?.alt || product.name}
               className={photo?.crop ? "catalog-image-cropped" : isStudioEditedPhoto(photo) ? "catalog-image-studio-edited" : ""}
+              key={photoUrl}
               style={catalogCardPhotoStyle(photo, product.sku)}
               loading="lazy"
+              onLoad={event => {
+                const image = event.currentTarget;
+                image.classList.toggle("is-portrait-photo", image.naturalHeight > image.naturalWidth && image.naturalWidth > 0);
+              }}
               onError={handleImageError}
             />
           </a>
