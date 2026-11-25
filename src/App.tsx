@@ -1399,7 +1399,7 @@ export default function App() {
         </div>
       </main>
       <CatalogPdfDownload products={data.products} categories={data.categories}
-        disabled={loading || publishedCount === 0} openRef={staffPdfRef} hideTrigger />
+        disabled={loading || publishedCount === 0} openRef={staffPdfRef} hideTrigger staffPreview />
       {photoImportOpen && (
         <CataloguePhotoImport
           onClose={() => setPhotoImportOpen(false)}
