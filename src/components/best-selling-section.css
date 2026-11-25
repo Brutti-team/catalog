@@ -326,7 +326,7 @@
 
 /* Full-width collection divider with a compact, functional See more control. */
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-more-divider {
-  display:flex;align-items:center;gap:14px;margin:22px 0 0;width:100%;
+  display:flex;align-items:center;gap:14px;margin:clamp(40px,3.5vw,52px) 0 0;width:100%;
 }
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-more-divider::before,
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-more-divider::after {
@@ -346,7 +346,7 @@
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection:has(+ #pub-best-selling) {padding-bottom:12px!important;}
 .pub-app.pub-refined:not(.pub-private-preview) #pub-collection + #pub-best-selling {padding-top:36px!important;}
 @media(max-width:650px){
- .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-more-divider {margin-top:16px;gap:10px;}
+ .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-more-divider {margin-top:30px;gap:10px;}
  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection + #pub-best-selling {padding-top:24px!important;}
 }
 @media(prefers-reduced-motion:reduce){
