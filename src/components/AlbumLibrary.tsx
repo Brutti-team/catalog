@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Images, Upload, Download, Search, Check, Trash2, LoaderCircle, Eye,
-  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Crop, Grid2X2, Table2, AlertTriangle, LockKeyhole, Save, X,
+  Images, Upload, Download, Search, Check, Trash2, LoaderCircle,
+  Package, Layers, RefreshCw, ImageOff, ArrowUpRight, Folder, FolderOpen, Plus, ArrowLeft, ChevronDown, Grid2X2, Table2, AlertTriangle, LockKeyhole, Save, X,
   BedDouble, PanelsTopLeft, BookOpen, Store, Armchair, CalendarDays, Sparkles,
 } from "lucide-react";
 import type { Category, Product } from "../lib/types";
@@ -858,16 +858,13 @@ export default function AlbumLibrary({
                   style={{position:"absolute",top:10,right:10,zIndex:6,display:"grid",placeItems:"center",width:34,height:34,padding:0,border:"1px solid #f3c7c9",borderRadius:10,background:"#fff1f1",color:"#a63136",boxShadow:"0 2px 8px rgba(0,0,0,.1)",cursor:"pointer"}}>
                   <Trash2 size={16} aria-hidden="true"/>
                 </button>}
-                <div className="brutti-album__card-info">
+                <div className="brutti-album__card-info" style={!picker ? {height:"auto",minHeight:0,padding:"11px 12px",pointerEvents:"none"} : undefined}>
                   <strong title={photo.name}>{photo.name}</strong>
                   <small>{disabled?"Already added":photo.usedBy.length?`${photo.usedBy.length} product${photo.usedBy.length>1?"s":""}`:photo.categoryCovers.length?"Category cover":photo.sourceKind==="external"?"Product Library":"Unassigned"}</small>
                   <span className="brutti-album__list-category" title="Photo category">
                     {albumPhotoCategoryIds(photo).map(id=>categories.find(item=>item.id===id)?.name).filter(Boolean).join(", ") || "Uncategorised"}
                   </span>
-                  {!picker && <div className="brutti-album__card-actions">
-                    <button type="button" onClick={()=>openPhotoEditor(photo)} aria-label={"Open editor for " + photo.name}><Eye size={14}/> Open</button>
-                    <button type="button" onClick={()=>setEditingAlbumPhoto(photo)} aria-label={"Edit background and cover for " + photo.name}><Crop size={14}/> Edit cover</button>
-                  </div>}
+
                 </div>
               </div>;
             })}
