@@ -1666,7 +1666,7 @@ function Login({
   return (
     <div className="access-page catalog-login-page brutti-login-redesign">
       <div className="catalog-login-shell">
-        <section className="catalog-login-story" aria-label="Brutti Catalog collection studio" style={{ backgroundImage: "url(" + import.meta.env.BASE_URL + "reference/kiosk.jpg)" }}>
+        <section className="catalog-login-story" aria-label="Brutti Catalog collection studio" style={{ backgroundImage: `url("${publicAssetUrl("/images/brutti-collection-hero.webp")}")` }}>
           <div className="catalog-login-story-top">
             <a href="#/catalog" className="catalog-login-wordmark" aria-label="Open Brutti public catalog">
               <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" />
