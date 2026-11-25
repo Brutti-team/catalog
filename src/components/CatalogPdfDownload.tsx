@@ -1,15 +1,15 @@
-import { useImperativeHandle, useRef, useState, type Ref } from "react";
-import { BookOpen, Check, Download, FileText, Heart, Layers3, Star, X } from "lucide-react";
+import { useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
+import { ArrowLeft, BookOpen, Check, Download, Eye, FileText, Heart, Layers3, Star, X } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import { selectPdfProducts, type PdfSelection } from "../lib/catalog-pdf-plan";
 import PdfCategoryDropdown from "./PdfCategoryDropdown";
 import "./catalog-pdf-download.css";
 import { useFavouriteIds } from "../lib/customer-favourites";
-import { downloadCustomerCatalogue } from "../lib/download-customer-catalogue";
+import { customerCatalogueFilename, downloadCustomerCatalogue, prepareCustomerCatalogue } from "../lib/download-customer-catalogue";
 
 export type CatalogPdfDownloadHandle = { open: () => void };
-type Props = {products:Product[];categories:Category[];disabled:boolean;openRef?:Ref<CatalogPdfDownloadHandle>;hideTrigger?:boolean};
-export default function CatalogPdfDownload({products,categories,disabled,openRef,hideTrigger=false}:Props) {
+type Props = {products:Product[];categories:Category[];disabled:boolean;openRef?:Ref<CatalogPdfDownloadHandle>;hideTrigger?:boolean;staffPreview?:boolean};
+export default function CatalogPdfDownload({products,categories,disabled,openRef,hideTrigger=false,staffPreview=false}:Props) {
   const dialog=useRef<HTMLDialogElement>(null);
   const running=useRef(false);
   const [mode,setMode]=useState<PdfSelection>("all");
@@ -18,18 +18,33 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
   const [progress,setProgress]=useState<number|null>(null);
   const [message,setMessage]=useState("");
   const [failed,setFailed]=useState(false);
+  const [preview,setPreview]=useState<{blob:Blob;missing:number;filename:string}|null>(null);
+  const [previewUrl,setPreviewUrl]=useState("");
+  useEffect(()=>{
+    if(!preview)return;
+    const url=URL.createObjectURL(preview.blob);
+    setPreviewUrl(url);
+    return()=>URL.revokeObjectURL(url);
+  },[preview]);
+  const clearPreview=()=>{setPreviewUrl("");setPreview(null);};
   const count=selectPdfProducts(products,mode,category,[...favourites]).length;
   const open=()=>{
     if(disabled||!products.length||dialog.current?.open)return;
-    setMessage("");setFailed(false);dialog.current?.showModal();
+    clearPreview();setMessage("");setFailed(false);dialog.current?.showModal();
   };
   useImperativeHandle(openRef,()=>({open}));
   const download=async()=>{
     if(running.current||!count)return;
     running.current=true;setProgress(0);setMessage("");setFailed(false);
     try {
-      const result=await downloadCustomerCatalogue(products,categories,mode,category,favourites,(done,total)=>setProgress(Math.round(done/total*100)));
-      setMessage(result.missing ? "PDF created. "+result.missing+" product or category image(s) could not be loaded." : "Your catalogue PDF is ready.");
+      const reportProgress=(done:number,total:number)=>setProgress(Math.round(done/total*100));
+      if(staffPreview){
+        const result=await prepareCustomerCatalogue(products,categories,mode,category,favourites,reportProgress);
+        setPreview({...result,filename:customerCatalogueFilename(mode)});
+      }else{
+        const result=await downloadCustomerCatalogue(products,categories,mode,category,favourites,reportProgress);
+        setMessage(result.missing ? "PDF created. "+result.missing+" product or category image(s) could not be loaded." : "Your catalogue PDF is ready.");
+      }
     } catch(error) {
       console.error("[Catalogue PDF] Download failed", {mode,category,productCount:count}, error);
       setFailed(true);
@@ -43,8 +58,22 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
       aria-haspopup="dialog" onClick={open}>
       <Download size={17} aria-hidden="true"/> Download Catalogue
     </button>}
-    <dialog ref={dialog} className="pub-pdf-dialog" aria-labelledby="pub-pdf-title"
+    <dialog ref={dialog} className={"pub-pdf-dialog"+(preview?" staff-pdf-preview-dialog":"")} aria-labelledby="pub-pdf-title"
+      onClose={clearPreview}
       onCancel={e=>{if(running.current)e.preventDefault();}}>
+      {preview?<div className="staff-pdf-preview">
+        <header className="staff-pdf-preview-head">
+          <button type="button" className="staff-pdf-preview-back" onClick={clearPreview} aria-label="Back to catalogue options"><ArrowLeft size={19}/></button>
+          <div><h2 id="pub-pdf-title">Catalogue preview</h2><p>Review your PDF before downloading.</p></div>
+          <button type="button" className="staff-pdf-preview-close" onClick={()=>dialog.current?.close()} aria-label="Close preview"><X size={20}/></button>
+        </header>
+        {preview.missing>0&&<p className="staff-pdf-preview-warning" role="status">{preview.missing} product or category image(s) could not be loaded.</p>}
+        {previewUrl?<iframe className="staff-pdf-preview-frame" src={previewUrl+"#view=FitH"} title="Catalogue PDF preview"/>:<p role="status">Opening preview…</p>}
+        <footer className="staff-pdf-preview-footer">
+          <a href={previewUrl||undefined} target="_blank" rel="noopener noreferrer" aria-disabled={!previewUrl}>Open PDF in new tab</a>
+          <a className="staff-pdf-preview-download" href={previewUrl||undefined} download={preview.filename} aria-disabled={!previewUrl}><Download size={17}/> Download PDF</a>
+        </footer>
+      </div>:<>
       <div className="pub-pdf-dialog-head">
         <div className="pub-pdf-heading"><span className="pub-pdf-heading-icon"><FileText size={22} strokeWidth={1.7} aria-hidden="true"/></span><div><p>BENUA BRUTTI / COLLECTION</p><h2 id="pub-pdf-title">Download Catalogue</h2><span>Choose a collection to keep or share.</span></div></div>
         <button type="button" aria-label="Close download options" disabled={progress!==null} onClick={()=>dialog.current?.close()}><X size={20}/></button>
@@ -63,7 +92,8 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
       <div className="pub-pdf-summary"><span className="pub-pdf-summary-icon"><FileText size={17} strokeWidth={1.7} aria-hidden="true"/></span><div><strong>{count} {count===1?"product":"products"} selected</strong><small>PDF · A4 portrait · Original Brutti covers</small></div></div>
       {progress!==null&&<div role="status" className="pub-pdf-progress"><progress max={100} value={progress}/><span>Preparing PDF · {progress}%</span></div>}
       {message&&<p role={failed?"alert":"status"} className="pub-pdf-message">{message}</p>}
-      <button type="button" className="pub-pdf-download" disabled={progress!==null||!count} onClick={()=>void download()}><Download size={17}/> {progress!==null?"Preparing catalogue…":"Download PDF"}</button>
+      <button type="button" className="pub-pdf-download" disabled={progress!==null||!count} onClick={()=>void download()}>{staffPreview?<Eye size={17}/>:<Download size={17}/>} {progress!==null?"Preparing catalogue…":staffPreview?"Preview PDF":"Download PDF"}</button>
+      </>}
     </dialog>
   </>;
 }
