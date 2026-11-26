@@ -1718,10 +1718,6 @@ function Login({
             <div className="brutti-login-brand">
               <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti official logo" />
             </div>
-            <div className="catalog-login-kicker">
-              <span className="catalog-login-kicker-dot" aria-hidden="true" />
-              STAFF PORTAL
-            </div>
             <div className="catalog-login-heading">
               <h1>{authenticated ? "Access restricted." : "Welcome back."}</h1>
               {authenticated && (
