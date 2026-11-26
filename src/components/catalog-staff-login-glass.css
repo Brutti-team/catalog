@@ -235,33 +235,24 @@
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-submit:hover:not(:disabled) { transform: none; }
 }
 
-/* Final layout: explicit tracks and placement so older login styles cannot hide the image. */
+/* Full-screen single-panel login — showroom photo hidden only on this route. */
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell {
   display: grid !important;
-  grid-template-columns: minmax(0, 42%) minmax(0, 1fr) !important;
+  grid-template-columns: minmax(0,1fr) !important;
   grid-template-rows: auto !important;
   width: 100%; min-height: 100dvh; height: auto;
   align-items: stretch;
 }
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-story {
-  display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  position: relative;
-  grid-column: 1; grid-row: 1;
-  width: 100%; min-height: 100dvh;
-  background-size: cover; background-position: center center;
-  background-repeat: no-repeat;
+  display: none !important;
 }
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side {
-  grid-column: 2; grid-row: 1;
+  grid-column: 1; grid-row: 1;
   min-width: 0; width: 100%; min-height: 100dvh;
-  padding-inline: clamp(18px, 3vw, 48px);
+  padding-inline: clamp(18px,3vw,48px);
 }
 @media (max-width: 700px) {
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell { grid-template-columns: minmax(0,1fr) !important; grid-template-rows: auto 1fr !important; }
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-story { grid-column: 1; grid-row: 1; min-height: clamp(120px, 22dvh, 200px); background-position: center 30%; }
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side { grid-column: 1; grid-row: 2; min-height: 0; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side { padding-inline: clamp(14px,4vw,28px); }
 }
 
 /* Quiet studio glass: compact centered identity, clean fields and understated actions.
