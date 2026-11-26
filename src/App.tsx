@@ -1724,8 +1724,8 @@ function Login({
           index += 1;
           setTypedLength(index);
           if (index >= collectionTitle.length) window.clearInterval(timer);
-        }, 65);
-      }, 380);
+        }, 150);
+      }, 950);
     };
     play();
     motion.addEventListener("change", play);
@@ -1870,7 +1870,10 @@ function Login({
                       onClick={() => { setPasswordToggled(true); setShowPassword(v => !v); }}
                       aria-label={showPassword ? "Hide password" : "Show password"}
                       aria-pressed={showPassword}>
-                      {showPassword ? <EyeOff size={19} aria-hidden="true" /> : <Eye size={19} aria-hidden="true" />}
+                      <span className="brutti-eye-stack" aria-hidden="true">
+                        <span className="brutti-eye-open"><Eye size={20} /></span>
+                        <span className="brutti-eye-closed"><EyeOff size={20} /></span>
+                      </span>
                     </button>
                   </div>
                   <div className="catalog-login-recovery">
