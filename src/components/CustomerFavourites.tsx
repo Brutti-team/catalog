@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Check, Download, Heart, X } from "lucide-react";
 import type { Category, Product } from "../lib/types";
 import { publicAssetUrl } from "../lib/assets";
-import { FAVOURITE_NOTICE, toggleFavouriteId, useFavouriteIds } from "../lib/customer-favourites";
+import { FAVOURITE_NOTICE, toggleFavouriteId, useFavouriteIds, syncPublicFavourites } from "../lib/customer-favourites";
 import { downloadCustomerCatalogue } from "../lib/download-customer-catalogue";
 import ProductPrice from "./ProductPrice";
 import "./customer-favourites.css";
@@ -10,6 +10,15 @@ import "./customer-favourites.css";
 type Props={products:Product[];categories:Category[];loading:boolean;error:string|null;onOpen:()=>void};
 export default function CustomerFavourites({products,categories,loading,error,onOpen}:Props){
   const ids=useFavouriteIds();
+  useEffect(()=>{
+    if(loading||error)return;
+    // This component exists only on the public catalog, not private admin preview.
+    const sync=()=>syncPublicFavourites();
+    sync();
+    window.addEventListener("online",sync);
+    window.addEventListener("focus",sync);
+    return()=>{window.removeEventListener("online",sync);window.removeEventListener("focus",sync);};
+  },[loading,error]);
   const saved=ids.map(id=>products.find(p=>p.id===id&&p.status==="published")).filter((p):p is Product=>Boolean(p));
   const dialog=useRef<HTMLDialogElement>(null);
   const running=useRef(false);
