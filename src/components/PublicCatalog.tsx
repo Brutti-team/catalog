@@ -19,6 +19,7 @@ import type { Category, Product, ProductImage, ProductSpecification } from "../l
 import { publicPhotoCropStyle, isStudioEditedPhoto, effectivePhotoCrop } from "../lib/photo-crop";
 import { publicAssetUrl } from "../lib/assets";
 import ProductPrice from "./ProductPrice";
+import { hasProductDiscount } from "../lib/discount-price";
 import CatalogPdfDownload, { type CatalogPdfDownloadHandle } from "./CatalogPdfDownload";
 import { recommendProducts, recentProductIds, searchMatches } from "../lib/product-recommendations";
 import MaterialsContent from "./MaterialsContent";
@@ -287,6 +288,8 @@ export default function PublicCatalog({
     categories.find((item) => item.id === id)?.name || "Furniture";
 
   const filtered = useMemo(() => {
+    const collectionPriority = (item: Product) =>
+      hasProductDiscount(item) ? 0 : item.availability === "available" ? 1 : 2;
     const text = query.trim().toLowerCase();
     const list = published.filter(
       (item) =>
@@ -302,7 +305,8 @@ export default function PublicCatalog({
         ? a.name.localeCompare(b.name)
         : sort === "price"
           ? (a.price ?? Infinity) - (b.price ?? Infinity)
-          : Number(b.featured) - Number(a.featured) || (a.displayOrder ?? 0) - (b.displayOrder ?? 0),
+          : collectionPriority(a) - collectionPriority(b) ||
+            Number(b.featured) - Number(a.featured) || (a.displayOrder ?? 0) - (b.displayOrder ?? 0),
     );
   }, [published, query, category, sort, bestOnly]);
   useEffect(() => { setCollectionExpanded(false); }, [query, category, sort, bestOnly]);
