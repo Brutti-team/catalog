@@ -17,7 +17,8 @@ export function materialInlineHtml(text:string):string {
     if(!found){html+=escapeText(text[i++]);continue;}
     const [mark,tag]=found, from=i+mark.length, end=text.indexOf(mark,from);
     const inner=materialInlineHtml(text.slice(from,end));
-    html+=tag==="strong-em" ? "<strong><em>"+inner+"</em></strong>" : "<"+tag+">"+inner+"</"+tag+">";
+    // Unwrap legacy highlight markers while retaining nested text formatting.
+    html+=tag==="mark" ? inner : tag==="strong-em" ? "<strong><em>"+inner+"</em></strong>" : "<"+tag+">"+inner+"</"+tag+">";
     i=end+mark.length;
   }
   return html;
@@ -40,8 +41,8 @@ export function materialEditorHtml(value:string):string {
   close();return html;
 }
 
-type Format={bold:boolean;italic:boolean;underline:boolean;strike:boolean;highlight:boolean};
-const emptyFormat:Format={bold:false,italic:false,underline:false,strike:false,highlight:false};
+type Format={bold:boolean;italic:boolean;underline:boolean;strike:boolean};
+const emptyFormat:Format={bold:false,italic:false,underline:false,strike:false};
 function inherited(el:HTMLElement, parent:Format):Format {
   const tag=el.tagName, style=el.style, decoration=style.textDecoration+" "+style.textDecorationLine;
   return {
@@ -49,7 +50,6 @@ function inherited(el:HTMLElement, parent:Format):Format {
     italic:parent.italic||tag==="I"||tag==="EM"||style.fontStyle==="italic",
     underline:parent.underline||tag==="U"||decoration.includes("underline"),
     strike:parent.strike||tag==="S"||tag==="STRIKE"||tag==="DEL"||decoration.includes("line-through"),
-    highlight:parent.highlight||tag==="MARK"||Boolean(style.backgroundColor && !["transparent","rgba(0, 0, 0, 0)","rgb(255, 255, 255)","white"].includes(style.backgroundColor)),
   };
 }
 function formatText(text:string, f:Format):string {
@@ -59,7 +59,7 @@ function formatText(text:string, f:Format):string {
     let result=core;
     const wrap=(mark:string)=>{result=mark+result+mark;};
     if(f.bold&&f.italic)wrap("***");else if(f.bold)wrap("**");else if(f.italic)wrap("*");
-    if(f.underline)wrap("++");if(f.strike)wrap("~~");if(f.highlight)wrap("==");
+    if(f.underline)wrap("++");if(f.strike)wrap("~~");
     return line.slice(0,start)+result+line.slice(end);
   }).join("\n");
 }
