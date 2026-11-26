@@ -1,13 +1,13 @@
 /* Staff login only — final, viewport-aware glass layout. */
 .admin-app.admin-access-shell:has(.catalog-login-page.brutti-login-redesign) {
-  min-height: 100dvh; height: auto; padding: 0; margin: 0;
+  box-sizing: border-box; width: 100%; min-height: 100dvh; height: auto; padding: 0; margin: 0; border: 0;
 }
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign {
   --login-ink: #253c30; --login-muted: #657268; --login-glass: rgba(255,255,255,.58);
   --login-line: rgba(255,255,255,.78); --login-field: rgba(255,255,255,.68);
   box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center;
   width: 100%; min-height: 100dvh; height: auto; gap: 0;
-  padding: clamp(12px, 2.2vw, 30px);
+  padding: 0;
   background: radial-gradient(ellipse at 12% 14%, #f5deca 0, transparent 42%), radial-gradient(ellipse at 88% 85%, #dbe5d9 0, transparent 45%), #f2f1eb;
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
@@ -17,15 +17,15 @@
   background: radial-gradient(ellipse at 12% 14%, #402c22, transparent 42%), radial-gradient(ellipse at 88% 85%, #203b2b, transparent 45%), #151916;
 }
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-shell {
-  box-sizing: border-box; display: grid; grid-template-columns: minmax(0, min(45%, 48dvw, 70dvh)) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr);
-  width: min(1080px, calc(100vw - 56px)); max-width: none; min-width: 0; min-height: 0; height: auto; margin: 0; gap: 0; flex: 0 0 auto;
-  padding: 8px; border: 1px solid var(--login-line); border-radius: 26px;
+  box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr);
+  width: 100%; max-width: none; min-width: 0; min-height: 100dvh; height: auto; margin: 0; gap: 0; flex: 1 0 auto;
+  padding: 0; border: 0; border-radius: 0;
   background: var(--login-glass); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  box-shadow: 0 20px 65px rgba(41,37,28,.12); overflow: hidden; animation: none;
+  box-shadow: none; overflow: hidden; animation: none;
 }
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-story {
   box-sizing: border-box; display: flex; position: relative; min-width: 0; min-height: 0; height: auto;
-  border-radius: 19px; padding: 20px; justify-content: flex-end;
+  border-radius: 0; padding: 20px; justify-content: flex-end;
   background-color: #702b0b; background-size: cover; background-position: center top;
   background-repeat: no-repeat; overflow: hidden; isolation: isolate;
 }
@@ -93,7 +93,7 @@
 }
 @media (min-width: 851px) and (min-height: 620px) {
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign { height: 100dvh; }
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-shell { height: min(720px, calc(100dvh - 2 * clamp(12px, 2.2vw, 30px))); }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-shell { height: 100dvh; flex: 0 0 auto; }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-form-side { overflow-y: auto; scrollbar-width: none; }
 }
 @media (min-width: 851px) and (max-height: 740px) {
@@ -106,10 +106,10 @@
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-divider { margin: 10px 0 7px; }
 }
 @media (max-width: 850px) {
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign { padding: 10px; }
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-shell { grid-template-columns: minmax(0,1fr); grid-template-rows: auto auto; width: min(480px, calc(100vw - 20px)); max-width: none; border-radius: 20px; height: auto; }
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-story { min-height: clamp(120px, 23dvh, 200px); background-position: center 30%; border-radius: 14px; }
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-form-side { padding: 10px 6px 6px; gap: 9px; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign { padding: 0; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-shell { grid-template-columns: minmax(0,1fr); grid-template-rows: auto auto; width: 100%; max-width: none; min-height: 100dvh; border-radius: 0; height: auto; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-story { min-height: clamp(120px, 23dvh, 200px); background-position: center 30%; border-radius: 0; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-form-side { padding: 12px clamp(12px, 4vw, 28px) max(12px, env(safe-area-inset-bottom)); gap: 9px; }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface { padding: 15px 17px; }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .brutti-login-brand { margin-bottom: 9px; }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .brutti-login-brand img { max-height: 42px; }
@@ -120,7 +120,7 @@
 
 /* Fresh Pages build: avoid duplicate artifacts from rerunning a failed workflow. */
 
-/* Use a definite viewport-based width, rather than percentage sizing in an intrinsic grid track. */
+/* Edge-to-edge split screen; keep the sign-in card centered and compact. */
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-form-side::-webkit-scrollbar { display: none; }
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-input input:-webkit-autofill {
   -webkit-text-fill-color: var(--login-ink);
@@ -130,7 +130,7 @@
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-form-foot span { white-space: nowrap; }
 @media (min-width: 851px) {
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-shell {
-    grid-template-columns: minmax(0, min(44%, calc((min(720px, 100dvh - 60px) - 16px) * .706))) minmax(0,1fr);
+    grid-template-columns: minmax(0, 42%) minmax(0, 1fr);
   }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-story { background-position: center top; }
 }
