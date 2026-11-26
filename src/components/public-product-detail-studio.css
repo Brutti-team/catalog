@@ -1922,3 +1922,32 @@
     grid-row:5!important;margin-top:12px!important;
   }
 }
+
+
+/* Align the desktop price caption, amount and availability to the same right
+   edge as the details panel. Keep the open header and mobile layout intact. */
+@media (min-width:851px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price,
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail:has(> .pub-detail-gallery > .pub-detail-main-image) > .pub-detail-copy > .pub-detail-price {
+    grid-column:2!important;grid-row:2/4!important;
+    display:flex!important;flex-direction:column!important;
+    align-items:flex-end!important;justify-content:center;
+    justify-self:stretch!important;align-self:center!important;
+    width:100%;box-sizing:border-box;
+    padding:0!important;margin:0!important;text-align:right!important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price .catalog-price-current--stacked {
+    width:100%;align-items:flex-end!important;
+    text-align:right!important;gap:3px!important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price :is(.catalog-price-basis,.catalog-price-amount) {
+    width:100%;display:block!important;
+    margin:0!important;padding:0!important;text-align:right!important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price .catalog-price-line {
+    width:100%;justify-content:flex-end!important;text-align:right!important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-availability {
+    justify-self:end!important;margin-right:0!important;
+  }
+}
