@@ -480,9 +480,9 @@
   width:min(650px,calc(100vw - 32px))!important;max-width:calc(100vw - 32px)!important;
   height:fit-content!important;max-height:calc(100dvh - 32px)!important;box-sizing:border-box;
   overflow:auto!important;overscroll-behavior:contain;
-  border:1px solid var(--fr-line)!important;border-radius:20px!important;
+  border:0!important;outline:none!important;border-radius:20px!important;
   background:linear-gradient(145deg,var(--fr-bg),var(--fr-end))!important;color:var(--fr-ink)!important;
-  box-shadow:0 24px 85px rgba(20,48,33,.25),inset 0 1px 0 rgba(255,255,255,.55)!important;
+  box-shadow:0 24px 85px rgba(20,48,33,.25)!important;
   animation:none!important;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   scrollbar-width:thin;
 }
