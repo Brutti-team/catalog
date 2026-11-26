@@ -117,3 +117,5 @@
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-form { gap: 9px; }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-divider { margin: 10px 0 7px; }
 }
+
+/* Fresh Pages build: avoid duplicate artifacts from rerunning a failed workflow. */
