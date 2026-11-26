@@ -349,30 +349,34 @@ export default function AccountCenter({
               <p>{!["super_admin", "admin"].includes(account.role ?? "")
                 ? "Only Admin and Super Admin can view account permissions."
                 : "Account permission management is not enabled on this workspace yet."}</p></div>
-          : <div className="account-table-wrap">
-              <div className="account-table-title"><UsersRound size={19} /><strong>Catalog users</strong><span>{members.length}</span></div>
-              <p className="account-hint account-table-hint">Invited Catalog members and their access levels. Admin can view permissions; Super Admin can manage them.</p>
+          : <div className="account-table-wrap ap-directory">
+              <section className="ap-panel" aria-labelledby="catalog-users-heading">
+              <div className="account-table-title">
+                <div className="ap-section-icon"><UsersRound size={19} aria-hidden="true"/></div>
+                <div className="ap-section-copy"><h2 id="catalog-users-heading">Catalog users</h2><p>Admin can view permissions. Super Admin can manage access.</p></div>
+                <span aria-label={members.length + " catalog users"}>{members.length}</span>
+              </div>
               <div className="account-scroll"><table className="account-table">
                 <thead><tr><th>Team member</th><th>Last login</th><th>Access role</th>{account.role === "super_admin" && <th>Action</th>}</tr></thead>
                 <tbody>{members.map(user => {
                   const draft = draftRoles[user.user_id] ?? user.role ?? "none";
-                  return <tr key={user.user_id}>
-                    <td><strong>{user.display_name || user.email.split("@")[0]}</strong><span>{user.email}</span>
+                  return <tr key={user.user_id} data-role={user.role || "none"}>
+                    <td><div className="ap-person"><span className="ap-avatar" aria-hidden="true">{initials(user.display_name || user.email.split("@")[0])}</span><div className="ap-person-copy"><strong>{user.display_name || user.email.split("@")[0]}</strong><span className="ap-email">{user.email}</span>
                     {account.id === user.user_id && <small>Your account</small>}
                     {account.id !== user.user_id && (
                       <small className={user.last_sign_in_at ? "catalog-account-status catalog-account-status--active" : "catalog-account-status catalog-account-status--invited"}>
                         {user.last_sign_in_at ? "Active" : "Invited · awaiting first login"}
                       </small>
-                    )}</td>
-                    <td>{dateText(user.last_sign_in_at)}</td>
+                    )}</div></div></td>
+                    <td><div className="ap-last-login"><Clock3 size={14} aria-hidden="true"/>{dateText(user.last_sign_in_at)}</div></td>
                     <td>{account.role === "super_admin" ? (
-                      <select aria-label={`Role for ${user.email}`} value={draft}
+                      <div className="ap-role-field" data-role={draft}><ShieldCheck size={14} aria-hidden="true"/><select aria-label={`Role for ${user.email}`} value={draft}
                         disabled={account.id === user.user_id || busyId !== null}
                         onChange={e => setDraftRoles(prev => ({ ...prev, [user.user_id]: e.target.value }))}>
                         {roleOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.title}</option>)}
-                      </select>
+                      </select></div>
                     ) : (
-                      <span className="catalog-access-role-readonly">{roleLabel(user.role)}</span>
+                      <span className="catalog-access-role-readonly"><ShieldCheck size={13} aria-hidden="true"/>{roleLabel(user.role)}</span>
                     )}</td>
                     {account.role === "super_admin" && (
                       <td><button type="button" className="button secondary"
@@ -383,23 +387,27 @@ export default function AccountCenter({
                 })}</tbody>
               </table></div>
               {!members.length && <p className="account-muted">No invited users found.</p>}
+              </section>
               {pendingStaff.length > 0 && (
-                <section className="catalog-pending-staff" aria-labelledby="catalog-pending-staff-title">
+                <section className="catalog-pending-staff ap-panel" aria-labelledby="catalog-pending-staff-title">
                   <header className="catalog-pending-staff-heading">
-                    <div>
+                    <span className="ap-section-icon is-pending"><Mail size={19} aria-hidden="true"/></span>
+                    <div className="ap-section-copy">
                       <h2 id="catalog-pending-staff-title">Pending invitations</h2>
                       <p>Brutti OS staff awaiting access. Staff can sign in after invitation and verification. OS single sign-on is not connected.</p>
                     </div>
                     <span className="catalog-pending-staff-count">{pendingStaff.length} pending</span>
                   </header>
                   <div className="catalog-pending-staff-list">
+                    <div className={"ap-pending-columns" + (account.role === "super_admin" ? "" : " is-readonly")} aria-hidden="true"><span>Team member</span><span>Access role</span><span>Status</span>{account.role === "super_admin" && <span>Action</span>}</div>
                     {pendingStaff.map(candidate => (
-                      <div className="catalog-pending-staff-item" key={candidate.candidate_id}>
+                      <div className="catalog-pending-staff-item" key={candidate.candidate_id} data-role={candidate.proposed_role}>
                         <div className="catalog-pending-staff-identity">
-                          <strong>{candidate.display_name}</strong>
-                          <small>{candidate.email || "Email not confirmed in OS"}</small>
+                          <span className="ap-avatar" aria-hidden="true">{initials(candidate.display_name)}</span>
+                          <div className="ap-person-copy"><strong>{candidate.display_name}</strong>
+                          <small className="ap-email">{candidate.email || "Email not confirmed in OS"}</small></div>
                         </div>
-                        <span className="catalog-pending-staff-role">{roleLabel(candidate.proposed_role)}</span>
+                        <span className="catalog-pending-staff-role">{candidate.proposed_role === "editor" ? <Pencil size={13} aria-hidden="true"/> : <ShieldCheck size={13} aria-hidden="true"/>}{roleLabel(candidate.proposed_role)}</span>
                         <span className="catalog-pending-staff-state">Not invited</span>
                         {account.role === "super_admin" && (
                           <button type="button" className="catalog-pending-staff-invite"
