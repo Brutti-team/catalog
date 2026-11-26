@@ -94,16 +94,18 @@ export default function LastChange({
           const time = Number.isNaN(date.getTime()) ? "Time unavailable" : new Intl.DateTimeFormat("en-MY", {
             timeZone: "Asia/Kuala_Lumpur", hour: "numeric", minute: "2-digit", hour12: true,
           }).format(date).toUpperCase();
-          return <article key={event.id} className="catalog-today-feed-row">
-            {photo ? <a className="catalog-today-feed-photo" href={publicAssetUrl(photo.url)} target="_blank" rel="noopener noreferrer" aria-label={"Open full-size photo of " + name} title="View full product photo">
+          const Row = photo ? "a" : "article";
+          return <Row key={event.id} className={"catalog-today-feed-row" + (photo ? " is-clickable" : "")}
+            {...(photo ? { href: publicAssetUrl(photo.url), target: "_blank", rel: "noopener noreferrer", title: "View full product photo", "aria-label": "Open full-size photo of " + name + " (new tab)" } : {})}>
+            {photo ? <span className="catalog-today-feed-photo">
               <SafeImage src={photo.url} alt="" loading="lazy" />
-            </a> : <span className="catalog-today-feed-photo" aria-label="No product photo available"><ImageOff size={19} aria-hidden="true" /></span>}
+            </span> : <span className="catalog-today-feed-photo" aria-label="No product photo available"><ImageOff size={19} aria-hidden="true" /></span>}
             <div className="catalog-today-feed-copy">
               <div className="catalog-today-feed-name"><strong title={name}>{name}</strong><span className={"catalog-today-feed-action" + (added ? " is-added" : "")}>{added ? "Added" : "Edited"}</span></div>
               <small>By {event.actor_email || "System"}</small>
             </div>
             <time className="catalog-today-feed-time" dateTime={event.created_at} title={formatActivityTime(event.created_at)}><strong>{time}</strong><small>Today · MYT</small></time>
-          </article>;
+          </Row>;
         }) : <p className="catalog-today-feed-empty">{visibleStatus === "loading" ? "Checking latest updates…" : visibleStatus === "empty" ? "No product additions or edits today." : visibleStatus === "error" ? "Latest updates are temporarily unavailable." : "Updates will appear when your administrator account is verified."}</p>}
       </div>
     </section>
