@@ -1,3 +1,4 @@
+import OverviewCount from "./components/OverviewCount";
 import "./components/catalog-best-seller-controls.css";
 import SafeImage from "./components/SafeImage";
 import { photoCropStyle, catalogCardPhotoStyle } from "./lib/photo-crop";
@@ -914,9 +915,9 @@ export default function App() {
                   </button>
                 </div>
                 <div className="catalog-command-meta" aria-label="Current catalog totals">
-                  <span><strong>{loading ? "—" : data.products.length}</strong> Products</span>
-                  <span><strong>{loading ? "—" : data.categories.length}</strong> Categories</span>
-                  <span><strong>{loading ? "—" : draftCount}</strong> In review</span>
+                  <span><strong><OverviewCount value={loading ? null : data.products.length} /></strong> Products</span>
+                  <span><strong><OverviewCount value={loading ? null : data.categories.length} /></strong> Categories</span>
+                  <span><strong><OverviewCount value={loading ? null : draftCount} /></strong> In review</span>
                 </div>
               </div>
               <div className="catalog-command-art" aria-label={heroProduct ? `Catalog photo: ${heroProduct.name}` : "Brutti kiosk design reference"}>

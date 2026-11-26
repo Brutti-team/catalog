@@ -1,3 +1,4 @@
+import OverviewCount from "./OverviewCount";
 import {
   Archive, ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight,
   Layers3, Package, Pencil
@@ -89,7 +90,7 @@ export default function CatalogOverviewStudio({
             <span className="brutti-glass-icon"><Package size={20} strokeWidth={1.7} aria-hidden="true" /></span>
             <span className="brutti-glass-kpi-title">Total products</span>
           </span>
-          <strong>{loading ? "—" : total}</strong>
+          <strong><OverviewCount value={loading ? null : total} /></strong>
           <span className="brutti-glass-kpi-caption">Pieces in the collection <ArrowUpRight size={13} aria-hidden="true" /></span>
         </button>
         <div className="brutti-metric-tray" role="group" aria-label="Collection status">
@@ -102,7 +103,7 @@ export default function CatalogOverviewStudio({
                 <span className="brutti-glass-icon"><card.icon size={19} strokeWidth={1.8} aria-hidden="true" /></span>
                 <span className="brutti-glass-kpi-title">{card.title}</span>
               </span>
-              <strong>{loading ? "—" : card.value}</strong>
+              <strong><OverviewCount value={loading ? null : card.value} /></strong>
               <span className="brutti-glass-kpi-caption">{card.caption}</span>
             </button>
           ))}
@@ -139,7 +140,7 @@ export default function CatalogOverviewStudio({
                   <strong>{item.name}</strong>
                   <span className="atelier-category-track"><span style={{ width: item.count / maxCategoryCount * 100 + "%" }} /></span>
                 </span>
-                <span className="brutti-category-count">{item.count} <span>products</span></span>
+                <span className="brutti-category-count"><OverviewCount value={loading ? null : item.count} /> <span>products</span></span>
                 <ChevronRight size={16} aria-hidden="true" />
               </button>
             ))}

@@ -1,3 +1,4 @@
+import OverviewCount from "./OverviewCount";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   ChartNoAxesCombined, CalendarDays, Check, ChevronDown, Eye, Layers3, MousePointerClick,
@@ -235,7 +236,7 @@ export default function CustomerInsights({ products, categories, loading: produc
             {totals.map(item => {
               const details = <>
                 <span className="customer-insights-kpi-icon"><item.Icon size={23} strokeWidth={1.7} aria-hidden="true" /></span>
-                <div><strong>{busy || !data ? "—" : compact(item.value ?? 0)}</strong><span>{compactLayout ? ({ "Total product views": "Views", "Visitor sessions": "Sessions", "Product clicks": "Clicks", "Products viewed": "Products" }[item.name] ?? item.name) : item.name}</span></div>
+                <div><strong><OverviewCount value={busy || !data ? null : item.value ?? 0} /></strong><span>{compactLayout ? ({ "Total product views": "Views", "Visitor sessions": "Sessions", "Product clicks": "Clicks", "Products viewed": "Products" }[item.name] ?? item.name) : item.name}</span></div>
               </>;
               return <button key={item.key} type="button"
                   className={`customer-insights-kpi customer-insights-kpi--interactive${item.key === "sessions" ? " customer-insights-kpi--sessions" : ""}`}
