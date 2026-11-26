@@ -118,6 +118,8 @@ export default function AccountCenter({
   const [pendingStaff, setPendingStaff] = useState<PendingCatalogStaff[]>([]);
   const [events, setEvents] = useState<ActivityEntry[]>([]);
   const [activityFilter, setActivityFilter] = useState("all");
+  const [activityActor, setActivityActor] = useState("all");
+  const [activityNames, setActivityNames] = useState<Record<string,string>>({});
   const [activityMenuOpen, setActivityMenuOpen] = useState(false);
   const activityMenuRef = useRef<HTMLDivElement>(null);
   const activityTriggerRef = useRef<HTMLButtonElement>(null);
@@ -164,9 +166,19 @@ export default function AccountCenter({
         setPendingStaff(waiting);
         setDraftRoles({});
       } else if (view === "activity") {
-        const entries = await listCatalogActivity(activityPeriod);
+        const [entries, staff] = await Promise.all([
+          listCatalogActivity(activityPeriod),
+          current.managementReady && (current.role === "admin" || current.role === "super_admin")
+            ? listCatalogStaff().catch(() => [] as StaffMember[])
+            : Promise.resolve([] as StaffMember[]),
+        ]);
         if (request !== activityLoadRequest.current) return;
+        const names: Record<string,string> = {};
+        for (const member of staff) if (member.display_name?.trim()) names[member.user_id] = member.display_name.trim();
+        if (current.displayName.trim()) names[current.id] = current.displayName.trim();
+        setActivityNames(names);
         setEvents(entries);
+        setActivityActor("all");
       }
     } catch (e) {
       if (request === activityLoadRequest.current)
@@ -286,7 +298,10 @@ export default function AccountCenter({
     if(example)options.push({id:"action:"+action,label:actionText(example),icon:Clock3,group:"Other recorded actions",matches:e=>e.action===action});
   }
   const selectedFilter=options.find(option=>option.id===activityFilter)??options[0];
-  const visibleEvents=events.filter(selectedFilter.matches);
+  const actorKey=(entry:ActivityEntry)=>entry.actor_id ? "id:"+entry.actor_id : entry.actor_email ? "email:"+entry.actor_email.toLowerCase() : "system";
+  const actorName=(entry:ActivityEntry)=> (entry.actor_id && activityNames[entry.actor_id]) || (entry.actor_email ? entry.actor_email : "System");
+  const actorOptions=Array.from(new Map(events.map(entry=>[actorKey(entry),actorName(entry)])).entries()).sort((a,b)=>a[1].localeCompare(b[1]));
+  const visibleEvents=events.filter(entry=>selectedFilter.matches(entry)&&(activityActor==="all"||actorKey(entry)===activityActor));
   return (
     <section className={`account-center account-center--${view}`}>
       <div className="account-heading">
@@ -430,7 +445,7 @@ export default function AccountCenter({
             <div className="account-activity-toolbar-heading">
               <div className="account-activity-toolbar-icon" aria-hidden="true"><Clock3 size={20}/></div>
               <div>
-                <h2>Recent changes <span className="account-activity-count">{events.length}</span></h2>
+                <h2>Recent changes <span className="account-activity-count">{visibleEvents.length}</span></h2>
                 <p>{activityPeriod === "all" ? "Latest recorded changes to your catalog" : activityPeriod === "today" ? "Changes recorded today · Malaysia time" : "Changes recorded yesterday · Malaysia time"}</p>
               </div>
             </div>
@@ -451,6 +466,14 @@ export default function AccountCenter({
                     onClick={() => setActivityPeriod(period.id)}
                   >{period.label}</button>
                 ))}
+              </div>
+              <div className="activity-actor-picker">
+                <UsersRound size={16} aria-hidden="true"/>
+                <select aria-label="Filter activity by staff name" value={activityActor} onChange={event=>setActivityActor(event.target.value)}>
+                  <option value="all">All staff</option>
+                  {actorOptions.map(([key,name])=><option value={key} key={key}>{name}</option>)}
+                </select>
+                <ChevronDown size={15} aria-hidden="true"/>
               </div>
               <div className="activity-type-dropdown" ref={activityMenuRef}>
                 <button ref={activityTriggerRef} type="button" className={"activity-type-trigger"+(activityMenuOpen?" is-open":"")}
@@ -487,8 +510,8 @@ export default function AccountCenter({
           ) : !visibleEvents.length ? (
             <div className="account-activity-empty account-activity-empty-state" role="status">
               <span className="account-activity-empty-icon" aria-hidden="true"><Clock3 size={23} strokeWidth={1.7}/></span>
-              <strong>No matching {selectedFilter.label.toLowerCase()} records.</strong>
-              <p>Try another activity type or date to see more changes.</p>
+              <strong>No matching activity records.</strong>
+              <p>Try another staff member, activity type or date.</p>
             </div>
           ) : (
             <div className="account-timeline" role="list" aria-label="Recent catalog changes">
@@ -501,6 +524,7 @@ export default function AccountCenter({
                 const migrated = item.action.includes("migrated");
                 const Icon = migrated ? ArrowLeftRight : deleted ? Trash2 : published ? Eye : unpublished ? EyeOff : added ? Plus : type === "categories" ? Layers3 : type === "products" ? Package : ShieldCheck;
                 const typeLabel = type === "products" ? "Product" : type === "categories" ? "Category" : "System";
+                const name = actorName(item);
                 return (
                   <article className={`account-event account-event--${type}`} key={item.id} role="listitem">
                     <div className="account-event-track" aria-hidden="true">
@@ -508,14 +532,14 @@ export default function AccountCenter({
                     </div>
                     <div className="account-event-main">
                       <div className="account-event-heading">
-                        <strong>{actionText(item)}</strong>
+                        <strong>{item.resource_name || item.resource_type}</strong>
                         <span className={`account-event-type account-event-type--${type}`}>{typeLabel}</span>
                       </div>
-                      <p className="account-event-resource">{item.resource_name || item.resource_type}</p>
-                      <div className="account-event-byline">
-                        <UserRound size={12} aria-hidden="true"/>
-                        <span>{item.actor_email || "System"}</span>
-                      </div>
+                      <p className="account-event-resource">{actionText(item)}</p>
+                    </div>
+                    <div className="account-event-person" title={item.actor_email || name}>
+                      <span className="account-event-avatar" aria-hidden="true">{name==="System"?<ShieldCheck size={15}/>:initials(name)}</span>
+                      <div><small>By</small><strong>{name}</strong></div>
                     </div>
                     <time className="account-event-when" dateTime={item.created_at}>
                       <span>{activityDate(item.created_at, "date")}</span>
