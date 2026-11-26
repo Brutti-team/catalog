@@ -521,3 +521,18 @@
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.catalog-favourite-report .fr-note svg{flex:none;margin-top:1px;}
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"] .modal.catalog-favourite-report{--fr-bg:#25322b;--fr-end:#202923;--fr-ink:#eaf3ec;--fr-muted:#b5c9bb;--fr-line:rgba(185,215,195,.18);--fr-tile:#303e35;--fr-rose:#49313e;--fr-rose-ink:#e9b3c8;}
 @media(max-width:520px){.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.catalog-favourite-report .fr-body{padding:15px;} .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.catalog-favourite-report .modal-heading{padding:16px!important;} .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.catalog-favourite-report .modal-heading h2{font-size:18px!important;} .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.catalog-favourite-report .fr-metric{padding:11px;} .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.catalog-favourite-report .fr-metric strong{font-size:25px;} .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.catalog-favourite-report .fr-rank{display:none;}}
+
+
+/* Overview scroll endpoint: footer is the last content, with no extra bottom gutter. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .admin-main > .admin-content {
+  padding-bottom: 0 !important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .workspace-footer {
+  margin-bottom: 0 !important;
+  padding-bottom: 16px !important;
+}
+@media (max-width: 800px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .workspace-footer {
+    padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  }
+}
