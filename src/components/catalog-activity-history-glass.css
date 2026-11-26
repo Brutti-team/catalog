@@ -552,3 +552,16 @@
  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-timeline{padding:0 12px 5px!important;}
  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-event-avatar{width:28px;height:28px;flex-basis:28px;border-radius:8px;}
 }
+
+
+/* Product thumbnail in the existing activity icon position. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-event-product-photo {
+  display:block;width:44px;height:44px;max-width:none;flex:0 0 44px;
+  object-fit:cover;object-position:center;border-radius:10px;box-sizing:border-box;
+  background:var(--ah-avatar);border:0;box-shadow:none;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-event {grid-template-columns:44px minmax(0,1.3fr) minmax(0,.85fr) minmax(108px,auto)!important;}
+@media(max-width:800px){
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-event {grid-template-columns:36px minmax(0,1fr) auto!important;}
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-event-product-photo{width:36px;height:36px;flex-basis:36px;border-radius:8px;}
+}
