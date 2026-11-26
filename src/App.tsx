@@ -1,3 +1,4 @@
+import { observeOverviewOnce } from "./components/overview-visibility";
 import OverviewCount from "./components/OverviewCount";
 import "./components/catalog-best-seller-controls.css";
 import SafeImage from "./components/SafeImage";
@@ -317,6 +318,20 @@ export default function App() {
   const publicRoute =
     route.startsWith("#/catalog") || route.startsWith("#/product/");
   const canReadCatalog = !authLoading && (auth.isAdmin || publicRoute) && !passwordIntent;
+
+  useEffect(() => {
+    if (tab !== "overview" || authLoading || !auth.isAdmin || publicRoute || passwordIntent) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const root = document.querySelector('.catalog-os-layout[data-active-tab="overview"] .admin-content');
+    if (!root) return;
+    const sections = root.querySelectorAll(
+      ".brutti-editorial-hero, .brutti-glass-kpi-featured, .brutti-metric-tray, .customer-insights-panel, .brutti-category-panel, .brutti-overview-audit"
+    );
+    const cleanups = Array.from(sections, section =>
+      observeOverviewOnce(section, () => section.classList.add("is-overview-visible")));
+    return () => cleanups.forEach(cleanup => cleanup());
+  }, [tab, authLoading, auth.isAdmin, publicRoute, passwordIntent]);
+
   useEffect(() => {
     if (!canReadCatalog) return;
     void refresh();

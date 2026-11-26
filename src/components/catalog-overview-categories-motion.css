@@ -396,41 +396,41 @@
 /* Brutti overview motion: staggered reveal, photographic depth and tactile controls.
    No layout, numbers, data requests or navigation are changed. */
 @media (prefers-reduced-motion: no-preference) {
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content > * {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero.is-overview-visible .catalog-command-content > * {
     animation: bruttiOverviewRise .68s cubic-bezier(.2,.72,.24,1) both;
   }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content > :nth-child(1) { animation-delay: .04s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content > :nth-child(2) { animation-delay: .12s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content > :nth-child(3) { animation-delay: .20s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content > :nth-child(4) { animation-delay: .28s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-content > :nth-child(5) { animation-delay: .36s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art { animation: bruttiOverviewPhoto .95s ease-out both; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art > img { animation: bruttiOverviewPhotoZoom 1.45s cubic-bezier(.18,.68,.25,1) both; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-art-label,
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero .brutti-editorial-photo-index { animation: bruttiOverviewRise .65s .38s both; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-kpi-featured,
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray { animation: bruttiOverviewRise .72s .13s cubic-bezier(.2,.72,.24,1) both; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray > button { animation: bruttiOverviewRise .62s .24s both; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray > button:nth-child(2) { animation-delay: .31s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray > button:nth-child(3) { animation-delay: .38s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray > button:nth-child(4) { animation-delay: .45s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-kpi > strong {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero.is-overview-visible .catalog-command-content > :nth-child(1) { animation-delay: .04s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero.is-overview-visible .catalog-command-content > :nth-child(2) { animation-delay: .12s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero.is-overview-visible .catalog-command-content > :nth-child(3) { animation-delay: .20s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero.is-overview-visible .catalog-command-content > :nth-child(4) { animation-delay: .28s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero.is-overview-visible .catalog-command-content > :nth-child(5) { animation-delay: .36s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero.is-overview-visible .catalog-command-art { animation: bruttiOverviewPhoto .95s ease-out both; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero.is-overview-visible .catalog-command-art > img { animation: bruttiOverviewPhotoZoom 1.45s cubic-bezier(.18,.68,.25,1) both; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero.is-overview-visible .catalog-command-art-label,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero.is-overview-visible .brutti-editorial-photo-index { animation: bruttiOverviewRise .65s .38s both; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-kpi-featured.is-overview-visible,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray.is-overview-visible { animation: bruttiOverviewRise .72s .13s cubic-bezier(.2,.72,.24,1) both; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray.is-overview-visible > button { animation: bruttiOverviewRise .62s .24s both; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray.is-overview-visible > button:nth-child(2) { animation-delay: .31s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray.is-overview-visible > button:nth-child(3) { animation-delay: .38s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray.is-overview-visible > button:nth-child(4) { animation-delay: .20s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-kpi-featured.is-overview-visible > strong {
     animation: bruttiOverviewNumber .8s .34s cubic-bezier(.18,.72,.25,1) both;
   }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels > .customer-insights-panel,
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels > .brutti-category-panel { animation: bruttiOverviewRise .74s .36s both; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels > .brutti-category-panel { animation-delay: .45s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-list > .brutti-category-row { animation: bruttiOverviewRise .55s .38s both; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-list > .brutti-category-row:nth-child(2) { animation-delay: .44s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-list > .brutti-category-row:nth-child(3) { animation-delay: .50s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-list > .brutti-category-row:nth-child(4) { animation-delay: .56s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-list > .brutti-category-row:nth-child(5) { animation-delay: .62s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-row .atelier-category-track > span { animation: bruttiOverviewBar .92s .45s cubic-bezier(.2,.72,.24,1) both; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-overview-audit { animation: bruttiOverviewRise .7s .45s both; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-kpis > * { animation: bruttiOverviewRise .55s .38s both; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-kpis > :nth-child(2) { animation-delay: .45s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-kpis > :nth-child(3) { animation-delay: .52s; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-kpis > :nth-child(4) { animation-delay: .59s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels > .customer-insights-panel.is-overview-visible,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels > .brutti-category-panel.is-overview-visible { animation: bruttiOverviewRise .55s .08s both; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels > .brutti-category-panel.is-overview-visible { animation-delay: .20s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-panel.is-overview-visible .brutti-category-list > .brutti-category-row { animation: bruttiOverviewRise .55s .38s both; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-panel.is-overview-visible .brutti-category-list > .brutti-category-row:nth-child(2) { animation-delay: .44s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-panel.is-overview-visible .brutti-category-list > .brutti-category-row:nth-child(3) { animation-delay: .50s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-panel.is-overview-visible .brutti-category-list > .brutti-category-row:nth-child(4) { animation-delay: .56s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-panel.is-overview-visible .brutti-category-list > .brutti-category-row:nth-child(5) { animation-delay: .62s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-panel.is-overview-visible .brutti-category-row .atelier-category-track > span { animation: bruttiOverviewBar .92s .45s cubic-bezier(.2,.72,.24,1) both; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-overview-audit.is-overview-visible { animation: bruttiOverviewRise .7s .45s both; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-overview-visible .customer-insights-kpis > * { animation: bruttiOverviewRise .55s .38s both; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-overview-visible .customer-insights-kpis > :nth-child(2) { animation-delay: .20s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-overview-visible .customer-insights-kpis > :nth-child(3) { animation-delay: .52s; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-overview-visible .customer-insights-kpis > :nth-child(4) { animation-delay: .59s; }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-editorial-hero .catalog-command-actions button,
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview button.brutti-glass-kpi,
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] button.customer-insights-kpi {
