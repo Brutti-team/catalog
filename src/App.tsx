@@ -319,9 +319,13 @@ export default function App() {
   const publicRoute =
     route.startsWith("#/catalog") || route.startsWith("#/product/");
   const canReadCatalog = !authLoading && (auth.isAdmin || publicRoute) && !passwordIntent;
+  // Render the initial staff sidebar once the server role and first catalogue load settle.
+  // Catalog fetching depends on authLoading, not this presentation gate.
+  const preparingStaffWorkspace = auth.isAdmin && !passwordIntent &&
+    (accountCheckedFor !== auth.email || (loading && lastSyncedAt === null));
 
   useEffect(() => {
-    if (tab !== "overview" || authLoading || !auth.isAdmin || publicRoute || passwordIntent) return;
+    if (tab !== "overview" || authLoading || preparingStaffWorkspace || !auth.isAdmin || publicRoute || passwordIntent) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const root = document.querySelector('.catalog-os-layout[data-active-tab="overview"] .admin-content');
     if (!root) return;
@@ -331,7 +335,7 @@ export default function App() {
     const cleanups = Array.from(sections, section =>
       observeOverviewOnce(section, () => section.classList.add("is-overview-visible")));
     return () => cleanups.forEach(cleanup => cleanup());
-  }, [tab, authLoading, auth.isAdmin, publicRoute, passwordIntent]);
+  }, [tab, authLoading, preparingStaffWorkspace, auth.isAdmin, publicRoute, passwordIntent]);
 
   useEffect(() => {
     if (!canReadCatalog) return;
@@ -573,10 +577,6 @@ export default function App() {
         )}
       </>
     );
-  // Render the initial staff sidebar once the server role and first catalogue load settle.
-  // Catalog fetching depends on authLoading, not this presentation gate.
-  const preparingStaffWorkspace = auth.isAdmin && !passwordIntent &&
-    (accountCheckedFor !== auth.email || (loading && lastSyncedAt === null));
   if (authLoading || preparingStaffWorkspace)
     return (
       <div className="admin-app admin-access-shell" data-theme={theme}>
