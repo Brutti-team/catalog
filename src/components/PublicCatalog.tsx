@@ -952,7 +952,7 @@ export default function PublicCatalog({
                           href={productWhatsAppUrl(product)}
                           target="_blank" rel="noopener noreferrer"
                           aria-label={`Enquire about ${product.name} on WhatsApp`}>
-                          Enquire about this piece <ArrowUpRight size={16} aria-hidden="true" />
+                          <span className="pub-enquiry-label"><span className="pub-enquiry-whatsapp-mark"><SocialBrandIcon brand="whatsapp" /></span>Enquire about this piece</span> <ArrowUpRight size={16} aria-hidden="true" />
                         </a>
                       )}
                     </div>
