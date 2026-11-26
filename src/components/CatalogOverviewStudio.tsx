@@ -129,7 +129,7 @@ export default function CatalogOverviewStudio({
       {favouriteOpen&&<Modal title="Customer favourites" eyebrow="CUSTOMER INTEREST" description="Discover which products your customers love." className="catalog-favourite-report" onClose={()=>setFavouriteOpen(false)}>
         <div className="fr-body">
           <div className="fr-metrics">
-            <div className="fr-metric"><span className="fr-metric-label"><UsersRound size={16} aria-hidden="true"/> Unique browsers</span><strong>{favouriteError?"—":favourites?.visitors??"—"}</strong></div>
+            <div className="fr-metric"><span className="fr-metric-label"><UsersRound size={16} aria-hidden="true"/> Interested Customers</span><strong>{favouriteError?"—":favourites?.visitors??"—"}</strong></div>
             <div className="fr-metric is-saves"><span className="fr-metric-label"><Heart size={16} aria-hidden="true"/> Total favourites</span><strong>{favouriteError?"—":favourites?.total??"—"}</strong></div>
           </div>
           <div className="fr-list-head"><h3>Most loved products</h3><button type="button" className="button secondary fr-refresh" disabled={favouriteBusy} onClick={()=>void refreshFavourites()}><RefreshCw size={14} aria-hidden="true"/> {favouriteBusy?"Refreshing…":"Refresh"}</button></div>
