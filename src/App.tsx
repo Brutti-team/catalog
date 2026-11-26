@@ -933,7 +933,7 @@ export default function App() {
         </header>
         <div className="admin-content">
           {tab === "profile" || tab === "users" || tab === "activity" ? (
-            <AccountCenter view={tab} onProfileChanged={setAccountName} />
+            <AccountCenter view={tab} onProfileChanged={setAccountName} products={data.products} />
           ) : (<>
           {tab === "overview" ? (
             <section className="catalog-command brutti-editorial-hero" aria-labelledby="catalog-overview-title">
