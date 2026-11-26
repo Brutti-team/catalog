@@ -55,7 +55,7 @@ function recordFavourite(id:string,added:boolean){
 }
 
 /** Backfill current public saves and retry offline removals when the public catalog opens. */
-export function syncPublicFavourites(){
+export async function syncPublicFavourites(){
   refresh();
   const ids=new Set(getSnapshot());
   const pending=pendingState();
@@ -63,6 +63,7 @@ export function syncPublicFavourites(){
   for(const id of Object.keys(pending)){
     if(!pendingWrites.has(id))recordFavourite(id,ids.has(id));
   }
+  await Promise.all([...pendingWrites.values()]);
 }
 
 export const FAVOURITES_KEY="brutti-catalog-favourites";
