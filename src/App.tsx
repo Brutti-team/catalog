@@ -214,12 +214,13 @@ export default function App() {
     };
   }, [sidebarCollapsed, tab, route]);
   const [notificationOpen, setNotificationOpen] = useState(false);
-  // Read receipts are local to this browser and scoped to the signed-in account.
+  // Read and clear receipts are local to this browser and scoped to the signed-in account.
   const notificationReadKey = auth.isAdmin && auth.email
     ? "brutti-catalog-notification-read:" + auth.email.trim().toLowerCase() : "";
-  const [notificationReceipts, setNotificationReceipts] = useState<{ key: string; seen: Record<string, string> }>({ key: "", seen: {} });
+  const [notificationReceipts, setNotificationReceipts] = useState<{ key: string; seen: Record<string, string>; cleared: Record<string, string> }>({ key: "", seen: {}, cleared: {} });
   useEffect(() => {
     let seen: Record<string, string> = {};
+    let cleared: Record<string, string> = {};
     if (notificationReadKey) {
       try {
         const raw = JSON.parse(window.localStorage.getItem(notificationReadKey) || "{}");
@@ -227,8 +228,14 @@ export default function App() {
           seen = Object.fromEntries(Object.entries(raw).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
         }
       } catch { /* Use an empty receipt list if storage is unavailable. */ }
+      try {
+        const raw = JSON.parse(window.localStorage.getItem(notificationReadKey + ":cleared") || "{}");
+        if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+          cleared = Object.fromEntries(Object.entries(raw).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
+        }
+      } catch { /* Clearing still works for this session. */ }
     }
-    setNotificationReceipts({ key: notificationReadKey, seen });
+    setNotificationReceipts({ key: notificationReadKey, seen, cleared });
   }, [notificationReadKey]);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const headerSearchRef = useRef<HTMLInputElement>(null);
@@ -691,20 +698,29 @@ export default function App() {
             ? (a.displayOrder ?? 0) - (b.displayOrder ?? 0)
           : b.updatedAt.localeCompare(a.updatedAt),
     );
-  const recentUpdates = [...data.products]
-    .filter(product => product.updatedAt)
-    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-    .slice(0, 5);
   const receiptsReady = !!notificationReadKey && notificationReceipts.key === notificationReadKey;
+  const recentUpdates = receiptsReady ? [...data.products]
+    .filter(product => product.updatedAt && notificationReceipts.cleared[product.id] !== product.updatedAt)
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    .slice(0, 5) : [];
   const isUnreadUpdate = (product: Product) => receiptsReady && notificationReceipts.seen[product.id] !== product.updatedAt;
   const unreadNotificationCount = recentUpdates.filter(isUnreadUpdate).length;
   const markUpdatesRead = (products: Product[]) => {
     if (!receiptsReady) return;
     const seen = { ...notificationReceipts.seen };
     for (const product of products) seen[product.id] = product.updatedAt;
-    setNotificationReceipts({ key: notificationReadKey, seen });
+    setNotificationReceipts({ ...notificationReceipts, seen });
     try { window.localStorage.setItem(notificationReadKey, JSON.stringify(seen)); }
     catch { /* Receipts still work for this session. */ }
+  };
+  const clearAllNotifications = () => {
+    if (!receiptsReady) return;
+    // Clear the current versions of all products, including older ones outside the five-item preview.
+    // A future update changes updatedAt and appears as a new notification.
+    const cleared = Object.fromEntries(data.products.filter(product => product.updatedAt).map(product => [product.id, product.updatedAt]));
+    setNotificationReceipts({ ...notificationReceipts, cleared });
+    try { window.localStorage.setItem(notificationReadKey + ":cleared", JSON.stringify(cleared)); }
+    catch { /* Clearing still works for this session. */ }
   };
   return (
     <div className={"admin-app brutti-staff-redesign catalog-os-layout" + (sidebarCollapsed ? " catalog-sidebar-collapsed" : "")} data-theme={theme} data-active-tab={tab}>
@@ -878,9 +894,12 @@ export default function App() {
                     <div className="catalog-notification-heading-copy"><strong>Notifications</strong><small>Recent catalog updates</small></div>
                     {unreadNotificationCount > 0 && <span className="catalog-notification-unread-total">{unreadNotificationCount} unread</span>}
                   </div>
-                  {unreadNotificationCount > 0 && <div className="catalog-notification-toolbar">
+                  {recentUpdates.length > 0 && <div className="catalog-notification-toolbar">
                     <span>Recent activity</span>
-                    <button type="button" className="catalog-notification-mark-read" onClick={() => markUpdatesRead(recentUpdates)}><CheckCircle2 size={13} aria-hidden="true" /> Mark all as read</button>
+                    <div className="catalog-notification-actions">
+                      {unreadNotificationCount > 0 && <button type="button" className="catalog-notification-mark-read" onClick={() => markUpdatesRead(recentUpdates)}><CheckCircle2 size={13} aria-hidden="true" /> Mark all as read</button>}
+                      <button type="button" className="catalog-notification-clear" onClick={clearAllNotifications} title="Clear notifications without deleting activity history"><Trash2 size={13} aria-hidden="true" /> Clear all</button>
+                    </div>
                   </div>}
                   {error && <p className="catalog-sync-warning">Sync needs attention. Check your connection and retry.</p>}
                   <div className="catalog-notification-list">
@@ -897,7 +916,7 @@ export default function App() {
                         </span>
                         <span className={"catalog-notification-dot" + (unread ? "" : " is-read")} aria-hidden="true" />
                       </button>;
-                    }) : <div className="catalog-empty-updates"><Bell size={25} aria-hidden="true" /><strong>No recent updates</strong><span>Product updates will appear here.</span></div>}
+                    }) : <div className="catalog-empty-updates"><Bell size={25} aria-hidden="true" /><strong>You’re all caught up</strong><span>New product updates will appear here.</span></div>}
                   </div>
                   <button type="button" className="catalog-popover-footer" onClick={() => switchTab("activity")}><History size={15} aria-hidden="true" /> View activity log <ArrowRight size={15} aria-hidden="true" /></button>
                 </section>
