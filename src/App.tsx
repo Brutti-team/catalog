@@ -1797,7 +1797,7 @@ function Login({
           <div ref={cursorLightRef} className="brutti-login-cursor-light" aria-hidden="true" />
           <div className="brutti-login-top">
             <button type="button" className="brutti-login-back" onClick={onCatalog}>
-              <ArrowLeft size={15} aria-hidden="true" /> Back to collection
+              <ArrowLeft size={15} aria-hidden="true" /> Go to collection
             </button>
           </div>
           <div className="catalog-login-auth-surface">
