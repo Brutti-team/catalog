@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Allura&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap");
 
 /* Staff login only — final, viewport-aware glass layout. */
 .admin-app.admin-access-shell:has(.catalog-login-page.brutti-login-redesign) {
@@ -614,17 +614,18 @@
 }
 
 
-/* Elegant signature-style title for the collection sign-in only. */
+/* Editorial furniture-studio title: refined contrast, not competing with the signature logo. */
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface:has(.catalog-login-form) .catalog-login-heading h1 {
-  font-family: "Allura", "Segoe Script", "Brush Script MT", cursive;
-  font-size: clamp(36px, 3.6vw, 46px);
-  font-weight: 400;
-  font-style: normal;
-  letter-spacing: 0;
-  line-height: 1.2;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(32px, 3.3vw, 42px);
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: -.025em;
+  line-height: 1.15;
+  color: #fffaf0;
 }
 @media (max-width: 420px) {
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface:has(.catalog-login-form) .catalog-login-heading h1 {
-    font-size: clamp(32px, 9vw, 40px);
+    font-size: clamp(29px, 8.5vw, 36px);
   }
 }
