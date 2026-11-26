@@ -12,10 +12,10 @@ export function productWhatsAppMessage(product: Pick<Product, "name" | "sku">): 
   const name = product.name.trim();
   const sku = product.sku.trim();
   const productLine = sku
-    ? `*Product:* ${name}\n*Product ID:* ${sku}`
-    : `*Product:* ${name}`;
+    ? `Product: ${name}\nProduct ID: ${sku}`
+    : `Product: ${name}`;
 
-  return `Hi Brutti! 👋\n\nI'm interested in this product:\n${productLine}\n\nCould you share the price, availability and more details about it?\n\nThank you!`;
+  return `Hi Brutti team!\n\nI came across this piece in your online catalogue and would love to know more.\n\n${productLine}\n\nCould you please confirm the price, availability and estimated lead time?\n\nThank you!`;
 }
 
 export function productWhatsAppUrl(product: Pick<Product, "name" | "sku">): string {
