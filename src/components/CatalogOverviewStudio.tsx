@@ -1,7 +1,7 @@
 import OverviewCount from "./OverviewCount";
 import { useEffect, useState, useCallback } from "react";
 import Modal from "./Modal";
-import { FAVOURITES_SYNCED, loadFavouriteSummary, type FavouriteSummary } from "../lib/customer-favourites";
+import { FAVOURITES_KEY, FAVOURITES_SYNCED, loadFavouriteSummary, syncPublicFavourites, type FavouriteSummary } from "../lib/customer-favourites";
 import {
   Heart, ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, RefreshCw, UsersRound, Info,
   Layers3, Package, Pencil
@@ -72,12 +72,22 @@ export default function CatalogOverviewStudio({
   },[]);
   useEffect(()=>{
     if(!enabled)return;
-    void refreshFavourites();
+    // Recover public favourites already stored by this browser even if the user
+    // returns directly to the dashboard without opening the public catalog again.
+    let active=true;
+    const syncThenRefresh=async()=>{
+      try{await syncPublicFavourites();}catch(error){console.warn("Favourite sync retry failed",error);}
+      if(active)void refreshFavourites();
+    };
+    void syncThenRefresh();
     const refreshVisible=()=>{if(document.visibilityState==="visible")void refreshFavourites();};
+    const onFocus=()=>{if(document.visibilityState==="visible")void syncThenRefresh();};
     const timer=window.setInterval(refreshVisible,15000);
-    window.addEventListener("focus",refreshVisible);
+    window.addEventListener("focus",onFocus);
+    window.addEventListener("storage",onStorage);
+    function onStorage(event:StorageEvent){if(event.key===FAVOURITES_KEY)onFocus();}
     window.addEventListener(FAVOURITES_SYNCED,refreshVisible);
-    return()=>{window.clearInterval(timer);window.removeEventListener("focus",refreshVisible);window.removeEventListener(FAVOURITES_SYNCED,refreshVisible);};
+    return()=>{active=false;window.clearInterval(timer);window.removeEventListener("focus",onFocus);window.removeEventListener("storage",onStorage);window.removeEventListener(FAVOURITES_SYNCED,refreshVisible);};
   },[enabled,refreshFavourites]);
   const categoryInsights = categories.map(category => ({
     ...category,
@@ -147,7 +157,7 @@ export default function CatalogOverviewStudio({
               </article>;
             })}
           </div>}
-          <div className="fr-note"><Info size={13} aria-hidden="true"/><span>Counts represent saved products and unique browsers, including public catalog tests by staff. Existing browser saves sync when the public catalog is opened.</span></div>
+          <div className="fr-note"><Info size={13} aria-hidden="true"/><span>Counts represent saved products and unique browsers, including public catalog tests by staff. Existing browser saves sync when the catalog or dashboard is opened.</span></div>
         </div>
       </Modal>}
       <div className="brutti-glass-panels atelier-workbench customer-insights-workbench">
