@@ -1,7 +1,7 @@
 import OverviewCount from "./OverviewCount";
 import { useEffect, useState, useCallback } from "react";
 import Modal from "./Modal";
-import { loadFavouriteSummary, type FavouriteSummary } from "../lib/customer-favourites";
+import { FAVOURITES_SYNCED, loadFavouriteSummary, type FavouriteSummary } from "../lib/customer-favourites";
 import {
   Heart, ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, RefreshCw, UsersRound, Info,
   Layers3, Package, Pencil
@@ -73,8 +73,11 @@ export default function CatalogOverviewStudio({
   useEffect(()=>{
     if(!enabled)return;
     void refreshFavourites();
-    const timer=window.setInterval(()=>{if(document.visibilityState==="visible")void refreshFavourites();},30000);
-    return()=>window.clearInterval(timer);
+    const refreshVisible=()=>{if(document.visibilityState==="visible")void refreshFavourites();};
+    const timer=window.setInterval(refreshVisible,15000);
+    window.addEventListener("focus",refreshVisible);
+    window.addEventListener(FAVOURITES_SYNCED,refreshVisible);
+    return()=>{window.clearInterval(timer);window.removeEventListener("focus",refreshVisible);window.removeEventListener(FAVOURITES_SYNCED,refreshVisible);};
   },[enabled,refreshFavourites]);
   const categoryInsights = categories.map(category => ({
     ...category,
@@ -144,7 +147,7 @@ export default function CatalogOverviewStudio({
               </article>;
             })}
           </div>}
-          <div className="fr-note"><Info size={13} aria-hidden="true"/><span>Counts represent saved products and unique browsers, not verified people. Earlier browser-only saves are excluded.</span></div>
+          <div className="fr-note"><Info size={13} aria-hidden="true"/><span>Counts represent saved products and unique browsers, including public catalog tests by staff. Existing browser saves sync when the public catalog is opened.</span></div>
         </div>
       </Modal>}
       <div className="brutti-glass-panels atelier-workbench customer-insights-workbench">
