@@ -57,6 +57,18 @@ export function catalogClient(): SupabaseClient {
   return supabase();
 }
 
+// Public favourite actions are anonymous even when a staff session exists in this browser.
+// Keep that session isolated; the server still enforces published products and staff-only summaries.
+let favouritePublicClient: SupabaseClient | undefined;
+export function catalogFavouritePublicClient(): SupabaseClient {
+  if (!url || !key) throw new Error("Brutti Catalog database is not connected.");
+  assertBrowserKey(key);
+  if (!favouritePublicClient) favouritePublicClient = createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: "brutti-public-favourite-auth" },
+  });
+  return favouritePublicClient;
+}
+
 function supabase(): SupabaseClient {
   if (!url || !key)
     throw new Error(
