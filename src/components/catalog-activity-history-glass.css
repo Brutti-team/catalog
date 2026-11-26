@@ -462,3 +462,37 @@
  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .activity-staff-dropdown{min-width:0;max-width:none;width:100%;}
  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .activity-staff-menu{width:100%;max-width:100%;}
 }
+
+
+/* Shared filter design — identical staff and activity dropdown geometry. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-activity-controls > .activity-type-dropdown {
+  flex:0 1 184px;min-width:0;max-width:184px;width:184px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-activity-controls button.activity-type-trigger {
+  height:42px!important;min-height:42px!important;padding:9px 12px!important;gap:9px!important;
+  border-radius:11px!important;font:600 12px/1.4 system-ui,sans-serif!important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-activity-controls .activity-type-trigger>span {
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-activity-controls .activity-type-menu {
+  width:252px;max-width:calc(100vw - 36px);padding:7px;border-radius:14px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-activity-controls .activity-type-option {
+  min-height:40px!important;padding:7px 9px!important;gap:9px!important;
+  font:500 12px/1.4 system-ui,sans-serif!important;border-radius:8px!important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-activity-controls .activity-type-option.is-selected {
+  font-weight:650!important;box-shadow:none!important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .activity-staff-option>.activity-staff-avatar {
+  width:22px;height:22px;flex:0 0 22px!important;border-radius:6px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-activity-panel:has(.activity-type-menu),
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-activity-toolbar:has(.activity-type-menu) {overflow:visible!important;}
+@media(max-width:660px){
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-activity-controls > .activity-type-dropdown {
+    flex:none;width:100%;max-width:100%;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="activity"] .account-center--activity .account-activity-controls .activity-type-menu {width:100%;max-width:100%;}
+}
