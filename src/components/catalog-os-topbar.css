@@ -1750,3 +1750,38 @@
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-notification-menu .catalog-notification-actions button:focus-visible{outline:2px solid currentColor;outline-offset:2px;}
 .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar .catalog-notification-menu .catalog-notification-clear{color:#e9a0a0;}
 @media(max-width:420px){.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-notification-menu .catalog-notification-actions{gap:2px;} .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar .catalog-notification-menu .catalog-notification-actions button{padding-inline:5px!important;}}
+
+
+/* Notification action twins: blue read, red clear, identical sizing. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar .catalog-notification-menu .catalog-notification-actions {
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;
+  gap:6px!important;flex-wrap:wrap;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar .catalog-notification-menu .catalog-notification-actions > button:is(.catalog-notification-mark-read,.catalog-notification-clear) {
+  appearance:none;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  box-sizing:border-box;min-height:29px!important;margin:0!important;padding:6px 8px!important;
+  gap:5px!important;border:0!important;border-radius:7px!important;box-shadow:none!important;
+  font:600 11px/1.3 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  letter-spacing:normal!important;white-space:nowrap;cursor:pointer;
+  color:var(--notice-action-ink)!important;background:var(--notice-action-bg)!important;
+  transition:background-color .15s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar .catalog-notification-menu .catalog-notification-actions > button svg {width:13px!important;height:13px!important;flex:0 0 13px;color:inherit!important;stroke:currentColor;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar .catalog-notification-menu .catalog-notification-actions > button.catalog-notification-mark-read {
+  --notice-action-ink:#315f9a;--notice-action-bg:#e5eef9;--notice-action-hover:#d5e4f6;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar .catalog-notification-menu .catalog-notification-actions > button.catalog-notification-clear {
+  --notice-action-ink:#ad3946;--notice-action-bg:#fae7e9;--notice-action-hover:#f5d5da;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar .catalog-notification-menu .catalog-notification-actions > button:is(.catalog-notification-mark-read,.catalog-notification-clear):hover {
+  background:var(--notice-action-hover)!important;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar .catalog-notification-menu .catalog-notification-actions > button:focus-visible {outline:2px solid currentColor!important;outline-offset:2px;}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar.catalog-os-topbar .catalog-notification-menu .catalog-notification-actions > button.catalog-notification-mark-read {
+  --notice-action-ink:#b4d4ff;--notice-action-bg:#263b55;--notice-action-hover:#344c6b;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] .topbar.catalog-os-topbar .catalog-notification-menu .catalog-notification-actions > button.catalog-notification-clear {
+  --notice-action-ink:#ffb8c0;--notice-action-bg:#4b2931;--notice-action-hover:#633740;
+}
+@media(max-width:420px){.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar .catalog-notification-menu .catalog-notification-actions{gap:4px!important;} .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar .catalog-notification-menu .catalog-notification-actions > button:is(.catalog-notification-mark-read,.catalog-notification-clear){padding:6px!important;font-size:10.5px!important;}}
+@media(prefers-reduced-motion:reduce){.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] .topbar.catalog-os-topbar .catalog-notification-menu .catalog-notification-actions > button{transition:none!important;}}
