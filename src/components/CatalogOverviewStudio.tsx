@@ -1,6 +1,9 @@
 import OverviewCount from "./OverviewCount";
+import { useEffect, useState, useCallback } from "react";
+import Modal from "./Modal";
+import { loadFavouriteSummary, type FavouriteSummary } from "../lib/customer-favourites";
 import {
-  Archive, ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight,
+  Heart, ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, RefreshCw,
   Layers3, Package, Pencil
 } from "lucide-react";
 import CustomerInsights from "./CustomerInsights";
@@ -58,7 +61,21 @@ export default function CatalogOverviewStudio({
   const total = products.length;
   const drafts = products.filter(product => product.status === "draft");
   const published = products.filter(product => product.status === "published").length;
-  const archived = products.filter(product => product.status === "archived").length;
+  const [favourites,setFavourites]=useState<FavouriteSummary|null>(null);
+  const [favouriteError,setFavouriteError]=useState(false);
+  const [favouriteOpen,setFavouriteOpen]=useState(false);
+  const [favouriteBusy,setFavouriteBusy]=useState(false);
+  const refreshFavourites=useCallback(async()=>{
+    setFavouriteBusy(true);setFavouriteError(false);
+    try{setFavourites(await loadFavouriteSummary());}catch{setFavouriteError(true);}
+    finally{setFavouriteBusy(false);}
+  },[]);
+  useEffect(()=>{
+    if(!enabled)return;
+    void refreshFavourites();
+    const timer=window.setInterval(()=>{if(document.visibilityState==="visible")void refreshFavourites();},30000);
+    return()=>window.clearInterval(timer);
+  },[enabled,refreshFavourites]);
   const categoryInsights = categories.map(category => ({
     ...category,
     count: products.filter(product => product.categoryId === category.id).length,
@@ -74,7 +91,7 @@ export default function CatalogOverviewStudio({
     { title: "Categories", value: categories.length, caption: "Collection groups", icon: Layers3, status: "categories" as const },
     { title: "Drafts", value: drafts.length, caption: "Awaiting final review", icon: Pencil, status: "draft" as const },
     { title: "Published", value: published, caption: "Live in public catalog", icon: CheckCircle2, status: "published" as const },
-    { title: "Archived", value: archived, caption: "Stored from public view", icon: Archive, status: "archived" as const },
+    { title: "Favourites", value: favourites?.visitors ?? null, caption: "Visitors who saved products", icon: Heart, status: "favourites" as const },
   ];
 
   return (
@@ -98,17 +115,37 @@ export default function CatalogOverviewStudio({
             <button type="button" className="overview-stat brutti-glass-kpi" key={card.title}
               disabled={loading}
               aria-label={"View " + card.title.toLowerCase()}
-              onClick={() => card.status === "categories" ? onManageCategories() : onOpenProducts(card.status)}>
+              onClick={() => { if(card.status === "favourites"){setFavouriteOpen(true);void refreshFavourites();}else if(card.status === "categories")onManageCategories();else onOpenProducts(card.status); }}>
               <span className="brutti-glass-kpi-head">
                 <span className="brutti-glass-icon"><card.icon size={19} strokeWidth={1.8} aria-hidden="true" /></span>
                 <span className="brutti-glass-kpi-title">{card.title}</span>
               </span>
-              <strong><OverviewCount value={loading ? null : card.value} /></strong>
-              <span className="brutti-glass-kpi-caption">{card.caption}</span>
+              <strong><OverviewCount value={loading || (card.status==="favourites"&&favouriteError) ? null : card.value} /></strong>
+              <span className="brutti-glass-kpi-caption">{card.status==="favourites"&&favouriteError?"Unable to load · tap to retry":card.caption}</span>
             </button>
           ))}
         </div>
       </div>
+      {favouriteOpen&&<Modal title="Customer favourites" eyebrow="BRUTTI CATALOG / CUSTOMER INTEREST" description="Products saved by anonymous public catalog browsers." wide className="catalog-favourite-report" onClose={()=>setFavouriteOpen(false)}>
+        <div style={{padding:"18px 22px",display:"grid",gap:14}}>
+          <div style={{display:"flex",gap:12,alignItems:"center",flexWrap:"wrap"}}>
+            <div style={{flex:"1 1 120px",padding:14,borderRadius:12,background:"rgba(100,150,116,.12)"}}><small>Unique browsers</small><div style={{fontSize:26,fontWeight:650}}>{favouriteError?"—":favourites?.visitors??"—"}</div></div>
+            <div style={{flex:"1 1 120px",padding:14,borderRadius:12,background:"rgba(180,135,150,.12)"}}><small>Total favourites</small><div style={{fontSize:26,fontWeight:650}}>{favouriteError?"—":favourites?.total??"—"}</div></div>
+            <button type="button" className="button secondary" disabled={favouriteBusy} onClick={()=>void refreshFavourites()}><RefreshCw size={15}/> Refresh</button>
+          </div>
+          {favouriteError?<p role="alert">Unable to load favourites. Please retry.</p>:!favourites?<p role="status">Loading favourites…</p>:!favourites.products.length?<p>No recorded favourites yet.</p>:<div style={{maxHeight:"45vh",overflowY:"auto"}}>
+            {favourites.products.map(row=>{
+              const product=products.find(p=>p.id===row.productId);
+              return <article key={row.productId} style={{display:"flex",gap:12,alignItems:"center",padding:"11px 0",borderBottom:"1px solid rgba(120,145,130,.2)"}}>
+                {product?.images[0]&&<SafeImage src={product.images[0].url} alt="" loading="lazy" style={{width:58,height:58,objectFit:"cover",borderRadius:9}}/>}
+                <div style={{flex:1,minWidth:0}}><strong>{product?.name??"Product"}</strong><div style={{fontSize:12,opacity:.75}}>{product?.sku??""} · {categories.find(c=>c.id===product?.categoryId)?.name??"Collection"}</div></div>
+                <span style={{display:"inline-flex",gap:6,alignItems:"center",fontWeight:650}}><Heart size={16} color="#b96c83" fill="#b96c83"/> {row.favourites}</span>
+              </article>;
+            })}
+          </div>}
+          <small style={{opacity:.75}}>Counts reflect current recorded saves, not verified individual people. Earlier browser-only favourites are not included.</small>
+        </div>
+      </Modal>}
       <div className="brutti-glass-panels atelier-workbench customer-insights-workbench">
         <CustomerInsights products={products} categories={categories}
           loading={loading} enabled={enabled} onOpenCategory={onOpenCategory} compact />
