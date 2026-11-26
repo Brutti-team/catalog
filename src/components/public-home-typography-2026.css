@@ -1623,3 +1623,25 @@
   .pub-app.pub-refined:not(.pub-private-preview) .pub-hero h1{font-size:26px!important;}
   .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip > span{font-size:9px!important;}
 }
+
+
+/* Phone public catalog: conceal scrollbar chrome, preserve native scrolling. */
+@media (max-width: 800px) {
+  html:has(.pub-app.pub-refined:not(.pub-private-preview)),
+  body:has(.pub-app.pub-refined:not(.pub-private-preview)),
+  #root:has(.pub-app.pub-refined:not(.pub-private-preview)),
+  .pub-app.pub-refined:not(.pub-private-preview),
+  .pub-app.pub-refined:not(.pub-private-preview) * {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none;
+  }
+  html:has(.pub-app.pub-refined:not(.pub-private-preview))::-webkit-scrollbar,
+  body:has(.pub-app.pub-refined:not(.pub-private-preview))::-webkit-scrollbar,
+  #root:has(.pub-app.pub-refined:not(.pub-private-preview))::-webkit-scrollbar,
+  .pub-app.pub-refined:not(.pub-private-preview)::-webkit-scrollbar,
+  .pub-app.pub-refined:not(.pub-private-preview) *::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+}
