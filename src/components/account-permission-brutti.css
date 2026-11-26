@@ -839,3 +839,98 @@
   .admin-app .account-center.account-center--users .catalog-pending-staff-invite {grid-column:2;grid-row:1/span 3;}
 }
 @media(prefers-reduced-motion:reduce){.admin-app .account-center.account-center--users *{transition:none!important;}}
+
+
+/* Directory cards v3: consistent identity, compact rows and role hierarchy. */
+.admin-app .account-center.account-center--users .account-table-wrap.ap-directory {
+  --ap-avatar-bg:#e6eee8;--ap-avatar-ink:#345d47;--ap-blue-bg:#e8eef9;--ap-blue-ink:#405d89;
+  --ap-violet-bg:#eee8f5;--ap-violet-ink:#72538b;--ap-panel:rgba(255,255,255,.84);
+}
+.admin-app .account-center.account-center--users .ap-directory .ap-panel {
+  border:1px solid var(--ap-rule);border-radius:16px;overflow:hidden;
+  background:linear-gradient(145deg,var(--ap-panel),var(--ap-glass));
+  box-shadow:0 8px 24px rgba(29,57,40,.055),inset 0 1px 0 rgba(255,255,255,.38);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+.admin-app .account-center.account-center--users .ap-directory .ap-panel .account-table-title,
+.admin-app .account-center.account-center--users .ap-directory .ap-panel .catalog-pending-staff-heading {
+  display:flex!important;align-items:center!important;gap:12px!important;padding:17px 20px!important;
+  border:0!important;border-bottom:1px solid var(--ap-rule)!important;border-radius:0!important;
+  background:linear-gradient(110deg,var(--ap-soft),transparent 75%)!important;
+}
+.admin-app .account-center.account-center--users .ap-directory .ap-section-icon {
+  width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;
+  color:var(--ap-role-ink);background:var(--ap-role);border-radius:12px;
+}
+.admin-app .account-center.account-center--users .ap-directory .ap-section-icon.is-pending {background:var(--ap-pending);color:var(--ap-pending-ink);}
+.admin-app .account-center.account-center--users .ap-directory .ap-section-copy {flex:1;min-width:0;}
+.admin-app .account-center.account-center--users .ap-directory .ap-section-copy h2 {font:650 16px/1.3 system-ui,sans-serif!important;letter-spacing:-.025em!important;margin:0 0 4px!important;color:var(--ap-ink)!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-section-copy p {font:400 12px/1.5 system-ui,sans-serif!important;color:var(--ap-muted)!important;margin:0!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-panel .account-scroll {border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-panel .account-table {min-width:0!important;table-layout:fixed!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-panel .account-table th {background:transparent!important;padding:10px 20px!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-panel .account-table th:nth-child(1){width:38%!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-panel .account-table th:nth-child(2){width:26%!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-panel .account-table th:last-child:not(:nth-child(3)){width:105px!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-panel .account-table td {padding:12px 20px!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-person {display:flex!important;align-items:center;gap:11px;min-width:0;}
+.admin-app .account-center.account-center--users .ap-directory .ap-avatar {
+  display:grid!important;place-items:center;flex:0 0 38px;width:38px;height:38px;
+  border-radius:12px;background:var(--ap-avatar-bg);color:var(--ap-avatar-ink)!important;
+  font:650 12px/1 system-ui,sans-serif!important;margin:0!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.30);
+}
+.admin-app .account-center.account-center--users .ap-directory [data-role="editor"] .ap-avatar {background:var(--ap-blue-bg);color:var(--ap-blue-ink)!important;}
+.admin-app .account-center.account-center--users .ap-directory [data-role="super_admin"] .ap-avatar {background:var(--ap-violet-bg);color:var(--ap-violet-ink)!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-person-copy {min-width:0;flex:1;}
+.admin-app .account-center.account-center--users .ap-directory .ap-person-copy strong {font:650 13px/1.4 system-ui,sans-serif!important;margin:0!important;color:var(--ap-ink)!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-person-copy :is(.ap-email,.catalog-pending-staff-identity small) {font:400 11.5px/1.4 system-ui,sans-serif!important;color:var(--ap-muted)!important;overflow-wrap:anywhere;margin:3px 0 0!important;display:block;}
+.admin-app .account-center.account-center--users .ap-directory .ap-person-copy>small:not(.ap-email) {display:inline-flex!important;width:max-content;max-width:100%;margin:4px 0 0!important;padding:2px 7px;border-radius:6px;background:var(--ap-role);color:var(--ap-role-ink)!important;font-size:10px!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-last-login {display:flex;align-items:center;gap:7px;line-height:1.5;}
+.admin-app .account-center.account-center--users .ap-directory .ap-last-login svg {flex:none;color:var(--ap-muted);}
+.admin-app .account-center.account-center--users .ap-directory .ap-role-field {position:relative;max-width:182px;}
+.admin-app .account-center.account-center--users .ap-directory .ap-role-field>svg {position:absolute;left:11px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--ap-role-ink);}
+.admin-app .account-center.account-center--users .ap-directory .ap-role-field select {padding-left:32px!important;max-width:none!important;border-radius:9px!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-role-field[data-role="super_admin"]>svg {color:var(--ap-violet-ink);}
+.admin-app .account-center.account-center--users .ap-directory .ap-role-field[data-role="editor"]>svg {color:var(--ap-blue-ink);}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff.ap-panel {margin-top:16px!important;border-radius:16px!important;box-shadow:0 8px 24px rgba(29,57,40,.055)!important;}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-list {padding:0 20px 5px!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-pending-columns,
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item {display:grid;grid-template-columns:minmax(0,1.6fr) minmax(95px,.54fr) minmax(110px,.65fr) 100px!important;align-items:center;gap:12px!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-pending-columns.is-readonly,
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item:not(:has(button)) {grid-template-columns:minmax(0,1.6fr) minmax(95px,.54fr) minmax(110px,.65fr)!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-pending-columns {padding:11px 8px 9px;border-bottom:1px solid var(--ap-rule);font:650 10px/1.4 system-ui,sans-serif;letter-spacing:.055em;text-transform:uppercase;color:var(--ap-muted);}
+.admin-app .account-center.account-center--users .ap-directory .ap-pending-columns>span:last-child:not(:nth-child(3)){text-align:right;}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item {padding:10px 8px!important;min-height:62px;box-sizing:border-box;}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-identity {display:flex!important;flex-direction:row!important;align-items:center;gap:11px!important;}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-role,
+.admin-app .account-center.account-center--users .ap-directory .catalog-access-role-readonly {display:inline-flex!important;align-items:center;gap:5px;width:max-content;max-width:100%;padding:5px 9px!important;border-radius:7px!important;}
+.admin-app .account-center.account-center--users .ap-directory [data-role="editor"] :is(.catalog-pending-staff-role,.catalog-access-role-readonly) {background:var(--ap-blue-bg)!important;color:var(--ap-blue-ink)!important;}
+.admin-app .account-center.account-center--users .ap-directory [data-role="super_admin"] :is(.catalog-pending-staff-role,.catalog-access-role-readonly) {background:var(--ap-violet-bg)!important;color:var(--ap-violet-ink)!important;}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-state {border-radius:7px!important;padding:5px 9px!important;}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-invite {width:86px;min-height:34px!important;background:var(--ap-role)!important;border:1px solid transparent!important;}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-invite:hover:not(:disabled) {background:var(--ap-accent)!important;color:#fff!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-panel>.account-muted {padding:14px 20px;}
+.admin-app[data-theme="dark"] .account-center.account-center--users .account-table-wrap.ap-directory {
+  --ap-avatar-bg:#31483a;--ap-avatar-ink:#c8e1d1;--ap-blue-bg:#2d3a52;--ap-blue-ink:#c4d6f7;
+  --ap-violet-bg:#44374f;--ap-violet-ink:#e2ccec;--ap-panel:#242725;
+}
+.admin-app[data-theme="dark"] .account-center.account-center--users .ap-directory .ap-panel {box-shadow:0 8px 24px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.035);}
+@media(max-width:760px){
+  .admin-app .account-center.account-center--users .ap-directory .ap-panel .account-table td {padding:3px 0!important;}
+  .admin-app .account-center.account-center--users .ap-directory .ap-panel .account-table td:nth-child(2)::before {content:none;}
+  .admin-app .account-center.account-center--users .ap-directory .ap-last-login {padding:2px 0;}
+  .admin-app .account-center.account-center--users .ap-directory .ap-panel .account-table tr {gap:8px 10px;}
+  .admin-app .account-center.account-center--users .ap-directory .ap-pending-columns {display:none!important;}
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-list {padding:0 12px 5px!important;}
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item,
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item:not(:has(button)) {grid-template-columns:minmax(0,1fr) auto!important;gap:7px 8px!important;padding:12px 3px!important;}
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-identity {grid-column:1/-1;}
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-role {grid-column:1;grid-row:2;justify-self:start;}
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-state {grid-column:1;grid-row:3;}
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-invite {grid-column:2;grid-row:2/span 2;}
+  .admin-app .account-center.account-center--users .ap-directory .ap-panel .account-table-title,
+  .admin-app .account-center.account-center--users .ap-directory .ap-panel .catalog-pending-staff-heading {padding:13px 14px!important;gap:9px!important;flex-wrap:nowrap!important;}
+  .admin-app .account-center.account-center--users .ap-directory .ap-section-copy {flex:1!important;}
+  .admin-app .account-center.account-center--users .ap-directory .ap-section-icon {width:34px;height:34px;flex-basis:34px;}
+}
