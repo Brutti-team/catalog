@@ -1713,12 +1713,10 @@ function Login({
             <button type="button" className="brutti-login-back" onClick={onCatalog}>
               <ArrowLeft size={15} aria-hidden="true" /> Back to collection
             </button>
-            <span>STAFF ACCESS / 01</span>
           </div>
           <div className="catalog-login-auth-surface">
             <div className="brutti-login-brand">
               <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti official logo" />
-              <span>BENUA BRUTTI SDN. BHD.</span>
             </div>
             <div className="catalog-login-kicker">
               <span className="catalog-login-kicker-dot" aria-hidden="true" />
@@ -1726,11 +1724,11 @@ function Login({
             </div>
             <div className="catalog-login-heading">
               <h1>{authenticated ? "Access restricted." : "Welcome back."}</h1>
-              <p className="catalog-login-description">
-                {authenticated
-                  ? "Your account does not have catalog administrator access. Please contact your workspace owner."
-                  : "Sign in to manage Benua Brutti products, materials, photos and showroom details."}
-              </p>
+              {authenticated && (
+                <p className="catalog-login-description">
+                  Your account does not have catalog administrator access. Please contact your workspace owner.
+                </p>
+              )}
             </div>
 
             {setupError && <div className="notice error catalog-login-alert" role="alert">{setupError}</div>}
@@ -1808,7 +1806,7 @@ function Login({
               Secure access for authorised Brutti Catalog staff only.
             </p>
           </div>
-          <div className="catalog-login-form-foot"><span>BENUA BRUTTI © 2026</span><span>CRAFTED FOR OUR TEAM</span></div>
+          <div className="catalog-login-form-foot"><span>BENUA BRUTTI © 2026</span></div>
         </main>
       </div>
     </div>
