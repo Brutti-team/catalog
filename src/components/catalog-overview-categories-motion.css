@@ -459,3 +459,18 @@
 @keyframes bruttiOverviewPhotoZoom { from { scale: 1.07; } to { scale: 1; } }
 @keyframes bruttiOverviewNumber { from { opacity: .3; translate: 0 9px; } to { opacity: 1; translate: 0 0; } }
 @keyframes bruttiOverviewBar { from { scale: 0 1; } to { scale: 1 1; } }
+
+
+/* Calm dusty-blue chart palette and lightweight viewport-triggered bar reveal. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-chart .customer-insights-chart-dot { background: #789fbb !important; box-shadow: 0 0 0 4px rgba(120,159,187,.13); }
+@media (prefers-reduced-motion: no-preference) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-chart:not(.is-chart-visible) .brutti-interest-bar { transform-box: fill-box; transform-origin: center bottom; transform: scaleY(0); }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-chart:not(.is-chart-visible) .customer-insights-bar-number { opacity: 0; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-chart.is-chart-visible .brutti-interest-bar {
+    transform-box: fill-box; transform-origin: center bottom;
+    animation: bruttiInterestBarGrow .85s cubic-bezier(.2,.72,.25,1) both;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-chart.is-chart-visible .customer-insights-bar-number { animation: bruttiInterestLabel .3s .52s ease-out both; }
+}
+@keyframes bruttiInterestBarGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes bruttiInterestLabel { from { opacity: 0; } to { opacity: 1; } }

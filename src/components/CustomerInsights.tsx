@@ -1,3 +1,4 @@
+import { observeOverviewOnce } from "./overview-visibility";
 import OverviewCount from "./OverviewCount";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
@@ -83,6 +84,15 @@ type InsightDrilldown = { kind: "trend"; start?: string; end?: string } | { kind
 
 function CustomerInterestChart({ data, days, onOpen }: { data: CustomerInsightData; days: InsightPeriod; onOpen: (detail: InsightDrilldown) => void }) {
   const id = useId().replace(/:/g, "");
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [revealed, setRevealed] = useState(false);
+  useEffect(() => {
+    if (!chartRef.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setRevealed(true);
+      return;
+    }
+    return observeOverviewOnce(chartRef.current, () => setRevealed(true));
+  }, []);
   const binSize = days === 7 ? 1 : days === 30 ? 5 : 15;
   const bins = Array.from({ length: Math.ceil(data.trend.length / binSize) }, (_, index) => {
     const rows = data.trend.slice(index * binSize, index * binSize + binSize);
@@ -100,9 +110,9 @@ function CustomerInterestChart({ data, days, onOpen }: { data: CustomerInsightDa
   const bw = Math.min(66, slot * .63);
   const y = (v: number) => yBase - v / max * (yBase - yTop);
   const grid = [max, Math.round(max / 2), 0];
-  const pastel = [["#aabce8","#7895d0"],["#d4c3e9","#a58bc9"],["#f0ccbc","#d59b86"],["#b5cde8","#83a6ce"],["#e6c0d2","#c693b3"],["#c5b8e8","#9a8bc9"],["#e8d2ad","#c3a477"]];
+  const pastel = [["#bfd5e5","#789fbb"]];
   return (
-    <div className="customer-insights-chart customer-insights-chart-interactive" onClick={() => onOpen({ kind: "trend" })}>
+    <div ref={chartRef} className={`customer-insights-chart customer-insights-chart-interactive${revealed ? " is-chart-visible" : ""}`} onClick={() => onOpen({ kind: "trend" })}>
       <div className="customer-insights-chart-heading" role="button" tabIndex={0} aria-label="View daily product interest" title="View daily product interest" onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onOpen({ kind: "trend" }); } }}>
         <div><span className="customer-insights-chart-dot" /><strong>Product interest (views)</strong></div>
         <span>{days === 7 ? "Daily" : days === 30 ? "5-day groups" : "15-day groups"}</span>
@@ -124,7 +134,7 @@ function CustomerInterestChart({ data, days, onOpen }: { data: CustomerInsightDa
             <rect className="customer-insights-bin-hit" x={x-slot/2+3} y={yTop-8} width={Math.max(1,slot-6)} height={218} rx="8" fill="transparent" />
             <title>{bin.range}: {bin.views} views</title>
             {bin.views > 0
-              ? <rect x={x - bw / 2} y={yBase - height} width={bw} height={height}
+              ? <rect className="brutti-interest-bar" x={x - bw / 2} y={yBase - height} width={bw} height={height}
                   rx={Math.min(9, height / 2)} fill={`url(#customer-gradient-${id}-${index % pastel.length})`} />
               : <rect className="customer-insights-zero" x={x - bw / 2} y={yBase - 2} width={bw} height={2} rx="1" />}
             {bin.views > 0 && <text className="customer-insights-bar-number" x={x}
