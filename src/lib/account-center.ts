@@ -214,7 +214,7 @@ export async function listCatalogActivity(period: ActivityPeriod = "all"): Promi
     throw new Error("An approved catalog administrator is required to view activity.");
   let query = catalogClient()
     .from("catalog_activity")
-    .select("id,actor_id,actor_email,action,resource_type,resource_name,created_at");
+    .select("id,actor_id,actor_email,action,resource_type,resource_name,resource_id,created_at");
   if (period !== "all") {
     const { start, end } = catalogActivityMYTRange(period);
     query = query.gte("created_at", start).lt("created_at", end);
