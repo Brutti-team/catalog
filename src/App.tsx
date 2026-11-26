@@ -141,6 +141,7 @@ export default function App() {
   const [accountRole, setAccountRole] = useState<StaffRole | null>(null);
   const [accountName, setAccountName] = useState("");
   const [accountsReady, setAccountsReady] = useState(false);
+  const [accountCheckedFor, setAccountCheckedFor] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [category, setCategory] = useState("all");
@@ -343,20 +344,38 @@ export default function App() {
       setAccountRole(null);
       setAccountsReady(false);
       setAccountName("");
+      setAccountCheckedFor(null);
       return;
     }
+    const email = auth.email;
+    setAccountCheckedFor(null);
+    setAccountRole(null);
+    setAccountsReady(false);
+    setAccountName("");
+    const fail = (reason: unknown) => {
+      if (!active) return;
+      active = false;
+      window.clearTimeout(deadline);
+      setAccountRole(null);
+      setAccountsReady(false);
+      setAccountCheckedFor(email);
+      console.warn("Catalog role verification unavailable", reason);
+    };
+    const deadline = window.setTimeout(() => fail(new Error("Role verification timed out")), 12000);
     void getAccountSummary().then(info => {
       if (!active) return;
+      if (info.email.trim().toLowerCase() !== email.trim().toLowerCase()) {
+        fail(new Error("Account changed during verification"));
+        return;
+      }
+      active = false;
+      window.clearTimeout(deadline);
       setAccountRole(info.role);
       setAccountsReady(info.managementReady);
       setAccountName(info.displayName);
-    }).catch(() => {
-      if (active) {
-        setAccountRole(null);
-        setAccountsReady(false);
-      }
-    });
-    return () => { active = false; };
+      setAccountCheckedFor(email);
+    }).catch(fail);
+    return () => { active = false; window.clearTimeout(deadline); };
   }, [auth.isAdmin, auth.email]);
 
   useEffect(() => {
@@ -554,7 +573,11 @@ export default function App() {
         )}
       </>
     );
-  if (authLoading)
+  // Render the initial staff sidebar once the server role and first catalogue load settle.
+  // Catalog fetching depends on authLoading, not this presentation gate.
+  const preparingStaffWorkspace = auth.isAdmin && !passwordIntent &&
+    (accountCheckedFor !== auth.email || (loading && lastSyncedAt === null));
+  if (authLoading || preparingStaffWorkspace)
     return (
       <div className="admin-app admin-access-shell" data-theme={theme}>
       <div className="access-page brutti-workshop-loading" role="status" aria-live="polite" aria-busy="true">
@@ -731,7 +754,7 @@ export default function App() {
               {n.text}
               {(n.id === "products" || n.id === "categories") && (
                 <span className="nav-count">
-                  {n.id === "categories" ? data.categories.length : data.products.length}
+                  {lastSyncedAt === null ? "—" : n.id === "categories" ? data.categories.length : data.products.length}
                 </span>
               )}
             </button>
@@ -761,8 +784,10 @@ export default function App() {
             data-rail-label="Download Catalogue"
             title={sidebarCollapsed ? undefined : "Download Catalogue"}
             aria-haspopup="dialog"
-            disabled={loading || publishedCount === 0}
+            disabled={publishedCount === 0}
+            aria-disabled={loading || publishedCount === 0}
             onClick={() => {
+              if (loading || publishedCount === 0) return;
               setMobileNav(false);
               setRailTooltip(null);
               staffPdfRef.current?.open();
