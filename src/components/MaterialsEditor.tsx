@@ -1,7 +1,7 @@
 import { useRef, useState, useLayoutEffect, type KeyboardEvent, type MouseEvent } from "react";
 import {
   AlignLeft, List, ListOrdered, Bold, Italic, Underline, Strikethrough,
-  Highlighter, Heading2, RemoveFormatting, type LucideIcon,
+  Heading2, RemoveFormatting, type LucideIcon,
 } from "lucide-react";
 import { materialListStyle, type MaterialListStyle } from "../lib/material-list";
 import type { InlineMaterialFormat } from "../lib/material-editor-format";
@@ -27,7 +27,6 @@ const inlineOptions: { value: InlineMaterialFormat; label: string; shortcut: str
   { value: "italic", label: "Italic", shortcut: "Ctrl+I", Icon: Italic },
   { value: "underline", label: "Underline", shortcut: "Ctrl+U", Icon: Underline },
   { value: "strike", label: "Strikethrough", shortcut: "Ctrl+Shift+X", Icon: Strikethrough },
-  { value: "highlight", label: "Highlight", shortcut: "", Icon: Highlighter },
 ];
 
 /** Editable rich text, with the existing safe text-based storage format. */
@@ -85,8 +84,7 @@ export default function MaterialsEditor({value,onChange,disabled=false,placehold
     }else command(style==="bullet"?"insertUnorderedList":"insertOrderedList");
   };
   const formatInline=(style:InlineMaterialFormat)=>{
-    if(style==="highlight")command("hiliteColor","#fff1b7");
-    else command(style==="strike"?"strikeThrough":style);
+    if(style!=="highlight")command(style==="strike"?"strikeThrough":style);
   };
   const formatHeading=()=>command("formatBlock",document.queryCommandValue("formatBlock")==="h2"?"div":"h2");
   const clearFormat=()=>command("removeFormat");
