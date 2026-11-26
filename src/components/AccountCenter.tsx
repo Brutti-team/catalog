@@ -7,6 +7,8 @@ import {
 } from "../lib/account-center";
 import { requestPasswordReset } from "../lib/catalog";
 import Modal from "./Modal";
+import { publicAssetUrl } from "../lib/assets";
+import type { Product } from "../lib/types";
 import "./account-center.css";
 import "./catalog-activity-history-premium.css";
 
@@ -161,10 +163,17 @@ function activityType(entry: ActivityEntry): "products" | "categories" | "system
     : "system";
 }
 
+function ActivityProductPhoto({url, Icon}: {url:string; Icon:LucideIcon}) {
+  const [failed,setFailed]=useState(false);
+  if(failed)return <span className="account-event-icon"><Icon size={17} strokeWidth={1.9}/></span>;
+  return <img className="account-event-product-photo" src={publicAssetUrl(url)} alt="" loading="lazy" onError={()=>setFailed(true)}/>;
+}
+
 export default function AccountCenter({
-  view, onProfileChanged,
+  view, onProfileChanged, products = [],
 }: {
   view: View;
+  products?: Product[];
   onProfileChanged?: (displayName: string) => void;
 }) {
   const [account, setAccount] = useState<AccountSummary | null>(null);
@@ -572,10 +581,12 @@ export default function AccountCenter({
                 const Icon = migrated ? ArrowLeftRight : deleted ? Trash2 : published ? Eye : unpublished ? EyeOff : added ? Plus : type === "categories" ? Layers3 : type === "products" ? Package : ShieldCheck;
                 const typeLabel = type === "products" ? "Product" : type === "categories" ? "Category" : "System";
                 const name = actorName(item);
+                const product = type === "products" && item.resource_id ? products.find(p=>p.id===item.resource_id) : undefined;
+                const photo = product?.images.find(image=>image.url.trim());
                 return (
                   <article className={`account-event account-event--${type}`} key={item.id} role="listitem">
                     <div className="account-event-track" aria-hidden="true">
-                      <span className="account-event-icon"><Icon size={17} strokeWidth={1.9}/></span>
+                      {photo ? <ActivityProductPhoto key={photo.url} url={photo.url} Icon={Icon}/> : <span className="account-event-icon"><Icon size={17} strokeWidth={1.9}/></span>}
                     </div>
                     <div className="account-event-main">
                       <div className="account-event-heading">
