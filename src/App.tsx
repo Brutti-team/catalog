@@ -240,6 +240,7 @@ export default function App() {
   const catalogRequest = useRef(0);
   const catalogInFlight = useRef(false);
   const authRequest = useRef(0);
+  const authInFlight = useRef<Promise<void> | null>(null);
   const refresh = useCallback(async (background = false) => {
     if (background && catalogInFlight.current) return;
     const request = ++catalogRequest.current;
@@ -264,8 +265,10 @@ export default function App() {
       }
     }
   }, []);
-  const refreshAuth = useCallback(async () => {
+  const refreshAuth = useCallback((force = false): Promise<void> => {
+    if (!force && authInFlight.current) return authInFlight.current;
     const request = ++authRequest.current;
+    const run = async () => {
     setAuthLoading(true);
     setAuthError(null);
     try {
@@ -284,10 +287,16 @@ export default function App() {
     } finally {
       if (request === authRequest.current) setAuthLoading(false);
     }
+    };
+    const task = run();
+    authInFlight.current = task;
+    void task.finally(() => { if (authInFlight.current === task) authInFlight.current = null; });
+    return task;
   }, []);
   useEffect(() => () => {
     ++catalogRequest.current;
     ++authRequest.current;
+    authInFlight.current = null;
   }, []);
   useEffect(() => {
     const fn = () => setRoute(resolveAppRoute(window.location));
@@ -297,8 +306,10 @@ export default function App() {
   useEffect(() => {
     void refreshAuth();
     const unsub = subscribeAuth(event => {
-      if (event === "INITIAL_SESSION") return;
-      void refreshAuth();
+      // Supabase can re-emit SIGNED_IN when tabs gain focus. Explicit login
+      // verifies the session below; do not restart the verification spinner.
+      if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "TOKEN_REFRESHED") return;
+      void refreshAuth(true);
     });
     return unsub;
   }, [refreshAuth]);
@@ -531,8 +542,8 @@ export default function App() {
     return (
       <div className="admin-app admin-access-shell" data-theme={theme}>
       <div className="access-page">
-        <LoaderCircle className="spin" />
-        <p>Preparing your workspace…</p>
+        <LoaderCircle className="spin" style={{ color: "#fff" }} />
+        <p style={{ color: "#fff" }}>Preparing your workspace…</p>
       </div>
       </div>
     );
@@ -552,7 +563,7 @@ export default function App() {
       <Login
         setupError={authError || actionError}
         authenticated={auth.authenticated}
-        onSuccess={async () => { /* SIGNED_IN triggers the centralized session check. */ }}
+        onSuccess={async () => { await refreshAuth(true); }}
         onCatalog={() => navigate("/catalog")}
       />
       </div>
