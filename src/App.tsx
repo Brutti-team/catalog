@@ -541,9 +541,66 @@ export default function App() {
   if (authLoading)
     return (
       <div className="admin-app admin-access-shell" data-theme={theme}>
-      <div className="access-page">
-        <LoaderCircle className="spin" style={{ color: "#fff" }} />
-        <p style={{ color: "#fff" }}>Preparing your workspace…</p>
+      <div className="access-page brutti-workshop-loading" role="status" aria-live="polite" aria-busy="true">
+        <div className="brutti-workshop-stage">
+          <img className="brutti-workshop-logo" src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" />
+          <svg className="brutti-kiosk-assembly" viewBox="0 0 300 230" fill="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="bruttiLoaderTimber" x1="70" y1="120" x2="205" y2="195" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#e5c49b" /><stop offset="1" stopColor="#b88752" />
+              </linearGradient>
+              <linearGradient id="bruttiLoaderRoof" x1="58" y1="38" x2="230" y2="91" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#f3d8ad" /><stop offset="1" stopColor="#cf9d65" />
+              </linearGradient>
+              <radialGradient id="bruttiLoaderShadow">
+                <stop stopColor="#071d13" stopOpacity=".6" /><stop offset="1" stopColor="#071d13" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+            <ellipse cx="150" cy="202" rx="109" ry="20" fill="url(#bruttiLoaderShadow)" />
+            <g className="brutti-kiosk-part kiosk-base">
+              <path d="M65 184 191 197 239 170 114 157Z" fill="#806445" stroke="#d9b98e" strokeWidth="1.2" strokeLinejoin="round"/>
+              <path d="M65 184 191 197 191 205 65 192Z" fill="#58442f"/>
+              <path d="M191 197 239 170 239 178 191 205Z" fill="#493a2d"/>
+            </g>
+            <g className="brutti-kiosk-part kiosk-side">
+              <path d="M191 126 231 104 231 172 191 195Z" fill="#9d7249" stroke="#e0ba87" strokeWidth="1.2" strokeLinejoin="round"/>
+              <path d="M200 123 200 189 M209 118 209 184 M218 112 218 179 M226 108 226 175" stroke="#634c35" strokeOpacity=".65" />
+            </g>
+            <g className="brutti-kiosk-part kiosk-front">
+              <path d="M69 112 191 126 191 195 69 182Z" fill="url(#bruttiLoaderTimber)" stroke="#f4d5a8" strokeWidth="1.3" strokeLinejoin="round"/>
+              <path d="M82 114 82 183 M94 115 94 185 M106 117 106 186 M118 118 118 187 M130 119 130 188 M142 121 142 190 M154 122 154 191 M166 123 166 192 M178 124 178 194" stroke="#8e623d" strokeOpacity=".6" />
+              <path d="M111 145 151 149 151 169 111 165Z" fill="#264e38" stroke="#eed6b2" strokeWidth=".9"/>
+              <path d="M121 156 141 158" stroke="#e6d9ba" strokeWidth="1.4" strokeLinecap="round"/>
+            </g>
+            <g className="brutti-kiosk-part kiosk-frame" stroke="#d7deca" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M75 111V57 M185 124V70 M226 103V48" />
+              <path d="M75 57 185 70 226 48" strokeWidth="4" />
+            </g>
+            <g className="brutti-kiosk-part kiosk-counter">
+              <path d="M60 109 189 123 240 95 111 82Z" fill="#f0d4a7" stroke="#f9e2bd" strokeWidth="1.2" strokeLinejoin="round"/>
+              <path d="M60 109 189 123 189 130 60 116Z" fill="#ae8251"/>
+              <path d="M189 123 240 95 240 102 189 130Z" fill="#8f633c"/>
+            </g>
+            <g className="brutti-kiosk-part kiosk-roof">
+              <path d="M55 54 191 69 245 40 109 26Z" fill="url(#bruttiLoaderRoof)" stroke="#f9e2bd" strokeWidth="1.2" strokeLinejoin="round"/>
+              <path d="M55 54 191 69 191 91 55 76Z" fill="#d7ae7b" stroke="#edcfa4" strokeWidth="1" strokeLinejoin="round"/>
+              <path d="M191 69 245 40 245 62 191 91Z" fill="#a97e51"/>
+              <path d="M66 60 66 77 M89 62 89 80 M112 65 112 82 M135 67 135 85 M158 70 158 87 M181 72 181 90" stroke="#a8794c" strokeOpacity=".55" />
+            </g>
+            <g className="brutti-kiosk-part kiosk-detail">
+              <path d="M96 65 151 71 151 82 96 76Z" fill="#2b513c"/>
+              <text x="124" y="75.4" fill="#fff3d9" fontSize="5.7" textAnchor="middle" letterSpacing="1" transform="rotate(6 124 75)">BRUTTI</text>
+              <circle cx="185" cy="107" r="3" fill="#fff1c5" />
+              <circle cx="76" cy="92" r="3" fill="#fff1c5" />
+              <path d="M255 35v12 M249 41h12 M47 128v8 M43 132h8" stroke="#f8e4b6" strokeWidth="1.5" strokeLinecap="round" />
+            </g>
+          </svg>
+          <div className="brutti-workshop-copy">
+            <p>Preparing your workspace</p>
+            <span>Crafted piece by piece.</span>
+          </div>
+          <div className="brutti-workshop-track" aria-hidden="true"><span /></div>
+        </div>
       </div>
       </div>
     );
