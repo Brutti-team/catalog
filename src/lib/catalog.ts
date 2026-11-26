@@ -31,7 +31,7 @@ export async function hasPasswordCallbackSession(): Promise<boolean> {
   if (!initialCallbackToken) return false;
   // getSession waits for the SDK's callback processing; compare with the captured
   // token so an unrelated cached session cannot authorize this completion form.
-  const { data: { session }, error } = await supabase().auth.getSession();
+  const { data: { session }, error } = await withRequestDeadline(supabase().auth.getSession(), "verify the password callback");
   return !error && session?.access_token === initialCallbackToken;
 }
 
@@ -65,6 +65,25 @@ function supabase(): SupabaseClient {
   assertBrowserKey(key);
   if (!client) client = createClient(url, key);
   return client;
+}
+
+// A stalled network or browser auth lock must never keep the portal loading forever.
+export async function withRequestDeadline<T>(
+  request: PromiseLike<T>,
+  operation: string,
+  timeoutMs = 12000,
+): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      Promise.resolve(request),
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`Unable to ${operation}. Connection timed out. Please try again.`)), timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timer !== undefined) clearTimeout(timer);
+  }
 }
 
 function backendError(message: string, operation: string): Error {
@@ -158,7 +177,7 @@ function toRow(product: Product, capabilities: CatalogCapabilities): ProductRow 
 async function loadCatalogCapabilities(db: SupabaseClient): Promise<CatalogCapabilities> {
   // A reviewed additive proposal enables these features. Legacy projects remain usable.
   try {
-    const { data, error } = await db.rpc('catalog_capabilities');
+    const { data, error } = await withRequestDeadline(db.rpc('catalog_capabilities'), 'check catalog capabilities', 4000);
     if (!error && data && typeof data === 'object') return {
       ordering: data.ordering === true,
       imageCleanup: data.imageCleanup === true,
@@ -170,7 +189,7 @@ async function loadCatalogCapabilities(db: SupabaseClient): Promise<CatalogCapab
 
 async function productModelsEnabled(db: SupabaseClient): Promise<boolean> {
   try {
-    const { data, error } = await db.rpc('catalog_product_models_enabled');
+    const { data, error } = await withRequestDeadline(db.rpc('catalog_product_models_enabled'), 'check product models', 4000);
     return !error && data === true;
   } catch { return false; }
 }
@@ -178,8 +197,8 @@ async function productModelsEnabled(db: SupabaseClient): Promise<boolean> {
 export async function loadCatalog(): Promise<CatalogData> {
   const db = supabase();
   const [products, categories, capabilities, productModels] = await Promise.all([
-    db.from("products").select("*").order("created_at", { ascending: false }),
-    db.from("categories").select("*").order("name"),
+    withRequestDeadline(db.from("products").select("*").order("created_at", { ascending: false }), "load products"),
+    withRequestDeadline(db.from("categories").select("*").order("name"), "load categories"),
     loadCatalogCapabilities(db),
     productModelsEnabled(db),
   ]);
@@ -655,18 +674,18 @@ export async function getAuthState(): Promise<{
   const {
     data: { user },
     error,
-  } = await supabase().auth.getUser();
+  } = await withRequestDeadline(supabase().auth.getUser(), "verify your session");
   if (error) {
     if (error.name === "AuthSessionMissingError")
       return { authenticated: false, isAdmin: false };
     throw backendError(error.message, "verify your session");
   }
   if (!user) return { authenticated: false, isAdmin: false };
-  const { data, error: adminError } = await supabase()
+  const { data, error: adminError } = await withRequestDeadline(supabase()
     .from("catalog_admins")
     .select("user_id")
     .eq("user_id", user.id)
-    .maybeSingle();
+    .maybeSingle(), "verify admin access");
   if (adminError) throw backendError(adminError.message, "verify admin access");
   return { authenticated: true, isAdmin: Boolean(data), email: user.email };
 }
@@ -689,10 +708,10 @@ async function requireAdmin(): Promise<string> {
 }
 
 export async function signIn(email: string, password: string): Promise<void> {
-  const { error } = await supabase().auth.signInWithPassword({
+  const { error } = await withRequestDeadline(supabase().auth.signInWithPassword({
     email: email.trim(),
     password,
-  });
+  }), "sign in", 15000);
   if (error) throw backendError(error.message, "sign in");
 }
 
