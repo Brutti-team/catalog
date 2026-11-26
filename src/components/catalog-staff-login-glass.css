@@ -634,17 +634,25 @@
 /* Collection studio motion — decorative only, never intercepts the form. */
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .brutti-login-cursor-light {
   position: absolute; inset: 0; overflow: hidden; pointer-events: none;
-  z-index: 0; opacity: 0; transition: opacity 350ms ease;
-  --cursor-x: 50%; --cursor-y: 50%;
+  z-index: 3;
 }
-.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .brutti-login-cursor-light::before {
-  content: ""; position: absolute; width: 460px; height: 460px;
-  top: 0; left: 0; border-radius: 50%;
-  transform: translate3d(calc(var(--cursor-x) - 230px),calc(var(--cursor-y) - 230px),0);
-  background: radial-gradient(circle,rgba(255,239,190,.26) 0%,rgba(190,221,160,.14) 28%,rgba(162,201,144,.065) 53%,transparent 72%);
-  mix-blend-mode: screen;
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .brutti-water-ring {
+  position: absolute; width: 64px; height: 64px;
+  border-radius: 50%; pointer-events: none;
+  border: 1px solid rgba(227,247,220,.52);
+  box-shadow: 0 0 3px rgba(232,248,226,.18), inset 0 0 2px rgba(232,248,226,.12);
+  animation: bruttiWaterRipple .62s cubic-bezier(.15,.65,.32,1) both;
 }
-.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .brutti-login-cursor-light[data-active="true"] { opacity: 1; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .brutti-water-ring::after {
+  content: ""; position: absolute; inset: 7px; border-radius: inherit;
+  border: 1px solid rgba(229,245,226,.22);
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .brutti-water-ring.is-press { width: 82px; height: 82px; animation-duration: .72s; }
+@keyframes bruttiWaterRipple {
+  0% { transform: translate(-50%,-50%) scale(.12); opacity: .8; }
+  35% { opacity: .65; }
+  100% { transform: translate(-50%,-50%) scale(1); opacity: 0; }
+}
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface { animation: bruttiCollectionEnter .85s cubic-bezier(.2,.75,.25,1) both; }
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand { animation: bruttiCollectionContent .65s .12s ease-out both; }
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading { animation: bruttiCollectionContent .7s .2s ease-out both; }
@@ -688,4 +696,42 @@
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface, .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface::after, .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface :is(.brutti-login-brand,.catalog-login-heading,.catalog-login-form) { animation: none; }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-submit, .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-submit > svg:not(.spin), .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .brutti-login-back { transition: none; transform: none !important; }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface::after { opacity: 0; }
+}
+
+
+/* Typing title reserves its final dimensions, and password toggles animate without remounting the input. */
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-typing-title {
+  display: inline-grid; position: relative; max-width: 100%; text-align: left;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-typing-reserve { grid-area: 1 / 1; visibility: hidden; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-typing-letters { grid-area: 1 / 1; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-typing-letters[data-typing="true"]::after {
+  content: ""; display: inline-block; width: 1px; height: .8em; margin-left: 3px;
+  background: currentColor; vertical-align: -.04em;
+  animation: bruttiTypingCaret .72s step-end infinite;
+}
+@keyframes bruttiTypingCaret { 50% { opacity: 0; } }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input[data-password-motion="show"] input {
+  animation: bruttiPasswordShow .24s ease-out;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input[data-password-motion="hide"] input {
+  animation: bruttiPasswordHide .24s ease-out;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input[data-password-motion="show"] .catalog-login-reveal svg {
+  animation: bruttiEyeOpen .28s cubic-bezier(.2,.75,.3,1.2);
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input[data-password-motion="hide"] .catalog-login-reveal svg {
+  animation: bruttiEyeClose .28s cubic-bezier(.2,.75,.3,1.2);
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-reveal { transition: background-color .18s ease; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-reveal:hover:not(:disabled) { background-color: rgba(235,249,232,.10); }
+@keyframes bruttiPasswordShow { from { opacity: .4; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes bruttiPasswordHide { from { opacity: .4; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes bruttiEyeOpen { from { opacity: .5; transform: scale(.75) rotate(-12deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+@keyframes bruttiEyeClose { from { opacity: .5; transform: scale(.75) rotate(12deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-typing-reserve { visibility: visible; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-typing-letters { display: none; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input[data-password-motion] :is(input,.catalog-login-reveal svg) { animation: none; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-reveal { transition: none; }
 }

@@ -1652,48 +1652,88 @@ function Login({
   const loginScreenRef = useRef<HTMLDivElement>(null);
   const cursorLightRef = useRef<HTMLDivElement>(null);
 
+  const collectionTitle = "Brutti’s Collection";
+  const [typedLength, setTypedLength] = useState(0);
+  const [passwordToggled, setPasswordToggled] = useState(false);
+
   useEffect(() => {
     const screen = loginScreenRef.current;
     const light = cursorLightRef.current;
     if (!screen || !light) return;
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-    let frame = 0;
-    let x = 0;
-    let y = 0;
-    const hide = () => {
-      light.removeAttribute("data-active");
-      if (frame) window.cancelAnimationFrame(frame);
-      frame = 0;
+    let lastTime = -Infinity;
+    let lastX = -Infinity;
+    let lastY = -Infinity;
+    const clear = () => {
+      light.replaceChildren();
+      lastTime = lastX = lastY = -Infinity;
     };
-    const move = (event: PointerEvent) => {
+    const ripple = (event: PointerEvent, click = false) => {
       if (motion.matches || !finePointer.matches || event.pointerType === "touch") return;
-      x = event.clientX;
-      y = event.clientY;
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        const bounds = screen.getBoundingClientRect();
-        light.style.setProperty("--cursor-x", `${x - bounds.left}px`);
-        light.style.setProperty("--cursor-y", `${y - bounds.top}px`);
-        light.setAttribute("data-active", "true");
-      });
+      const now = performance.now();
+      if (!click && (now - lastTime < 85 || Math.hypot(event.clientX - lastX, event.clientY - lastY) < 24)) return;
+      lastTime = now;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      const bounds = light.getBoundingClientRect();
+      const drop = document.createElement("span");
+      drop.className = click ? "brutti-water-ring is-press" : "brutti-water-ring";
+      drop.style.left = `${event.clientX - bounds.left}px`;
+      drop.style.top = `${event.clientY - bounds.top}px`;
+      while (light.childElementCount >= 8) light.firstElementChild?.remove();
+      drop.addEventListener("animationend", () => drop.remove(), { once: true });
+      light.appendChild(drop);
     };
+    const move = (event: PointerEvent) => ripple(event);
+    const press = (event: PointerEvent) => ripple(event, true);
     screen.addEventListener("pointermove", move, { passive: true });
-    screen.addEventListener("pointerleave", hide);
-    window.addEventListener("blur", hide);
-    motion.addEventListener("change", hide);
-    finePointer.addEventListener("change", hide);
+    screen.addEventListener("pointerdown", press, { passive: true });
+    window.addEventListener("blur", clear);
+    motion.addEventListener("change", clear);
+    finePointer.addEventListener("change", clear);
     return () => {
-      hide();
+      clear();
       screen.removeEventListener("pointermove", move);
-      screen.removeEventListener("pointerleave", hide);
-      window.removeEventListener("blur", hide);
-      motion.removeEventListener("change", hide);
-      finePointer.removeEventListener("change", hide);
+      screen.removeEventListener("pointerdown", press);
+      window.removeEventListener("blur", clear);
+      motion.removeEventListener("change", clear);
+      finePointer.removeEventListener("change", clear);
     };
   }, []);
 
+  useEffect(() => {
+    if (authenticated) return;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let timer = 0;
+    let delay = 0;
+    const stop = () => {
+      window.clearTimeout(delay);
+      window.clearInterval(timer);
+    };
+    const play = () => {
+      stop();
+      if (motion.matches) {
+        setTypedLength(collectionTitle.length);
+        return;
+      }
+      setTypedLength(0);
+      let index = 0;
+      delay = window.setTimeout(() => {
+        timer = window.setInterval(() => {
+          index += 1;
+          setTypedLength(index);
+          if (index >= collectionTitle.length) window.clearInterval(timer);
+        }, 65);
+      }, 380);
+    };
+    play();
+    motion.addEventListener("change", play);
+    return () => {
+      stop();
+      motion.removeEventListener("change", play);
+    };
+  }, [authenticated, collectionTitle]);
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -1765,7 +1805,16 @@ function Login({
               <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti official logo" />
             </div>
             <div className="catalog-login-heading">
-              <h1>{authenticated ? "Access restricted." : "Brutti’s Collection"}</h1>
+              <h1 aria-label={authenticated ? undefined : collectionTitle}>
+                {authenticated ? "Access restricted." : (
+                  <span className="brutti-typing-title" aria-hidden="true">
+                    <span className="brutti-typing-reserve">{collectionTitle}</span>
+                    <span className="brutti-typing-letters" data-typing={typedLength < collectionTitle.length ? "true" : undefined}>
+                      {collectionTitle.slice(0, typedLength)}
+                    </span>
+                  </span>
+                )}
+              </h1>
               {authenticated && (
                 <p className="catalog-login-description">
                   Your account does not have catalog administrator access. Please contact your workspace owner.
@@ -1806,7 +1855,7 @@ function Login({
                 </div>
                 <div className="catalog-login-field">
                   <label htmlFor="catalog-login-password">Password</label>
-                  <div className="catalog-login-input">
+                  <div className="catalog-login-input" data-password-motion={passwordToggled ? (showPassword ? "show" : "hide") : undefined}>
                     <LockKeyhole size={18} aria-hidden="true" />
                     <input
                       id="catalog-login-password"
@@ -1818,7 +1867,7 @@ function Login({
                       onChange={(e) => setPassword(e.target.value)}
                     />
                     <button type="button" className="catalog-login-reveal" disabled={busy}
-                      onClick={() => setShowPassword(v => !v)}
+                      onClick={() => { setPasswordToggled(true); setShowPassword(v => !v); }}
                       aria-label={showPassword ? "Hide password" : "Show password"}
                       aria-pressed={showPassword}>
                       {showPassword ? <EyeOff size={19} aria-hidden="true" /> : <Eye size={19} aria-hidden="true" />}
