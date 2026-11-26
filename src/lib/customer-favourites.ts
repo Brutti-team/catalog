@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { catalogClient } from "./catalog";
+import { catalogClient, catalogFavouritePublicClient } from "./catalog";
 
 export type FavouriteSummary={visitors:number;total:number;products:{productId:string;favourites:number}[]};
 export async function loadFavouriteSummary():Promise<FavouriteSummary>{
@@ -9,27 +9,61 @@ export async function loadFavouriteSummary():Promise<FavouriteSummary>{
   return data as FavouriteSummary;
 }
 let browserId:string|undefined;
+const browserKey="brutti-catalog-favourite-browser-v1";
+const pendingKey="brutti-catalog-favourite-pending-v2";
+const uuidPattern=/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i;
 const pendingWrites=new Map<string,Promise<void>>();
-function recordFavourite(id:string,added:boolean){
+const memoryPending:Record<string,boolean>={};
+function getBrowserId(){
+  if(!browserId){
+    let stored:string|null=null;
+    try{stored=window.localStorage.getItem(browserKey);}catch{/* browser storage unavailable */}
+    browserId=stored&&uuidPattern.test(stored)?stored:crypto.randomUUID();
+    try{window.localStorage.setItem(browserKey,browserId);}catch{/* memory-only fallback */}
+  }
+  return browserId;
+}
+function pendingState():Record<string,boolean>{
   try{
-    if(!browserId){
-      const key="brutti-catalog-favourite-browser-v1";
-      let stored:string|null=null;
-      try{stored=window.localStorage.getItem(key);}catch{/* browser storage unavailable */}
-      browserId=stored&&/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(stored)?stored:crypto.randomUUID();
-      try{window.localStorage.setItem(key,browserId);}catch{/* memory-only fallback */}
-    }
-    const token=browserId;
+    const raw=JSON.parse(window.localStorage.getItem(pendingKey)||"{}");
+    if(raw&&typeof raw==="object"&&!Array.isArray(raw))return Object.fromEntries(Object.entries(raw).filter(([id,value])=>uuidPattern.test(id)&&typeof value==="boolean")) as Record<string,boolean>;
+  }catch{/* memory-only fallback */}
+  return {...memoryPending};
+}
+function persistPending(values:Record<string,boolean>){
+  for(const id of Object.keys(memoryPending))delete memoryPending[id];
+  Object.assign(memoryPending,values);
+  try{window.localStorage.setItem(pendingKey,JSON.stringify(values));}catch{/* memory-only fallback */}
+}
+export const FAVOURITES_SYNCED="brutti-catalog-favourites-synced";
+function recordFavourite(id:string,added:boolean){
+  if(!uuidPattern.test(id))return;
+  try{
+    const token=getBrowserId();
+    persistPending({...pendingState(),[id]:added});
     const previous=pendingWrites.get(id)??Promise.resolve();
     const next=previous.catch(()=>{}).then(async()=>{
-      const {error}=await catalogClient().rpc("catalog_set_customer_favourite",{p_browser_id:token,p_product_id:id,p_saved:added});
-      if(error)console.warn("Favourite analytics unavailable",error.message);
-    }).catch(error=>{console.warn("Favourite analytics unavailable",error);});
+      const {error}=await catalogFavouritePublicClient().rpc("catalog_set_customer_favourite",{p_browser_id:token,p_product_id:id,p_saved:added});
+      if(error)throw new Error(error.message);
+      const pending=pendingState();
+      if(pending[id]===added){delete pending[id];persistPending(pending);}
+      window.dispatchEvent(new Event(FAVOURITES_SYNCED));
+    }).catch(error=>{console.warn("Favourite sync will retry",error);});
     pendingWrites.set(id,next);
     void next.finally(()=>{if(pendingWrites.get(id)===next)pendingWrites.delete(id);});
   }catch(error){console.warn("Favourite analytics unavailable",error);}
 }
 
+/** Backfill current public saves and retry offline removals when the public catalog opens. */
+export function syncPublicFavourites(){
+  refresh();
+  const ids=new Set(getSnapshot());
+  const pending=pendingState();
+  for(const id of ids)pending[id]=true;
+  for(const id of Object.keys(pending)){
+    if(!pendingWrites.has(id))recordFavourite(id,ids.has(id));
+  }
+}
 
 export const FAVOURITES_KEY="brutti-catalog-favourites";
 export const FAVOURITE_NOTICE="brutti-favourite-notice";
