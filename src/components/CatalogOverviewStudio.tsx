@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import Modal from "./Modal";
 import { loadFavouriteSummary, type FavouriteSummary } from "../lib/customer-favourites";
 import {
-  Heart, ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, RefreshCw,
+  Heart, ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, RefreshCw, UsersRound, Info,
   Layers3, Package, Pencil
 } from "lucide-react";
 import CustomerInsights from "./CustomerInsights";
@@ -126,24 +126,25 @@ export default function CatalogOverviewStudio({
           ))}
         </div>
       </div>
-      {favouriteOpen&&<Modal title="Customer favourites" eyebrow="BRUTTI CATALOG / CUSTOMER INTEREST" description="Products saved by anonymous public catalog browsers." wide className="catalog-favourite-report" onClose={()=>setFavouriteOpen(false)}>
-        <div style={{padding:"18px 22px",display:"grid",gap:14}}>
-          <div style={{display:"flex",gap:12,alignItems:"center",flexWrap:"wrap"}}>
-            <div style={{flex:"1 1 120px",padding:14,borderRadius:12,background:"rgba(100,150,116,.12)"}}><small>Unique browsers</small><div style={{fontSize:26,fontWeight:650}}>{favouriteError?"—":favourites?.visitors??"—"}</div></div>
-            <div style={{flex:"1 1 120px",padding:14,borderRadius:12,background:"rgba(180,135,150,.12)"}}><small>Total favourites</small><div style={{fontSize:26,fontWeight:650}}>{favouriteError?"—":favourites?.total??"—"}</div></div>
-            <button type="button" className="button secondary" disabled={favouriteBusy} onClick={()=>void refreshFavourites()}><RefreshCw size={15}/> Refresh</button>
+      {favouriteOpen&&<Modal title="Customer favourites" eyebrow="CUSTOMER INTEREST" description="Discover which products your customers love." className="catalog-favourite-report" onClose={()=>setFavouriteOpen(false)}>
+        <div className="fr-body">
+          <div className="fr-metrics">
+            <div className="fr-metric"><span className="fr-metric-label"><UsersRound size={16} aria-hidden="true"/> Unique browsers</span><strong>{favouriteError?"—":favourites?.visitors??"—"}</strong></div>
+            <div className="fr-metric is-saves"><span className="fr-metric-label"><Heart size={16} aria-hidden="true"/> Total favourites</span><strong>{favouriteError?"—":favourites?.total??"—"}</strong></div>
           </div>
-          {favouriteError?<p role="alert">Unable to load favourites. Please retry.</p>:!favourites?<p role="status">Loading favourites…</p>:!favourites.products.length?<p>No recorded favourites yet.</p>:<div style={{maxHeight:"45vh",overflowY:"auto"}}>
-            {favourites.products.map(row=>{
+          <div className="fr-list-head"><h3>Most loved products</h3><button type="button" className="button secondary fr-refresh" disabled={favouriteBusy} onClick={()=>void refreshFavourites()}><RefreshCw size={14} aria-hidden="true"/> {favouriteBusy?"Refreshing…":"Refresh"}</button></div>
+          {favouriteError?<div className="fr-empty" role="alert"><span className="fr-empty-icon"><Info size={21}/></span><strong>Unable to load favourites</strong><p>Please try refreshing the report.</p></div>:!favourites?<div className="fr-empty" role="status"><p>Loading favourites…</p></div>:!favourites.products.length?<div className="fr-empty"><span className="fr-empty-icon"><Heart size={23} strokeWidth={1.7} aria-hidden="true"/></span><strong>No favourites yet</strong><p>Products will appear here when customers save them.</p></div>:<div className="fr-list">
+            {favourites.products.map((row,index)=>{
               const product=products.find(p=>p.id===row.productId);
-              return <article key={row.productId} style={{display:"flex",gap:12,alignItems:"center",padding:"11px 0",borderBottom:"1px solid rgba(120,145,130,.2)"}}>
-                {product?.images[0]&&<SafeImage src={product.images[0].url} alt="" loading="lazy" style={{width:58,height:58,objectFit:"cover",borderRadius:9}}/>}
-                <div style={{flex:1,minWidth:0}}><strong>{product?.name??"Product"}</strong><div style={{fontSize:12,opacity:.75}}>{product?.sku??""} · {categories.find(c=>c.id===product?.categoryId)?.name??"Collection"}</div></div>
-                <span style={{display:"inline-flex",gap:6,alignItems:"center",fontWeight:650}}><Heart size={16} color="#b96c83" fill="#b96c83"/> {row.favourites}</span>
+              return <article key={row.productId} className="fr-row">
+                <span className="fr-rank">{index+1}</span>
+                <SafeImage className="fr-photo" src={product?.images[0]?.url||"/images/placeholder.svg"} alt="" loading="lazy"/>
+                <div className="fr-copy"><strong>{product?.name??"Product"}</strong><small>{[product?.sku,categories.find(c=>c.id===product?.categoryId)?.name].filter(Boolean).join(" · ")||"Collection"}</small></div>
+                <span className="fr-count"><Heart size={14} fill="currentColor" aria-hidden="true"/> {row.favourites}</span>
               </article>;
             })}
           </div>}
-          <small style={{opacity:.75}}>Counts reflect current recorded saves, not verified individual people. Earlier browser-only favourites are not included.</small>
+          <div className="fr-note"><Info size={13} aria-hidden="true"/><span>Counts represent saved products and unique browsers, not verified people. Earlier browser-only saves are excluded.</span></div>
         </div>
       </Modal>}
       <div className="brutti-glass-panels atelier-workbench customer-insights-workbench">
