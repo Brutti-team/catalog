@@ -217,7 +217,7 @@
 .catalog-materials-live u { text-decoration:underline; }
 .catalog-materials-live :is(s,strike,del) { text-decoration:line-through; }
 .catalog-materials-live h2 { font-size:16px; font-weight:720; line-height:1.5; margin:5px 0; }
-.catalog-materials-live mark { background:#fff1b7; color:#4d4224; }
+.catalog-materials-live mark { background:transparent; color:inherit; }
 .catalog-materials-live[aria-disabled="true"] { cursor:default; opacity:.8; }
 .admin-app[data-theme="dark"] .catalog-materials-editor > .catalog-materials-live { color:#e9f3eb; }
 .admin-app[data-theme="dark"] .catalog-materials-editor > .catalog-materials-live:empty::before { color:#a9beae; }
@@ -239,4 +239,74 @@
 .catalog-materials-content :is(i,em) :is(b,strong) {
   font-style: inherit !important;
   font-synthesis: weight style !important;
+}
+
+/* Neutral writing canvas; reserve Brutti green for active controls only. */
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-editor {
+  --editor-canvas: #ffffff;
+  --editor-toolbar: #f6f7f7;
+  --editor-line: #e3e7e5;
+  --editor-ink: #26332e;
+  --editor-muted: #626d68;
+  --editor-hover: #edf1ef;
+  --editor-active: #25543e;
+  --editor-active-ink: #ffffff;
+  background: var(--editor-canvas);
+  border-color: var(--editor-line);
+  box-shadow: 0 2px 8px rgba(26,46,36,.04);
+}
+.admin-app[data-theme="dark"] .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-editor {
+  --editor-canvas: #171a19;
+  --editor-toolbar: #202422;
+  --editor-line: #343a37;
+  --editor-ink: #eef2ef;
+  --editor-muted: #b1bcb5;
+  --editor-hover: #303834;
+  --editor-active: #387354;
+  --editor-active-ink: #ffffff;
+  background: var(--editor-canvas);
+  border-color: var(--editor-line);
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-editor .catalog-materials-toolbar {
+  background: var(--editor-toolbar);
+  border-color: var(--editor-line);
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-editor .catalog-materials-toolbar button {
+  color: var(--editor-muted);
+  background: transparent;
+  border-color: transparent;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-editor .catalog-materials-toolbar button:hover:not(:disabled) {
+  color: var(--editor-ink);
+  background: var(--editor-hover);
+  border-color: transparent;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-editor .catalog-materials-toolbar button.is-active {
+  color: var(--editor-active-ink);
+  background: var(--editor-active);
+  border-color: transparent;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-editor .catalog-materials-toolbar-divider {
+  background: var(--editor-line);
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-editor > .catalog-materials-live {
+  background: var(--editor-canvas);
+  color: var(--editor-ink);
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-live :is(mark,[style*="background"]) {
+  background: transparent !important;
+  color: inherit !important;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-live::selection,
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-live *::selection {
+  background: #cfe5d7;
+  color: #183b2b;
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-editor .catalog-materials-helper {
+  background: var(--editor-canvas);
+  border-color: var(--editor-line);
+  color: var(--editor-muted);
+}
+.admin-app .product-editor-dialog .product-editor-v2 #product-editor-specs .catalog-materials-editor .catalog-materials-helper > span {
+  color: var(--editor-muted);
 }
