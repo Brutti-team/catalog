@@ -129,6 +129,7 @@ export default function App() {
   const [, setSyncing] = useState(false);
   const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [auth, setAuth] = useState({
     authenticated: false,
     isAdmin: false,
@@ -237,9 +238,12 @@ export default function App() {
   };
   const [busy, setBusy] = useState(false);
   const catalogRequest = useRef(0);
+  const catalogInFlight = useRef(false);
   const authRequest = useRef(0);
   const refresh = useCallback(async (background = false) => {
+    if (background && catalogInFlight.current) return;
     const request = ++catalogRequest.current;
+    catalogInFlight.current = true;
     if (!background) setLoading(true);
     if (background) setSyncing(true);
     setError(null);
@@ -254,6 +258,7 @@ export default function App() {
         setError(e instanceof Error ? e.message : "Unable to load the catalog.");
     } finally {
       if (request === catalogRequest.current) {
+        catalogInFlight.current = false;
         setLoading(false);
         setSyncing(false);
       }
@@ -261,6 +266,8 @@ export default function App() {
   }, []);
   const refreshAuth = useCallback(async () => {
     const request = ++authRequest.current;
+    setAuthLoading(true);
+    setAuthError(null);
     try {
       const a = await getAuthState();
       const callback = initialPasswordIntent ? a.authenticated && await hasPasswordCallbackSession() : false;
@@ -273,7 +280,7 @@ export default function App() {
       setAuth({ authenticated: false, isAdmin: false, email: "" });
       setCallbackVerified(false);
       setData(current => ({ ...current, products: current.products.filter(product => product.status === 'published') }));
-      setError(e instanceof Error ? e.message : "Unable to verify access.");
+      setAuthError(e instanceof Error ? e.message : "Unable to verify access.");
     } finally {
       if (request === authRequest.current) setAuthLoading(false);
     }
@@ -288,15 +295,21 @@ export default function App() {
     return () => window.removeEventListener("hashchange", fn);
   }, []);
   useEffect(() => {
-    void refresh();
     void refreshAuth();
-    const unsub = subscribeAuth(() => {
+    const unsub = subscribeAuth(event => {
+      if (event === "INITIAL_SESSION") return;
       void refreshAuth();
-      void refresh();
     });
     return unsub;
-  }, [refresh, refreshAuth]);
-  useEffect(() => subscribeCatalog(() => refresh(true)), [refresh]);
+  }, [refreshAuth]);
+  const publicRoute =
+    route.startsWith("#/catalog") || route.startsWith("#/product/");
+  const canReadCatalog = !authLoading && (auth.isAdmin || publicRoute) && !passwordIntent;
+  useEffect(() => {
+    if (!canReadCatalog) return;
+    void refresh();
+    return subscribeCatalog(() => refresh(true));
+  }, [canReadCatalog, refresh]);
   useEffect(() => {
     let active = true;
     if (!auth.isAdmin) {
@@ -495,8 +508,6 @@ export default function App() {
       setBusy(false);
     }
   }
-  const publicRoute =
-    route.startsWith("#/catalog") || route.startsWith("#/product/");
   if (publicRoute && !passwordIntent)
     return (
       <>
@@ -539,12 +550,9 @@ export default function App() {
     return (
       <div className="admin-app admin-access-shell" data-theme={theme}>
       <Login
-        setupError={error || actionError}
+        setupError={authError || actionError}
         authenticated={auth.authenticated}
-        onSuccess={async () => {
-          await refreshAuth();
-          await refresh();
-        }}
+        onSuccess={async () => { /* SIGNED_IN triggers the centralized session check. */ }}
         onCatalog={() => navigate("/catalog")}
       />
       </div>
