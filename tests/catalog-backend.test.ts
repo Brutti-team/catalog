@@ -211,3 +211,21 @@ describe("configured Supabase catalog", () => {
     expect(unsubscribe).toHaveBeenCalledOnce();
   });
 });
+
+describe("staff portal request deadlines", () => {
+  it("rejects a stalled request rather than leaving loading active", async () => {
+    vi.useFakeTimers();
+    const { withRequestDeadline } = await import("../src/lib/catalog");
+    const pending = withRequestDeadline(new Promise<never>(() => {}), "verify your session", 50);
+    const assertion = expect(pending).rejects.toThrow("Connection timed out");
+    await vi.advanceTimersByTimeAsync(50);
+    await assertion;
+  });
+
+  it("preserves successful requests and clears their deadline", async () => {
+    vi.useFakeTimers();
+    const { withRequestDeadline } = await import("../src/lib/catalog");
+    await expect(withRequestDeadline(Promise.resolve("ok"), "verify your session", 50)).resolves.toBe("ok");
+    expect(vi.getTimerCount()).toBe(0);
+  });
+});
