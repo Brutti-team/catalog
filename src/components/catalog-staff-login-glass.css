@@ -510,3 +510,67 @@
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand img { max-height: 46px; }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading { margin-bottom: 13px; }
 }
+
+
+/* Collection sign-in refinement. The field wrapper is the only input focus ring. */
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input input,
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input input:focus,
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input input:focus-visible {
+  flex: 1 1 0; min-width: 0; width: 100%;
+  border: 0 !important; outline: none !important;
+  box-shadow: none !important; background: transparent !important;
+  padding-inline: 0; color: #fff; caret-color: #fff;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input input:-webkit-autofill,
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #fff !important;
+  -webkit-box-shadow: 0 0 0 100px transparent inset !important;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input, .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input {
+  display: flex; align-items: center; gap: 12px; padding: 0 14px;
+  border: 1px solid rgba(231,245,231,.30);
+  background: rgba(12,32,23,.48); box-shadow: none;
+  transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input > svg { flex-shrink: 0; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input:focus-within, .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input:focus-within {
+  background: rgba(12,32,23,.60); border-color: #d0e6d2;
+  box-shadow: 0 0 0 2px rgba(188,218,191,.24);
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-reveal { flex: 0 0 auto; border-radius: 6px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-reveal:focus-visible { outline: 2px solid #c4e0c9; outline-offset: 1px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface, .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface {
+  border-radius: 24px;
+  border-color: rgba(230,247,231,.38);
+  background: linear-gradient(145deg,rgba(60,91,70,.88),rgba(20,48,33,.92) 55%,rgba(37,67,47,.87));
+  box-shadow: 0 24px 60px rgba(0,18,8,.34), inset 0 1px 0 rgba(255,255,255,.16);
+  backdrop-filter: blur(24px) saturate(115%);
+  -webkit-backdrop-filter: blur(24px) saturate(115%);
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand { margin: 0 0 10px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand::after { content: none; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand img { width: 136px; max-height: 58px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading { margin: 8px 0 26px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading h1 {
+  color: #fffaf0; font-size: clamp(25px, 2.7vw, 33px);
+  font-weight: 600; letter-spacing: -.035em; line-height: 1.18;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-submit, .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-submit {
+  background: #f5f0e4; color: #183d2a; border-color: #f5f0e4;
+  font-weight: 700; font-size: 14px;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-submit:hover:not(:disabled), .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-submit:hover:not(:disabled) {
+  background: #fffaf0; color: #183d2a;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-submit:disabled { opacity: .76; cursor: wait; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-public { color: #f6f6ec; }
+@media (max-width: 700px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input input { font-size: 16px; }
+}
+@media (max-height: 680px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading { margin-bottom: 16px; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand img { max-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input { transition: none; }
+}

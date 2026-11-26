@@ -1719,7 +1719,7 @@ function Login({
               <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti official logo" />
             </div>
             <div className="catalog-login-heading">
-              <h1>{authenticated ? "Access restricted." : "Welcome back."}</h1>
+              <h1>{authenticated ? "Access restricted." : "Brutti’s Collection"}</h1>
               {authenticated && (
                 <p className="catalog-login-description">
                   Your account does not have catalog administrator access. Please contact your workspace owner.
