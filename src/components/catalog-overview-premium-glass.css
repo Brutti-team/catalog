@@ -461,3 +461,12 @@
     transform: none !important;
   }
 }
+
+
+/* Overview light canvas: match My Profile's neutral sage, without changing cards or charts. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="overview"],
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="overview"] .admin-main,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"][data-active-tab="overview"] .admin-main > .admin-content {
+  background: #eaf1eb !important;
+  background-image: none !important;
+}
