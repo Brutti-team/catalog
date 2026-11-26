@@ -46,23 +46,44 @@ async function jpeg(canvas:HTMLCanvasElement,links?:PdfLink[]):Promise<PdfRaster
     links:links?.map(l=>({...l,x:l.x*SCALE,y:l.y*SCALE,w:l.w*SCALE,h:l.h*SCALE}))};
   canvas.width=1;canvas.height=1;return page;
 }
-async function photo(url:string,timeoutMs=20000):Promise<HTMLImageElement> {
-  const controller=new AbortController();const timeout=window.setTimeout(()=>controller.abort(),timeoutMs);
+function abortCheck(signal?:AbortSignal) {
+  if(signal?.aborted)throw new DOMException("Catalogue creation cancelled.","AbortError");
+}
+async function photo(url:string,timeoutMs=20000,signal?:AbortSignal,cache?:Map<string,Blob>,saveBlob?:(url:string,blob:Blob)=>void):Promise<HTMLImageElement> {
+  abortCheck(signal);
+  const controller=new AbortController();
+  const cancel=()=>controller.abort();
+  signal?.addEventListener("abort",cancel,{once:true});
+  const timeout=window.setTimeout(cancel,timeoutMs);
+  let objectUrl="";
   try {
-    const response=await fetch(publicAssetUrl(url),{signal:controller.signal,mode:"cors",credentials:"omit"});
-    if(!response.ok)throw new Error(`Image unavailable (HTTP ${response.status}): ${url}`);
-    const blob=await response.blob();
-    if (!blob.size || /text\/html/i.test(blob.type)) throw new Error("Image response is empty or HTML: "+url);
-    const objectUrl=URL.createObjectURL(blob);
-    try {
-      const image=new Image();
-      await new Promise<void>((resolve,reject)=>{
-        image.onload=()=>resolve();image.onerror=()=>reject(new Error("Image decoding failed: "+url));image.src=objectUrl;
-      });
-      if (!image.naturalWidth || !image.naturalHeight) throw new Error("Invalid image dimensions: "+url);
-      return image;
-    } finally {URL.revokeObjectURL(objectUrl);}
-  } finally {window.clearTimeout(timeout);}
+    let blob=cache?.get(url);
+    if(!blob) {
+      const response=await fetch(publicAssetUrl(url),{signal:controller.signal,mode:"cors",credentials:"omit"});
+      if(!response.ok)throw new Error(`Image unavailable (HTTP ${response.status}): ${url}`);
+      blob=await response.blob();
+      if(!blob.size || /text\/html/i.test(blob.type))throw new Error("Image response is empty or HTML: "+url);
+      saveBlob?.(url,blob);
+    }
+    if(controller.signal.aborted)throw new DOMException("Image loading cancelled or timed out.","AbortError");
+    objectUrl=URL.createObjectURL(blob);
+    const image=new Image();
+    await new Promise<void>((resolve,reject)=>{
+      const cleanup=()=>{controller.signal.removeEventListener("abort",stop);image.onload=null;image.onerror=null;};
+      const stop=()=>{cleanup();image.src="";reject(new DOMException("Image loading cancelled or timed out.","AbortError"));};
+      image.onload=()=>{cleanup();resolve();};
+      image.onerror=()=>{cleanup();reject(new Error("Image decoding failed: "+url));};
+      controller.signal.addEventListener("abort",stop,{once:true});
+      if(controller.signal.aborted)stop();else image.src=objectUrl;
+    });
+    abortCheck(signal);
+    if(!image.naturalWidth || !image.naturalHeight)throw new Error("Invalid image dimensions: "+url);
+    return image;
+  } finally {
+    if(objectUrl)URL.revokeObjectURL(objectUrl);
+    window.clearTimeout(timeout);
+    signal?.removeEventListener("abort",cancel);
+  }
 }
 function fit(ctx:CanvasRenderingContext2D,img:HTMLImageElement,x:number,y:number,w:number,h:number) {
   const ratio=Math.min(w/img.naturalWidth,h/img.naturalHeight);
@@ -164,7 +185,8 @@ function drawDimensions(ctx:CanvasRenderingContext2D,entry:ProductPlan,x:number,
     ctx.textAlign="left";
   });
 }
-export async function generateCatalogPdf(products:Product[],categories:Category[],mode:PdfSelection,categoryId:string,favourites:string[],onProgress:(done:number,total:number)=>void) {
+export async function generateCatalogPdf(products:Product[],categories:Category[],mode:PdfSelection,categoryId:string,favourites:string[],onProgress:(done:number,total:number)=>void,signal?:AbortSignal) {
+  abortCheck(signal);
   const sections=planPdfSections(products,categories,mode,categoryId,favourites);
   if(!sections.length)throw new Error("No published products match this selection.");
   // Wait for the same font used by the public catalogue before measuring text.
@@ -173,16 +195,34 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     Promise.all([400,500,600,700].map(weight=>document.fonts.load(font(16,weight),"Brutti Catalogue"))).catch(()=>[]),
     new Promise<void>(resolve=>window.setTimeout(resolve,4500))
   ]);
-  // Determine orientation before pagination. Only the ratios are retained;
-  // decoded images can be released immediately and the browser may reuse its HTTP cache.
+  abortCheck(signal);
+  // Reuse compressed primary photos from the orientation pass. Cap the cache
+  // to avoid retaining an unbounded number of full-size decoded images.
+  const primaryCache=new Map<string,Blob>();
+  let cacheBytes=0;
+  const savePrimary=(url:string,blob:Blob)=>{
+    if(!primaryCache.has(url)&&cacheBytes+blob.size<=48*1024*1024){
+      primaryCache.set(url,blob);cacheBytes+=blob.size;
+    }
+  };
+  const loadPhoto=(url:string,timeout=20000)=>photo(url,timeout,signal,primaryCache);
+  // The first 25% represents image inspection, the rest page rendering.
   const primaryUrls=[...new Set(sections.flatMap(section=>section.products.map(p=>p.images.find(im=>Boolean(im.url?.trim()))?.url?.trim()).filter((url):url is string=>Boolean(url))))];
   const ratios=new Map<string,number>();
-  for(let i=0;i<primaryUrls.length;i+=5){
-    await Promise.all(primaryUrls.slice(i,i+5).map(async url=>{
-      try {const img=await photo(url,6000);ratios.set(url,img.naturalWidth/img.naturalHeight);}
-      catch {ratios.set(url,1);}
-    }));
-  }
+  let inspected=0,nextPrimary=0;
+  const inspect=async()=>{
+    while(nextPrimary<primaryUrls.length){
+      abortCheck(signal);
+      const url=primaryUrls[nextPrimary++];
+      try {const img=await photo(url,6000,signal,primaryCache,savePrimary);ratios.set(url,img.naturalWidth/img.naturalHeight);}
+      catch {abortCheck(signal);ratios.set(url,1);}
+      inspected++;
+      onProgress(Math.round(inspected/Math.max(1,primaryUrls.length)*25),100);
+    }
+  };
+  await Promise.all(Array.from({length:Math.min(6,primaryUrls.length)},()=>inspect()));
+  abortCheck(signal);
+  onProgress(25,100);
   const measure=sheet();
   const plan=sections.map(section=>({...section,entries:section.products.map(product=>{
     const ctx=measure.ctx;
@@ -244,19 +284,22 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   const pages:PdfRasterPage[]=[];
   let missing=0;
   const push=async(canvas:HTMLCanvasElement,links?:PdfLink[])=>{
-    try { pages.push(await jpeg(canvas,links)); }
-    catch(error) { console.error("[Catalogue PDF] Page encoding failed",{page:pages.length+1},error);throw new Error("PDF page rendering failed at page "+(pages.length+1)+". Refresh the page and retry."); }
+    try { abortCheck(signal);const page=await jpeg(canvas,links);abortCheck(signal);pages.push(page); }
+    catch(error) { abortCheck(signal);console.error("[Catalogue PDF] Page encoding failed",{page:pages.length+1},error);throw new Error("PDF page rendering failed at page "+(pages.length+1)+". Refresh the page and retry."); }
     finally {canvas.width=1;canvas.height=1;}
-    onProgress(pages.length,total);
+    onProgress(25+Math.floor(pages.length/total*74),100);
     await new Promise<void>(resolve=>window.setTimeout(resolve,0));
+    abortCheck(signal);
   };
   const originalCover=async(url:string)=>{
     const {canvas,ctx}=sheet();
     try {
       let img:HTMLImageElement;
-      try { img=await photo(url); } catch(firstError) {
+      try { img=await loadPhoto(url); } catch(firstError) {
+        abortCheck(signal);
         console.warn("[Catalogue PDF] Retrying original cover",url,firstError);
-        try { img=await photo(url); } catch(error) {
+        try { img=await loadPhoto(url); } catch(error) {
+          abortCheck(signal);
           console.error("[Catalogue PDF] Original cover unavailable",url,error);
           throw new Error("The original catalogue cover could not be loaded. Refresh the page and try again.");
         }
@@ -267,8 +310,9 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   // Mandatory originals; never silently substitute a generic front/back cover.
   await originalCover(IMPACT_FRONT);
   let brandLogo:HTMLImageElement|undefined;
-  try {brandLogo=await photo("/images/brutti-wordmark.svg");} catch { /* Text header is the fallback. */ }
+  try {brandLogo=await loadPhoto("/images/brutti-wordmark.svg");} catch { abortCheck(signal); /* Text header is the fallback. */ }
   for(let i=0;i<contentsCount;i++) {
+    abortCheck(signal);
     const {canvas,ctx}=sheet();header(ctx,"COLLECTION INDEX");
     // Editorial contents: measured columns, vertically centred rows and consistent rules.
     text(ctx,"Product Catalogue",40,101,34,GREEN,600);
@@ -297,27 +341,29 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     footer(ctx,pages.length+1);await push(canvas,links);
   }
   for(const [index,section] of plan.entries()) {
+    abortCheck(signal);
     const {canvas,ctx}=sheet();
     let referenceLoaded=false;
     if(section.cover && section.reference) {
       try {
-        const img=await photo(section.cover);ctx.fillStyle="#fff";ctx.fillRect(0,0,PW,PH);fit(ctx,img,0,0,PW,PH);
+        const img=await loadPhoto(section.cover);ctx.fillStyle="#fff";ctx.fillRect(0,0,PW,PH);fit(ctx,img,0,0,PW,PH);
         referenceLoaded=true;
       } catch(error) {
-        missing++;
+        abortCheck(signal);missing++;
         console.warn("[Catalogue PDF] Category cover unavailable",section.name,error);
       }
     }
     if(!referenceLoaded) {
       header(ctx,"SECTION "+String(index+1).padStart(2,"0"));
       text(ctx,section.name,40,112,30,GREEN,700);
-      if(section.cover && !section.reference)try {fit(ctx,await photo(section.cover),40,145,540,630);}catch(error) {missing++;console.warn("[Catalogue PDF] Category image unavailable",section.name,error);}
+      if(section.cover && !section.reference)try {fit(ctx,await loadPhoto(section.cover),40,145,540,630);}catch(error) {abortCheck(signal);missing++;console.warn("[Catalogue PDF] Category image unavailable",section.name,error);}
       footer(ctx,pages.length+1);
     }
     await push(canvas);
     for(const entry of section.entries) {
       const p=entry.product;
       for(const [part,detail] of entry.detail.entries()) {
+        abortCheck(signal);
         const {canvas:pc,ctx:cx}=sheet();
         if(brandLogo){
           fit(cx,brandLogo,40,18,44,32);
@@ -351,16 +397,19 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
           if(entry.split&&entry.dimensions.length){drawDimensions(cx,entry,x,y);y+=entry.dimensionHeight+17;}
           // Actual photo boxes follow the source aspect ratio; no gray backing,
           // no cropped portrait and no vertically centred tiny landscape photo.
-          if(entry.photos[0])try {
-            photoFitRounded(cx,await photo(entry.photos[0]),40,entry.photoTop,photoWidth,entry.heroHeight);
-          }catch(error){missing++;console.warn("[Catalogue PDF] Product photo unavailable",p.sku,error);text(cx,"Photo unavailable",40,entry.photoTop+30,13,MUTED);}
-          else text(cx,"Photo not provided",40,entry.photoTop+30,13,MUTED);
-          const extras=entry.photos.slice(1);
+          // At most four photos per product, fetched concurrently. Preserve
+          // the original photo order, layout, raster resolution and JPEG quality.
+          const loaded=await Promise.all(entry.photos.map(async url=>{
+            try{return await loadPhoto(url);}
+            catch(error){abortCheck(signal);missing++;console.warn("[Catalogue PDF] Product photo unavailable",p.sku,error);return null;}
+          }));
+          abortCheck(signal);
+          if(loaded[0])photoFitRounded(cx,loaded[0],40,entry.photoTop,photoWidth,entry.heroHeight);
+          else text(cx,entry.photos.length?"Photo unavailable":"Photo not provided",40,entry.photoTop+30,13,MUTED);
+          const extras=loaded.slice(1);
           if(extras.length){
             const w=(photoWidth-(extras.length-1)*8)/extras.length;
-            for(const [i,url] of extras.entries())try {
-              photoFitRounded(cx,await photo(url),40+i*(w+8),entry.photoTop+entry.heroHeight+12,w,entry.extrasHeight);
-            }catch(error){missing++;console.warn("[Catalogue PDF] Additional product photo unavailable",p.sku,error);}
+            extras.forEach((img,i)=>{if(img)photoFitRounded(cx,img,40+i*(w+8),entry.photoTop+entry.heroHeight+12,w,entry.extrasHeight);});
           }
           if(entry.split){
             if(detail.length){cx.fillStyle=RULE;cx.fillRect(x,entry.detailTop-8,SIDE_W,1);}
@@ -382,5 +431,9 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     }
   }
   await originalCover(IMPACT_BACK);
-  return {blob:makeCatalogPdf(pages),missing};
+  abortCheck(signal);
+  const blob=makeCatalogPdf(pages);
+  abortCheck(signal);
+  onProgress(100,100);
+  return {blob,missing};
 }

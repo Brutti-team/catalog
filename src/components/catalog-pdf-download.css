@@ -444,3 +444,17 @@ dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog), :is(.pub-app,.admin-app) d
     max-width:var(--pdf-options-max-width,calc(100vw - 28px)) !important;
   }
 }
+
+/* A real cancel action occupies the existing primary action slot during PDF creation. */
+dialog.pub-pdf-dialog .pub-pdf-cancel,
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog .pub-pdf-cancel {
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  min-height:43px;padding:10px 15px;border:1px solid rgba(181,98,98,.38);
+  border-radius:11px;background:rgba(179,91,91,.09);color:#a43d42;
+  font:600 13px/1.3 system-ui,sans-serif;cursor:pointer;
+  transition:background .18s ease,border-color .18s ease;
+}
+dialog.pub-pdf-dialog .pub-pdf-cancel:hover:not(:disabled) {background:rgba(179,91,91,.17);border-color:#b96d70;}
+dialog.pub-pdf-dialog .pub-pdf-cancel:disabled {opacity:.62;cursor:wait;}
+:is(.pub-app,.admin-app)[data-theme="dark"] dialog.pub-pdf-dialog .pub-pdf-cancel {color:#f1b8b8;background:rgba(179,91,91,.17);border-color:rgba(232,155,155,.36);}
+dialog.pub-pdf-dialog .pub-pdf-cancel:focus-visible {outline:2px solid #bd7479;outline-offset:2px;}

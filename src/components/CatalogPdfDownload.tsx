@@ -62,6 +62,9 @@ type Props = {products:Product[];categories:Category[];disabled:boolean;openRef?
 export default function CatalogPdfDownload({products,categories,disabled,openRef,hideTrigger=false,staffPreview=false}:Props) {
   const dialog=useRef<HTMLDialogElement>(null);
   const running=useRef(false);
+  const controllerRef=useRef<AbortController|null>(null);
+  const [cancelling,setCancelling]=useState(false);
+  useEffect(()=>()=>controllerRef.current?.abort(),[]);
   const optionsViewport=useRef<HTMLDivElement>(null);
   const optionsContent=useRef<HTMLDivElement>(null);
   const [mode,setMode]=useState<PdfSelection>("all");
@@ -128,25 +131,32 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
     clearPreview();setMessage("");setFailed(false);dialog.current?.showModal();
   };
   useImperativeHandle(openRef,()=>({open}));
+  const cancel=()=>{
+    if(!controllerRef.current||controllerRef.current.signal.aborted)return;
+    setCancelling(true);controllerRef.current.abort();
+  };
   const download=async()=>{
     if(running.current||!count)return;
-    running.current=true;setProgress(0);setMessage("");setFailed(false);
+    const controller=new AbortController();controllerRef.current=controller;
+    running.current=true;setCancelling(false);setProgress(0);setMessage("");setFailed(false);
     try {
-      const reportProgress=(done:number,total:number)=>setProgress(Math.round(done/total*100));
+      const reportProgress=(done:number,total:number)=>{if(!controller.signal.aborted)setProgress(previous=>Math.max(previous??0,Math.round(done/total*100)));};
       if(staffPreview){
-        const result=await prepareCustomerCatalogue(products,categories,mode,category,favourites,reportProgress);
+        const result=await prepareCustomerCatalogue(products,categories,mode,category,favourites,reportProgress,controller.signal);
+        controller.signal.throwIfAborted();
         setPreview({...result,filename:customerCatalogueFilename(mode)});
       }else{
-        const result=await downloadCustomerCatalogue(products,categories,mode,category,favourites,reportProgress);
+        const result=await downloadCustomerCatalogue(products,categories,mode,category,favourites,reportProgress,controller.signal);
         setMessage(result.missing ? "PDF created. "+result.missing+" product or category image(s) could not be loaded." : "Your catalogue PDF is ready.");
       }
     } catch(error) {
+      if(controller.signal.aborted){setMessage("Catalogue creation cancelled.");return;}
       console.error("[Catalogue PDF] Download failed", {mode,category,productCount:count}, error);
       setFailed(true);
       setMessage(error instanceof Error && /^(The original catalogue cover|The PDF module|PDF page rendering failed|PDF rendering is unavailable|No published products)/.test(error.message)
         ? error.message : "Unable to create the PDF. Refresh the page and try again. If the issue continues, contact Brutti.");
     }
-    finally {running.current=false;setProgress(null);}
+    finally {controllerRef.current=null;running.current=false;setCancelling(false);setProgress(null);}
   };
   return <>
     {!hideTrigger&&<button className="pub-pdf-trigger" type="button" disabled={disabled||!products.length}
@@ -155,7 +165,7 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
     </button>}
     <dialog ref={dialog} className={"pub-pdf-dialog"+(preview?" staff-pdf-preview-dialog":"")} aria-labelledby="pub-pdf-title"
       onClose={clearPreview}
-      onCancel={e=>{if(running.current)e.preventDefault();}}>
+      onCancel={e=>{if(running.current){e.preventDefault();cancel();}}}>
       {preview?<div className="staff-pdf-preview">
         <header className="staff-pdf-preview-head">
           <button type="button" className="staff-pdf-preview-back" onClick={clearPreview} aria-label="Back to catalogue options"><ArrowLeft size={19}/></button>
@@ -187,7 +197,8 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
       <div className="pub-pdf-summary"><span className="pub-pdf-summary-icon"><FileText size={17} strokeWidth={1.7} aria-hidden="true"/></span><div><strong>{count} {count===1?"product":"products"} selected</strong><small>PDF · A4 portrait · Original Brutti covers</small></div></div>
       {progress!==null&&<CatalogueLoading progress={progress}/>}
       {message&&<p role={failed?"alert":"status"} className="pub-pdf-message">{message}</p>}
-      <button type="button" className="pub-pdf-download" disabled={progress!==null||!count} onClick={()=>void download()}>{staffPreview?<Eye size={17}/>:<Download size={17}/>} {progress!==null?"Preparing catalogue…":staffPreview?"Preview PDF":"Download PDF"}</button>
+      {progress!==null?<button type="button" className="pub-pdf-cancel" disabled={cancelling} onClick={cancel}><X size={16} aria-hidden="true"/> {cancelling?"Cancelling…":"Cancel"}</button>:
+      <button type="button" className="pub-pdf-download" disabled={!count} onClick={()=>void download()}>{staffPreview?<Eye size={17}/>:<Download size={17}/>} {staffPreview?"Preview PDF":"Download PDF"}</button>}
       </div></div>}
     </dialog>
   </>;
