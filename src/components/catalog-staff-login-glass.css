@@ -414,3 +414,76 @@
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-field > label, .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-field-head label { font-weight: 600; }
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input input, .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input input:focus { font-weight: 500; }
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface :is(.catalog-login-forgot,.catalog-login-security,.catalog-login-description) { color: var(--login-muted); }
+
+
+/* Brutti collection showroom — actual product photographs from our What We Build
+   collection, cropped to the individual photographs rather than the PDF artwork.
+   All decoration is scoped to staff login; authentication and public catalog are unchanged. */
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign, .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign {
+  background: radial-gradient(ellipse at 10% 14%, #436c50 0%, transparent 48%),
+    radial-gradient(ellipse at 90% 28%, #30543b 0%, transparent 38%),
+    linear-gradient(170deg,#203f2e 0%,#173827 67%,#142b20 100%);
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side {
+  position: relative; isolation: isolate;
+  padding-block: clamp(16px, 3vh, 30px);
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side .brutti-login-top { position: relative; z-index: 2; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side .catalog-login-form-foot { display: none; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface, .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface {
+  position: relative; z-index: 1;
+  max-width: 460px;
+  background: linear-gradient(145deg,rgba(83,119,93,.82),rgba(32,67,48,.95) 55%,rgba(26,54,39,.94));
+  border-color: rgba(233,249,235,.45);
+  box-shadow: 0 28px 70px rgba(4,20,11,.38), inset 0 1px 0 rgba(255,255,255,.21);
+  backdrop-filter: blur(24px) saturate(125%);
+  -webkit-backdrop-filter: blur(24px) saturate(125%);
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand {
+  border-bottom: 0; padding-bottom: 0; margin-bottom: 12px;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand img { width: 116px; max-height: 63px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading { margin: 10px 0 24px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading h1 { font-size: clamp(28px,3vw,36px); }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface::before {
+  background: linear-gradient(132deg,rgba(226,247,218,.13),transparent 32%,transparent 74%,rgba(190,219,165,.09));
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side::before, .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side::after {
+  content: none;
+}
+@media (min-width: 1100px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side::before, .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side::after {
+    content: ""; position: absolute; z-index: -1; pointer-events: none;
+    inset: auto; bottom: clamp(42px, 9vh, 115px);
+    background-repeat: no-repeat;
+    filter: saturate(.86) brightness(.9);
+    border-radius: 20px;
+    box-shadow: 0 22px 55px rgba(5,22,12,.20);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 52%,#000 45%,rgba(0,0,0,.85) 67%,transparent 100%);
+    mask-image: radial-gradient(ellipse at 50% 52%,#000 45%,rgba(0,0,0,.85) 67%,transparent 100%);
+  }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side::before {
+    left: clamp(12px, 2.5vw, 48px);
+    width: min(28vw, 465px, calc((100vw - 500px) / 2 - 36px));
+    aspect-ratio: 420 / 348;
+    background-image: url("/reference/pdf/what-we-build/table & counters.webp");
+    background-size: 243.8% 416.1%;
+    background-position: 10.1% 94.9%;
+  }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side::after {
+    right: clamp(12px, 3vw, 52px);
+    width: min(25vw, 335px, calc((100vw - 500px) / 2 - 36px));
+    aspect-ratio: 263 / 346;
+    background-image: url("/reference/pdf/what-we-build/racks & shelves.webp");
+    background-size: 389.4% 418.5%;
+    background-position: 90.5% 63%;
+  }
+}
+@media (max-height: 740px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand img { max-height: 44px; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading { margin-bottom: 13px; }
+}
+@media (max-width: 700px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side { padding-block: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-bottom)); }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface { max-width: 420px; }
+}
