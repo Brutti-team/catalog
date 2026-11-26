@@ -652,3 +652,18 @@
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-overview-audit .catalog-today-feed .catalog-today-feed-name strong {font-size:12px;}
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-overview-audit .catalog-today-feed .catalog-today-feed-copy small,.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-overview-audit .catalog-today-feed .catalog-today-feed-time strong {font-size:10px;}
 }
+
+
+/* Latest updates: make the existing photo action accessible across the whole row. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-overview-audit .catalog-today-feed a.catalog-today-feed-row.is-clickable {
+  color:inherit;text-decoration:none;cursor:pointer;transition:background-color .16s ease;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-overview-audit .catalog-today-feed a.catalog-today-feed-row.is-clickable:is(:hover,:focus-visible) {
+  background:var(--feed-hover);border-radius:9px;
+}
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-overview-audit .catalog-today-feed a.catalog-today-feed-row.is-clickable:is(:hover,:focus-visible) .catalog-today-feed-name strong {
+  color:var(--feed-accent);text-decoration:underline;text-underline-offset:3px;
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-overview-audit .catalog-today-feed a.catalog-today-feed-row.is-clickable{transition:none;}
+}
