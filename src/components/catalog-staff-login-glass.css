@@ -17,7 +17,7 @@
   background: radial-gradient(ellipse at 12% 14%, #402c22, transparent 42%), radial-gradient(ellipse at 88% 85%, #203b2b, transparent 45%), #151916;
 }
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-shell {
-  box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr);
+  box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); grid-template-rows: auto;
   width: 100%; max-width: none; min-width: 0; min-height: 100dvh; height: auto; margin: 0; gap: 0; flex: 1 0 auto;
   padding: 0; border: 0; border-radius: 0;
   background: var(--login-glass); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
@@ -130,7 +130,7 @@
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-form-foot span { white-space: nowrap; }
 @media (min-width: 851px) {
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-shell {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0,42%) minmax(0,1fr);
   }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-story { background-position: center top; }
 }
@@ -151,8 +151,8 @@
   overflow-x: clip; overflow-y: auto;
 }
 .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-shell {
-  grid-template-columns: minmax(0,1fr);
-  grid-template-rows: minmax(0,1fr);
+  grid-template-columns: minmax(0,42%) minmax(0,1fr);
+  grid-template-rows: auto;
   min-height: 100dvh; height: auto;
   background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none;
   overflow: visible;
@@ -235,18 +235,31 @@
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-submit:hover:not(:disabled) { transform: none; }
 }
 
-/* Restore the original orange Brutti showroom image on the full-screen login. */
-@media (min-width: 851px) {
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-shell {
-    grid-template-columns: minmax(0, min(44%, 74dvh)) minmax(0,1fr);
-    grid-template-rows: minmax(100dvh, auto);
-    align-items: stretch;
-  }
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-story { min-height: 100dvh; }
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-form-side { min-height: 100dvh; min-width: 0; padding-inline: clamp(18px, 3vw, 48px); }
+/* Final layout: explicit tracks and placement so older login styles cannot hide the image. */
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 42%) minmax(0, 1fr) !important;
+  grid-template-rows: auto !important;
+  width: 100%; min-height: 100dvh; height: auto;
+  align-items: stretch;
 }
-@media (max-width: 850px) {
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-shell { grid-template-columns: minmax(0,1fr); grid-template-rows: auto minmax(0,1fr); }
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-story { min-height: clamp(120px, 22dvh, 200px); background-position: center 30%; }
-  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-form-side { min-height: 0; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-story {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative;
+  grid-column: 1; grid-row: 1;
+  width: 100%; min-height: 100dvh;
+  background-size: cover; background-position: center center;
+  background-repeat: no-repeat;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side {
+  grid-column: 2; grid-row: 1;
+  min-width: 0; width: 100%; min-height: 100dvh;
+  padding-inline: clamp(18px, 3vw, 48px);
+}
+@media (max-width: 700px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell { grid-template-columns: minmax(0,1fr) !important; grid-template-rows: auto 1fr !important; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-story { grid-column: 1; grid-row: 1; min-height: clamp(120px, 22dvh, 200px); background-position: center 30%; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side { grid-column: 1; grid-row: 2; min-height: 0; }
 }
