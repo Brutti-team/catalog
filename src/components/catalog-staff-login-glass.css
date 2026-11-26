@@ -767,3 +767,34 @@
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-reveal .brutti-eye-stack > span { transition: none; }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input[data-password-motion] input { animation: none !important; }
 }
+
+
+/* Brand-led collection login: larger original signature and a quiet, modern title.
+   Preserve the existing typing, eye and cursor animations. */
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand {
+  margin: 0 0 10px;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand img {
+  width: 184px;
+  max-height: 88px;
+  height: auto;
+  object-fit: contain;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface:has(.catalog-login-form) .catalog-login-heading h1 {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: clamp(24px, 2.45vw, 31px);
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: -.025em;
+  line-height: 1.25;
+  color: #fffaf0;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading { margin-top: 3px; margin-bottom: 24px; }
+@media (max-width: 420px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand img { width: 156px; max-height: 75px; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface:has(.catalog-login-form) .catalog-login-heading h1 { font-size: clamp(19px, 6.3vw, 26px); }
+}
+@media (max-height: 680px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand img { width: 150px; max-height: 66px; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading { margin-bottom: 16px; }
+}
