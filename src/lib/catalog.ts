@@ -174,10 +174,13 @@ function toRow(product: Product, capabilities: CatalogCapabilities): ProductRow 
   };
 }
 
+let capabilitiesUnavailableUntil = 0;
 async function loadCatalogCapabilities(db: SupabaseClient): Promise<CatalogCapabilities> {
+  if (Date.now() < capabilitiesUnavailableUntil) return { ordering: false, imageCleanup: false, priceBasis: observedPriceBasis };
   // A reviewed additive proposal enables these features. Legacy projects remain usable.
   try {
     const { data, error } = await withRequestDeadline(db.rpc('catalog_capabilities'), 'check catalog capabilities', 4000);
+    if (error?.code === 'PGRST202' || error?.code === '42883') capabilitiesUnavailableUntil = Date.now() + 5 * 60_000;
     if (!error && data && typeof data === 'object') return {
       ordering: data.ordering === true,
       imageCleanup: data.imageCleanup === true,
@@ -196,17 +199,17 @@ async function productModelsEnabled(db: SupabaseClient): Promise<boolean> {
 
 export async function loadCatalog(): Promise<CatalogData> {
   const db = supabase();
-  const [products, categories, capabilities, productModels] = await Promise.all([
-    withRequestDeadline(db.from("products").select("*").order("created_at", { ascending: false }), "load products"),
-    withRequestDeadline(db.from("categories").select("*").order("name"), "load categories"),
-    loadCatalogCapabilities(db),
-    productModelsEnabled(db),
-  ]);
+  // The REST connection pool is shared with staff access checks. Do not fan out
+  // optional RPCs or category reads while a primary request is failing.
+  const products = await withRequestDeadline(db.from("products").select("*").order("created_at", { ascending: false }), "load products");
   if (products.error)
     throw backendError(products.error.message, "load products");
+  const categories = await withRequestDeadline(db.from("categories").select("*").order("name"), "load categories");
   if (categories.error)
     throw backendError(categories.error.message, "load categories");
   const mapped = (products.data as ProductRow[]).map(fromRow);
+  const capabilities = await loadCatalogCapabilities(db);
+  const productModels = await productModelsEnabled(db);
   return {
     products: mapped,
     categories: categories.data as Category[],
@@ -720,18 +723,18 @@ export async function signOut(): Promise<void> {
   if (error) throw backendError(error.message, "sign out");
 }
 
-export function subscribeAuth(callback: () => void): () => void {
+export function subscribeAuth(callback: (event?: string) => void): () => void {
   // Session verification in a listener must happen after Supabase releases its auth lock.
   const pending = new Set<ReturnType<typeof setTimeout>>();
   let active = true;
   try {
     const {
       data: { subscription },
-    } = supabase().auth.onAuthStateChange(() => {
+    } = supabase().auth.onAuthStateChange((event) => {
       if (!active) return;
       const timer = setTimeout(() => {
         pending.delete(timer);
-        if (active) callback();
+        if (active) callback(event);
       }, 0);
       pending.add(timer);
     });
