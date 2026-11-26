@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Allura&display=swap");
+
 /* Staff login only — final, viewport-aware glass layout. */
 .admin-app.admin-access-shell:has(.catalog-login-page.brutti-login-redesign) {
   box-sizing: border-box; width: 100%; min-height: 100dvh; height: auto; padding: 0; margin: 0; border: 0;
@@ -609,4 +611,20 @@
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading { margin-bottom: 16px; }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-form { gap: 12px; }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand img { max-height: 43px; }
+}
+
+
+/* Elegant signature-style title for the collection sign-in only. */
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface:has(.catalog-login-form) .catalog-login-heading h1 {
+  font-family: "Allura", "Segoe Script", "Brush Script MT", cursive;
+  font-size: clamp(36px, 3.6vw, 46px);
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+@media (max-width: 420px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface:has(.catalog-login-form) .catalog-login-heading h1 {
+    font-size: clamp(32px, 9vw, 40px);
+  }
 }
