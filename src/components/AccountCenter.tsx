@@ -72,6 +72,60 @@ function InviteRolePicker({ value, onChange, disabled }: { value: StaffRole; onC
   </div>;
 }
 
+function ActivityStaffPicker({ value, options, onChange }: {
+  value: string;
+  options: [string, string][];
+  onChange: (value: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const selected = options.find(([key]) => key === value);
+  const close = () => { setOpen(false); trigger.current?.focus({preventScroll:true}); };
+  useEffect(() => {
+    if (!open) return;
+    root.current?.querySelector<HTMLButtonElement>('.activity-type-option[aria-pressed="true"]')?.focus({preventScroll:true});
+    const outside = (event: PointerEvent) => {
+      if (event.target instanceof Node && !root.current?.contains(event.target)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", outside);
+    return () => document.removeEventListener("pointerdown", outside);
+  }, [open]);
+  const entries: [string,string][] = [["all","All staff"], ...options];
+  return <div className="activity-type-dropdown activity-staff-dropdown" ref={root}
+    onBlur={event=>{if(event.relatedTarget && !root.current?.contains(event.relatedTarget as Node))setOpen(false);}}
+    onKeyDown={event=>{
+      if(event.key==="Escape" && open){event.preventDefault();event.stopPropagation();close();return;}
+      if(!["ArrowDown","ArrowUp","Home","End"].includes(event.key))return;
+      event.preventDefault();
+      if(!open){setOpen(true);return;}
+      const items=Array.from(root.current?.querySelectorAll<HTMLButtonElement>(".activity-type-option")??[]);
+      if(!items.length)return;
+      const index=items.indexOf(document.activeElement as HTMLButtonElement);
+      const next=event.key==="Home"?0:event.key==="End"?items.length-1:index<0?0:(index+(event.key==="ArrowDown"?1:-1)+items.length)%items.length;
+      items[next]?.focus();
+    }}>
+    <button ref={trigger} type="button" className={"activity-type-trigger activity-staff-trigger"+(open?" is-open":"")}
+      aria-label={"Filter activity by staff: "+(selected?.[1]??"All staff")} aria-expanded={open}
+      aria-controls={open?"activity-staff-options":undefined} onClick={()=>open?close():setOpen(true)}>
+      <UsersRound size={17} strokeWidth={1.8} aria-hidden="true"/>
+      <span>{selected?.[1]??"All staff"}</span>
+      <ChevronDown className="activity-type-chevron" size={16} aria-hidden="true"/>
+    </button>
+    {open&&<div className="activity-type-menu activity-staff-menu" id="activity-staff-options" role="group" aria-label="Filter by staff">
+      <div className="activity-type-group"><p>Filter by staff</p>
+        {entries.map(([key,name])=><button type="button" key={key}
+          className={"activity-type-option activity-staff-option"+(key===value?" is-selected":"")}
+          aria-pressed={key===value} onClick={()=>{onChange(key);close();}}>
+          <span className="activity-staff-avatar" aria-hidden="true">{key==="all"?<UsersRound size={15}/>:key==="system"?<ShieldCheck size={15}/>:initials(name)}</span>
+          <span className="activity-staff-name">{name}</span>
+          <span className="activity-type-check">{key===value&&<Check size={15} aria-hidden="true"/>}</span>
+        </button>)}
+      </div>
+    </div>}
+  </div>;
+}
+
 function dateText(value: string | null): string {
   if (!value) return "Never";
   const date = new Date(value);
@@ -467,14 +521,7 @@ export default function AccountCenter({
                   >{period.label}</button>
                 ))}
               </div>
-              <div className="activity-actor-picker">
-                <UsersRound size={16} aria-hidden="true"/>
-                <select aria-label="Filter activity by staff name" value={activityActor} onChange={event=>setActivityActor(event.target.value)}>
-                  <option value="all">All staff</option>
-                  {actorOptions.map(([key,name])=><option value={key} key={key}>{name}</option>)}
-                </select>
-                <ChevronDown size={15} aria-hidden="true"/>
-              </div>
+              <ActivityStaffPicker key={activityPeriod} value={activityActor} options={actorOptions} onChange={setActivityActor}/>
               <div className="activity-type-dropdown" ref={activityMenuRef}>
                 <button ref={activityTriggerRef} type="button" className={"activity-type-trigger"+(activityMenuOpen?" is-open":"")}
                   aria-expanded={activityMenuOpen} aria-controls={activityMenuOpen?"activity-type-options":undefined}
