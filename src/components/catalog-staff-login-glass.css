@@ -798,3 +798,41 @@
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand img { width: 150px; max-height: 66px; }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading { margin-bottom: 16px; }
 }
+
+
+/* Final subtle polish: lighter title, a soft reflected glass edge and smaller water ripples. */
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface:has(.catalog-login-form) .catalog-login-heading h1 {
+  font-weight: 400;
+  letter-spacing: -.035em;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface, .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface {
+  background: linear-gradient(145deg,rgba(79,112,90,.72),rgba(24,53,37,.91) 48%,rgba(39,70,50,.82));
+  border-color: rgba(231,247,232,.39);
+  border-top-color: rgba(245,255,243,.51);
+  border-left-color: rgba(231,247,232,.43);
+  box-shadow: 0 22px 58px rgba(0,18,8,.30), inset 0 1px 0 rgba(255,255,255,.21), inset 0 -1px 0 rgba(220,242,219,.08);
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface::before {
+  background: radial-gradient(ellipse at 0% 0%,rgba(232,250,221,.13),transparent 48%),
+    linear-gradient(135deg,rgba(255,255,255,.035),transparent 35%,transparent 75%,rgba(218,242,203,.055));
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .brutti-water-ring {
+  width: 46px; height: 46px; border: 0; box-shadow: none;
+  background: radial-gradient(circle,
+    transparent 42%,rgba(228,247,221,.025) 50%,
+    rgba(228,247,221,.24) 62%,rgba(228,247,221,.06) 72%,transparent 79%);
+  filter: blur(.65px);
+  animation: bruttiWaterRippleRefined .38s cubic-bezier(.18,.7,.3,1) both;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .brutti-water-ring::after {
+  inset: 8px; border: 0; opacity: .65;
+  background: radial-gradient(circle,transparent 45%,rgba(233,249,226,.16) 65%,transparent 77%);
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .brutti-water-ring.is-press {
+  width: 60px; height: 60px; animation-duration: .48s;
+}
+@keyframes bruttiWaterRippleRefined {
+  0% { transform: translate(-50%,-50%) scale(.23); opacity: .75; }
+  32% { opacity: .85; }
+  100% { transform: translate(-50%,-50%) scale(1); opacity: 0; }
+}
