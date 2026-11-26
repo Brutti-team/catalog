@@ -1759,11 +1759,7 @@ function Login({
                   </div>
                 </div>
                 <div className="catalog-login-field">
-                  <div className="catalog-login-field-head">
-                    <label htmlFor="catalog-login-password">Password</label>
-                    <button type="button" className="catalog-login-forgot" disabled={busy}
-                      onClick={() => void sendPasswordReset()}>Forgot password?</button>
-                  </div>
+                  <label htmlFor="catalog-login-password">Password</label>
                   <div className="catalog-login-input">
                     <LockKeyhole size={18} aria-hidden="true" />
                     <input
@@ -1782,6 +1778,10 @@ function Login({
                       {showPassword ? <EyeOff size={19} aria-hidden="true" /> : <Eye size={19} aria-hidden="true" />}
                     </button>
                   </div>
+                  <div className="catalog-login-recovery">
+                    <button type="button" className="catalog-login-forgot" disabled={busy}
+                      onClick={() => void sendPasswordReset()}>Forgot password?</button>
+                  </div>
                 </div>
                 <button type="submit" className="catalog-login-submit" disabled={busy}>
                   <span>{busy ? "Signing in…" : "Sign in"}</span>
@@ -1794,10 +1794,6 @@ function Login({
               </form>
             )}
             {error && <div className="notice error catalog-login-alert" role="alert">{error}</div>}
-            <div className="catalog-login-divider"><span>PUBLIC COLLECTION</span></div>
-            <button type="button" className="catalog-login-public" onClick={onCatalog}>
-              Explore public catalog <ArrowUpRight size={17} aria-hidden="true" />
-            </button>
             <p className="catalog-login-security"><ShieldCheck size={15} aria-hidden="true" />
               Secure access for authorised Brutti Catalog staff only.
             </p>

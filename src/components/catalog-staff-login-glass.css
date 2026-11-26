@@ -574,3 +574,39 @@
 @media (prefers-reduced-motion: reduce) {
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input { transition: none; }
 }
+
+
+/* Compact collection login — single clear action, recovery beneath password. */
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface, .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface {
+  width: min(100%, 440px); max-width: 440px;
+  padding: clamp(25px, 3vw, 34px);
+  border-radius: 22px;
+  background: linear-gradient(145deg,rgba(70,102,80,.76),rgba(24,53,37,.92) 53%,rgba(39,70,50,.85));
+  border-color: rgba(231,247,232,.36);
+  box-shadow: 0 22px 58px rgba(0,18,8,.30), inset 0 1px 0 rgba(255,255,255,.17);
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand { margin: 0 0 8px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand img { width: 124px; max-height: 52px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading { margin: 8px 0 24px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading h1 { font-size: clamp(24px,2.6vw,30px); font-weight: 600; letter-spacing: -.035em; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-form { gap: 16px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-field { gap: 7px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-input { min-height: 46px; border-radius: 11px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-recovery { display: flex; align-items: center; justify-content: flex-end; margin-top: 1px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-recovery .catalog-login-forgot {
+  display: inline-flex; align-items: center; min-height: 26px; padding: 2px 0;
+  border: 0; background: transparent; color: #e6efe4; font-size: 12px; font-weight: 500;
+  text-decoration: none; text-underline-offset: 3px; cursor: pointer;
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-recovery .catalog-login-forgot:hover:not(:disabled) { color: #fff; text-decoration: underline; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-recovery .catalog-login-forgot:disabled { opacity: .65; cursor: default; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-submit { min-height: 48px; margin: 0; border-radius: 11px; }
+@media (max-width: 700px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface, .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface { max-width: 420px; padding: 24px; }
+}
+@media (max-height: 680px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface, .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface { padding-block: 20px; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-heading { margin-bottom: 16px; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .catalog-login-form { gap: 12px; }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface .brutti-login-brand img { max-height: 43px; }
+}
