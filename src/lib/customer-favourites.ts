@@ -1,4 +1,35 @@
 import { useSyncExternalStore } from "react";
+import { catalogClient } from "./catalog";
+
+export type FavouriteSummary={visitors:number;total:number;products:{productId:string;favourites:number}[]};
+export async function loadFavouriteSummary():Promise<FavouriteSummary>{
+  const {data,error}=await catalogClient().rpc("catalog_customer_favourites_summary");
+  if(error)throw new Error(error.message);
+  if(!data||typeof data.visitors!=="number"||typeof data.total!=="number"||!Array.isArray(data.products))throw new Error("Invalid favourites response");
+  return data as FavouriteSummary;
+}
+let browserId:string|undefined;
+const pendingWrites=new Map<string,Promise<void>>();
+function recordFavourite(id:string,added:boolean){
+  try{
+    if(!browserId){
+      const key="brutti-catalog-favourite-browser-v1";
+      let stored:string|null=null;
+      try{stored=window.localStorage.getItem(key);}catch{/* browser storage unavailable */}
+      browserId=stored&&/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(stored)?stored:crypto.randomUUID();
+      try{window.localStorage.setItem(key,browserId);}catch{/* memory-only fallback */}
+    }
+    const token=browserId;
+    const previous=pendingWrites.get(id)??Promise.resolve();
+    const next=previous.catch(()=>{}).then(async()=>{
+      const {error}=await catalogClient().rpc("catalog_set_customer_favourite",{p_browser_id:token,p_product_id:id,p_saved:added});
+      if(error)console.warn("Favourite analytics unavailable",error.message);
+    }).catch(error=>{console.warn("Favourite analytics unavailable",error);});
+    pendingWrites.set(id,next);
+    void next.finally(()=>{if(pendingWrites.get(id)===next)pendingWrites.delete(id);});
+  }catch(error){console.warn("Favourite analytics unavailable",error);}
+}
+
 
 export const FAVOURITES_KEY="brutti-catalog-favourites";
 export const FAVOURITE_NOTICE="brutti-favourite-notice";
@@ -41,5 +72,6 @@ export function toggleFavouriteId(id:string,name?:string){
   snapshot=nextFavouriteIds(current,id);
   try{window.localStorage.setItem(FAVOURITES_KEY,JSON.stringify(snapshot));}catch{/* session-only fallback */}
   listeners.forEach(listener=>listener());
+  recordFavourite(id,added);
   if(typeof window!=="undefined")window.dispatchEvent(new CustomEvent(FAVOURITE_NOTICE,{detail:{added,name}}));
 }
