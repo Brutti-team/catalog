@@ -1649,6 +1649,51 @@ function Login({
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const loginScreenRef = useRef<HTMLDivElement>(null);
+  const cursorLightRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const screen = loginScreenRef.current;
+    const light = cursorLightRef.current;
+    if (!screen || !light) return;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    let frame = 0;
+    let x = 0;
+    let y = 0;
+    const hide = () => {
+      light.removeAttribute("data-active");
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = 0;
+    };
+    const move = (event: PointerEvent) => {
+      if (motion.matches || !finePointer.matches || event.pointerType === "touch") return;
+      x = event.clientX;
+      y = event.clientY;
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        const bounds = screen.getBoundingClientRect();
+        light.style.setProperty("--cursor-x", `${x - bounds.left}px`);
+        light.style.setProperty("--cursor-y", `${y - bounds.top}px`);
+        light.setAttribute("data-active", "true");
+      });
+    };
+    screen.addEventListener("pointermove", move, { passive: true });
+    screen.addEventListener("pointerleave", hide);
+    window.addEventListener("blur", hide);
+    motion.addEventListener("change", hide);
+    finePointer.addEventListener("change", hide);
+    return () => {
+      hide();
+      screen.removeEventListener("pointermove", move);
+      screen.removeEventListener("pointerleave", hide);
+      window.removeEventListener("blur", hide);
+      motion.removeEventListener("change", hide);
+      finePointer.removeEventListener("change", hide);
+    };
+  }, []);
+
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -1683,7 +1728,7 @@ function Login({
   }
 
   return (
-    <div className="access-page catalog-login-page brutti-login-redesign">
+    <div ref={loginScreenRef} className="access-page catalog-login-page brutti-login-redesign">
       <div className="catalog-login-shell">
         <section className="catalog-login-story" aria-label="Brutti Catalog collection studio" style={{ backgroundImage: `url("${publicAssetUrl("/images/brutti-collection-hero.webp")}")` }}>
           <div className="catalog-login-story-top">
@@ -1709,6 +1754,7 @@ function Login({
         </section>
 
         <main className="catalog-login-form-side">
+          <div ref={cursorLightRef} className="brutti-login-cursor-light" aria-hidden="true" />
           <div className="brutti-login-top">
             <button type="button" className="brutti-login-back" onClick={onCatalog}>
               <ArrowLeft size={15} aria-hidden="true" /> Back to collection
