@@ -123,3 +123,12 @@
   .admin-app .account-center.account-center--profile .account-profile-actions .button {flex:1 1 auto;justify-content:center;}
 }
 @media(prefers-reduced-motion:reduce){.admin-app .account-center.account-center--profile *{transition:none!important;}}
+
+
+/* My Profile light canvas — remove the warm pink/beige cast only. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"]:is([data-active-tab="profile"],:has(.account-center--profile)),
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"]:is([data-active-tab="profile"],:has(.account-center--profile)) .admin-main,
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="light"]:is([data-active-tab="profile"],:has(.account-center--profile)) .admin-main > .admin-content {
+  background: #eaf1eb !important;
+  background-image: none !important;
+}
