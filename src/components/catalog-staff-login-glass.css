@@ -487,3 +487,47 @@
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side { padding-block: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-bottom)); }
   .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface { max-width: 420px; }
 }
+
+
+/* Showroom revision: silhouette masks reveal only the real timber furniture,
+   not the rectangular catalogue photographs. Keep the foreground form readable. */
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign, .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign {
+  background: radial-gradient(ellipse at 12% 27%,rgba(124,160,112,.27),transparent 37%),
+    radial-gradient(ellipse at 88% 30%,rgba(118,151,99,.19),transparent 34%),
+    linear-gradient(180deg,#31543c 0%,#1d3e2a 72%,#183324 72.2%,#284333 100%);
+}
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side .brutti-login-top { position: absolute; top: clamp(15px,2.5vh,28px); left: clamp(18px,3vw,48px); width:auto; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side { padding-block: 75px 32px; }
+.admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign .catalog-login-auth-surface { margin: auto; }
+@media (min-width: 1100px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side::before, .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side::after {
+    z-index: -1; bottom: 8%; border-radius: 0; box-shadow: none;
+    background-repeat: no-repeat; mask-repeat: no-repeat; mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat; -webkit-mask-size: 100% 100%;
+    filter: saturate(.95) brightness(.94);
+  }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side::before {
+    left: clamp(18px,4vw,75px);
+    width: min(28vw,440px,calc((100vw - 500px) / 2 - 50px));
+    aspect-ratio: 320 / 322;
+    background-size: 320% 449.6894%;
+    background-position: 15.625% 95.0266%;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22110%201070%20320%20322%22%3E%3Cg%20fill%3D%22white%22%3E%3Cpath%20d%3D%22M118%201187%20245%201152%20281%201152%20420%201164%20424%201175%20337%201229%20296%201230%20119%201200Z%22%2F%3E%3Cpath%20d%3D%22M204%201215%20216%201218%20186%201341%20173%201342ZM290%201223%20303%201225%20310%201391%20300%201391ZM346%201218%20361%201210%20389%201314%20377%201315ZM260%201222%20267%201222%20271%201287%20265%201289ZM193%201293%20297%201281%20297%201287%20191%201301ZM307%201287%20373%201275%20375%201282%20308%201294ZM267%201272%20300%201341%20300%201351%20266%201283Z%22%2F%3E%3Cpath%20d%3D%22M259%201151%20282%201151%20284%201177%20279%201182%20265%201182%20258%201178Z%22%2F%3E%3Cpath%20d%3D%22M270%201155%20267%201125%20260%201112%20247%201081%20253%201089%20255%201074%20261%201090%20263%201074%20269%201092%20271%201083%20276%201095%20279%201088%20279%201103%20286%201099%20280%201116%20274%201125%20273%201142%20279%201125%20289%201116%20298%201113%20290%201128%20278%201134%20276%201154Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22110%201070%20320%20322%22%3E%3Cg%20fill%3D%22white%22%3E%3Cpath%20d%3D%22M118%201187%20245%201152%20281%201152%20420%201164%20424%201175%20337%201229%20296%201230%20119%201200Z%22%2F%3E%3Cpath%20d%3D%22M204%201215%20216%201218%20186%201341%20173%201342ZM290%201223%20303%201225%20310%201391%20300%201391ZM346%201218%20361%201210%20389%201314%20377%201315ZM260%201222%20267%201222%20271%201287%20265%201289ZM193%201293%20297%201281%20297%201287%20191%201301ZM307%201287%20373%201275%20375%201282%20308%201294ZM267%201272%20300%201341%20300%201351%20266%201283Z%22%2F%3E%3Cpath%20d%3D%22M259%201151%20282%201151%20284%201177%20279%201182%20265%201182%20258%201178Z%22%2F%3E%3Cpath%20d%3D%22M270%201155%20267%201125%20260%201112%20247%201081%20253%201089%20255%201074%20261%201090%20263%201074%20269%201092%20271%201083%20276%201095%20279%201088%20279%201103%20286%201099%20280%201116%20274%201125%20273%201142%20279%201125%20289%201116%20298%201113%20290%201128%20278%201134%20276%201154Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  }
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side::after {
+    right: clamp(18px,5vw,90px);
+    width: min(22vw,315px,calc((100vw - 500px) / 2 - 50px),calc(57vh * 355 / 607));
+    aspect-ratio: 355 / 607;
+    background-size: 288.4507% 238.5502%;
+    background-position: 88.1913% 7.7289%;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22590%2065%20355%20607%22%3E%3Cpath%20fill%3D%22white%22%20fill-rule%3D%22evenodd%22%20d%3D%22M592%2086%20603%2085%20607%20120%20695%20124%20696%2093%20710%2091%20712%20102%20719%2089%20819%2084%20819%2069%20831%2067%20835%2083%20942%2077%20944%2091%20933%20625%20922%20628%20910%20592%20829%20625%20828%20663%20818%20670%20813%20667%20812%20569%20716%20531%20714%20512%20710%20511%20710%20538%20701%20540%20698%20525%20614%20549%20614%20568%20602%20570Z%20M606%20134%20695%20138%20695%20166%20606%20166Z%20M606%20180%20695%20180%20694%20196%20606%20197Z%20M607%20226%20695%20222%20696%20253%20607%20260Z%20M607%20274%20696%20266%20696%20292%20608%20306Z%20M609%20319%20681%20311%20661%20337%20609%20335Z%20M610%20355%20696%20370%20696%20383%20610%20397Z%20M611%20411%20696%20397%20696%20420%20611%20438Z%20M612%20451%20689%20435%20695%20451%20613%20473Z%20M613%20492%20674%20517%20613%20537Z%20M831%20571%20910%20590%20830%20612Z%22%2F%3E%3C%2Fsvg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22590%2065%20355%20607%22%3E%3Cpath%20fill%3D%22white%22%20fill-rule%3D%22evenodd%22%20d%3D%22M592%2086%20603%2085%20607%20120%20695%20124%20696%2093%20710%2091%20712%20102%20719%2089%20819%2084%20819%2069%20831%2067%20835%2083%20942%2077%20944%2091%20933%20625%20922%20628%20910%20592%20829%20625%20828%20663%20818%20670%20813%20667%20812%20569%20716%20531%20714%20512%20710%20511%20710%20538%20701%20540%20698%20525%20614%20549%20614%20568%20602%20570Z%20M606%20134%20695%20138%20695%20166%20606%20166Z%20M606%20180%20695%20180%20694%20196%20606%20197Z%20M607%20226%20695%20222%20696%20253%20607%20260Z%20M607%20274%20696%20266%20696%20292%20608%20306Z%20M609%20319%20681%20311%20661%20337%20609%20335Z%20M610%20355%20696%20370%20696%20383%20610%20397Z%20M611%20411%20696%20397%20696%20420%20611%20438Z%20M612%20451%20689%20435%20695%20451%20613%20473Z%20M613%20492%20674%20517%20613%20537Z%20M831%20571%20910%20590%20830%20612Z%22%2F%3E%3C%2Fsvg%3E");
+  }
+}
+@media (max-width:1099px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign, .admin-app.admin-access-shell[data-theme="dark"] .catalog-login-page.brutti-login-redesign { background: radial-gradient(ellipse at 14% 12%,#476d52,transparent 55%),linear-gradient(145deg,#2c5039,#142e21); }
+}
+@media (max-height: 740px) {
+  .admin-app.admin-access-shell .catalog-login-page.brutti-login-redesign > .catalog-login-shell > .catalog-login-form-side { padding-block: 60px 16px; }
+}
