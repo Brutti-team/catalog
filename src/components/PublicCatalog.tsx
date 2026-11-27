@@ -174,6 +174,14 @@ export default function PublicCatalog({
     };
   }, [productId, previewProduct]);
   const [query, setQuery] = useState("");
+  const [phoneSearch, setPhoneSearch] = useState(() => window.matchMedia("(max-width: 580px)").matches);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 580px)");
+    const sync = () => setPhoneSearch(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
   const [category, setCategory] = useState("all");
   const [bestOnly, setBestOnly] = useState(false);
   const [collectionExpanded, setCollectionExpanded] = useState(false);
@@ -549,7 +557,8 @@ export default function PublicCatalog({
                   <span className="pub-sr-only">Search the catalog</span>
                   <input
                     type="search"
-                    placeholder="Search projects, products or materials"
+                    placeholder={phoneSearch ? "Search products..." : "Search projects, products or materials"}
+                    enterKeyHint="search"
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                   />
