@@ -53,7 +53,7 @@ export default function BestSellingSection({ products, categories, loading, onBr
           </p>
         </div>
         {!loading && curated.length > 0 && (
-          <button type="button" className="brutti-best-selling__browse" onClick={onBrowseBestSellers}>
+          <button type="button" className="brutti-best-selling__browse brutti-best-selling__browse--desktop" onClick={onBrowseBestSellers}>
             View All Best Sellers <ArrowRight size={17} aria-hidden="true" />
           </button>
         )}
@@ -92,6 +92,11 @@ export default function BestSellingSection({ products, categories, loading, onBr
                 onView={onView}
               />
             ))}
+          </div>
+          <div className="brutti-best-selling__mobile-action">
+            <button type="button" className="brutti-best-selling__browse" onClick={onBrowseBestSellers}>
+              View All Best Sellers <ArrowRight size={17} aria-hidden="true" />
+            </button>
           </div>
         </>
       ) : (
