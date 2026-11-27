@@ -9,7 +9,7 @@ const PW=620, PH=877, SCALE=2;
 const GREEN="#174635", INK="#243b31", MUTED="#64746b", PAPER="#faf7f1", BRONZE="#896a4d", RULE="#d4ded3";
 const font=(size:number, weight=400)=> `${weight} ${size}px Inter, "Segoe UI", Arial, sans-serif`;
 const editorialFont=(size:number,weight=700)=> `${weight} ${size}px Georgia, "Times New Roman", serif`;
-const detailFont=(size:number,weight=400)=> `${weight} ${size}px Arial, Helvetica, sans-serif`;
+const detailFont=font;
 const clean=(value:string)=>String(value??"").replace(/\r/g,"").trim();
 function lines(ctx:CanvasRenderingContext2D, value:string, width:number, size:number, weight=400,serif=false,detail=false):string[] {
   ctx.font=serif?editorialFont(size,weight):detail?detailFont(size,weight):font(size,weight);
@@ -129,7 +129,7 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remain
     if(!clean(value))return;
     if(label) {
       const heading=label==="Materials & finishing"?"Materials & Finishing":label;
-      const headings=lines(ctx,heading,width,15,700,true);
+      const headings=lines(ctx,heading,width,15,700,false,true);
       headings.forEach(line=>result.push({value:line,size:15,weight:700,color:GREEN,height:24,heading:true}));
     }
     const paragraphs=clean(value).split("\n").map(line=>line.trim()).filter(Boolean);
@@ -154,7 +154,7 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remain
     const dimensionTable=keys.map(key=>{
       const name=key==="width"?"Width":key==="depth"?"Depth":"Height";
       const value=formatProductDimensions({width:0,depth:0,height:0,dimensionUnits:p.dimensionUnits,[key]:p[key]}).replace(/ [WDH]$/,"");
-      const values=lines(ctx,value,118,12,700,false,true);
+      const values=lines(ctx,value,118,12,600,false,true);
       return {name,values,height:Math.max(30,values.length*16+14)};
     });
     result.push({value:"",size:12,weight:700,color:GREEN,height:28+dimensionTable.reduce((sum,row)=>sum+row.height,0)+6,dimensionTable});
@@ -162,7 +162,7 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remain
   for(const row of p.specifications??[]) {
     if(row.kind==="section") {
       if(clean(row.name)) {
-        for(const line of lines(ctx,row.name,width,15,700,true))result.push({value:line,size:15,weight:700,color:GREEN,height:24,heading:true});
+        for(const line of lines(ctx,row.name,width,15,700,false,true))result.push({value:line,size:15,weight:700,color:GREEN,height:24,heading:true});
       }
       continue;
     }
@@ -183,18 +183,19 @@ function drawRows(ctx:CanvasRenderingContext2D,rows:DetailRow[],top:number,x=40)
   for(const row of rows){
     const start=y+(row.gapBefore??0);
     if(row.dimensionTable){
-      const w=250, divider=x+112, right=x+w-12, headerHeight=28;
+      const w=250, divider=x+112, valueCenter=(divider+x+w)/2, headerHeight=28;
       const tableHeight=headerHeight+row.dimensionTable.reduce((sum,item)=>sum+item.height,0);
       ctx.fillStyle="#e7ece1";ctx.fillRect(x,y,w,headerHeight);
-      ctx.textAlign="left";detailText(ctx,"Label",x+12,y+18,10,GREEN,700);
-      ctx.textAlign="right";detailText(ctx,"Value",right,y+18,10,GREEN,700);
+      ctx.textAlign="left";detailText(ctx,"Label",x+12,y+18,12,GREEN,600);
+      ctx.textAlign="center";detailText(ctx,"Value",valueCenter,y+18,12,GREEN,600);
       let rowY=y+headerHeight;
       for(const [index,item] of row.dimensionTable.entries()){
         ctx.fillStyle=index%2===0?"#fafbf7":"#f1f4ec";
         ctx.fillRect(x,rowY,w,item.height);
-        ctx.textAlign="left";detailText(ctx,item.name,x+12,rowY+19,12,INK,400);
-        ctx.textAlign="right";
-        item.values.forEach((value,j)=>detailText(ctx,value,right,rowY+19+j*16,12,GREEN,700));
+        ctx.textAlign="left";detailText(ctx,item.name,x+12,rowY+item.height/2+4,12,INK,400);
+        ctx.textAlign="center";
+        const valueY=rowY+item.height/2+4-(item.values.length-1)*8;
+        item.values.forEach((value,j)=>detailText(ctx,value,valueCenter,valueY+j*16,12,GREEN,600));
         ctx.fillStyle=RULE;ctx.fillRect(x,rowY,w,.65);
         rowY+=item.height;
       }
@@ -202,7 +203,7 @@ function drawRows(ctx:CanvasRenderingContext2D,rows:DetailRow[],top:number,x=40)
       ctx.strokeStyle=RULE;ctx.lineWidth=.65;ctx.strokeRect(x,y,w,tableHeight);
       ctx.textAlign="left";
     }else if(row.heading){
-      editorialText(ctx,row.value,x,start+row.size,row.size,row.color,row.weight);
+      detailText(ctx,row.value,x,start+row.size,row.size,row.color,row.weight);
     }else{
       if(row.bullet){ctx.fillStyle=GREEN;ctx.beginPath();ctx.arc(x+3,start+row.size-4,1.8,0,Math.PI*2);ctx.fill();}
       detailText(ctx,row.value,x+(row.indent??0),start+row.size,row.size,row.color,row.weight);
