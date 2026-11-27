@@ -1990,7 +1990,7 @@
 /* Phone product identity: price directly below availability, matching desktop. */
 @media (max-width: 650px) {
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy {
-    grid-template-columns: minmax(0,1fr) minmax(0,42%) !important;
+    grid-template-columns: minmax(0,1fr) clamp(108px,32%,144px) !important;
     grid-template-rows: auto auto auto auto auto;
     column-gap: 12px;
     row-gap: 0;
