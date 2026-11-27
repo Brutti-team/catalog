@@ -94,7 +94,7 @@ export default function CustomerPhotoZoom({images,productName,initialIndex,onClo
     gesture.current=null;
   };
   return <dialog ref={modal} className="customer-photo-zoom" aria-label={productName+" photo viewer"}
-    style={{width:`min(920px, calc(100vw - 32px), calc((100dvh - 64px) * ${ratio}))`}}
+    style={{width:`min(920px, calc(100vw - 32px), calc((100dvh - 64px) * ${ratio}))`, "--customer-photo-ratio":ratio} as CSSProperties}
     onClick={event=>{if(event.target===event.currentTarget)onClose();}}
     onCancel={event=>{event.preventDefault();onClose();}}
     onKeyDown={event=>{
