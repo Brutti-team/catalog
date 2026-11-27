@@ -961,3 +961,45 @@
 @media(max-width:380px){
   .catalog-pending-actions{grid-column:1/-1;grid-row:4;justify-content:flex-start;max-width:none}
 }
+
+/* Invitation dialog only — glass, compact document flow and hidden scroll rail. */
+.admin-app .modal.catalog-user-invite-dialog {
+ --iv-field:rgba(255,255,255,.76);--iv-ink:#203f32;--iv-muted:#536b60;--iv-line:rgba(78,110,92,.18);--iv-hover:#e7efe8;
+ position:fixed!important;inset:0!important;margin:auto!important;box-sizing:border-box!important;
+ width:min(480px,calc(100vw - 28px))!important;max-width:calc(100vw - 28px)!important;height:fit-content!important;max-height:calc(100dvh - 28px)!important;
+ padding:0!important;overflow-x:hidden!important;overflow-y:auto!important;scrollbar-width:none!important;-ms-overflow-style:none;
+ background:linear-gradient(145deg,rgba(255,255,251,.96),rgba(235,242,236,.92))!important;border:1px solid rgba(255,255,255,.74)!important;border-radius:22px!important;
+ backdrop-filter:blur(22px) saturate(125%);-webkit-backdrop-filter:blur(22px) saturate(125%);box-shadow:0 22px 70px rgba(19,40,30,.24),inset 0 1px 0 rgba(255,255,255,.8)!important;
+ color:var(--iv-ink)!important;font:400 13px/1.4 system-ui,sans-serif!important;
+}
+.admin-app .modal.catalog-user-invite-dialog[open]{display:block!important}
+.admin-app .modal.catalog-user-invite-dialog::-webkit-scrollbar{display:none;width:0;height:0}
+.admin-app .modal.catalog-user-invite-dialog::backdrop{background:rgba(14,32,25,.43)!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.admin-app .modal.catalog-user-invite-dialog .modal-heading{position:relative!important;inset:auto!important;transform:none!important;z-index:auto!important;display:flex!important;align-items:flex-start!important;justify-content:space-between!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;box-sizing:border-box;margin:0!important;padding:17px 20px 13px!important;gap:12px!important;background:transparent!important;border-bottom:1px solid var(--iv-line)!important}
+.admin-app .modal.catalog-user-invite-dialog .modal-heading>div{position:static!important;flex:1;min-width:0}
+.admin-app .modal.catalog-user-invite-dialog .modal-heading .eyebrow{display:block!important;margin:0 0 5px!important;font:650 9px/1.4 system-ui,sans-serif!important;letter-spacing:.12em}
+.admin-app .modal.catalog-user-invite-dialog .modal-heading h2{margin:0!important;font:650 21px/1.25 system-ui,sans-serif!important;letter-spacing:-.04em}
+.admin-app .modal.catalog-user-invite-dialog .modal-description{margin:5px 0 0!important;font:400 12px/1.45 system-ui,sans-serif!important;color:var(--iv-muted)!important}
+.admin-app .modal.catalog-user-invite-dialog .modal-heading .icon-button{position:static!important;inset:auto!important;transform:none!important;flex:0 0 32px;width:32px;height:32px;display:grid;place-items:center;border-radius:11px;background:var(--iv-field)!important;border:1px solid var(--iv-line)!important;color:var(--iv-ink)!important}
+.admin-app .modal.catalog-user-invite-dialog .catalog-user-invite-form{position:static!important;display:flex!important;flex-direction:column!important;gap:7px!important;height:auto!important;max-height:none!important;overflow:visible!important;margin:0!important;padding:14px 20px 19px!important;transform:none!important}
+.admin-app .modal.catalog-user-invite-dialog .catalog-user-invite-form>label{position:static!important;margin:4px 0 0!important;font:600 12px/1.3 system-ui,sans-serif!important;color:var(--iv-ink)!important}
+.admin-app .modal.catalog-user-invite-dialog .catalog-user-invite-form>input,.admin-app .modal.catalog-user-invite-dialog .catalog-invite-email-wrap{height:42px!important;min-height:42px!important;border-radius:11px!important;border:1px solid var(--iv-line)!important;background:var(--iv-field)!important;color:var(--iv-ink)!important;font:400 13px/1.4 system-ui,sans-serif!important}
+.admin-app .modal.catalog-user-invite-dialog .catalog-invite-email-wrap>input{background:transparent!important;color:var(--iv-ink)!important;min-height:0!important}
+.catalog-invite-role-cards{border:0!important;margin:0!important;padding:0!important;min-width:0;display:grid;gap:5px}
+.catalog-invite-sr-only,.catalog-invite-role-card>input{position:absolute!important;width:1px!important;height:1px!important;min-height:0!important;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.admin-app .modal.catalog-user-invite-dialog .catalog-invite-role-card{position:relative!important;display:flex!important;align-items:center;gap:10px;margin:0!important;padding:7px 10px!important;min-height:45px;box-sizing:border-box;border:1px solid var(--iv-line);border-radius:11px;background:var(--iv-field);color:var(--iv-ink);cursor:pointer;transition:background .15s,border-color .15s}
+.admin-app .modal.catalog-user-invite-dialog .catalog-invite-role-card:hover,.admin-app .modal.catalog-user-invite-dialog .catalog-invite-role-card.is-selected{background:var(--iv-hover);border-color:#719782}
+.admin-app .modal.catalog-user-invite-dialog .catalog-invite-role-card:focus-within{outline:2px solid #719782;outline-offset:2px}
+.admin-app .modal.catalog-user-invite-dialog .catalog-invite-role-card .catalog-invite-role-icon{width:30px;height:30px;flex-basis:30px}
+.admin-app .modal.catalog-user-invite-dialog .catalog-invite-role-card .catalog-invite-role-copy{gap:1px;flex:1}
+.catalog-invite-radio-mark{width:19px;height:19px;flex:0 0 19px;display:grid;place-items:center;border:1px solid var(--iv-line);border-radius:50%;color:#fff}
+.catalog-invite-role-card.is-selected .catalog-invite-radio-mark{background:#315c47;border-color:#315c47}
+.catalog-invite-role-cards[disabled]{opacity:.65;pointer-events:none}
+.admin-app .modal.catalog-user-invite-dialog .catalog-user-invite-note{margin:4px 0 0!important;padding:8px 10px!important;background:var(--iv-field)!important;border:1px solid var(--iv-line)!important;color:var(--iv-muted)!important;font:400 11px/1.4 system-ui,sans-serif!important;border-radius:10px}
+.admin-app .modal.catalog-user-invite-dialog .catalog-user-invite-actions{position:static!important;margin-top:5px!important;gap:8px!important;display:flex!important;justify-content:flex-end!important}
+.admin-app .modal.catalog-user-invite-dialog .catalog-user-invite-actions>.button{min-height:39px!important;border-radius:10px!important;font:600 12px/1.3 system-ui,sans-serif!important}
+.admin-app .modal.catalog-user-invite-dialog .catalog-user-invite-actions>.button.primary{background:#285344!important;color:white!important;border:1px solid #285344!important}
+.catalog-own-role{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:10px;background:var(--ap-violet-bg,#eee7f6);color:var(--ap-violet-ink,#6d568d);font-weight:600;white-space:normal;flex-wrap:wrap}
+.catalog-own-role small,.catalog-own-role-note{font-size:11px;color:var(--ap-muted,#63776a);font-weight:500}
+.admin-app[data-theme="dark"] .modal.catalog-user-invite-dialog{--iv-field:rgba(53,62,57,.9);--iv-ink:#edf4ef;--iv-muted:#bac9bf;--iv-line:rgba(205,225,211,.2);--iv-hover:#34493d;background:linear-gradient(145deg,rgba(38,44,41,.97),rgba(26,32,29,.95))!important;border-color:var(--iv-line)!important}
+@media(max-width:480px){.admin-app .modal.catalog-user-invite-dialog .modal-heading{padding:14px 16px 11px!important}.admin-app .modal.catalog-user-invite-dialog .catalog-user-invite-form{padding:12px 16px 15px!important}.admin-app .modal.catalog-user-invite-dialog .catalog-user-invite-actions>.button{flex:1}}

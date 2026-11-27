@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
-import { AlertCircle, CalendarDays, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight, UserPlus, Send, Mail, ChevronDown, Check, ListFilter, Pencil, Eye, EyeOff, Archive, type LucideIcon } from "lucide-react";
+import { AlertCircle, CalendarDays, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, LockKeyhole, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight, UserPlus, Send, Mail, ChevronDown, Check, ListFilter, Pencil, Eye, EyeOff, Archive, type LucideIcon } from "lucide-react";
 import {
   catalogActivityMYTRange, getAccountSummary, initials, listCatalogActivity, listCatalogStaff,
   roleLabel, updateOwnDisplayName, updateStaffRole, inviteCatalogStaff, listPendingCatalogStaff, editPendingCatalogStaff, deletePendingCatalogStaff,
@@ -27,51 +27,17 @@ const inviteAccessOptions = [
   { value: "super_admin", title: "Super Admin", detail: "Manage access", Icon: ShieldCheck, tone: "violet" },
 ] as const;
 
-function InviteRolePicker({ value, onChange, disabled }: { value: StaffRole; onChange: (role: StaffRole) => void; disabled: boolean }) {
-  const [open, setOpen] = useState(false);
-  const root = useRef<HTMLDivElement>(null);
-  const trigger = useRef<HTMLButtonElement>(null);
-  const current = inviteAccessOptions.find(role => role.value === value) ?? inviteAccessOptions[0];
-  useEffect(() => {
-    if (!open) return;
-    root.current?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus({ preventScroll: true });
-    const outside = (e: PointerEvent) => {
-      if (e.target instanceof Node && !root.current?.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener("pointerdown", outside);
-    return () => document.removeEventListener("pointerdown", outside);
-  }, [open]);
-  useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
-  const close = () => { setOpen(false); trigger.current?.focus({ preventScroll: true }); };
-  return <div ref={root} className="catalog-invite-role-picker"
-    onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false); }}
-    onKeyDown={e => {
-      if (e.key === "Escape" && open) { e.preventDefault(); e.stopPropagation(); close(); }
-      if (open && ["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) {
-        e.preventDefault();
-        const items = Array.from(root.current?.querySelectorAll<HTMLButtonElement>(".catalog-invite-role-option") ?? []);
-        if (!items.length) return;
-        const i = items.indexOf(document.activeElement as HTMLButtonElement);
-        items[e.key === "Home" ? 0 : e.key === "End" ? items.length - 1 : (i + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length]?.focus();
-      }
-    }}>
-    <button id="catalog-invite-role" ref={trigger} type="button" disabled={disabled} className="catalog-invite-role-trigger"
-      aria-label={"Catalog access: " + current.title + ", " + current.detail} aria-expanded={open}
-      aria-controls={open ? "catalog-invite-role-options" : undefined} onClick={() => open ? close() : setOpen(true)}>
-      <span className={"catalog-invite-role-icon is-" + current.tone}><current.Icon size={17} aria-hidden="true"/></span>
-      <span className="catalog-invite-role-copy"><strong>{current.title}</strong><small>{current.detail}</small></span>
-      <ChevronDown size={16} className={open ? "is-open" : ""} aria-hidden="true"/>
-    </button>
-    {open && <div id="catalog-invite-role-options" className="catalog-invite-role-menu" role="group" aria-label="Choose catalog access">
-      <small className="catalog-invite-role-menu-label">Access level</small>
-      {inviteAccessOptions.map(role => <button key={role.value} type="button" className={"catalog-invite-role-option" + (role.value === value ? " is-selected" : "")}
-        aria-pressed={role.value === value} disabled={disabled} onClick={() => { onChange(role.value); close(); }}>
-        <span className={"catalog-invite-role-icon is-" + role.tone}><role.Icon size={17} aria-hidden="true"/></span>
-        <span className="catalog-invite-role-copy"><strong>{role.title}</strong><small>{role.detail}</small></span>
-        {role.value === value && <Check size={16} aria-hidden="true"/>}
-      </button>)}
-    </div>}
-  </div>;
+function InviteRolePicker({ value, onChange, disabled, pendingEdit = false }: { value: StaffRole; onChange: (role: StaffRole) => void; disabled: boolean; pendingEdit?: boolean }) {
+  const options = inviteAccessOptions.filter(role => !pendingEdit || role.value !== "super_admin");
+  return <fieldset id="catalog-invite-role" className="catalog-invite-role-cards" disabled={disabled}>
+    <legend className="catalog-invite-sr-only">Catalog access</legend>
+    {options.map(role => <label key={role.value} className={"catalog-invite-role-card" + (role.value === value ? " is-selected" : "")}>
+      <input type="radio" name="catalog-invite-access" value={role.value} checked={role.value === value} onChange={() => onChange(role.value)} />
+      <span className={"catalog-invite-role-icon is-" + role.tone}><role.Icon size={17} aria-hidden="true"/></span>
+      <span className="catalog-invite-role-copy"><strong>{role.title}</strong><small>{role.detail}</small></span>
+      <span className="catalog-invite-radio-mark" aria-hidden="true">{role.value === value && <Check size={13}/>}</span>
+    </label>)}
+  </fieldset>;
 }
 
 function ActivityStaffPicker({ value, options, onChange }: {
@@ -471,7 +437,9 @@ export default function AccountCenter({
                       </small>
                     )}</div></div></td>
                     <td><div className="ap-last-login"><Clock3 size={14} aria-hidden="true"/>{dateText(user.last_sign_in_at)}</div></td>
-                    <td>{account.role === "super_admin" ? (
+                    <td>{account.id === user.user_id ? (
+                      <span className="catalog-own-role" title="Your own role is protected from changes"><LockKeyhole size={14} aria-hidden="true"/>{roleLabel(user.role)}<small>Protected</small></span>
+                    ) : account.role === "super_admin" ? (
                       <div className="ap-role-field" data-role={draft}><ShieldCheck size={14} aria-hidden="true"/><select aria-label={`Role for ${user.email}`} value={draft}
                         disabled={account.id === user.user_id || busyId !== null}
                         onChange={e => setDraftRoles(prev => ({ ...prev, [user.user_id]: e.target.value }))}>
@@ -481,9 +449,9 @@ export default function AccountCenter({
                       <span className="catalog-access-role-readonly"><ShieldCheck size={13} aria-hidden="true"/>{roleLabel(user.role)}</span>
                     )}</td>
                     {account.role === "super_admin" && (
-                      <td><button type="button" className="button secondary"
-                        disabled={account.id === user.user_id || busyId !== null || draft === (user.role || "none")}
-                        onClick={() => void saveMember(user)}>Save</button></td>
+                      <td>{account.id === user.user_id ? <span className="catalog-own-role-note">Your account</span> : <button type="button" className="button secondary"
+                        disabled={busyId !== null || draft === (user.role || "none")}
+                        onClick={() => void saveMember(user)}>Save</button>}</td>
                     )}
                   </tr>;
                 })}</tbody>
@@ -657,8 +625,8 @@ export default function AccountCenter({
                 value={inviteEmail} onChange={e => setInviteEmail(e.target.value)}
                 disabled={busyId === "invite"}/>
             </div>
-            <label htmlFor="catalog-invite-role">Catalog access <span>*</span></label>
-            {editingCandidate ? <select id="catalog-invite-role" value={inviteRole} disabled={busyId === "invite"} onChange={e => setInviteRole(e.target.value as StaffRole)}><option value="admin">Admin</option><option value="editor">Editor</option></select> : <InviteRolePicker value={inviteRole} onChange={setInviteRole} disabled={busyId === "invite"}/>}
+            <label id="catalog-invite-role-label">Catalog access <span>*</span></label>
+            <InviteRolePicker value={inviteRole} onChange={setInviteRole} disabled={busyId === "invite"} pendingEdit={editingCandidate}/>
             <p className="catalog-user-invite-note">
               {editingCandidate ? "Changes only affect this pending invitation. No email will be sent." : "This sends a separate Catalog invitation. Brutti OS login is not linked yet. Only grant access to the intended team member; no password is shared."}
             </p>
