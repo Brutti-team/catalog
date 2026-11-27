@@ -147,7 +147,6 @@ export default function PublicCatalog({
   loading,
   error,
   onRetry,
-  onAdmin,
   previewProduct,
 }: Props) {
   const [routeProductId, setProductId] = useState(currentProductId);
@@ -464,9 +463,6 @@ export default function PublicCatalog({
         </nav>}
         {!previewProduct && <div className="pub-header-actions">
           <CustomerFavourites products={published} categories={categories} loading={loading} error={error} onOpen={() => setMobileMenu(false)} />
-          <button className="pub-admin-link" onClick={onAdmin}>
-            Staff portal <ArrowUpRight size={15} />
-          </button>
           <button
             className="pub-menu-toggle"
             aria-expanded={mobileMenu}
