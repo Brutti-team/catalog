@@ -2702,3 +2702,20 @@
     line-height: 1.4;
   }
 }
+
+/* Mobile product cards: keep only the essential product information.
+   Full category and description remain available on the product detail page. */
+@media (max-width: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__meta .pub-catalog-tile__category,
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__summary .pub-catalog-tile__description {
+    display: none !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__meta {
+    justify-content: flex-start;
+    min-height: 0;
+    margin-bottom: 7px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__details-row {
+    gap: 9px;
+  }
+}
