@@ -174,7 +174,10 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remain
     const leftHeight=left.reduce((sum,row)=>sum+row.height,0);
     const rightHeight=right.reduce((sum,row)=>sum+row.height,0);
     const bodyLines=left.filter(row=>!row.heading).length;
-    if(bodyLines<=4&&leftHeight<=Math.min(125,rightHeight+12)){
+    const bulletCount=left.filter(row=>row.bullet).length;
+    // Side by side only for one or two genuinely short, single-line material items.
+    // Any wrapped bullet or longer list needs the full width above Dimensions.
+    if(bulletCount>0&&bulletCount<=2&&bodyLines===bulletCount&&leftHeight<=Math.min(125,rightHeight+12)){
       const gapBefore=materialsStart?10:0;
       result.push({value:"",size:12,weight:400,color:INK,height:Math.max(leftHeight,rightHeight)+gapBefore+8,gapBefore,columns:{left,right}});
     }else result.push(...stacked);
