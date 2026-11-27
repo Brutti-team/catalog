@@ -383,7 +383,7 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     const descPlain=plainMaterials(product.description||"");
     // Unified full-width editorial layout: fit every source image without cropping.
     // Two photos share the row; three have a hero plus a pair; four use a 2x2 grid.
-    const titleSize=product.name.length>70?26:32;
+    const titleSize=product.name.length>70?24:28;
     const title=lines(ctx,product.name,350,titleSize,700,true);
     const formatted=formatProductPrice(product,"public");
     const basis=formatted.startsWith("Starting from ")?"Starting from":"";
