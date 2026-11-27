@@ -1,0 +1,7 @@
+.brutti-analytics-link{font:inherit;color:inherit;border:0;background:none;text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-inline-start:12px}
+.brutti-analytics-panel{position:fixed;z-index:1500;bottom:16px;right:16px;width:min(340px,calc(100vw - 32px));box-sizing:border-box;padding:16px;border:1px solid #d9e2dc;border-radius:14px;background:#fff;color:#20392d;box-shadow:0 8px 32px #122b2526;text-align:left;font:14px/1.45 system-ui,sans-serif}
+.brutti-analytics-panel strong{font-size:15px}
+.brutti-analytics-panel p{margin:7px 0 12px;color:#40534a}
+.brutti-analytics-actions{display:flex;gap:8px}
+.brutti-analytics-actions button{flex:1;padding:9px 10px;border:1px solid #285344;border-radius:8px;background:#fff;color:#285344;cursor:pointer;font:inherit;font-weight:600}
+.brutti-analytics-actions button:last-child{background:#285344;color:#fff}

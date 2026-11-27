@@ -4,6 +4,7 @@ import type { Category, Product } from "../lib/types";
 import { selectPdfProducts, type PdfSelection } from "../lib/catalog-pdf-plan";
 import PdfCategoryDropdown from "./PdfCategoryDropdown";
 import "./catalog-pdf-download.css";
+import { trackCatalogueDownload } from "../lib/google-analytics";
 import { useFavouriteIds } from "../lib/customer-favourites";
 import { customerCatalogueFilename, downloadCustomerCatalogue, prepareCustomerCatalogue } from "../lib/download-customer-catalogue";
 
@@ -147,6 +148,7 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
         setPreview({...result,filename:customerCatalogueFilename(mode)});
       }else{
         const result=await downloadCustomerCatalogue(products,categories,mode,category,favourites,reportProgress,controller.signal);
+        trackCatalogueDownload();
         setMessage(result.missing ? "PDF created. "+result.missing+" product or category image(s) could not be loaded." : "Your catalogue PDF is ready.");
       }
     } catch(error) {

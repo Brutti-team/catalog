@@ -27,6 +27,8 @@ import { splitSpecifications, primaryFinishingRow } from "../lib/specification-g
 import { formatProductDimensions, formatSpecificationMeasurement } from "../lib/dimensions";
 import { navigateApp, productIdFromLocation, routeHref, subscribeRouteChange } from "../lib/routes";
 import { recordCatalogEvent } from "../lib/customer-analytics";
+import AnalyticsPreferences from "./AnalyticsPreferences";
+import { trackWhatsAppEnquiry } from "../lib/google-analytics";
 import { BRUTTI_WHATSAPP_NUMBER, productWhatsAppUrl } from "../lib/whatsapp-enquiry";
 import ShowroomSections from "./ShowroomSections";
 import BestSellingSection from "./BestSellingSection";
@@ -859,6 +861,7 @@ export default function PublicCatalog({
                     <a
                       className="pub-primary-button pub-enquiry-button pub-whatsapp-enquiry"
                       href={productWhatsAppUrl(product)}
+                      onClick={() => { if (!previewProduct) trackWhatsAppEnquiry(product.id); }}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Enquire about ${product.name} on WhatsApp`}
@@ -975,6 +978,7 @@ export default function PublicCatalog({
                       {!previewProduct && (
                         <a className="pub-primary-button pub-enquiry-button pub-whatsapp-enquiry pub-promise-enquiry"
                           href={productWhatsAppUrl(product)}
+                      onClick={() => { if (!previewProduct) trackWhatsAppEnquiry(product.id); }}
                           target="_blank" rel="noopener noreferrer"
                           aria-label={`Enquire about ${product.name} on WhatsApp`}>
                           <span className="pub-enquiry-label"><span className="pub-enquiry-whatsapp-mark"><SocialBrandIcon brand="whatsapp" /></span>Enquire about this piece</span> <ArrowUpRight size={16} aria-hidden="true" />
@@ -1028,7 +1032,7 @@ export default function PublicCatalog({
                 <a href="https://www.instagram.com/brutti.my?igsi=ZnU3dHVqOXRnZTJk" target="_blank" rel="noopener noreferrer" aria-label="Brutti Instagram" title="Instagram" className="pub-footer__social-link pub-footer__social-link--instagram"><SocialBrandIcon brand="instagram" /></a>
                 <a href="https://www.facebook.com/share/1EfVN5HMJm/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Brutti Facebook" title="Facebook" className="pub-footer__social-link pub-footer__social-link--facebook"><SocialBrandIcon brand="facebook" /></a>
                 <a href="https://www.threads.com/@brutti.my?igshid=NTc4MTIwNjQ2YQ==" target="_blank" rel="noopener noreferrer" aria-label="Brutti Threads" title="Threads" className="pub-footer__social-link pub-footer__social-link--threads"><SocialBrandIcon brand="threads" /></a>
-                <a href={`https://wa.me/${BRUTTI_WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" aria-label="Chat with Brutti on WhatsApp" title="WhatsApp" className="pub-footer__social-link pub-footer__social-link--whatsapp"><SocialBrandIcon brand="whatsapp" /></a>
+                <a href={`https://wa.me/${BRUTTI_WHATSAPP_NUMBER}`} onClick={() => trackWhatsAppEnquiry()} target="_blank" rel="noopener noreferrer" aria-label="Chat with Brutti on WhatsApp" title="WhatsApp" className="pub-footer__social-link pub-footer__social-link--whatsapp"><SocialBrandIcon brand="whatsapp" /></a>
               </div>
             </div>
             <div className="pub-footer__actions">
@@ -1041,7 +1045,7 @@ export default function PublicCatalog({
             </div>
           </div>
         </div>
-        <div className="pub-footer__bottom">© {new Date().getFullYear()} Brutti. Crafted in Sabah.</div>
+        <div className="pub-footer__bottom">© {new Date().getFullYear()} Brutti. Crafted in Sabah. <AnalyticsPreferences ready={!loading && !error && (productId === null || Boolean(product))} productId={productId} productName={product?.name ?? ""} /></div>
       </footer>}
     </div>
   );
