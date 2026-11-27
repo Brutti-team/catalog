@@ -237,7 +237,7 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remain
     const details=[row.kind==="measurement"?formatSpecificationMeasurement(row.value||""):row.value,row.quantity&&row.quantity>0?row.quantity+" pcs":"",row.description].filter(Boolean).join(" · ");
     const value=plainMaterials(details);
     if(!name||!value)continue;
-    const label=name.toLowerCase()===group.toLowerCase()&&row.quantity&&!clean(row.value)&&!clean(row.description)?"Quantity":name;
+    const label=name.toLowerCase()===group.toLowerCase()&&row.quantity&&!clean(row.value)&&!clean(row.description??"")?"Quantity":name;
     const labels=lines(ctx,label,136,12,600,false,true);
     const values=lines(ctx,value,374,12,400,false,true);
     const count=Math.max(labels.length,values.length);
