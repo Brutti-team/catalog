@@ -361,6 +361,12 @@ export default function AccountCenter({
   const actorName=(entry:ActivityEntry)=> (entry.actor_id && activityNames[entry.actor_id]) || (entry.actor_email ? entry.actor_email : "System");
   const actorOptions=Array.from(new Map(events.map(entry=>[actorKey(entry),actorName(entry)])).entries()).sort((a,b)=>a[1].localeCompare(b[1]));
   const visibleEvents=events.filter(entry=>selectedFilter.matches(entry)&&(activityActor==="all"||actorKey(entry)===activityActor));
+  // Keep unaccepted invitations separate from staff who have signed in.
+  const invitedMembers = members.filter(user => user.user_id !== account?.id && !user.last_sign_in_at && user.role !== null);
+  const activeMembers = members.filter(user => !invitedMembers.some(invited => invited.user_id === user.user_id));
+  const invitedEmails = new Set(invitedMembers.map(user => user.email.trim().toLowerCase()));
+  const waitingCandidates = pendingStaff.filter(candidate => !candidate.email || !invitedEmails.has(candidate.email.trim().toLowerCase()));
+  const pendingCount = invitedMembers.length + waitingCandidates.length;
   return (
     <section className={`account-center account-center--${view}`}>
       <div className="account-heading">
@@ -428,11 +434,11 @@ export default function AccountCenter({
               <div className="account-table-title">
                 <div className="ap-section-icon"><UsersRound size={19} aria-hidden="true"/></div>
                 <div className="ap-section-copy"><h2 id="catalog-users-heading">Catalog users</h2><p>Admin can view permissions. Super Admin can manage access.</p></div>
-                <span aria-label={members.length + " catalog users"}>{members.length}</span>
+                <span aria-label={activeMembers.length + " catalog users"}>{activeMembers.length}</span>
               </div>
               <div className="account-scroll"><table className="account-table">
                 <thead><tr><th>Team member</th><th>Last login</th><th>Access role</th>{account.role === "super_admin" && <th>Action</th>}</tr></thead>
-                <tbody>{members.map(user => {
+                <tbody>{activeMembers.map(user => {
                   const draft = draftRoles[user.user_id] ?? user.role ?? "none";
                   return <tr key={user.user_id} data-role={user.role || "none"}>
                     <td><div className="ap-person"><span className="ap-avatar" aria-hidden="true">{initials(user.display_name || user.email.split("@")[0])}</span><div className="ap-person-copy"><strong>{user.display_name || user.email.split("@")[0]}</strong><span className="ap-email">{user.email}</span>
@@ -462,21 +468,40 @@ export default function AccountCenter({
                   </tr>;
                 })}</tbody>
               </table></div>
-              {!members.length && <p className="account-muted">No invited users found.</p>}
+              {!activeMembers.length && <p className="account-muted">No active catalog users found.</p>}
               </section>
-              {pendingStaff.length > 0 && (
+              {pendingCount > 0 && (
                 <section className="catalog-pending-staff ap-panel" aria-labelledby="catalog-pending-staff-title">
                   <header className="catalog-pending-staff-heading">
                     <span className="ap-section-icon is-pending"><Mail size={19} aria-hidden="true"/></span>
                     <div className="ap-section-copy">
                       <h2 id="catalog-pending-staff-title">Pending invitations</h2>
-                      <p>Brutti OS staff awaiting access. Staff can sign in after invitation and verification. OS single sign-on is not connected.</p>
+                      <p>Staff awaiting an invitation or their first Catalog sign-in. Catalog access is separate from Brutti OS.</p>
                     </div>
-                    <span className="catalog-pending-staff-count">{pendingStaff.length} pending</span>
+                    <span className="catalog-pending-staff-count">{pendingCount} pending</span>
                   </header>
                   <div className="catalog-pending-staff-list">
                     <div className={"ap-pending-columns" + (account.role === "super_admin" ? "" : " is-readonly")} aria-hidden="true"><span>Team member</span><span>Access role</span><span>Status</span>{account.role === "super_admin" && <span>Action</span>}</div>
-                    {pendingStaff.map(candidate => (
+                    {invitedMembers.map(user => {
+                      const draft = draftRoles[user.user_id] ?? user.role ?? "none";
+                      return <div className="catalog-pending-staff-item catalog-pending-invited-member" key={user.user_id} data-role={user.role || "none"}>
+                        <div className="catalog-pending-staff-identity">
+                          <span className="ap-avatar" aria-hidden="true">{initials(user.display_name || user.email.split("@")[0])}</span>
+                          <div className="ap-person-copy"><strong>{user.display_name || user.email.split("@")[0]}</strong><small className="ap-email">{user.email}</small></div>
+                        </div>
+                        {account.role === "super_admin" ? (
+                          <div className="ap-role-field ap-pending-invited-role" data-role={draft}><ShieldCheck size={14} aria-hidden="true"/><select aria-label={`Role for ${user.email}`} value={draft}
+                            disabled={busyId !== null} onChange={e => setDraftRoles(prev => ({ ...prev, [user.user_id]: e.target.value }))}>
+                            {roleOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.title}</option>)}
+                          </select></div>
+                        ) : <span className="catalog-pending-staff-role"><ShieldCheck size={13} aria-hidden="true"/>{roleLabel(user.role)}</span>}
+                        <span className="catalog-pending-staff-state is-invited" title="Invitation sent · awaiting first login">Invited · awaiting login</span>
+                        {account.role === "super_admin" && <div className="catalog-pending-actions">
+                          <button type="button" className="button secondary" disabled={busyId !== null || draft === (user.role || "none")} onClick={() => void saveMember(user)}>Save</button>
+                        </div>}
+                      </div>;
+                    })}
+                    {waitingCandidates.map(candidate => (
                       <div className="catalog-pending-staff-item" key={candidate.candidate_id} data-role={candidate.proposed_role}>
                         <div className="catalog-pending-staff-identity">
                           <span className="ap-avatar" aria-hidden="true">{initials(candidate.display_name)}</span>

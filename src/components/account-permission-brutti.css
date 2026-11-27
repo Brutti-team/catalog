@@ -1027,3 +1027,16 @@
 }
 .admin-app[data-theme="dark"] .account-center.account-center--users .ap-directory .account-table td .catalog-own-role {background:rgba(173,148,212,.12)!important;border-color:rgba(173,148,212,.22)!important;}
 @media(max-width:380px){.admin-app .account-center.account-center--users .ap-directory .account-table td .catalog-own-role{gap:4px!important;padding:4px 6px!important;}}
+
+/* Sent invitations remain in the pending directory until the first sign-in. */
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-state.is-invited {
+  background:var(--ap-role)!important;
+  color:var(--ap-role-ink)!important;
+  white-space:normal!important;
+  justify-self:start;
+}
+.admin-app .account-center.account-center--users .ap-directory .ap-pending-invited-role {min-width:0;width:100%;}
+.admin-app .account-center.account-center--users .ap-directory .ap-pending-invited-role select {width:100%;min-width:0;}
+@media(max-width:700px) {
+  .admin-app .account-center.account-center--users .ap-directory .ap-pending-invited-role {grid-column:1;grid-row:2;justify-self:start;}
+}
