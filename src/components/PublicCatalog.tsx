@@ -201,17 +201,24 @@ export default function PublicCatalog({
     };
     const onMotionChange = () => { if (motion.matches) stop(); };
     const start = () => {
-      const distance = Math.min(105, rail.scrollWidth - rail.clientWidth);
+      const distance = Math.min(52, rail.scrollWidth - rail.clientWidth);
       if (categoryHintUsed.current || distance < 12 || rail.scrollLeft > 2 || motion.matches) return;
       categoryHintUsed.current = true;
       observer?.disconnect();
       const started = performance.now();
       const animate = (now: number) => {
         if (document.hidden || motion.matches) return;
-        const progress = Math.max(0, Math.min(1, (now - started - 350) / 4000));
-        const offset = distance * (1 - Math.cos(progress * Math.PI * 2)) / 2;
-        rail.scrollTo({ left: offset, behavior: "instant" });
-        if (progress < 1) frame = window.requestAnimationFrame(animate);
+        const elapsed = Math.max(0, now - started - 700);
+        const ease = (t: number) => (1 - Math.cos(Math.PI * Math.max(0, Math.min(1, t)))) / 2;
+        // Ease out gently, let the next category sit briefly, then ease back.
+        const offset = elapsed < 2600
+          ? distance * ease(elapsed / 2600)
+          : elapsed < 3900
+            ? distance
+            : distance * (1 - ease((elapsed - 3900) / 2800));
+        const pixel = Math.round(offset);
+        if (Math.abs(rail.scrollLeft - pixel) >= 1) rail.scrollTo({ left: pixel, behavior: "instant" });
+        if (elapsed < 6700) frame = window.requestAnimationFrame(animate);
       };
       frame = window.requestAnimationFrame(animate);
     };
