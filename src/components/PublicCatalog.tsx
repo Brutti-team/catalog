@@ -201,24 +201,24 @@ export default function PublicCatalog({
     };
     const onMotionChange = () => { if (motion.matches) stop(); };
     const start = () => {
-      const distance = Math.min(52, rail.scrollWidth - rail.clientWidth);
+      const distance = Math.min(60, rail.scrollWidth - rail.clientWidth);
       if (categoryHintUsed.current || distance < 12 || rail.scrollLeft > 2 || motion.matches) return;
       categoryHintUsed.current = true;
       observer?.disconnect();
       const started = performance.now();
       const animate = (now: number) => {
         if (document.hidden || motion.matches) return;
-        const elapsed = Math.max(0, now - started - 700);
+        const elapsed = Math.max(0, now - started - 400);
         const ease = (t: number) => (1 - Math.cos(Math.PI * Math.max(0, Math.min(1, t)))) / 2;
-        // Ease out gently, let the next category sit briefly, then ease back.
-        const offset = elapsed < 2600
-          ? distance * ease(elapsed / 2600)
-          : elapsed < 3900
+        // A compact, balanced swipe hint with a brief pause at the revealed edge.
+        const offset = elapsed < 1450
+          ? distance * ease(elapsed / 1450)
+          : elapsed < 1900
             ? distance
-            : distance * (1 - ease((elapsed - 3900) / 2800));
+            : distance * (1 - ease((elapsed - 1900) / 1600));
         const pixel = Math.round(offset);
         if (Math.abs(rail.scrollLeft - pixel) >= 1) rail.scrollTo({ left: pixel, behavior: "instant" });
-        if (elapsed < 6700) frame = window.requestAnimationFrame(animate);
+        if (elapsed < 3500) frame = window.requestAnimationFrame(animate);
       };
       frame = window.requestAnimationFrame(animate);
     };
