@@ -2129,3 +2129,10 @@
     outline-offset: 3px;
   }
 }
+
+/* Hide the redundant Brutti signature on phone product details only. */
+@media (max-width: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-promise {
+    display: none !important;
+  }
+}
