@@ -9,9 +9,10 @@ const PW=620, PH=877, SCALE=2;
 const GREEN="#174635", INK="#243b31", MUTED="#64746b", PAPER="#faf7f1", BRONZE="#896a4d", RULE="#d4ded3";
 const font=(size:number, weight=400)=> `${weight} ${size}px Inter, "Segoe UI", Arial, sans-serif`;
 const editorialFont=(size:number,weight=700)=> `${weight} ${size}px Georgia, "Times New Roman", serif`;
+const detailFont=(size:number,weight=400)=> `${weight} ${size}px Arial, Helvetica, sans-serif`;
 const clean=(value:string)=>String(value??"").replace(/\r/g,"").trim();
-function lines(ctx:CanvasRenderingContext2D, value:string, width:number, size:number, weight=400,serif=false):string[] {
-  ctx.font=serif?editorialFont(size,weight):font(size,weight);
+function lines(ctx:CanvasRenderingContext2D, value:string, width:number, size:number, weight=400,serif=false,detail=false):string[] {
+  ctx.font=serif?editorialFont(size,weight):detail?detailFont(size,weight):font(size,weight);
   const result:string[]=[];
   for(const paragraph of clean(value).split("\n")) {
     let line="";
@@ -34,6 +35,9 @@ function lines(ctx:CanvasRenderingContext2D, value:string, width:number, size:nu
 }
 function text(ctx:CanvasRenderingContext2D, value:string, x:number,y:number,size:number,color=INK,weight=400) {
   ctx.font=font(size,weight);ctx.fillStyle=color;ctx.fillText(value,x,y);
+}
+function detailText(ctx:CanvasRenderingContext2D,value:string,x:number,y:number,size:number,color=INK,weight=400){
+  ctx.font=detailFont(size,weight);ctx.fillStyle=color;ctx.fillText(value,x,y);
 }
 function editorialText(ctx:CanvasRenderingContext2D,value:string,x:number,y:number,size:number,color=GREEN,weight=700){
   ctx.font=editorialFont(size,weight);ctx.fillStyle=color;ctx.fillText(value,x,y);
@@ -118,23 +122,24 @@ function plainMaterials(value:string) {
   doc.querySelectorAll("p,div").forEach(el=>el.append("\n"));
   return (doc.body.textContent||"").replace(/\*\*|__|==/g,"").replace(/\*([^*\n]+)\*/g,"$1").trim();
 }
-type DetailRow={value:string;size:number;weight:number;color:string;height:number;heading?:boolean;indent?:number;dimension?:{label:string;name:string;values:string[]}};
+type DetailRow={value:string;size:number;weight:number;color:string;height:number;heading?:boolean;indent?:number;bullet?:boolean;gapBefore?:number;dimension?:{label:string;name:string;values:string[]}};
 function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remainingDescription:string[]):DetailRow[] {
   const result:DetailRow[]=[];
   const add=(label:string,value:string)=>{
     if(!clean(value))return;
     if(label) {
-      const headings=lines(ctx,label.toUpperCase(),width,10,700);
-      headings.forEach(line=>result.push({value:line,size:10,weight:700,color:GREEN,height:21,heading:true}));
+      const heading=label==="Materials & finishing"?"Materials & Finishing":label;
+      const headings=lines(ctx,heading,width,15,700,true);
+      headings.forEach(line=>result.push({value:line,size:15,weight:700,color:GREEN,height:24,heading:true}));
     }
     const paragraphs=clean(value).split("\n").map(line=>line.trim()).filter(Boolean);
     paragraphs.forEach((paragraph,paragraphIndex)=>{
       const bullet=paragraph.match(/^(?:[•–-])\s+(.+)$/);
       const isBullet=Boolean(bullet)||label==="Materials & finishing";
-      const wrapped=lines(ctx,bullet?bullet[1]:paragraph,isBullet?width-16:width,12,400);
+      const wrapped=lines(ctx,bullet?bullet[1]:paragraph,isBullet?width-16:width,12,400,false,true);
       wrapped.forEach((line,i)=>result.push({
-        value:isBullet&&i===0?"–  "+line:line,size:12,weight:400,color:INK,
-        indent:isBullet&&i>0?16:0,
+        value:line,size:12,weight:400,color:INK,
+        bullet:isBullet&&i===0,indent:isBullet?16:0,
         height:17+(i===wrapped.length-1?(paragraphIndex===paragraphs.length-1?9:5):0)
       }));
     });
@@ -144,19 +149,20 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remain
   // Keep materials first, then dimensions, with the same pagination as other details.
   const keys=OVERALL_DIMENSION_KEYS.filter(key=>Number.isFinite(p[key])&&p[key]>0);
   if(keys.length){
-    result.push({value:"DIMENSIONS",size:10,weight:700,color:GREEN,height:22,heading:true});
+    const gapBefore=result.length?12:0;
+    result.push({value:"Dimensions",size:15,weight:700,color:GREEN,height:25+gapBefore,heading:true,gapBefore});
     for(const key of keys){
       const label=key[0].toUpperCase();
       const name=key==="width"?"Width":key==="depth"?"Depth":"Height";
       const value=formatProductDimensions({width:0,depth:0,height:0,dimensionUnits:p.dimensionUnits,[key]:p[key]}).replace(/ [WDH]$/,"");
-      const values=lines(ctx,value,175,12,600);
+      const values=lines(ctx,value,175,12,600,false,true);
       result.push({value:"",size:12,weight:600,color:GREEN,height:Math.max(27,values.length*16+10),dimension:{label,name,values}});
     }
   }
   for(const row of p.specifications??[]) {
     if(row.kind==="section") {
       if(clean(row.name)) {
-        for(const line of lines(ctx,row.name.toUpperCase(),width,12,600))result.push({value:line,size:12,weight:600,color:GREEN,height:22,heading:true});
+        for(const line of lines(ctx,row.name,width,15,700,true))result.push({value:line,size:15,weight:700,color:GREEN,height:24,heading:true});
       }
       continue;
     }
@@ -175,15 +181,19 @@ function takeRows(rows:DetailRow[],start:number,capacity:number) {
 function drawRows(ctx:CanvasRenderingContext2D,rows:DetailRow[],top:number,x=40) {
   let y=top;
   for(const row of rows){
+    const start=y+(row.gapBefore??0);
     if(row.dimension){
       const {label,name,values}=row.dimension;
       panel(ctx,x,y+2,22,22,"#e7ece1",7);
-      ctx.textAlign="center";text(ctx,label,x+11,y+17,10,GREEN,700);
-      ctx.textAlign="left";text(ctx,name,x+31,y+17,11,MUTED,500);
-      ctx.textAlign="right";
-      values.forEach((value,j)=>text(ctx,value,x+275,y+17+j*16,12,GREEN,600));
-      ctx.textAlign="left";
-    }else text(ctx,row.value,x+(row.indent??0),y+row.size,row.size,row.color,row.weight);
+      ctx.textAlign="center";detailText(ctx,label,x+11,y+17,10,GREEN,700);
+      ctx.textAlign="left";detailText(ctx,name,x+31,y+17,12,MUTED,400);
+      values.forEach((value,j)=>detailText(ctx,value,x+112,y+17+j*16,12,GREEN,700));
+    }else if(row.heading){
+      editorialText(ctx,row.value,x,start+row.size,row.size,row.color,row.weight);
+    }else{
+      if(row.bullet){ctx.fillStyle=GREEN;ctx.beginPath();ctx.arc(x+3,start+row.size-4,1.8,0,Math.PI*2);ctx.fill();}
+      detailText(ctx,row.value,x+(row.indent??0),start+row.size,row.size,row.color,row.weight);
+    }
     y+=row.height;
   }
 }
