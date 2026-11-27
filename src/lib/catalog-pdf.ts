@@ -6,11 +6,12 @@ import { IMPACT_FRONT, IMPACT_BACK, planPdfSections, type PdfSelection } from ".
 import { makeCatalogPdf, type PdfRasterPage, type PdfLink } from "./catalog-pdf-file";
 
 const PW=620, PH=877, SCALE=2;
-const GREEN="#1f5a43", INK="#243b31", MUTED="#64746b", PAPER="#faf9f6", BRONZE="#896a4d", RULE="#dce3d9";
+const GREEN="#174635", INK="#243b31", MUTED="#64746b", PAPER="#faf7f1", BRONZE="#896a4d", RULE="#d4ded3";
 const font=(size:number, weight=400)=> `${weight} ${size}px Inter, "Segoe UI", Arial, sans-serif`;
+const editorialFont=(size:number,weight=700)=> `${weight} ${size}px Georgia, "Times New Roman", serif`;
 const clean=(value:string)=>String(value??"").replace(/\r/g,"").trim();
-function lines(ctx:CanvasRenderingContext2D, value:string, width:number, size:number, weight=400):string[] {
-  ctx.font=font(size,weight);
+function lines(ctx:CanvasRenderingContext2D, value:string, width:number, size:number, weight=400,serif=false):string[] {
+  ctx.font=serif?editorialFont(size,weight):font(size,weight);
   const result:string[]=[];
   for(const paragraph of clean(value).split("\n")) {
     let line="";
@@ -33,6 +34,9 @@ function lines(ctx:CanvasRenderingContext2D, value:string, width:number, size:nu
 }
 function text(ctx:CanvasRenderingContext2D, value:string, x:number,y:number,size:number,color=INK,weight=400) {
   ctx.font=font(size,weight);ctx.fillStyle=color;ctx.fillText(value,x,y);
+}
+function editorialText(ctx:CanvasRenderingContext2D,value:string,x:number,y:number,size:number,color=GREEN,weight=700){
+  ctx.font=editorialFont(size,weight);ctx.fillStyle=color;ctx.fillText(value,x,y);
 }
 function sheet() {
   const canvas=document.createElement("canvas");canvas.width=PW*SCALE;canvas.height=PH*SCALE;
@@ -91,13 +95,22 @@ function fit(ctx:CanvasRenderingContext2D,img:HTMLImageElement,x:number,y:number
   ctx.drawImage(img,x+(w-iw)/2,y+(h-ih)/2,iw,ih);
 }
 function footer(ctx:CanvasRenderingContext2D,page:number) {
-  ctx.fillStyle=RULE;ctx.fillRect(40,830,540,1);
-  text(ctx,"BRUTTI  /  PRODUCT CATALOGUE",40,850,10,MUTED,500);
-  ctx.textAlign="right";text(ctx,String(page).padStart(2,"0"),580,850,11,GREEN,600);ctx.textAlign="left";
+  ctx.fillStyle="#e9ece0";ctx.beginPath();ctx.moveTo(0,848);ctx.bezierCurveTo(180,800,370,875,620,813);ctx.lineTo(620,877);ctx.lineTo(0,877);ctx.closePath();ctx.fill();
+  ctx.fillStyle=GREEN;ctx.beginPath();ctx.moveTo(0,844);ctx.bezierCurveTo(165,812,390,871,620,834);ctx.lineTo(620,877);ctx.lineTo(0,877);ctx.closePath();ctx.fill();
+  text(ctx,"BRUTTI  /  PRODUCT CATALOGUE",40,861,10,"#ffffff",600);
+  ctx.fillStyle="#d2b28c";ctx.fillRect(260,857,220,1);
+  panel(ctx,535,845,50,24,"#f1d9b7",12);
+  ctx.textAlign="center";text(ctx,String(page).padStart(2,"0"),560,862,12,GREEN,700);ctx.textAlign="left";
 }
-function header(ctx:CanvasRenderingContext2D,label:string) {
-  text(ctx,"BRUTTI’S CATALOG",40,43,13,GREEN,700);
-  ctx.textAlign="right";ctx.font=font(10,600);ctx.fillStyle=MUTED;ctx.fillText(label,580,43,370);ctx.textAlign="left";
+function header(ctx:CanvasRenderingContext2D,label:string,logo?:HTMLImageElement) {
+  ctx.fillStyle=GREEN;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(350,0);ctx.bezierCurveTo(320,15,316,55,270,57);ctx.bezierCurveTo(155,64,50,49,0,78);ctx.closePath();ctx.fill();
+  if(logo){
+    ctx.save();ctx.filter="brightness(0) invert(1)";fit(ctx,logo,33,10,56,38);ctx.restore();
+    ctx.fillStyle="#b5c8b8";ctx.fillRect(100,16,1,27);
+    text(ctx,"BRUTTI’S CATALOG",112,35,12,"#ffffff",700);
+  }else text(ctx,"BRUTTI’S CATALOG",40,35,13,"#ffffff",700);
+  ctx.textAlign="right";ctx.font=font(10,600);ctx.fillStyle=GREEN;ctx.fillText(label,580,34,228);ctx.textAlign="left";
+  ctx.fillStyle="#caa577";ctx.fillRect(548,46,32,1.4);
 }
 function plainMaterials(value:string) {
   const doc=new DOMParser().parseFromString(value,"text/html");
@@ -122,7 +135,7 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remain
       wrapped.forEach((line,i)=>result.push({
         value:bullet&&i===0?"•  "+line:line,size:14,weight:400,color:INK,
         indent:bullet&&i>0?18:0,
-        height:20+(i===wrapped.length-1?(paragraphIndex===paragraphs.length-1?12:3):0)
+        height:19+(i===wrapped.length-1?(paragraphIndex===paragraphs.length-1?9:3):0)
       }));
     });
   };
@@ -166,10 +179,10 @@ function photoFitRounded(ctx:CanvasRenderingContext2D,img:HTMLImageElement,x:num
   ctx.save();rounded(ctx,ix,iy,iw,ih,10);ctx.clip();
   ctx.drawImage(img,ix,iy,iw,ih);ctx.restore();
 }
-const BOTTOM=810, SIDE_X=370, SIDE_W=210;
+const BOTTOM=806;
 type DimensionCard={label:string;value:string[]};
 type ProductPlan={product:Product;title:string[];price:string[];basis:string;priceSize:number;titleSize:number;
-  photos:string[];split:boolean;photoTop:number;heroHeight:number;extrasHeight:number;identityTop:number;
+  photos:string[];photoTop:number;heroHeight:number;extrasHeight:number;identityTop:number;
   description:string[];dimensions:DimensionCard[];dimensionHeight:number;dimensionWidth:number;
   detailTop:number;detailX:number;continuationTop:number;detail:DetailRow[][]};
 function drawDimensions(ctx:CanvasRenderingContext2D,entry:ProductPlan,x:number,y:number){
@@ -179,7 +192,7 @@ function drawDimensions(ctx:CanvasRenderingContext2D,entry:ProductPlan,x:number,
   const h=entry.dimensionHeight-23;
   entry.dimensions.forEach((dimension,i)=>{
     const left=x+i*(w+6);
-    panel(ctx,left,y+23,w,h,"#edf0e7",7);
+    panel(ctx,left,y+23,w,h,"#e8ecdf",9);
     ctx.textAlign="center";text(ctx,dimension.label,left+w/2,y+39,10,MUTED,600);
     dimension.value.forEach((line,j)=>text(ctx,line,left+w/2,y+57+j*17,13,GREEN,600));
     ctx.textAlign="left";
@@ -227,54 +240,55 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   const plan=sections.map(section=>({...section,entries:section.products.map(product=>{
     const ctx=measure.ctx;
     const photos=[...new Set(product.images.map(image=>image.url?.trim()).filter((url):url is string=>Boolean(url)))].slice(0,4);
-    const extras=Math.max(0,photos.length-1);
     const ratio=ratios.get(photos[0])??1;
     const descPlain=plainMaterials(product.description||"");
     const keys=OVERALL_DIMENSION_KEYS.filter(key=>Number.isFinite(product[key])&&product[key]>0);
-    // Portraits get an editorial side column; wide images use the full page width.
-    // Dense technical specifications get a full-width reading area even with portrait photos.
-    const split=ratio<0.88 && (product.specifications?.length??0)<5 && descPlain.length<270
-      && clean(product.materials||"").length<380 && product.name.length<85;
-    const titleSize=split?29:32;
-    const title=lines(ctx,product.name,split?SIDE_W:350,titleSize,700);
+    // Unified full-width editorial layout: fit every source image without cropping.
+    // Two photos share the row; three have a hero plus a pair; four use a 2x2 grid.
+    const titleSize=product.name.length>70?29:37;
+    const title=lines(ctx,product.name,350,titleSize,700,true);
     const formatted=formatProductPrice(product,"public");
     const basis=formatted.startsWith("Starting from ")?"Starting from":"";
-    const priceSize=formatted==="On enquiry"?18:24;
-    const price=lines(ctx,basis?formatted.slice(14):formatted,split?SIDE_W-20:165,priceSize,600);
-    const desc=lines(ctx,descPlain,split?SIDE_W:540,14,400);
-    const description=desc.slice(0,split?8:3);
-    const dimensionWidth=split?SIDE_W:230;
+    const priceSize=formatted==="On enquiry"?17:25;
+    const price=lines(ctx,basis?formatted.slice(14):formatted,155,priceSize,700);
+    const desc=lines(ctx,descPlain,540,14,400);
+    const description=desc.slice(0,2);
+    const dimensionWidth=215;
     const cardWidth=(dimensionWidth-Math.max(0,keys.length-1)*6)/Math.max(1,keys.length);
     const dimensions=keys.map(key=>{
       const value=formatProductDimensions({width:0,depth:0,height:0,dimensionUnits:product.dimensionUnits,[key]:product[key]}).replace(/ [WDH]$/,"");
-      return {label:key[0].toUpperCase(),value:lines(ctx,value,cardWidth-12,13,600)};
+      return {label:key[0].toUpperCase(),value:lines(ctx,value,cardWidth-12,12,600)};
     });
     const dimensionHeight=dimensions.length?23+Math.max(60,...dimensions.map(d=>43+d.value.length*17)):0;
-    const detailX=split?SIDE_X:dimensions.length?290:40;
+    const detailX=dimensions.length?278:40;
     const detail=productLines(ctx,product,580-detailX,desc.slice(description.length));
     const detailHeight=detail.reduce((n,row)=>n+row.height,0);
     const titleLine=titleSize+5;
-    const priceHeight=Math.max(45,price.length*(priceSize+4)+(basis?15:0)+16);
-    const identityTop=68;
-    let photoTop:number,heroHeight:number,extrasHeight:number,detailTop:number;
-    if(split){
-      photoTop=68;
-      extrasHeight=extras?Math.min(172,Math.max(110,extras===1?172:extras===2?150:110)):0;
-      heroHeight=Math.min(740-(extrasHeight?extrasHeight+16:0),Math.max(260,320/ratio));
-      detailTop=identityTop+36+title.length*titleLine+12+priceHeight+12+(product.bestSelling?27:0)+description.length*20+(description.length?12:0)+dimensionHeight+(dimensions.length?17:0)+16;
-    }else{
-      const titleBlock=Math.max(title.length*titleLine,priceHeight);
-      photoTop=identityTop+24+titleBlock+(product.bestSelling?25:0)+description.length*20+(description.length?10:0)+16;
-      const available=BOTTOM-photoTop-28-Math.max(dimensionHeight,Math.min(detailHeight,340));
-      extrasHeight=extras?Math.max(90,Math.min(175,Math.floor(available*.32))):0;
-      heroHeight=Math.max(130,Math.min(540/ratio,Math.max(130,available-(extrasHeight?extrasHeight+12:0))));
-      detailTop=photoTop+heroHeight+(extrasHeight?extrasHeight+12:0)+26;
+    const priceHeight=Math.max(48,price.length*(priceSize+4)+(basis?15:0)+16);
+    const identityTop=82;
+    const titleBlock=Math.max(title.length*titleLine,priceHeight);
+    const photoTop=identityTop+29+titleBlock+(product.bestSelling?25:0)+description.length*20+(description.length?8:0)+14;
+    // Preserve readable photo sizes, moving excess specifications onto continuation pages.
+    const minimumPhoto=photos.length>=3?260:170;
+    const reserve=Math.max(dimensionHeight,Math.min(detailHeight,170));
+    const available=Math.max(50,BOTTOM-photoTop-22);
+    const photoSpace=Math.min(available,Math.max(minimumPhoto,available-reserve));
+    let heroHeight=photoSpace,extrasHeight=0;
+    if(photos.length===3){
+      extrasHeight=Math.floor((photoSpace-10)*.36);
+      heroHeight=photoSpace-extrasHeight-10;
+    }else if(photos.length>=4){
+      heroHeight=Math.floor((photoSpace-10)/2);
+      extrasHeight=photoSpace-heroHeight-10;
+    }else if(photos.length<=1){
+      heroHeight=Math.min(photoSpace,Math.max(170,540/ratio));
     }
-    const continuationTop=105+lines(ctx,product.name,540,25,600).length*31+20;
-    const first=detail.length&&detail[0].height<=BOTTOM-detailTop?takeRows(detail,0,BOTTOM-detailTop):0;
+    const detailTop=photoTop+heroHeight+(extrasHeight?extrasHeight+10:0)+22;
+    const continuationTop=110+lines(ctx,product.name,540,27,700,true).length*32+20;
+    const first=detail.length&&detail[0].height+(detail[0].heading?(detail[1]?.height??0):0)<=BOTTOM-detailTop?takeRows(detail,0,BOTTOM-detailTop):0;
     const chunks=[detail.slice(0,first)];
     for(let i=first;i<detail.length;){const end=takeRows(detail,i,BOTTOM-continuationTop);chunks.push(detail.slice(i,end));i=end;}
-    return {product,title,price,basis,priceSize,titleSize,photos,split,photoTop,heroHeight,extrasHeight,identityTop,description,dimensions,dimensionHeight,dimensionWidth,detailTop,detailX,continuationTop,detail:chunks} as ProductPlan;
+    return {product,title,price,basis,priceSize,titleSize,photos,photoTop,heroHeight,extrasHeight,identityTop,description,dimensions,dimensionHeight,dimensionWidth,detailTop,detailX,continuationTop,detail:chunks} as ProductPlan;
   })}));
   measure.canvas.width=1;measure.canvas.height=1;
   const contentsCount=Math.max(1,Math.ceil(plan.length/15));
@@ -313,10 +327,10 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   try {brandLogo=await loadPhoto("/images/brutti-wordmark.svg");} catch { abortCheck(signal); /* Text header is the fallback. */ }
   for(let i=0;i<contentsCount;i++) {
     abortCheck(signal);
-    const {canvas,ctx}=sheet();header(ctx,"COLLECTION INDEX");
+    const {canvas,ctx}=sheet();header(ctx,"COLLECTION INDEX",brandLogo);
     // Editorial contents: measured columns, vertically centred rows and consistent rules.
-    text(ctx,"Product Catalogue",40,101,34,GREEN,600);
-    text(ctx,"Explore our physical & creative works",40,129,13,MUTED,400);
+    editorialText(ctx,"Product Catalogue",40,115,36);
+    text(ctx,"Explore our physical & creative works",40,139,13,MUTED,400);
     ctx.fillStyle=GREEN;ctx.fillRect(40,148,32,2);
     const links:PdfLink[]=[];
     const rowStart=207,rowHeight=40;
@@ -354,8 +368,8 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
       }
     }
     if(!referenceLoaded) {
-      header(ctx,"SECTION "+String(index+1).padStart(2,"0"));
-      text(ctx,section.name,40,112,30,GREEN,700);
+      header(ctx,"SECTION "+String(index+1).padStart(2,"0"),brandLogo);
+      editorialText(ctx,section.name,40,112,30);
       if(section.cover && !section.reference)try {fit(ctx,await loadPhoto(section.cover),40,145,540,630);}catch(error) {abortCheck(signal);missing++;console.warn("[Catalogue PDF] Category image unavailable",section.name,error);}
       footer(ctx,pages.length+1);
     }
@@ -365,64 +379,64 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
       for(const [part,detail] of entry.detail.entries()) {
         abortCheck(signal);
         const {canvas:pc,ctx:cx}=sheet();
-        if(brandLogo){
-          fit(cx,brandLogo,40,18,44,32);
-          cx.fillStyle=RULE;cx.fillRect(92,24,1,20);
-          text(cx,"BRUTTI’S CATALOG",103,41,12,GREEN,700);
-          cx.textAlign="right";cx.font=font(10,600);cx.fillStyle=MUTED;
-          cx.fillText(section.name.toUpperCase(),580,41,290);cx.textAlign="left";
-        }else header(cx,section.name.toUpperCase());
+        header(cx,section.name.toUpperCase(),brandLogo);
         if(part===0) {
-          const x=entry.split?SIDE_X:40;
-          const photoWidth=entry.split?320:540;
+          const x=40;
           const identityY=entry.identityTop;
-          text(cx,p.sku,x,identityY+10,11,BRONZE,600);
+          cx.font=font(11,700);
+          const idWidth=Math.min(350,Math.max(62,cx.measureText(p.sku).width+22));
+          panel(cx,x,identityY-3,idWidth,22,"#f1d9b7",11);
+          cx.fillStyle=GREEN;cx.fillText(p.sku,x+11,identityY+12,idWidth-22);
           const lineHeight=entry.titleSize+5;
-          const titleTop=identityY+24;
-          entry.title.forEach((line,i)=>text(cx,line,x,titleTop+entry.titleSize+i*lineHeight,entry.titleSize,GREEN,700));
-          const priceHeight=Math.max(45,entry.price.length*(entry.priceSize+4)+(entry.basis?15:0)+16);
-          const priceX=entry.split?SIDE_X:405;
-          const priceY=entry.split?identityY+36+entry.title.length*lineHeight+12:titleTop;
-          const priceW=entry.split?SIDE_W:175;
-          panel(cx,priceX,priceY,priceW,priceHeight,"#e5ede1",8);
+          const titleTop=identityY+29;
+          entry.title.forEach((line,i)=>editorialText(cx,line,x,titleTop+entry.titleSize+i*lineHeight,entry.titleSize));
+          const priceHeight=Math.max(48,entry.price.length*(entry.priceSize+4)+(entry.basis?15:0)+16);
+          const priceX=405,priceY=titleTop,priceW=175;
+          panel(cx,priceX,priceY,priceW,priceHeight,"#e4ebdc",12);
           let py=priceY+8;
           if(entry.basis){text(cx,entry.basis,priceX+10,py+10,10,MUTED,500);py+=15;}
-          for(const line of entry.price){text(cx,line,priceX+10,py+entry.priceSize,entry.priceSize,GREEN,600);py+=entry.priceSize+4;}
-          let y=entry.split?priceY+priceHeight+12:titleTop+Math.max(entry.title.length*lineHeight,priceHeight);
-          if(p.bestSelling){
-            text(cx,"★  BEST SELLER",x,y+12,10,"#896a4d",700);y+=entry.split?27:25;
-          }
+          for(const line of entry.price){text(cx,line,priceX+10,py+entry.priceSize,entry.priceSize,GREEN,700);py+=entry.priceSize+4;}
+          let y=titleTop+Math.max(entry.title.length*lineHeight,priceHeight);
+          if(p.bestSelling){text(cx,"★  BEST SELLER",x,y+12,10,BRONZE,700);y+=25;}
           for(const line of entry.description){text(cx,line,x,y+14,14,MUTED,400);y+=20;}
-          if(entry.description.length)y+=entry.split?12:10;
-          if(entry.split&&entry.dimensions.length){drawDimensions(cx,entry,x,y);y+=entry.dimensionHeight+17;}
-          // Actual photo boxes follow the source aspect ratio; no gray backing,
-          // no cropped portrait and no vertically centred tiny landscape photo.
-          // At most four photos per product, fetched concurrently. Preserve
-          // the original photo order, layout, raster resolution and JPEG quality.
           const loaded=await Promise.all(entry.photos.map(async url=>{
             try{return await loadPhoto(url);}
             catch(error){abortCheck(signal);missing++;console.warn("[Catalogue PDF] Product photo unavailable",p.sku,error);return null;}
           }));
           abortCheck(signal);
-          if(loaded[0])photoFitRounded(cx,loaded[0],40,entry.photoTop,photoWidth,entry.heroHeight);
-          else text(cx,entry.photos.length?"Photo unavailable":"Photo not provided",40,entry.photoTop+30,13,MUTED);
-          const extras=loaded.slice(1);
-          if(extras.length){
-            const w=(photoWidth-(extras.length-1)*8)/extras.length;
-            extras.forEach((img,i)=>{if(img)photoFitRounded(cx,img,40+i*(w+8),entry.photoTop+entry.heroHeight+12,w,entry.extrasHeight);});
-          }
-          if(entry.split){
-            if(detail.length){cx.fillStyle=RULE;cx.fillRect(x,entry.detailTop-8,SIDE_W,1);}
+          const drawPhoto=(index:number,px:number,py:number,w:number,h:number)=>{
+            const img=loaded[index];
+            if(img)photoFitRounded(cx,img,px,py,w,h);
+            else text(cx,entry.photos.length?"Photo unavailable":"Photo not provided",px+10,py+25,12,MUTED);
+          };
+          const top=entry.photoTop,half=265;
+          if(loaded.length===2){
+            drawPhoto(0,40,top,half,entry.heroHeight);
+            drawPhoto(1,315,top,half,entry.heroHeight);
+          }else if(loaded.length>=4){
+            drawPhoto(0,40,top,half,entry.heroHeight);
+            drawPhoto(1,315,top,half,entry.heroHeight);
+            drawPhoto(2,40,top+entry.heroHeight+10,half,entry.extrasHeight);
+            drawPhoto(3,315,top+entry.heroHeight+10,half,entry.extrasHeight);
           }else{
-            cx.fillStyle=RULE;cx.fillRect(40,entry.detailTop-12,540,1);
-            if(entry.dimensions.length){drawDimensions(cx,entry,40,entry.detailTop);
-              if(detail.length){cx.fillStyle=RULE;cx.fillRect(279,entry.detailTop,1,Math.max(entry.dimensionHeight,detail.reduce((n,r)=>n+r.height,0)));}}
+            drawPhoto(0,40,top,540,entry.heroHeight);
+            if(loaded.length===3){
+              drawPhoto(1,40,top+entry.heroHeight+10,half,entry.extrasHeight);
+              drawPhoto(2,315,top+entry.heroHeight+10,half,entry.extrasHeight);
+            }
+          }
+          if(entry.dimensions.length || detail.length){
+            cx.fillStyle=RULE;cx.fillRect(40,entry.detailTop-10,540,1);
+            if(entry.dimensions.length){
+              drawDimensions(cx,entry,40,entry.detailTop);
+              if(detail.length){cx.fillStyle=RULE;cx.fillRect(265,entry.detailTop,1,Math.max(entry.dimensionHeight,detail.reduce((n,r)=>n+r.height,0)));}
+            }
           }
           drawRows(cx,detail,entry.detailTop,entry.detailX);
         } else {
-          const title=lines(cx,p.name,540,25,600);
-          text(cx,p.sku+"  /  CONTINUED",40,75,11,BRONZE,600);
-          title.forEach((line,i)=>text(cx,line,40,105+i*31,25,GREEN,600));
+          const title=lines(cx,p.name,540,27,700,true);
+          text(cx,p.sku+"  /  CONTINUED",40,82,11,BRONZE,600);
+          title.forEach((line,i)=>editorialText(cx,line,40,110+i*32,27));
           cx.fillStyle=RULE;cx.fillRect(40,entry.continuationTop-8,540,1);
           drawRows(cx,detail,entry.continuationTop);
         }
