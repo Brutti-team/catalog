@@ -2,7 +2,7 @@
  * No remote scripts, dependencies, or credentials. Offsets are byte offsets.
  */
 export type PdfLink = { x: number; y: number; w: number; h: number; page: number };
-export type PdfRasterPage = { jpeg: ArrayBuffer; width: number; height: number; links?: PdfLink[] };
+export type PdfRasterPage = { width: number; height: number; links?: PdfLink[] } & ({ jpeg: ArrayBuffer; rgbFlate?: never } | { rgbFlate: ArrayBuffer; jpeg?: never });
 const W = 595.28, H = 841.89;
 export function makeCatalogPdf(pages: PdfRasterPage[]): Blob {
   if (!pages.length) throw new Error("No PDF pages to export.");
@@ -29,7 +29,10 @@ export function makeCatalogPdf(pages: PdfRasterPage[]): Blob {
       return "<< /Type /Annot /Subtype /Link /Rect [" + [x,y,x+l.w*W/p.width,y+l.h*H/p.height].map(v=>v.toFixed(2)).join(" ") + "] /Border [0 0 0] /Dest [" + pageId(l.page) + " 0 R /Fit] >>";
     });
     obj(id, ["<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + W + " " + H + "] /Resources << /XObject << /Im0 " + (id+1) + " 0 R >> >> /Contents " + (id+2) + " 0 R" + (annotations.length ? " /Annots [" + annotations.join(" ") + "]" : "") + " >>"]);
-    obj(id+1, ["<< /Type /XObject /Subtype /Image /Width " + p.width + " /Height " + p.height + " /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length " + p.jpeg.byteLength + " >>\nstream\n", p.jpeg, "\nendstream"]);
+    const imageBytes=p.rgbFlate??p.jpeg;
+    if(!imageBytes)throw new Error("PDF page image missing.");
+    const imageFilter=p.rgbFlate?"/FlateDecode":"/DCTDecode";
+    obj(id+1, ["<< /Type /XObject /Subtype /Image /Width " + p.width + " /Height " + p.height + " /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter " + imageFilter + " /Length " + imageBytes.byteLength + " >>\nstream\n", imageBytes, "\nendstream"]);
     const stream = "q " + W + " 0 0 " + H + " 0 0 cm /Im0 Do Q\n";
     obj(id+2, ["<< /Length " + enc.encode(stream).length + " >>\nstream\n" + stream + "endstream"]);
   });
