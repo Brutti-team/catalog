@@ -690,6 +690,7 @@ export default function App() {
   const publishedCount = data.products.filter((p) => p.status === "published").length;
   const draftCount = data.products.filter((p) => p.status === "draft").length;
   const archivedCount = data.products.filter((p) => p.status === "archived").length;
+  const bestSellerCount = data.products.filter((p) => p.bestSelling === true).length;
   const withPhotos = data.products.filter((p) => p.images.length > 0).length;
   // Keep the established overview photograph fixed. Adding or renaming a
   // catalogue product must not unexpectedly change the dashboard banner.
@@ -701,7 +702,7 @@ export default function App() {
       const needle = search.toLowerCase();
       return (
         `${p.name} ${p.sku} ${p.materials}`.toLowerCase().includes(needle) &&
-        (status === "all" || p.status === status) &&
+        (status === "all" || (status === "best-seller" ? p.bestSelling === true : p.status === status)) &&
         (category === "all" || p.categoryId === category)
       );
     })
@@ -1142,12 +1143,13 @@ export default function App() {
             <section className="table-panel catalog-collection-v3 catalog-products-panel">
               {tab === "products" && (
                 <div className="catalog-product-controls">
-                  <div className="catalog-status-tabs" role="group" aria-label="Quick product status filters">
+                  <div className="catalog-status-tabs" role="group" aria-label="Quick product filters">
                     {[
                       { id: "all", title: "All", total: data.products.length },
                       { id: "draft", title: "Draft", total: draftCount },
                       { id: "published", title: "Published", total: publishedCount },
                       { id: "archived", title: "Archived", total: archivedCount },
+                      { id: "best-seller", title: "Best Seller", total: bestSellerCount },
                     ].map(item => (
                       <button type="button" key={item.id}
                         className={`catalog-status-tab ${status === item.id ? "selected" : ""}`}
