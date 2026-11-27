@@ -902,6 +902,12 @@ export default function PublicCatalog({
                         ))}
                       </div>
                     )}
+                    {!previewProduct && !showingModel && product.images.length > 1 && (
+                      <span className="pub-mobile-photo-count" role="status" aria-label={`Photo ${imageIndex + 1} of ${product.images.length}`}>
+                        <ImageIcon size={15} aria-hidden="true" />
+                        <span aria-hidden="true">{imageIndex + 1} / {product.images.length}</span>
+                      </span>
+                    )}
 
                   </div>
                   <div className="pub-detail-copy">
