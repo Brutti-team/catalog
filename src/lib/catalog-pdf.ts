@@ -339,13 +339,16 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     }else if(!photos.length){
       heroHeight=Math.min(photoSpace,70);
     }else if(photos.length===1){
-      // Reserve a consistent single-image frame independently of the text length.
-      // Only reduce it if an unusually tall product heading would exceed the page.
-      heroHeight=Math.min(SINGLE_PHOTO_HEIGHT,available);
+      // Keep the approved width and shrink only the image height to reserve
+      // space for ALL measured details (including the dimension table).
+      // Retain a readable image for extreme data; paginate only if unavoidable.
+      const roomForImage=available-detailHeight-4;
+      heroHeight=Math.min(SINGLE_PHOTO_HEIGHT,available,Math.max(96,roomForImage));
     }
     const detailTop=photoTop+heroHeight+(extrasHeight?extrasHeight+10:0)+22;
     const continuationTop=110+lines(ctx,product.name,540,27,700,true).length*32+20;
-    const first=detail.length&&detail[0].height+(detail[0].heading?(detail[1]?.height??0):0)<=BOTTOM-detailTop?takeRows(detail,0,BOTTOM-detailTop):0;
+    const capacity=BOTTOM-detailTop;
+    const first=detailHeight<=capacity?detail.length:detail.length&&detail[0].height+(detail[0].heading?(detail[1]?.height??0):0)<=capacity?takeRows(detail,0,capacity):0;
     const chunks=[detail.slice(0,first)];
     for(let i=first;i<detail.length;){const end=takeRows(detail,i,BOTTOM-continuationTop);chunks.push(detail.slice(i,end));i=end;}
     return {product,title,price,basis,priceSize,titleSize,photos,photoTop,heroHeight,extrasHeight,identityTop,description,detailTop,continuationTop,detail:chunks} as ProductPlan;
