@@ -1951,3 +1951,38 @@
     justify-self:end!important;margin-right:0!important;
   }
 }
+
+/* Phone enquiry: full-width WhatsApp action above the Brutti signature. */
+@media (max-width: 580px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-copy .pub-detail-promise {
+    gap: 12px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-copy .pub-detail-promise > a.pub-promise-enquiry {
+    order: -1;
+    flex: 0 0 100%;
+    width: 100%;
+    min-height: 46px;
+    margin: 0 0 3px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    justify-content: space-between;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-promise-enquiry .pub-enquiry-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-promise-enquiry .pub-enquiry-whatsapp-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 19px;
+    color: #fff;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-promise-enquiry .pub-enquiry-whatsapp-mark > svg {
+    display: block;
+    width: 19px;
+    height: 19px;
+  }
+}
