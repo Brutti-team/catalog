@@ -258,6 +258,32 @@ export default function PublicCatalog({
   const product = previewProduct ?? (
     productId === null ? undefined : published.find((item) => item.id === productId)
   );
+  // SEO metadata follows the public route, not staff previews or admin sessions.
+  useEffect(() => {
+    if (previewProduct || window.location.hostname !== "catalog.brutti.my") return;
+    const homeTitle = "Benua Brutti | Custom Furniture & Kiosk Collection";
+    const homeDescription = "Explore bespoke furniture, custom kiosks, cabinetry and commercial interior solutions crafted by Benua Brutti.";
+    const item = product?.status === "published" ? product : undefined;
+    document.title = item ? item.name + " | Benua Brutti" : homeTitle;
+    const description = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    if (description) description.content = item ? (item.description || item.name + " by Benua Brutti").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 160) : homeDescription;
+    const canonical = document.createElement("link");
+    canonical.rel = "canonical";
+    canonical.href = "https://catalog.brutti.my" + (productId === null ? "/" : "/product/" + encodeURIComponent(productId));
+    document.head.appendChild(canonical);
+    const robots = document.createElement("meta");
+    robots.name = "robots";
+    if (productId !== null && !loading && !error && !item) {
+      robots.content = "noindex";
+      document.head.appendChild(robots);
+    }
+    return () => {
+      canonical.remove();
+      robots.remove();
+      document.title = homeTitle;
+      if (description) description.content = homeDescription;
+    };
+  }, [previewProduct, product, productId, loading, error]);
   const finishingRow = primaryFinishingRow(product?.specifications);
   const specificationGroups = splitSpecifications((product?.specifications ?? []).filter(row => row.id !== finishingRow?.id));
   const viewedProductId = product?.status === "published" ? product.id : undefined;
