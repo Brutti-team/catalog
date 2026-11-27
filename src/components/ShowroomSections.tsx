@@ -266,7 +266,7 @@ export default function ShowroomSections({
         <div className="pub-category-marquee-heading">
           <div>
             <p className="pub-category-marquee-eyebrow">BRUTTI'S COLLECTION</p>
-            <h2 style={{ fontFamily: '"Manrope", "DM Sans", system-ui, sans-serif', fontWeight: 650, letterSpacing: "-0.043em" }}>Shop Furniture by Category</h2>
+            <h2 style={{ fontFamily: '"Manrope", "DM Sans", system-ui, sans-serif', fontWeight: 650, letterSpacing: "-0.043em" }}><span className="pub-category-title-desktop">Shop Furniture by Category</span><span className="pub-category-title-mobile">Categories</span></h2>
           </div>
           <button type="button" className="pub-category-marquee-all" onClick={() => onExplore("")}>
             Explore all <ArrowRight size={19} aria-hidden="true" />
