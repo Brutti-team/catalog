@@ -136,11 +136,12 @@ function ActivityProductPhoto({url, Icon}: {url:string; Icon:LucideIcon}) {
 }
 
 export default function AccountCenter({
-  view, onProfileChanged, products = [],
+  view, onProfileChanged, onToast, products = [],
 }: {
   view: View;
   products?: Product[];
   onProfileChanged?: (displayName: string) => void;
+  onToast?: (message: string) => void;
 }) {
   const [account, setAccount] = useState<AccountSummary | null>(null);
   const [members, setMembers] = useState<StaffMember[]>([]);
@@ -295,10 +296,15 @@ export default function AccountCenter({
       setInviteEmail("");
       setInviteRole("editor");
       setInviteCandidateId(null);
-      const [staff, waiting] = await Promise.all([listCatalogStaff(), listPendingCatalogStaff()]);
-      setMembers(staff);
-      setPendingStaff(waiting);
       setMessage(result);
+      onToast?.("Invitation sent successfully.");
+      try {
+        const [staff, waiting] = await Promise.all([listCatalogStaff(), listPendingCatalogStaff()]);
+        setMembers(staff);
+        setPendingStaff(waiting);
+      } catch {
+        setError("Invitation sent, but the staff list could not refresh. Reload this page to see the latest status.");
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Invitation failed. Please try again.");
     } finally {

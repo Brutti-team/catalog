@@ -970,7 +970,7 @@ export default function App() {
         <div className="admin-content">
           {tab === "profile" || tab === "users" || tab === "activity" ? (
             <Suspense fallback={deferredModuleFallback}>
-            <AccountCenter view={tab} onProfileChanged={setAccountName} products={data.products} />
+            <AccountCenter view={tab} onProfileChanged={setAccountName} onToast={setToast} products={data.products} />
             </Suspense>
           ) : (<>
           {tab === "overview" ? (
