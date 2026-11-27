@@ -343,7 +343,7 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     const formatted=formatProductPrice(product,"public");
     const basis=formatted.startsWith("Starting from ")?"Starting from":"";
     const priceSize=formatted==="On enquiry"?18:28;
-    const price=lines(ctx,basis?formatted.slice(14):formatted,175,priceSize,700,true);
+    const price=lines(ctx,basis?formatted.slice(14):formatted,175,priceSize,600);
     const desc=lines(ctx,descPlain,540,14,400);
     const description=desc.slice(0,2);
     const detail=productLines(ctx,product,540,desc.slice(description.length));
@@ -488,7 +488,7 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
           cx.textAlign="right";
           text(cx,entry.basis||"Price",priceX,priceBaseline-entry.priceSize-6,11,MUTED,500);
           let py=priceBaseline;
-          for(const line of entry.price){editorialText(cx,line,priceX,py,entry.priceSize,GREEN,700);py+=entry.priceSize+6;}
+          for(const line of entry.price){text(cx,line,priceX,py,entry.priceSize,GREEN,600);py+=entry.priceSize+6;}
           cx.textAlign="left";
           let y=titleTop+Math.max(entry.title.length*lineHeight,priceHeight);
           if(p.bestSelling){text(cx,"★  BEST SELLER",x,y+12,10,BRONZE,700);y+=25;}
