@@ -2719,3 +2719,22 @@
     gap: 9px;
   }
 }
+
+/* Equal price block height on phones, including products priced on enquiry. */
+@media (max-width: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-current {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    min-height: 38px;
+    gap: 3px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-basis {
+    margin: 0;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__pricing .pub-catalog-tile__price {
+    min-height: 38px;
+  }
+}
