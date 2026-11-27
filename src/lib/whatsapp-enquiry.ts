@@ -15,7 +15,7 @@ export function productWhatsAppMessage(product: Pick<Product, "name" | "sku">): 
     ? `Product: ${name}\nProduct ID: ${sku}`
     : `Product: ${name}`;
 
-  return `Hi Brutti! I'm interested in this product:\n\n${productLine}\n\nMay I know the price and availability? Thank you!`;
+  return `Hi Brutti! I'm interested in this product:\n\n${productLine}\n\nCould you guide me on how to place an order? Thank you!`;
 }
 
 export function productWhatsAppUrl(product: Pick<Product, "name" | "sku">): string {
