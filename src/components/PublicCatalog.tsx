@@ -940,6 +940,17 @@ export default function PublicCatalog({
                       specificationGroups.sections.some(section => section.rows.some(item => specificationHasContent(item)))
                     ) && <div className="pub-specifications">
                       <h2 id="pub-specifications-heading">The details</h2>
+                      {!previewProduct && (
+                        <a className="pub-primary-button pub-enquiry-button pub-whatsapp-enquiry pub-details-mobile-enquiry"
+                          href={productWhatsAppUrl(product)}
+                          onClick={() => trackWhatsAppEnquiry(product.id)}
+                          target="_blank" rel="noopener noreferrer"
+                          aria-label={`Enquire about ${product.name} on WhatsApp`}>
+                          <span className="pub-details-whatsapp-icon" aria-hidden="true"><SocialBrandIcon brand="whatsapp" /></span>
+                          <span>Enquire</span>
+                          <ArrowUpRight size={14} aria-hidden="true" />
+                        </a>
+                      )}
                       <div className="pub-specifications-scroll" tabIndex={previewProduct ? undefined : 0}
                         role={previewProduct ? undefined : "region"} aria-labelledby={previewProduct ? undefined : "pub-specifications-heading"}>
                       {previewProduct ? (
