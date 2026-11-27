@@ -281,14 +281,14 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     const title=lines(ctx,product.name,350,titleSize,700,true);
     const formatted=formatProductPrice(product,"public");
     const basis=formatted.startsWith("Starting from ")?"Starting from":"";
-    const priceSize=formatted==="On enquiry"?16:24;
-    const price=lines(ctx,basis?formatted.slice(14):formatted,175,priceSize,600);
+    const priceSize=formatted==="On enquiry"?20:34;
+    const price=lines(ctx,basis?formatted.slice(14):formatted,175,priceSize,700,true);
     const desc=lines(ctx,descPlain,540,14,400);
     const description=desc.slice(0,2);
     const detail=productLines(ctx,product,540,desc.slice(description.length));
     const detailHeight=detail.reduce((n,row)=>n+row.height,0);
     const titleLine=titleSize+5;
-    const priceHeight=Math.max(42,price.length*(priceSize+5)+15+5);
+    const priceHeight=Math.max(48,price.length*(priceSize+6)+18+5);
     const identityTop=82;
     const titleBlock=Math.max(title.length*titleLine,priceHeight);
     const photoTop=identityTop+29+titleBlock+(product.bestSelling?25:0)+description.length*20+(description.length?8:0)+14;
@@ -416,13 +416,13 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
           const lineHeight=entry.titleSize+5;
           const titleTop=identityY+29;
           entry.title.forEach((line,i)=>editorialText(cx,line,x,titleTop+entry.titleSize+i*lineHeight,entry.titleSize));
-          const priceHeight=Math.max(42,entry.price.length*(entry.priceSize+5)+15+5);
+          const priceHeight=Math.max(48,entry.price.length*(entry.priceSize+6)+18+5);
           const priceX=580,priceY=titleTop;
           // Editorial price: clear hierarchy, right aligned, without a filled badge.
           cx.textAlign="right";
-          text(cx,entry.basis||"Price",priceX,priceY+10,10,MUTED,500);
-          let py=priceY+15;
-          for(const line of entry.price){text(cx,line,priceX,py+entry.priceSize,entry.priceSize,GREEN,600);py+=entry.priceSize+5;}
+          text(cx,entry.basis||"Price",priceX,priceY+11,11,MUTED,500);
+          let py=priceY+18;
+          for(const line of entry.price){editorialText(cx,line,priceX,py+entry.priceSize,entry.priceSize,GREEN,700);py+=entry.priceSize+6;}
           cx.textAlign="left";
           let y=titleTop+Math.max(entry.title.length*lineHeight,priceHeight);
           if(p.bestSelling){text(cx,"★  BEST SELLER",x,y+12,10,BRONZE,700);y+=25;}
