@@ -182,7 +182,7 @@ export default function CatalogPdfDownload({products,categories,disabled,openRef
         </footer>
       </div>:<div ref={optionsViewport} className="pub-pdf-options-viewport"><div ref={optionsContent} className="pub-pdf-options-content">
       <div className="pub-pdf-dialog-head">
-        <div className="pub-pdf-heading"><span className="pub-pdf-heading-icon"><FileText size={22} strokeWidth={1.7} aria-hidden="true"/></span><div><p>BENUA BRUTTI / COLLECTION</p><h2 id="pub-pdf-title">Download Catalogue</h2><span>Choose a collection to keep or share.</span></div></div>
+        <div className="pub-pdf-heading"><span className="pub-pdf-heading-icon"><FileText size={22} strokeWidth={1.7} aria-hidden="true"/></span><div><p>BRUTTI / COLLECTION</p><h2 id="pub-pdf-title">Download Catalogue</h2><span>Choose a collection to keep or share.</span></div></div>
         <button type="button" aria-label="Close download options" disabled={progress!==null} onClick={()=>dialog.current?.close()}><X size={20}/></button>
       </div>
       <fieldset disabled={progress!==null}>

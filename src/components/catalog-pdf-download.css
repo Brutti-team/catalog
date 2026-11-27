@@ -458,3 +458,81 @@ dialog.pub-pdf-dialog .pub-pdf-cancel:hover:not(:disabled) {background:rgba(179,
 dialog.pub-pdf-dialog .pub-pdf-cancel:disabled {opacity:.62;cursor:wait;}
 :is(.pub-app,.admin-app)[data-theme="dark"] dialog.pub-pdf-dialog .pub-pdf-cancel {color:#f1b8b8;background:rgba(179,91,91,.17);border-color:rgba(232,155,155,.36);}
 dialog.pub-pdf-dialog .pub-pdf-cancel:focus-visible {outline:2px solid #bd7479;outline-offset:2px;}
+
+/* Frosted catalogue options: staff and public, phone and desktop.
+   Preserve the independent document preview and export viewport sizing. */
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) {
+  --pdf-glass-surface:linear-gradient(145deg,rgba(250,254,251,.88),rgba(226,239,231,.72));
+  --pdf-glass-card:linear-gradient(145deg,rgba(255,255,255,.64),rgba(247,252,248,.33));
+  --pdf-glass-selected:linear-gradient(135deg,rgba(220,242,229,.84),rgba(178,219,197,.44));
+  --pdf-glass-icon:linear-gradient(145deg,rgba(255,255,255,.74),rgba(198,226,209,.39));
+  --pdf-glass-line:rgba(255,255,255,.76);
+  --pdf-glass-active-line:rgba(57,122,89,.48);
+  --pdf-glass-ink:#214b39;
+  --pdf-glass-muted:#4c6859;
+  --pdf-glass-highlight:rgba(255,255,255,.65);
+  background:var(--pdf-glass-surface) !important;
+  border:1px solid var(--pdf-glass-line) !important;
+  border-radius:22px !important;
+  color:var(--pdf-glass-ink);
+  -webkit-backdrop-filter:blur(24px) saturate(135%);
+  backdrop-filter:blur(24px) saturate(135%);
+  box-shadow:0 24px 70px rgba(14,43,31,.27),inset 0 1px 0 var(--pdf-glass-highlight) !important;
+}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog)::backdrop {
+  background:rgba(19,49,37,.39);
+  -webkit-backdrop-filter:blur(7px);
+  backdrop-filter:blur(7px);
+}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) :is(.pub-pdf-dialog-head h2,legend,.pub-pdf-option strong,.pub-pdf-summary strong) {
+  color:var(--pdf-glass-ink) !important;
+}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) :is(.pub-pdf-dialog-head p,.pub-pdf-dialog-head div>span:not(.pub-pdf-heading-icon),.pub-pdf-option small,.pub-pdf-summary small,.pub-pdf-category-label) {
+  color:var(--pdf-glass-muted) !important;
+}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-option {
+  background:var(--pdf-glass-card) !important;
+  border:1px solid var(--pdf-glass-line) !important;
+  border-radius:13px;
+  box-shadow:inset 0 1px 0 var(--pdf-glass-highlight),0 3px 10px rgba(26,64,43,.045) !important;
+}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-option:has(input:checked) {
+  background:var(--pdf-glass-selected) !important;
+  border-color:var(--pdf-glass-active-line) !important;
+  box-shadow:inset 0 1px 0 var(--pdf-glass-highlight),0 4px 12px rgba(36,90,62,.09) !important;
+}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-option:hover {border-color:var(--pdf-glass-active-line) !important;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) :is(.pub-pdf-heading-icon,.pub-pdf-option-icon,.pub-pdf-summary-icon,.pub-pdf-dialog-head button) {
+  background:var(--pdf-glass-icon) !important;
+  border:1px solid var(--pdf-glass-line) !important;
+  color:var(--pdf-glass-ink) !important;
+  box-shadow:inset 0 1px 0 var(--pdf-glass-highlight);
+}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-dialog-head button {width:36px;height:36px;}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) :is(button.pub-pdf-category-trigger,.pub-pdf-category-menu) {
+  background:var(--pdf-glass-card) !important;
+  border-color:var(--pdf-glass-line) !important;
+  color:var(--pdf-glass-ink) !important;
+}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) button.pub-pdf-category-item {color:var(--pdf-glass-ink);}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-summary {border-top-color:var(--pdf-glass-active-line);}
+:is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) button.pub-pdf-download {
+  background:linear-gradient(135deg,#38765c,#164638) !important;
+  border:1px solid rgba(255,255,255,.32) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 5px 14px rgba(22,70,56,.15);
+}
+.admin-app[data-theme="dark"] dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) {
+  --pdf-glass-surface:linear-gradient(145deg,rgba(38,48,42,.94),rgba(22,31,26,.87));
+  --pdf-glass-card:linear-gradient(145deg,rgba(102,132,113,.18),rgba(69,91,77,.12));
+  --pdf-glass-selected:linear-gradient(145deg,rgba(67,121,88,.48),rgba(37,78,54,.35));
+  --pdf-glass-icon:linear-gradient(145deg,rgba(114,153,127,.20),rgba(67,102,78,.16));
+  --pdf-glass-line:rgba(193,224,203,.19);
+  --pdf-glass-active-line:rgba(127,189,148,.58);
+  --pdf-glass-ink:#e6f2e9;
+  --pdf-glass-muted:#b4c9bc;
+  --pdf-glass-highlight:rgba(255,255,255,.10);
+}
+@media(max-width:640px) {
+  :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) {border-radius:17px !important;}
+  :is(.pub-app,.admin-app) dialog.pub-pdf-dialog:not(.staff-pdf-preview-dialog) .pub-pdf-option {border-radius:11px;}
+}
