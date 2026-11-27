@@ -54,10 +54,28 @@ async function jpeg(canvas:HTMLCanvasElement,links?:PdfLink[]):Promise<PdfRaster
     links:links?.map(l=>({...l,x:l.x*SCALE,y:l.y*SCALE,w:l.w*SCALE,h:l.h*SCALE}))};
   canvas.width=1;canvas.height=1;return page;
 }
+// Encode the front cover as one lossless RGB image, avoiding JPEG re-encoding.
+async function losslessCover(canvas:HTMLCanvasElement):Promise<PdfRasterPage> {
+  if(typeof CompressionStream==="undefined")return jpeg(canvas);
+  try{
+    const ctx=canvas.getContext("2d");
+    if(!ctx)throw new Error("Cover canvas unavailable");
+    const {width,height}=canvas;
+    const rgba=ctx.getImageData(0,0,width,height).data;
+    const rgb=new Uint8Array(width*height*3);
+    for(let i=0,j=0;i<rgba.length;i+=4,j+=3){rgb[j]=rgba[i];rgb[j+1]=rgba[i+1];rgb[j+2]=rgba[i+2];}
+    const rgbFlate=await new Response(new Blob([rgb.buffer]).stream().pipeThrough(new CompressionStream("deflate"))).arrayBuffer();
+    canvas.width=1;canvas.height=1;
+    return {rgbFlate,width,height};
+  }catch(error){
+    console.warn("[Catalogue PDF] Lossless cover unavailable, using JPEG",error);
+    return jpeg(canvas);
+  }
+}
 function abortCheck(signal?:AbortSignal) {
   if(signal?.aborted)throw new DOMException("Catalogue creation cancelled.","AbortError");
 }
-async function photo(url:string,timeoutMs=20000,signal?:AbortSignal,cache?:Map<string,Blob>,saveBlob?:(url:string,blob:Blob)=>void):Promise<HTMLImageElement> {
+async function photo(url:string,timeoutMs=20000,signal?:AbortSignal,cache?:Map<string,Blob>,saveBlob?:(url:string,blob:Blob)=>void,fresh=false):Promise<HTMLImageElement> {
   abortCheck(signal);
   const controller=new AbortController();
   const cancel=()=>controller.abort();
@@ -65,9 +83,11 @@ async function photo(url:string,timeoutMs=20000,signal?:AbortSignal,cache?:Map<s
   const timeout=window.setTimeout(cancel,timeoutMs);
   let objectUrl="";
   try {
-    let blob=cache?.get(url);
+    let blob=fresh?undefined:cache?.get(url);
     if(!blob) {
-      const response=await fetch(publicAssetUrl(url),{signal:controller.signal,mode:"cors",credentials:"omit"});
+      const source=publicAssetUrl(url);
+      const requestUrl=fresh?source+(source.includes("?")?"&":"?")+"pdf-cover="+Date.now():source;
+      const response=await fetch(requestUrl,{signal:controller.signal,mode:"cors",credentials:"omit",...(fresh?{cache:"no-store" as RequestCache}:{})});
       if(!response.ok)throw new Error(`Image unavailable (HTTP ${response.status}): ${url}`);
       blob=await response.blob();
       if(!blob.size || /text\/html/i.test(blob.type))throw new Error("Image response is empty or HTML: "+url);
@@ -369,8 +389,8 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   const total=pageNumber;
   const pages:PdfRasterPage[]=[];
   let missing=0;
-  const push=async(canvas:HTMLCanvasElement,links?:PdfLink[])=>{
-    try { abortCheck(signal);const page=await jpeg(canvas,links);abortCheck(signal);pages.push(page); }
+  const push=async(canvas:HTMLCanvasElement,links?:PdfLink[],lossless=false)=>{
+    try { abortCheck(signal);const page=lossless?await losslessCover(canvas):await jpeg(canvas,links);abortCheck(signal);pages.push(page); }
     catch(error) { abortCheck(signal);console.error("[Catalogue PDF] Page encoding failed",{page:pages.length+1},error);throw new Error("PDF page rendering failed at page "+(pages.length+1)+". Refresh the page and retry."); }
     finally {canvas.width=1;canvas.height=1;}
     onProgress(25+Math.floor(pages.length/total*74),100);
@@ -381,16 +401,16 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     const {canvas,ctx}=sheet();
     try {
       let img:HTMLImageElement;
-      try { img=await loadPhoto(url); } catch(firstError) {
+      try { img=await photo(url,20000,signal,undefined,undefined,true); } catch(firstError) {
         abortCheck(signal);
         console.warn("[Catalogue PDF] Retrying original cover",url,firstError);
-        try { img=await loadPhoto(url); } catch(error) {
+        try { img=await photo(url,20000,signal,undefined,undefined,true); } catch(error) {
           abortCheck(signal);
           console.error("[Catalogue PDF] Original cover unavailable",url,error);
           throw new Error("The original catalogue cover could not be loaded. Refresh the page and try again.");
         }
       }
-      ctx.fillStyle="#fff";ctx.fillRect(0,0,PW,PH);fit(ctx,img,0,0,PW,PH);await push(canvas);
+      ctx.fillStyle="#fff";ctx.fillRect(0,0,PW,PH);fit(ctx,img,0,0,PW,PH);await push(canvas,undefined,url===IMPACT_FRONT);
     } finally {canvas.width=1;canvas.height=1;}
   };
   // Mandatory originals; never silently substitute a generic front/back cover.
