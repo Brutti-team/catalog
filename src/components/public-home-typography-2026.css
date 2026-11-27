@@ -1645,3 +1645,10 @@
     height: 0 !important;
   }
 }
+
+/* Hide the value-proposition strip on phone layouts only. */
+@media (max-width: 800px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-values-strip {
+    display: none !important;
+  }
+}
