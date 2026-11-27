@@ -2773,3 +2773,17 @@
     padding: 9px 15px;
   }
 }
+
+/* Match the other phone product cards: favourite left, promotional badge right. */
+@media (max-width: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__favourite {
+    top: 6px;
+    left: 6px !important;
+    right: auto !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile :is(.pub-catalog-tile__sale,.pub-catalog-tile__featured) {
+    top: 6px;
+    right: 6px !important;
+    left: auto !important;
+  }
+}
