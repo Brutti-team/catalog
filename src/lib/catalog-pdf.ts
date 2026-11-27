@@ -291,7 +291,7 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     const priceHeight=titleSize+Math.max(0,price.length-1)*(priceSize+6)+6;
     const identityTop=82;
     const titleBlock=Math.max(title.length*titleLine,priceHeight);
-    const photoTop=identityTop+29+titleBlock+(product.bestSelling?25:0)+description.length*20+(description.length?8:0)+14;
+    const photoTop=identityTop+29+titleBlock+(product.bestSelling?25:0)+description.length*20+(description.length?8:0)+28;
     // Preserve readable photo sizes, moving excess specifications onto continuation pages.
     const minimumPhoto=photos.length>=3?260:170;
     const reserve=Math.min(detailHeight,240);
@@ -437,20 +437,48 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
             if(img)photoFitRounded(cx,img,px,py,w,h);
             else text(cx,entry.photos.length?"Photo unavailable":"Photo not provided",px+10,py+25,12,MUTED);
           };
-          const top=entry.photoTop,half=265;
-          if(loaded.length===2){
-            drawPhoto(0,40,top,half,entry.heroHeight);
-            drawPhoto(1,315,top,half,entry.heroHeight);
+          const top=entry.photoTop, gap=10, left=40, width=540;
+          const aspect=(i:number)=>{
+            const img=loaded[i];
+            return img&&img.naturalWidth&&img.naturalHeight?img.naturalWidth/img.naturalHeight:1;
+          };
+          // Pack a row by the real image aspect ratios, not by equally spaced
+          // oversized slots. Keep the original image intact and the gutter fixed.
+          const drawRow=(indices:number[],y:number,maxHeight:number)=>{
+            const sum=indices.reduce((total,i)=>total+aspect(i),0);
+            const h=Math.min(maxHeight,(width-gap*(indices.length-1))/sum);
+            const rowWidth=h*sum+gap*(indices.length-1);
+            let x=left+(width-rowWidth)/2;
+            const rowY=y+(maxHeight-h)/2;
+            for(const i of indices){
+              const w=h*aspect(i);
+              drawPhoto(i,x,rowY,w,h);
+              x+=w+gap;
+            }
+          };
+          const totalHeight=entry.heroHeight+(entry.extrasHeight?entry.extrasHeight+gap:0);
+          if(loaded.length===3&&aspect(0)<1&&totalHeight>gap+2){
+            // Tall hero at left and two larger detail views stacked at right.
+            const a=aspect(0), b=aspect(1), c=aspect(2);
+            const stackRatio=1/(1/b+1/c);
+            const h=Math.min(totalHeight,(width-gap+gap*stackRatio)/(a+stackRatio));
+            if(h>gap+2){
+              const heroW=h*a, sideW=(h-gap)*stackRatio;
+              const x=left+(width-heroW-gap-sideW)/2;
+              const y=top+(totalHeight-h)/2;
+              drawPhoto(0,x,y,heroW,h);
+              drawPhoto(1,x+heroW+gap,y,sideW,sideW/b);
+              drawPhoto(2,x+heroW+gap,y+sideW/b+gap,sideW,sideW/c);
+            }else drawRow([0,1,2],top,totalHeight);
+          }else if(loaded.length===2){
+            drawRow([0,1],top,entry.heroHeight);
           }else if(loaded.length>=4){
-            drawPhoto(0,40,top,half,entry.heroHeight);
-            drawPhoto(1,315,top,half,entry.heroHeight);
-            drawPhoto(2,40,top+entry.heroHeight+10,half,entry.extrasHeight);
-            drawPhoto(3,315,top+entry.heroHeight+10,half,entry.extrasHeight);
+            drawRow([0,1],top,entry.heroHeight);
+            drawRow([2,3],top+entry.heroHeight+gap,entry.extrasHeight);
           }else{
-            drawPhoto(0,40,top,540,entry.heroHeight);
+            drawPhoto(0,left,top,width,entry.heroHeight);
             if(loaded.length===3){
-              drawPhoto(1,40,top+entry.heroHeight+10,half,entry.extrasHeight);
-              drawPhoto(2,315,top+entry.heroHeight+10,half,entry.extrasHeight);
+              drawRow([1,2],top+entry.heroHeight+gap,entry.extrasHeight);
             }
           }
           drawRows(cx,detail,entry.detailTop);
