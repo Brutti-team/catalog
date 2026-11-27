@@ -2738,3 +2738,38 @@
     min-height: 38px;
   }
 }
+
+/* Phone recommendation shelf: breathing room above the cards, CTA below. */
+.pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations > .pub-recommendations-mobile-action {
+  display: none !important;
+}
+@media (max-width: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations > .pub-section-heading > .pub-recommendations-browse--desktop {
+    display: none !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations > .pub-section-heading {
+    display: block;
+    margin-bottom: 20px !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations > .pub-section-heading .pub-eyebrow {
+    margin: 0 0 9px !important;
+    line-height: 1.4;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations > .pub-section-heading h2 {
+    margin: 0 0 10px !important;
+    line-height: 1.2;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations > .pub-section-heading .pub-recommendations-copy {
+    margin: 0 !important;
+    line-height: 1.6;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations > .pub-recommendations-mobile-action {
+    display: flex !important;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations > .pub-recommendations-mobile-action > .pub-recommendations-browse {
+    min-height: 44px;
+    padding: 9px 15px;
+  }
+}

@@ -471,13 +471,18 @@ export default function PublicCatalog({
           <h2 id="pub-recommendations-title">You May Also Like</h2>
           <p className="pub-recommendations-copy">Discover more pieces based on your recent views and searches.</p>
         </div>
-        <button type="button" className="pub-recommendations-browse" onClick={() => { resetFilters(); browseCollection(); }}>
+        <button type="button" className="pub-recommendations-browse pub-recommendations-browse--desktop" onClick={() => { resetFilters(); browseCollection(); }}>
           View all products <ArrowRight size={15} aria-hidden="true" />
         </button>
       </div>
       <div className="pub-products-grid pub-products-grid--catalog">
         {related.map(item => <PublicCollectionSpotlight key={item.id} product={item}
           categoryName={categoryName(item.categoryId)} onView={noteViewed} showColours />)}
+      </div>
+      <div className="pub-recommendations-mobile-action">
+        <button type="button" className="pub-recommendations-browse" onClick={() => { resetFilters(); browseCollection(); }}>
+          View all products <ArrowRight size={15} aria-hidden="true" />
+        </button>
       </div>
     </section>
   );
