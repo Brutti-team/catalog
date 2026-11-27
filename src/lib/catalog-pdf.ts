@@ -98,7 +98,6 @@ function footer(ctx:CanvasRenderingContext2D,page:number) {
   ctx.fillStyle="#e9ece0";ctx.beginPath();ctx.moveTo(0,848);ctx.bezierCurveTo(180,800,370,875,620,813);ctx.lineTo(620,877);ctx.lineTo(0,877);ctx.closePath();ctx.fill();
   ctx.fillStyle=GREEN;ctx.beginPath();ctx.moveTo(0,844);ctx.bezierCurveTo(165,812,390,871,620,834);ctx.lineTo(620,877);ctx.lineTo(0,877);ctx.closePath();ctx.fill();
   text(ctx,"BRUTTI  /  PRODUCT CATALOGUE",40,861,10,"#ffffff",600);
-  ctx.fillStyle="#d2b28c";ctx.fillRect(260,857,220,1);
   panel(ctx,535,845,50,24,"#f1d9b7",12);
   ctx.textAlign="center";text(ctx,String(page).padStart(2,"0"),560,862,12,GREEN,700);ctx.textAlign="left";
 }
@@ -125,17 +124,18 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remain
   const add=(label:string,value:string)=>{
     if(!clean(value))return;
     if(label) {
-      const headings=lines(ctx,label.toUpperCase(),width,11,600);
-      headings.forEach(line=>result.push({value:line,size:11,weight:600,color:GREEN,height:18,heading:true}));
+      const headings=lines(ctx,label.toUpperCase(),width,10,700);
+      headings.forEach(line=>result.push({value:line,size:10,weight:700,color:GREEN,height:21,heading:true}));
     }
     const paragraphs=clean(value).split("\n").map(line=>line.trim()).filter(Boolean);
     paragraphs.forEach((paragraph,paragraphIndex)=>{
       const bullet=paragraph.match(/^(?:[•–-])\s+(.+)$/);
-      const wrapped=lines(ctx,bullet?bullet[1]:paragraph,bullet?width-18:width,14,400);
+      const isBullet=Boolean(bullet)||label==="Materials & finishing";
+      const wrapped=lines(ctx,bullet?bullet[1]:paragraph,isBullet?width-16:width,12,400);
       wrapped.forEach((line,i)=>result.push({
-        value:bullet&&i===0?"•  "+line:line,size:14,weight:400,color:INK,
-        indent:bullet&&i>0?18:0,
-        height:19+(i===wrapped.length-1?(paragraphIndex===paragraphs.length-1?9:3):0)
+        value:isBullet&&i===0?"•  "+line:line,size:12,weight:400,color:INK,
+        indent:isBullet&&i>0?16:0,
+        height:17+(i===wrapped.length-1?(paragraphIndex===paragraphs.length-1?9:5):0)
       }));
     });
   };
@@ -187,16 +187,20 @@ type ProductPlan={product:Product;title:string[];price:string[];basis:string;pri
   detailTop:number;detailX:number;continuationTop:number;detail:DetailRow[][]};
 function drawDimensions(ctx:CanvasRenderingContext2D,entry:ProductPlan,x:number,y:number){
   if(!entry.dimensions.length)return;
-  text(ctx,"DIMENSIONS",x,y+12,11,GREEN,700);
-  const w=(entry.dimensionWidth-(entry.dimensions.length-1)*6)/entry.dimensions.length;
-  const h=entry.dimensionHeight-23;
-  entry.dimensions.forEach((dimension,i)=>{
-    const left=x+i*(w+6);
-    panel(ctx,left,y+23,w,h,"#e8ecdf",9);
-    ctx.textAlign="center";text(ctx,dimension.label,left+w/2,y+39,10,MUTED,600);
-    dimension.value.forEach((line,j)=>text(ctx,line,left+w/2,y+57+j*17,12,GREEN,600));
+  text(ctx,"DIMENSIONS",x,y+10,10,GREEN,700);
+  // A compact specification list, rather than heavy filled cards.
+  let top=y+24;
+  for(const dimension of entry.dimensions){
+    const label=dimension.label==="W"?"Width":dimension.label==="D"?"Depth":dimension.label==="H"?"Height":dimension.label;
+    const rowHeight=Math.max(27,dimension.value.length*16+10);
+    panel(ctx,x,top+2,22,22,"#e7ece1",7);
+    ctx.textAlign="center";text(ctx,dimension.label,x+11,top+17,10,GREEN,700);
+    ctx.textAlign="left";text(ctx,label,x+31,top+17,11,MUTED,500);
+    ctx.textAlign="right";
+    dimension.value.forEach((line,j)=>text(ctx,line,x+entry.dimensionWidth,top+17+j*16,12,GREEN,600));
     ctx.textAlign="left";
-  });
+    top+=rowHeight;
+  }
 }
 export async function generateCatalogPdf(products:Product[],categories:Category[],mode:PdfSelection,categoryId:string,favourites:string[],onProgress:(done:number,total:number)=>void,signal?:AbortSignal) {
   abortCheck(signal);
@@ -254,12 +258,12 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     const desc=lines(ctx,descPlain,540,14,400);
     const description=desc.slice(0,2);
     const dimensionWidth=215;
-    const cardWidth=(dimensionWidth-Math.max(0,keys.length-1)*6)/Math.max(1,keys.length);
+    const valueWidth=dimensionWidth-100;
     const dimensions=keys.map(key=>{
       const value=formatProductDimensions({width:0,depth:0,height:0,dimensionUnits:product.dimensionUnits,[key]:product[key]}).replace(/ [WDH]$/,"");
-      return {label:key[0].toUpperCase(),value:lines(ctx,value,cardWidth-12,12,600)};
+      return {label:key[0].toUpperCase(),value:lines(ctx,value,valueWidth,12,600)};
     });
-    const dimensionHeight=dimensions.length?23+Math.max(60,...dimensions.map(d=>43+d.value.length*17)):0;
+    const dimensionHeight=dimensions.length?24+dimensions.reduce((total,d)=>total+Math.max(27,d.value.length*16+10),0):0;
     const detailX=dimensions.length?278:40;
     const detail=productLines(ctx,product,580-detailX,desc.slice(description.length));
     const detailHeight=detail.reduce((n,row)=>n+row.height,0);
@@ -428,10 +432,8 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
             }
           }
           if(entry.dimensions.length || detail.length){
-            cx.fillStyle=RULE;cx.fillRect(40,entry.detailTop-10,540,1);
             if(entry.dimensions.length){
               drawDimensions(cx,entry,40,entry.detailTop);
-              if(detail.length){cx.fillStyle=RULE;cx.fillRect(265,entry.detailTop,1,Math.max(entry.dimensionHeight,detail.reduce((n,r)=>n+r.height,0)));}
             }
           }
           drawRows(cx,detail,entry.detailTop,entry.detailX);
