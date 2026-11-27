@@ -2597,3 +2597,108 @@
   .pub-app.pub-refined:not(.pub-private-preview) #pub-recommendations .pub-products-grid.pub-products-grid--catalog > .pub-catalog-tile .pub-catalog-tile__copy {padding:9px 9px 11px !important;}
 }
 
+/* Phone product cards: stronger hierarchy and consistent bottom price alignment. */
+@media (max-width: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__copy {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    padding: 12px 11px 14px !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 5px 7px;
+    margin-bottom: 9px;
+    min-height: 0;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__meta .pub-catalog-tile__category {
+    font-size: 11.5px !important;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    min-width: 0;
+    flex: 1 1 65px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__meta .pub-catalog-tile__availability {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 1.4;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__details-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex: 1 1 auto;
+    gap: 10px;
+    min-width: 0;
+    margin: 0;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__summary {
+    width: 100%;
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__summary .pub-catalog-tile__title h3 {
+    font-size: 16px !important;
+    font-weight: 650 !important;
+    line-height: 1.35;
+    letter-spacing: -.018em;
+    overflow-wrap: anywhere;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__summary .pub-catalog-tile__description {
+    font-size: 12px !important;
+    line-height: 1.45;
+    margin-top: 4px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__pricing {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin: auto 0 0 !important;
+    padding: 10px 0 0 !important;
+    border: 0 !important;
+    border-top: 1px solid rgba(100,132,102,.2) !important;
+    align-items: flex-start;
+    align-self: stretch;
+    text-align: left;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__pricing .pub-catalog-tile__price {
+    width: 100%;
+    margin: 0;
+    text-align: left;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__pricing :is(.catalog-price-current,.catalog-price-line) {
+    align-items: flex-start;
+    text-align: left;
+    margin: 0 !important;
+    max-width: 100%;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__pricing :is(.catalog-price-current,.catalog-price-amount) {
+    font-size: clamp(17px,4.7vw,20px) !important;
+    font-weight: 700 !important;
+    line-height: 1.3;
+    letter-spacing: -.025em;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-basis {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    line-height: 1.4;
+    margin-bottom: 3px;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) :is(#pub-collection #pub-collection-product-grid,#pub-best-selling #pub-best-selling-product-grid,#pub-recommendations .pub-products-grid.pub-products-grid--catalog) > .pub-catalog-tile .pub-catalog-tile__pricing .catalog-price-old {
+    font-size: 12px !important;
+    line-height: 1.4;
+  }
+}
