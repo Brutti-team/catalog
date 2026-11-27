@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import { AlertCircle, CalendarDays, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight, UserPlus, Send, Mail, ChevronDown, Check, ListFilter, Pencil, Eye, EyeOff, Archive, type LucideIcon } from "lucide-react";
 import {
   catalogActivityMYTRange, getAccountSummary, initials, listCatalogActivity, listCatalogStaff,
-  roleLabel, updateOwnDisplayName, updateStaffRole, inviteCatalogStaff, listPendingCatalogStaff,
+  roleLabel, updateOwnDisplayName, updateStaffRole, inviteCatalogStaff, listPendingCatalogStaff, editPendingCatalogStaff, deletePendingCatalogStaff,
   type AccountSummary, type ActivityEntry, type ActivityPeriod, type StaffMember, type StaffRole, type PendingCatalogStaff,
 } from "../lib/account-center";
 import { requestPasswordReset } from "../lib/catalog";
@@ -209,6 +209,8 @@ export default function AccountCenter({
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [editingCandidate, setEditingCandidate] = useState(false);
+  const [deleteCandidate, setDeleteCandidate] = useState<PendingCatalogStaff | null>(null);
   const [inviteName, setInviteName] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState<StaffRole>("editor");
@@ -308,6 +310,14 @@ export default function AccountCenter({
     if (account?.role !== "super_admin" || busyId) return;
     setBusyId("invite"); setError(""); setMessage("");
     try {
+      if (editingCandidate && inviteCandidateId) {
+        if (inviteRole !== "admin" && inviteRole !== "editor") throw new Error("Choose Admin or Editor.");
+        await editPendingCatalogStaff(inviteCandidateId, inviteName, inviteEmail, inviteRole);
+        setPendingStaff(await listPendingCatalogStaff());
+        setInviteOpen(false);
+        setMessage("Pending invitation updated.");
+        return;
+      }
       const result = await inviteCatalogStaff({
         email: inviteEmail,
         displayName: inviteName,
@@ -330,8 +340,22 @@ export default function AccountCenter({
     }
   }
 
-  function openInvitation(candidate?: PendingCatalogStaff) {
+  async function removePendingCandidate() {
+    if (!deleteCandidate || account?.role !== "super_admin" || busyId) return;
+    setBusyId("delete-pending"); setError(""); setMessage("");
+    try {
+      await deletePendingCatalogStaff(deleteCandidate.candidate_id);
+      setPendingStaff(current => current.filter(item => item.candidate_id !== deleteCandidate.candidate_id));
+      setDeleteCandidate(null);
+      setMessage("Pending invitation removed.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unable to remove pending invitation.");
+    } finally { setBusyId(null); }
+  }
+
+  function openInvitation(candidate?: PendingCatalogStaff, edit = false) {
     setError("");
+    setEditingCandidate(edit);
     setInviteName(candidate?.display_name || "");
     setInviteEmail(candidate?.email || "");
     setInviteRole(candidate?.proposed_role || "editor");
@@ -488,12 +512,13 @@ export default function AccountCenter({
                         <span className="catalog-pending-staff-role">{candidate.proposed_role === "editor" ? <Pencil size={13} aria-hidden="true"/> : <ShieldCheck size={13} aria-hidden="true"/>}{roleLabel(candidate.proposed_role)}</span>
                         <span className="catalog-pending-staff-state">Not invited</span>
                         {account.role === "super_admin" && (
-                          <button type="button" className="catalog-pending-staff-invite"
-                            disabled={pending || busyId !== null}
-                            onClick={() => openInvitation(candidate)}>
-                            <UserPlus size={14} aria-hidden="true" />
-                            Invite
-                          </button>
+                          <div className="catalog-pending-actions">
+                            <button type="button" className="catalog-pending-staff-invite" disabled={pending || busyId !== null} onClick={() => openInvitation(candidate)}>
+                              <UserPlus size={14} aria-hidden="true" /> Invite
+                            </button>
+                            <button type="button" className="catalog-pending-edit" disabled={pending || busyId !== null} aria-label={`Edit ${candidate.display_name}`} title="Edit invitation" onClick={() => openInvitation(candidate, true)}><Pencil size={15} aria-hidden="true"/></button>
+                            <button type="button" className="catalog-pending-delete" disabled={pending || busyId !== null} aria-label={`Delete ${candidate.display_name}`} title="Delete invitation" onClick={() => { setError(""); setDeleteCandidate(candidate); }}><Trash2 size={15} aria-hidden="true"/></button>
+                          </div>
                         )}
                       </div>
                     ))}
@@ -614,8 +639,8 @@ export default function AccountCenter({
         </div>
       )}
       {view === "users" && inviteOpen && account?.role === "super_admin" && (
-        <Modal title="Add catalog user" eyebrow="BRUTTI / TEAM ACCESS"
-          description="Invite a staff member securely. They receive an email to set up their Catalog access."
+        <Modal title={editingCandidate ? "Edit pending invitation" : "Add catalog user"} eyebrow="BRUTTI / TEAM ACCESS"
+          description={editingCandidate ? "Update the pending staff details without sending an invitation." : "Invite a staff member securely. They receive an email to set up their Catalog access."}
           className="catalog-user-invite-dialog"
           onClose={() => { if (busyId !== "invite") setInviteOpen(false); }}>
           <form className="catalog-user-invite-form" onSubmit={event => { void submitInvite(event); }}>
@@ -624,29 +649,43 @@ export default function AccountCenter({
               minLength={2} maxLength={80} required placeholder="e.g. Wani"
               value={inviteName} onChange={e => setInviteName(e.target.value)}
               disabled={busyId === "invite"}/>
-            <label htmlFor="catalog-invite-email">Email address <span>*</span></label>
+            <label htmlFor="catalog-invite-email">Email address {editingCandidate ? <small>(optional)</small> : <span>*</span>}</label>
             <div className="catalog-invite-email-wrap">
               <Mail size={17} aria-hidden="true" />
               <input id="catalog-invite-email" type="email" autoComplete="off"
-                required placeholder="name@example.com" maxLength={254}
+                required={!editingCandidate} placeholder="name@example.com" maxLength={254}
                 value={inviteEmail} onChange={e => setInviteEmail(e.target.value)}
                 disabled={busyId === "invite"}/>
             </div>
             <label htmlFor="catalog-invite-role">Catalog access <span>*</span></label>
-            <InviteRolePicker value={inviteRole} onChange={setInviteRole} disabled={busyId === "invite"}/>
+            {editingCandidate ? <select id="catalog-invite-role" value={inviteRole} disabled={busyId === "invite"} onChange={e => setInviteRole(e.target.value as StaffRole)}><option value="admin">Admin</option><option value="editor">Editor</option></select> : <InviteRolePicker value={inviteRole} onChange={setInviteRole} disabled={busyId === "invite"}/>}
             <p className="catalog-user-invite-note">
-              This sends a separate Catalog invitation. Brutti OS login is not linked yet.
-              Only grant access to the intended team member; no password is shared.
+              {editingCandidate ? "Changes only affect this pending invitation. No email will be sent." : "This sends a separate Catalog invitation. Brutti OS login is not linked yet. Only grant access to the intended team member; no password is shared."}
             </p>
             {error && <p className="catalog-user-invite-error" role="alert">{error}</p>}
             <div className="catalog-user-invite-actions">
               <button type="button" className="button secondary" disabled={busyId === "invite"}
                 onClick={() => setInviteOpen(false)}>Cancel</button>
               <button className="button primary" type="submit" disabled={busyId === "invite"}>
-                <Send size={16} aria-hidden="true"/> {busyId === "invite" ? "Sending invitation…" : "Send invitation"}
+                {editingCandidate ? <Save size={16} aria-hidden="true"/> : <Send size={16} aria-hidden="true"/>} {editingCandidate ? (busyId === "invite" ? "Saving…" : "Save changes") : (busyId === "invite" ? "Sending invitation…" : "Send invitation")}
               </button>
             </div>
           </form>
+        </Modal>
+      )}
+      {view === "users" && deleteCandidate && account?.role === "super_admin" && (
+        <Modal title="Delete pending invitation?" eyebrow="BRUTTI / TEAM ACCESS"
+          description="This removes the pending record only. Existing staff accounts and Brutti OS are not affected."
+          className="catalog-user-invite-dialog catalog-pending-delete-dialog"
+          onClose={() => { if (busyId !== "delete-pending") setDeleteCandidate(null); }}>
+          <div className="catalog-user-invite-form">
+            <p><strong>{deleteCandidate.display_name}</strong></p>
+            {error && <p className="catalog-user-invite-error" role="alert">{error}</p>}
+            <div className="catalog-user-invite-actions">
+              <button type="button" className="button secondary" disabled={busyId !== null} onClick={() => setDeleteCandidate(null)}>Cancel</button>
+              <button type="button" className="button catalog-pending-confirm-delete" disabled={busyId !== null} onClick={() => void removePendingCandidate()}><Trash2 size={16} aria-hidden="true"/> {busyId === "delete-pending" ? "Deleting…" : "Delete"}</button>
+            </div>
+          </div>
         </Modal>
       )}
       <div className="account-privacy"><UserRound size={15} /> Every session is connected to a unique Supabase user ID. Activity actors are written by database triggers, not by the browser.</div>

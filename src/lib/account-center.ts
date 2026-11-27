@@ -120,6 +120,15 @@ export async function listPendingCatalogStaff(): Promise<PendingCatalogStaff[]> 
   return (data ?? []) as PendingCatalogStaff[];
 }
 
+export async function editPendingCatalogStaff(candidateId: string, displayName: string, email: string, role: "admin" | "editor"): Promise<void> {
+  const { error } = await catalogClient().rpc("catalog_edit_pending_staff", { p_candidate_id: candidateId, p_display_name: displayName.trim(), p_email: email.trim() || null, p_role: role });
+  if (error) throw new Error(error.message);
+}
+export async function deletePendingCatalogStaff(candidateId: string): Promise<void> {
+  const { error } = await catalogClient().rpc("catalog_delete_pending_staff", { p_candidate_id: candidateId });
+  if (error) throw new Error(error.message);
+}
+
 export type CatalogInvitationRole = "super_admin" | "admin" | "editor";
 
 /** Invite a separate Catalog Auth account without exposing service credentials. */

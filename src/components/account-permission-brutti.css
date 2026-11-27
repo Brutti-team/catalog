@@ -934,3 +934,30 @@
   .admin-app .account-center.account-center--users .ap-directory .ap-section-copy {flex:1!important;}
   .admin-app .account-center.account-center--users .ap-directory .ap-section-icon {width:34px;height:34px;flex-basis:34px;}
 }
+
+/* Pending invitations: compact editable actions, separate from active accounts. */
+.admin-app .account-center.account-center--users .ap-directory .ap-pending-columns:not(.is-readonly),
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item:has(.catalog-pending-actions) {
+  grid-template-columns:minmax(0,1.6fr) minmax(85px,.54fr) minmax(100px,.65fr) 170px!important;
+}
+.catalog-pending-actions {display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0;}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-actions .catalog-pending-staff-invite {width:86px;flex-shrink:0;}
+.catalog-pending-actions :is(.catalog-pending-edit,.catalog-pending-delete) {
+  display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border-radius:9px;
+  border:1px solid var(--ap-rule);background:var(--ap-soft);color:var(--ap-role-ink);cursor:pointer;transition:background .16s,transform .16s;
+}
+.catalog-pending-actions .catalog-pending-delete {color:#b64d4d;background:rgba(182,77,77,.07);border-color:rgba(182,77,77,.15)}
+.catalog-pending-actions .catalog-pending-edit:hover:not(:disabled){background:var(--ap-role);transform:translateY(-1px)}
+.catalog-pending-actions .catalog-pending-delete:hover:not(:disabled){background:rgba(182,77,77,.16);transform:translateY(-1px)}
+.catalog-pending-actions button:disabled{opacity:.5;cursor:not-allowed}
+.catalog-pending-actions button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+.admin-app[data-theme="dark"] .catalog-pending-actions .catalog-pending-delete{color:#f0a2a2}
+.catalog-pending-confirm-delete{background:#a93d3d!important;color:white!important;border:1px solid #a93d3d!important}
+.catalog-pending-confirm-delete:hover:not(:disabled){background:#8f3030!important}
+@media(max-width:800px){
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item:has(.catalog-pending-actions){grid-template-columns:minmax(0,1fr) auto!important}
+  .catalog-pending-actions{grid-column:2;grid-row:2/span 2;align-self:center;flex-wrap:wrap;max-width:170px}
+}
+@media(max-width:380px){
+  .catalog-pending-actions{grid-column:1/-1;grid-row:4;justify-content:flex-start;max-width:none}
+}
