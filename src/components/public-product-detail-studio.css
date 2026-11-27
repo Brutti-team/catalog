@@ -1986,3 +1986,90 @@
     height: 19px;
   }
 }
+
+/* Phone product identity: price directly below availability, matching desktop. */
+@media (max-width: 650px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy {
+    grid-template-columns: minmax(0,1fr) minmax(0,42%) !important;
+    grid-template-rows: auto auto auto auto auto;
+    column-gap: 12px;
+    row-gap: 0;
+    align-items: start;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-eyebrow {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    align-self: center;
+    margin: 0 !important;
+    overflow-wrap: anywhere;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-availability {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    justify-self: end;
+    align-self: center;
+    margin: 0 !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > h1 {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    margin: 10px 0 5px !important;
+    overflow-wrap: anywhere;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-description {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    margin: 0 !important;
+    overflow-wrap: anywhere;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price {
+    grid-column: 2 !important;
+    grid-row: 2 / 4 !important;
+    justify-self: stretch;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 0;
+    width: 100%;
+    margin: 9px 0 0 !important;
+    padding: 0 !important;
+    text-align: right !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price .catalog-price-current--stacked {
+    align-items: flex-end !important;
+    text-align: right !important;
+    max-width: 100%;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price :is(.catalog-price-current,.catalog-price-amount) {
+    font-size: 20px !important;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price .catalog-price-basis {
+    font-size: 11px !important;
+    text-align: right !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price .catalog-price-line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px 7px;
+    max-width: 100%;
+    text-align: right;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price .catalog-price-line > .catalog-price-current {
+    flex: 0 0 100%;
+    min-width: 0;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications {
+    grid-column: 1 / -1 !important;
+    grid-row: 4 !important;
+    margin-top: 15px !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-promise {
+    grid-column: 1 / -1 !important;
+    grid-row: 5 !important;
+  }
+}
