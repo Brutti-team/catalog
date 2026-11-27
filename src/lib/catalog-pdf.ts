@@ -194,7 +194,7 @@ function drawDimensions(ctx:CanvasRenderingContext2D,entry:ProductPlan,x:number,
     const left=x+i*(w+6);
     panel(ctx,left,y+23,w,h,"#e8ecdf",9);
     ctx.textAlign="center";text(ctx,dimension.label,left+w/2,y+39,10,MUTED,600);
-    dimension.value.forEach((line,j)=>text(ctx,line,left+w/2,y+57+j*17,13,GREEN,600));
+    dimension.value.forEach((line,j)=>text(ctx,line,left+w/2,y+57+j*17,12,GREEN,600));
     ctx.textAlign="left";
   });
 }
@@ -272,15 +272,17 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     const minimumPhoto=photos.length>=3?260:170;
     const reserve=Math.max(dimensionHeight,Math.min(detailHeight,170));
     const available=Math.max(50,BOTTOM-photoTop-22);
-    const photoSpace=Math.min(available,Math.max(minimumPhoto,available-reserve));
+    const photoSpace=Math.min(Math.max(1,available-dimensionHeight),Math.max(minimumPhoto,available-reserve));
     let heroHeight=photoSpace,extrasHeight=0;
     if(photos.length===3){
-      extrasHeight=Math.floor((photoSpace-10)*.36);
+      extrasHeight=Math.max(1,Math.floor((photoSpace-10)*.36));
       heroHeight=photoSpace-extrasHeight-10;
     }else if(photos.length>=4){
       heroHeight=Math.floor((photoSpace-10)/2);
       extrasHeight=photoSpace-heroHeight-10;
-    }else if(photos.length<=1){
+    }else if(!photos.length){
+      heroHeight=Math.min(photoSpace,70);
+    }else if(photos.length===1){
       heroHeight=Math.min(photoSpace,Math.max(170,540/ratio));
     }
     const detailTop=photoTop+heroHeight+(extrasHeight?extrasHeight+10:0)+22;
