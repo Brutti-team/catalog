@@ -122,21 +122,21 @@ function plainMaterials(value:string) {
   doc.querySelectorAll("p,div").forEach(el=>el.append("\n"));
   return (doc.body.textContent||"").replace(/\*\*|__|==/g,"").replace(/\*([^*\n]+)\*/g,"$1").trim();
 }
-type DetailRow={value:string;size:number;weight:number;color:string;height:number;heading?:boolean;indent?:number;bullet?:boolean;gapBefore?:number;dimensionTable?:{name:string;values:string[];height:number}[]};
+type DetailRow={value:string;size:number;weight:number;color:string;height:number;heading?:boolean;indent?:number;bullet?:boolean;gapBefore?:number;columns?:{left:DetailRow[];right:DetailRow[]};dimensionTable?:{name:string;values:string[];height:number}[]};
 function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remainingDescription:string[]):DetailRow[] {
   const result:DetailRow[]=[];
-  const add=(label:string,value:string)=>{
+  const add=(label:string,value:string,columnWidth=width)=>{
     if(!clean(value))return;
     if(label) {
       const heading=label==="Materials & finishing"?"Materials & Finishing":label;
-      const headings=lines(ctx,heading,width,15,700,false,true);
+      const headings=lines(ctx,heading,columnWidth,15,700,false,true);
       headings.forEach(line=>result.push({value:line,size:15,weight:700,color:GREEN,height:24,heading:true}));
     }
     const paragraphs=clean(value).split("\n").map(line=>line.trim()).filter(Boolean);
     paragraphs.forEach((paragraph,paragraphIndex)=>{
       const bullet=paragraph.match(/^(?:[•–-])\s+(.+)$/);
       const isBullet=Boolean(bullet)||label==="Materials & finishing";
-      const wrapped=lines(ctx,bullet?bullet[1]:paragraph,isBullet?width-16:width,12,400,false,true);
+      const wrapped=lines(ctx,bullet?bullet[1]:paragraph,isBullet?columnWidth-16:columnWidth,12,400,false,true);
       wrapped.forEach((line,i)=>result.push({
         value:line,size:12,weight:400,color:INK,
         bullet:isBullet&&i===0,indent:isBullet?16:0,
@@ -145,8 +145,11 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remain
     });
   };
   if(remainingDescription.length) add("Description",remainingDescription.join("\n"));
-  add("Materials & finishing",plainMaterials(p.materials||"").replace(/^(?:[•\s]*)(?:materials?|material)\s*:\s*/i,""));
-  // Keep materials first, then dimensions, with the same pagination as other details.
+  const materials=plainMaterials(p.materials||"").replace(/^(?:[•\s]*)(?:materials?|material)\s*:\s*/i,"");
+  const materialsStart=result.length;
+  add("Materials & finishing",materials);
+  const dimensionsStart=result.length;
+  // Keep the stacked arrangement as the default for long materials or narrow pages.
   const keys=OVERALL_DIMENSION_KEYS.filter(key=>Number.isFinite(p[key])&&p[key]>0);
   if(keys.length){
     const gapBefore=result.length?12:0;
@@ -158,6 +161,23 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remain
       return {name,values,height:Math.max(30,values.length*16+14)};
     });
     result.push({value:"",size:12,weight:700,color:GREEN,height:28+dimensionTable.reduce((sum,row)=>sum+row.height,0)+6,dimensionTable});
+  }
+  // Use the available horizontal space only when the measured text is short
+  // enough. A two-column group is paginated atomically, preventing overlap or
+  // a detached heading. Longer materials retain the full-width stacked layout.
+  if(keys.length&&materials&&width>=540){
+    const stacked=result.slice(materialsStart);
+    const right=result.slice(dimensionsStart).map(row=>row.heading?{...row,gapBefore:0,height:row.height-(row.gapBefore??0)}:row);
+    result.splice(materialsStart);
+    add("Materials & finishing",materials,270);
+    const left=result.splice(materialsStart);
+    const leftHeight=left.reduce((sum,row)=>sum+row.height,0);
+    const rightHeight=right.reduce((sum,row)=>sum+row.height,0);
+    const bodyLines=left.filter(row=>!row.heading).length;
+    if(bodyLines<=4&&leftHeight<=Math.min(125,rightHeight+12)){
+      const gapBefore=materialsStart?10:0;
+      result.push({value:"",size:12,weight:400,color:INK,height:Math.max(leftHeight,rightHeight)+gapBefore+8,gapBefore,columns:{left,right}});
+    }else result.push(...stacked);
   }
   for(const row of p.specifications??[]) {
     if(row.kind==="section") {
@@ -182,7 +202,10 @@ function drawRows(ctx:CanvasRenderingContext2D,rows:DetailRow[],top:number,x=40)
   let y=top;
   for(const row of rows){
     const start=y+(row.gapBefore??0);
-    if(row.dimensionTable){
+    if(row.columns){
+      drawRows(ctx,row.columns.left,start,x);
+      drawRows(ctx,row.columns.right,start,x+290);
+    }else if(row.dimensionTable){
       const w=250, divider=x+112, valueCenter=(divider+x+w)/2, headerHeight=28;
       const tableHeight=headerHeight+row.dimensionTable.reduce((sum,item)=>sum+item.height,0);
       ctx.fillStyle="#e7ece1";ctx.fillRect(x,y,w,headerHeight);
