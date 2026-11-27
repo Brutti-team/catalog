@@ -1652,3 +1652,43 @@
     display: none !important;
   }
 }
+
+/* Phone hero: minimal editorial collection title with a left-aligned tagline. */
+.pub-app.pub-refined:not(.pub-private-preview) .pub-hero :is(.pub-hero-mobile-title,.pub-hero-mobile-description) {
+  display: none !important;
+}
+@media (max-width: 580px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero .pub-hero-copy {
+    min-height: clamp(270px, 80vw, 355px) !important;
+    text-align: left !important;
+    justify-content: flex-end !important;
+    align-items: flex-start !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero .pub-hero-copy > .pub-eyebrow,
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero :is(.pub-hero-desktop-title,.pub-hero-desktop-description) {
+    display: none !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero :is(.pub-hero-mobile-title,.pub-hero-mobile-description) {
+    display: inline !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero h1 {
+    font-family: Georgia, "Times New Roman", serif !important;
+    font-size: clamp(27px, 8.2vw, 39px) !important;
+    font-style: italic !important;
+    font-weight: 400 !important;
+    line-height: 1.15 !important;
+    letter-spacing: -.035em !important;
+    color: #fff5e7 !important;
+    margin: 0 0 10px !important;
+    text-align: left !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero .pub-hero-description {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    color: #f1e3d2 !important;
+    text-align: left !important;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-hero .pub-hero .pub-primary-button {
+    margin-top: 22px !important;
+  }
+}

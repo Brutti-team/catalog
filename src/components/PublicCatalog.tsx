@@ -556,13 +556,17 @@ export default function PublicCatalog({
                   <span /> BRUTTI'S COLLECTION
                 </p>
                 <h1>
-                  Considered spaces.
-                  <br />
-                  <em>Crafted to belong.</em>
+                  <span className="pub-hero-desktop-title">
+                    Considered spaces.
+                    <br />
+                    <em>Crafted to belong.</em>
+                  </span>
+                  <span className="pub-hero-mobile-title">Brutti's Collection</span>
                 </h1>
                 <p className="pub-hero-description">
-                  Bespoke furniture, kiosks and fit-outs, thoughtfully made
-                  around the way you live, work and welcome others.
+                  <span className="pub-hero-desktop-description">Bespoke furniture, kiosks and fit-outs, thoughtfully made
+                  around the way you live, work and welcome others.</span>
+                  <span className="pub-hero-mobile-description">Crafted for Your Space.</span>
                 </p>
                 <button
                   className="pub-primary-button"
