@@ -338,11 +338,11 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     const descPlain=plainMaterials(product.description||"");
     // Unified full-width editorial layout: fit every source image without cropping.
     // Two photos share the row; three have a hero plus a pair; four use a 2x2 grid.
-    const titleSize=product.name.length>70?29:37;
+    const titleSize=product.name.length>70?26:32;
     const title=lines(ctx,product.name,350,titleSize,700,true);
     const formatted=formatProductPrice(product,"public");
     const basis=formatted.startsWith("Starting from ")?"Starting from":"";
-    const priceSize=formatted==="On enquiry"?20:34;
+    const priceSize=formatted==="On enquiry"?18:28;
     const price=lines(ctx,basis?formatted.slice(14):formatted,175,priceSize,700,true);
     const desc=lines(ctx,descPlain,540,14,400);
     const description=desc.slice(0,2);
