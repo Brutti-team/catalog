@@ -497,7 +497,7 @@
   }
 }
 
-/* Phone sort: full-width, in-flow menu so it never covers the category rail. */
+/* Phone sort: traditional floating menu over the category rail; no layout shift. */
 @media (max-width: 580px) {
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-collection-actions {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -506,7 +506,7 @@
   }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-sort,
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-sort-control {
-    display: contents;
+    display: block;
   }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-pdf-trigger,
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-sort-trigger {
@@ -518,22 +518,26 @@
     background: rgba(255,255,255,.13);
   }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-pdf-trigger { grid-area: 1 / 1; }
-  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-sort-trigger { grid-area: 1 / 2; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-sort { grid-area: 1 / 2; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-sort-control { position: relative; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header:has(.pub-sort-trigger[aria-expanded="true"]) { z-index: 5; }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-sort-caption { font-size: 11px; }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-sort-current { font-size: 13px; font-weight: 650; }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-sort-menu {
-    position: static;
-    grid-column: 1 / -1;
-    grid-row: 2;
+    position: absolute;
+    top: calc(100% + 7px);
+    right: 0;
+    left: auto;
+    z-index: 100;
     box-sizing: border-box;
-    width: 100%;
-    max-width: 100%;
+    width: min(210px, 70vw);
+    max-width: none;
     margin: 0;
     padding: 5px;
     border: 1px solid rgba(255,255,255,.8);
     border-radius: 12px;
     background: #f7faf7;
-    box-shadow: 0 6px 15px rgba(10,35,22,.13);
+    box-shadow: 0 12px 28px rgba(10,35,22,.24);
   }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-sort-option {
     box-sizing: border-box;
