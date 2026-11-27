@@ -252,7 +252,7 @@ function photoFitRounded(ctx:CanvasRenderingContext2D,img:HTMLImageElement,x:num
   ctx.save();rounded(ctx,ix,iy,iw,ih,10);ctx.clip();
   ctx.drawImage(img,ix,iy,iw,ih);ctx.restore();
 }
-const BOTTOM=806;
+const BOTTOM=806, SINGLE_PHOTO_WIDTH=480, SINGLE_PHOTO_HEIGHT=380;
 type ProductPlan={product:Product;title:string[];price:string[];basis:string;priceSize:number;titleSize:number;
   photos:string[];photoTop:number;heroHeight:number;extrasHeight:number;identityTop:number;
   description:string[];
@@ -280,14 +280,13 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   const loadPhoto=(url:string,timeout=20000)=>photo(url,timeout,signal,primaryCache);
   // The first 25% represents image inspection, the rest page rendering.
   const primaryUrls=[...new Set(sections.flatMap(section=>section.products.map(p=>p.images.find(im=>Boolean(im.url?.trim()))?.url?.trim()).filter((url):url is string=>Boolean(url))))];
-  const ratios=new Map<string,number>();
   let inspected=0,nextPrimary=0;
   const inspect=async()=>{
     while(nextPrimary<primaryUrls.length){
       abortCheck(signal);
       const url=primaryUrls[nextPrimary++];
-      try {const img=await photo(url,6000,signal,primaryCache,savePrimary);ratios.set(url,img.naturalWidth/img.naturalHeight);}
-      catch {abortCheck(signal);ratios.set(url,1);}
+      try {await photo(url,6000,signal,primaryCache,savePrimary);}
+      catch {abortCheck(signal);}
       inspected++;
       onProgress(Math.round(inspected/Math.max(1,primaryUrls.length)*25),100);
     }
@@ -299,7 +298,6 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
   const plan=sections.map(section=>({...section,entries:section.products.map(product=>{
     const ctx=measure.ctx;
     const photos=[...new Set(product.images.map(image=>image.url?.trim()).filter((url):url is string=>Boolean(url)))].slice(0,4);
-    const ratio=ratios.get(photos[0])??1;
     const descPlain=plainMaterials(product.description||"");
     // Unified full-width editorial layout: fit every source image without cropping.
     // Two photos share the row; three have a hero plus a pair; four use a 2x2 grid.
@@ -333,7 +331,9 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     }else if(!photos.length){
       heroHeight=Math.min(photoSpace,70);
     }else if(photos.length===1){
-      heroHeight=Math.min(photoSpace,Math.max(170,540/ratio));
+      // Reserve a consistent single-image frame independently of the text length.
+      // Only reduce it if an unusually tall product heading would exceed the page.
+      heroHeight=Math.min(SINGLE_PHOTO_HEIGHT,available);
     }
     const detailTop=photoTop+heroHeight+(extrasHeight?extrasHeight+10:0)+22;
     const continuationTop=110+lines(ctx,product.name,540,27,700,true).length*32+20;
@@ -483,7 +483,12 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
             }
           };
           const totalHeight=entry.heroHeight+(entry.extrasHeight?entry.extrasHeight+gap:0);
-          if(loaded.length===3&&aspect(0)<1&&totalHeight>gap+2){
+          if(loaded.length===1){
+            // Same centered frame on all single-photo pages; preserve the full
+            // original photograph without stretching, cropping or gray backing.
+            const frameX=left+(width-SINGLE_PHOTO_WIDTH)/2;
+            drawPhoto(0,frameX,top,SINGLE_PHOTO_WIDTH,entry.heroHeight);
+          }else if(loaded.length===3&&aspect(0)<1&&totalHeight>gap+2){
             // Tall hero at left and two larger detail views stacked at right.
             const a=aspect(0), b=aspect(1), c=aspect(2);
             const stackRatio=1/(1/b+1/c);
