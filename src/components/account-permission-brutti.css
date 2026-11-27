@@ -1003,3 +1003,27 @@
 .catalog-own-role small,.catalog-own-role-note{font-size:11px;color:var(--ap-muted,#63776a);font-weight:500}
 .admin-app[data-theme="dark"] .modal.catalog-user-invite-dialog{--iv-field:rgba(53,62,57,.9);--iv-ink:#edf4ef;--iv-muted:#bac9bf;--iv-line:rgba(205,225,211,.2);--iv-hover:#34493d;background:linear-gradient(145deg,rgba(38,44,41,.97),rgba(26,32,29,.95))!important;border-color:var(--iv-line)!important}
 @media(max-width:480px){.admin-app .modal.catalog-user-invite-dialog .modal-heading{padding:14px 16px 11px!important}.admin-app .modal.catalog-user-invite-dialog .catalog-user-invite-form{padding:12px 16px 15px!important}.admin-app .modal.catalog-user-invite-dialog .catalog-user-invite-actions>.button{flex:1}}
+
+/* Own-account role: compact inline chip, never a full-width field. */
+.admin-app .account-center.account-center--users .ap-directory .account-table td .catalog-own-role {
+  display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;
+  gap:6px!important;width:max-content!important;max-width:100%!important;min-width:0!important;
+  min-height:0!important;height:auto!important;padding:5px 8px!important;margin:0!important;
+  box-sizing:border-box!important;border:1px solid rgba(121,96,160,.18)!important;
+  border-radius:9px!important;background:rgba(132,105,173,.09)!important;
+  color:var(--ap-violet-ink,#6d568d)!important;white-space:nowrap!important;flex-wrap:nowrap!important;
+  font:600 11px/1.4 system-ui,sans-serif!important;box-shadow:none!important;
+}
+.admin-app .account-center.account-center--users .ap-directory .account-table td .catalog-own-role>svg {flex:0 0 13px!important;color:inherit!important;position:static!important;margin:0!important;}
+.admin-app .account-center.account-center--users .ap-directory .account-table td .catalog-own-role .catalog-own-role-label {
+  display:inline!important;width:auto!important;min-width:0!important;padding:0!important;margin:0!important;background:none!important;
+  color:inherit!important;font:inherit!important;white-space:nowrap!important;
+}
+.admin-app .account-center.account-center--users .ap-directory .account-table td .catalog-own-role .catalog-own-role-protected {
+  display:inline-flex!important;align-items:center!important;width:auto!important;min-width:0!important;
+  padding:2px 6px!important;margin:0 0 0 2px!important;border-radius:5px!important;
+  background:rgba(121,96,160,.10)!important;color:inherit!important;font:500 10px/1.3 system-ui,sans-serif!important;
+  white-space:nowrap!important;
+}
+.admin-app[data-theme="dark"] .account-center.account-center--users .ap-directory .account-table td .catalog-own-role {background:rgba(173,148,212,.12)!important;border-color:rgba(173,148,212,.22)!important;}
+@media(max-width:380px){.admin-app .account-center.account-center--users .ap-directory .account-table td .catalog-own-role{gap:4px!important;padding:4px 6px!important;}}

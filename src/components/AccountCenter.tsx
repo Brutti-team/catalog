@@ -438,7 +438,7 @@ export default function AccountCenter({
                     )}</div></div></td>
                     <td><div className="ap-last-login"><Clock3 size={14} aria-hidden="true"/>{dateText(user.last_sign_in_at)}</div></td>
                     <td>{account.id === user.user_id ? (
-                      <span className="catalog-own-role" title="Your own role is protected from changes"><LockKeyhole size={14} aria-hidden="true"/>{roleLabel(user.role)}<small>Protected</small></span>
+                      <span className="catalog-own-role" title="Your own role is protected from changes"><LockKeyhole size={13} aria-hidden="true"/><span className="catalog-own-role-label">{roleLabel(user.role)}</span><small className="catalog-own-role-protected">Protected</small></span>
                     ) : account.role === "super_admin" ? (
                       <div className="ap-role-field" data-role={draft}><ShieldCheck size={14} aria-hidden="true"/><select aria-label={`Role for ${user.email}`} value={draft}
                         disabled={account.id === user.user_id || busyId !== null}
