@@ -252,7 +252,15 @@ function photoFitRounded(ctx:CanvasRenderingContext2D,img:HTMLImageElement,x:num
   ctx.save();rounded(ctx,ix,iy,iw,ih,10);ctx.clip();
   ctx.drawImage(img,ix,iy,iw,ih);ctx.restore();
 }
-const BOTTOM=806, SINGLE_PHOTO_WIDTH=480, SINGLE_PHOTO_HEIGHT=380;
+// Single-photo pages use a consistent landscape frame, with proportional fill.
+function singlePhotoFill(ctx:CanvasRenderingContext2D,img:HTMLImageElement,x:number,y:number,w:number,h:number){
+  const scale=Math.max(w/img.naturalWidth,h/img.naturalHeight);
+  const iw=img.naturalWidth*scale,ih=img.naturalHeight*scale;
+  ctx.save();rounded(ctx,x,y,w,h,10);ctx.clip();
+  ctx.drawImage(img,x+(w-iw)/2,y+(h-ih)/2,iw,ih);
+  ctx.restore();
+}
+const BOTTOM=806, SINGLE_PHOTO_WIDTH=480, SINGLE_PHOTO_HEIGHT=372;
 type ProductPlan={product:Product;title:string[];price:string[];basis:string;priceSize:number;titleSize:number;
   photos:string[];photoTop:number;heroHeight:number;extrasHeight:number;identityTop:number;
   description:string[];
@@ -484,10 +492,11 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
           };
           const totalHeight=entry.heroHeight+(entry.extrasHeight?entry.extrasHeight+gap:0);
           if(loaded.length===1){
-            // Same centered frame on all single-photo pages; preserve the full
-            // original photograph without stretching, cropping or gray backing.
+            // Match the approved landscape image size; never stretch the source.
             const frameX=left+(width-SINGLE_PHOTO_WIDTH)/2;
-            drawPhoto(0,frameX,top,SINGLE_PHOTO_WIDTH,entry.heroHeight);
+            const img=loaded[0];
+            if(img)singlePhotoFill(cx,img,frameX,top,SINGLE_PHOTO_WIDTH,entry.heroHeight);
+            else drawPhoto(0,frameX,top,SINGLE_PHOTO_WIDTH,entry.heroHeight);
           }else if(loaded.length===3&&aspect(0)<1&&totalHeight>gap+2){
             // Tall hero at left and two larger detail views stacked at right.
             const a=aspect(0), b=aspect(1), c=aspect(2);
