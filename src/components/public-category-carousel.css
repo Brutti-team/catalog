@@ -354,3 +354,68 @@
     display: inline;
   }
 }
+
+/* Mobile Safari: explicit column widths keep cloned carousel groups from
+   under-measuring their intrinsic width and painting cards over each other. */
+@media (max-width: 580px) {
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-category-marquee {
+    --pub-phone-category-width: clamp(126px, 39vw, 172px);
+    --pub-phone-category-gap: 11px;
+    /* Keep the glass gradient, but avoid a filtered ancestor over moving layers. */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-category-marquee-viewport {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: auto;
+    isolation: isolate;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-category-marquee-track {
+    display: flex;
+    flex-wrap: nowrap;
+    width: max-content;
+    min-width: max-content;
+    gap: 0;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-category-rail-group {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: var(--pub-phone-category-width);
+    grid-template-rows: auto;
+    align-items: stretch;
+    flex: 0 0 auto;
+    width: max-content;
+    min-width: max-content;
+    box-sizing: content-box;
+    gap: var(--pub-phone-category-gap);
+    padding-right: var(--pub-phone-category-gap);
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-category-rail-item {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+    isolation: isolate;
+    transform: none;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-category-rail-image {
+    max-width: 100%;
+    transform: none;
+    scale: 1;
+  }
+  .pub-app.pub-refined:not(.pub-private-preview) .pub-category-rail-name {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
