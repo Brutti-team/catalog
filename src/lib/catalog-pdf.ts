@@ -288,7 +288,7 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     const detail=productLines(ctx,product,540,desc.slice(description.length));
     const detailHeight=detail.reduce((n,row)=>n+row.height,0);
     const titleLine=titleSize+5;
-    const priceHeight=Math.max(48,price.length*(priceSize+6)+18+5);
+    const priceHeight=titleSize+Math.max(0,price.length-1)*(priceSize+6)+6;
     const identityTop=82;
     const titleBlock=Math.max(title.length*titleLine,priceHeight);
     const photoTop=identityTop+29+titleBlock+(product.bestSelling?25:0)+description.length*20+(description.length?8:0)+14;
@@ -416,13 +416,13 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
           const lineHeight=entry.titleSize+5;
           const titleTop=identityY+29;
           entry.title.forEach((line,i)=>editorialText(cx,line,x,titleTop+entry.titleSize+i*lineHeight,entry.titleSize));
-          const priceHeight=Math.max(48,entry.price.length*(entry.priceSize+6)+18+5);
-          const priceX=580,priceY=titleTop;
-          // Editorial price: clear hierarchy, right aligned, without a filled badge.
+          const priceHeight=entry.titleSize+Math.max(0,entry.price.length-1)*(entry.priceSize+6)+6;
+          const priceX=580,priceBaseline=titleTop+entry.titleSize;
+          // Align the first price line to the first product-title baseline, with its label above.
           cx.textAlign="right";
-          text(cx,entry.basis||"Price",priceX,priceY+11,11,MUTED,500);
-          let py=priceY+18;
-          for(const line of entry.price){editorialText(cx,line,priceX,py+entry.priceSize,entry.priceSize,GREEN,700);py+=entry.priceSize+6;}
+          text(cx,entry.basis||"Price",priceX,priceBaseline-entry.priceSize-6,11,MUTED,500);
+          let py=priceBaseline;
+          for(const line of entry.price){editorialText(cx,line,priceX,py,entry.priceSize,GREEN,700);py+=entry.priceSize+6;}
           cx.textAlign="left";
           let y=titleTop+Math.max(entry.title.length*lineHeight,priceHeight);
           if(p.bestSelling){text(cx,"★  BEST SELLER",x,y+12,10,BRONZE,700);y+=25;}
