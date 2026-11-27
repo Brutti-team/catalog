@@ -151,7 +151,7 @@ function plainMaterials(value:string) {
   doc.querySelectorAll("p,div").forEach(el=>el.append("\n"));
   return (doc.body.textContent||"").replace(/\*\*|__|==/g,"").replace(/\*([^*\n]+)\*/g,"$1").trim();
 }
-type DetailRow={value:string;size:number;weight:number;color:string;height:number;heading?:boolean;indent?:number;bullet?:boolean;gapBefore?:number;columns?:{left:DetailRow[];right:DetailRow[]};dimensionTable?:{name:string;values:string[];height:number}[]};
+type DetailRow={value:string;size:number;weight:number;color:string;height:number;heading?:boolean;indent?:number;bullet?:boolean;gapBefore?:number;columns?:{left:DetailRow[];right:DetailRow[]};dimensionTable?:{name:string;values:string[];height:number}[];specTable?:{title:string;items:{labels:string[];values:string[];height:number}[]} };
 function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remainingDescription:string[]):DetailRow[] {
   const result:DetailRow[]=[];
   const add=(label:string,value:string,columnWidth=width)=>{
@@ -211,16 +211,42 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remain
       result.push({value:"",size:12,weight:400,color:INK,height:Math.max(leftHeight,rightHeight)+gapBefore+8,gapBefore,columns:{left,right}});
     }else result.push(...stacked);
   }
-  for(const row of p.specifications??[]) {
-    if(row.kind==="section") {
-      if(clean(row.name)) {
-        for(const line of lines(ctx,row.name,width,15,700,false,true))result.push({value:line,size:15,weight:700,color:GREEN,height:24,heading:true});
-      }
-      continue;
+  // Group custom specifications into compact tables, preserving stored values,
+  // units, quantities and descriptions. Repeat headings on continuation pages.
+  type SpecItem={labels:string[];values:string[];height:number};
+  let group="Specifications",items:SpecItem[]=[];
+  const flush=()=>{
+    if(!items.length)return;
+    let batch:SpecItem[]=[],used=0;
+    const emit=()=>{
+      if(!batch.length)return;
+      const title=group;
+      const titleHeight=lines(ctx,title,540,15,700,false,true).length*21+7;
+      result.push({value:"",size:12,weight:400,color:INK,height:titleHeight+25+used+10,specTable:{title,items:batch}});
+      batch=[];used=0;
+    };
+    for(const item of items){
+      if(batch.length&&used+item.height>340)emit();
+      batch.push(item);used+=item.height;
     }
+    emit();items=[];
+  };
+  for(const row of p.specifications??[]){
+    if(row.kind==="section"){flush();group=clean(row.name)||"Specifications";continue;}
+    const name=clean(row.name);
     const details=[row.kind==="measurement"?formatSpecificationMeasurement(row.value||""):row.value,row.quantity&&row.quantity>0?row.quantity+" pcs":"",row.description].filter(Boolean).join(" · ");
-    if(clean(row.name)&&details)add(row.name,plainMaterials(details));
+    const value=plainMaterials(details);
+    if(!name||!value)continue;
+    const label=name.toLowerCase()===group.toLowerCase()&&row.quantity&&!clean(row.value)&&!clean(row.description)?"Quantity":name;
+    const labels=lines(ctx,label,136,12,600,false,true);
+    const values=lines(ctx,value,374,12,400,false,true);
+    const count=Math.max(labels.length,values.length);
+    for(let i=0;i<count;i+=12){
+      const l=labels.slice(i,i+12),v=values.slice(i,i+12);
+      items.push({labels:l.length?l:[label+" (cont.)"],values:v,height:Math.max(25,Math.max(l.length,v.length,1)*16+8)});
+    }
   }
+  flush();
   return result;
 }
 function takeRows(rows:DetailRow[],start:number,capacity:number) {
@@ -237,6 +263,25 @@ function drawRows(ctx:CanvasRenderingContext2D,rows:DetailRow[],top:number,x=40)
     if(row.columns){
       drawRows(ctx,row.columns.left,start,x);
       drawRows(ctx,row.columns.right,start,x+290);
+    }else if(row.specTable){
+      const w=540,divider=x+160;
+      const titleLines=lines(ctx,row.specTable.title,w,15,700,false,true);
+      titleLines.forEach((line,i)=>detailText(ctx,line,x,y+15+i*21,15,GREEN,700));
+      const tableY=y+titleLines.length*21+7,headerH=25;
+      const tableH=headerH+row.specTable.items.reduce((sum,item)=>sum+item.height,0);
+      ctx.fillStyle="#e7ece1";ctx.fillRect(x,tableY,w,headerH);
+      ctx.textAlign="left";detailText(ctx,"Label",x+12,tableY+17,12,GREEN,600);
+      detailText(ctx,"Value / Details",divider+12,tableY+17,12,GREEN,600);
+      let rowY=tableY+headerH;
+      for(const [index,item] of row.specTable.items.entries()){
+        ctx.fillStyle=index%2===0?"#fafbf7":"#f1f4ec";ctx.fillRect(x,rowY,w,item.height);
+        item.labels.forEach((line,j)=>detailText(ctx,line,x+12,rowY+15+j*16,12,INK,600));
+        item.values.forEach((line,j)=>detailText(ctx,line,divider+12,rowY+15+j*16,12,INK,400));
+        ctx.fillStyle=RULE;ctx.fillRect(x,rowY,w,.65);
+        rowY+=item.height;
+      }
+      ctx.fillStyle=RULE;ctx.fillRect(divider,tableY,.65,tableH);
+      ctx.strokeStyle=RULE;ctx.lineWidth=.65;ctx.strokeRect(x,tableY,w,tableH);
     }else if(row.dimensionTable){
       const w=250, divider=x+112, valueCenter=(divider+x+w)/2, headerHeight=28;
       const tableHeight=headerHeight+row.dimensionTable.reduce((sum,item)=>sum+item.height,0);
@@ -355,7 +400,7 @@ export async function generateCatalogPdf(products:Product[],categories:Category[
     const photoTop=identityTop+29+titleBlock+(product.bestSelling?25:0)+description.length*20+(description.length?8:0)+28;
     // Preserve readable photo sizes, moving excess specifications onto continuation pages.
     const minimumPhoto=photos.length>=3?260:170;
-    const reserve=Math.min(detailHeight,240);
+    const reserve=photos.length===2&&detail.some(row=>row.specTable)?detailHeight:Math.min(detailHeight,240);
     const available=Math.max(50,BOTTOM-photoTop-22);
     const photoSpace=Math.min(available,Math.max(minimumPhoto,available-reserve));
     let heroHeight=photoSpace,extrasHeight=0;
