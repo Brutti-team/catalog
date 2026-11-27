@@ -2026,14 +2026,16 @@
     grid-column: 2 !important;
     grid-row: 2 / 4 !important;
     justify-self: stretch;
-    align-self: start;
+    align-self: stretch;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: flex-end;
     min-width: 0;
     width: 100%;
-    margin: 9px 0 0 !important;
-    padding: 0 !important;
+    margin: 0 !important;
+    padding: 14px 0 0 !important;
+    box-sizing: border-box;
     text-align: right !important;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-price .catalog-price-current--stacked {
@@ -2066,7 +2068,7 @@
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications {
     grid-column: 1 / -1 !important;
     grid-row: 4 !important;
-    margin-top: 15px !important;
+    margin-top: 14px !important;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-detail-promise {
     grid-column: 1 / -1 !important;
