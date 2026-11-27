@@ -113,3 +113,9 @@ python3 -m venv .venv.local
 Unit/mock-browser/local-SQL success does **not** establish live Supabase CRUD, email delivery, storage or actual PDF import. Run the live acceptance procedure in [docs/production-readiness.md](docs/production-readiness.md) before deployment approval.
 
 The existing GitHub workflow validates TypeScript, lint, unit tests, browser regressions, local database policies, PDF helpers and both static builds. A separate push/manual job performs read-only public Supabase checks before a configured Pages build; it needs the GitHub repository's public URL/key bindings. A source-only build does not establish configured hosting readiness. Deployment remains disabled. In proxy-based cloud shells, use `NODE_USE_ENV_PROXY=1` for native Node live checks, preserving TLS verification. Do not merge or deploy before explicit approval and verified production prerequisites.
+
+## Cloudflare custom domains
+
+The existing GitHub Pages deployment is retained. See
+[Cloudflare domain setup](docs/cloudflare-domains.md) for the free Pages build,
+ClouDNS records, Supabase redirect URLs, backups and migration verification.

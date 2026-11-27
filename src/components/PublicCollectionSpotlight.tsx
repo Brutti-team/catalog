@@ -1,3 +1,4 @@
+import { routeHref } from "../lib/routes";
 import { useEffect, useId, useRef, useState, type SyntheticEvent } from "react";
 import { ArrowRight, Eye, Heart, Sparkles, Star, X } from "lucide-react";
 import type { Product } from "../lib/types";
@@ -83,7 +84,7 @@ export default function PublicCollectionSpotlight({ product, categoryName, onVie
   const dialogRef = useRef<HTMLDialogElement>(null);
   const quickViewTitleId = useId();
   const photo = product.images[0];
-  const detailUrl = "#/product/" + encodeURIComponent(product.id);
+  const detailUrl = routeHref("/product/" + encodeURIComponent(product.id));
   const description = product.description?.trim();
   const finishing = primaryFinishingRow(product.specifications)?.value;
   const savedColours = showColours ? recordedColours(product) : [];

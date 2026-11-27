@@ -1,33 +1,23 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.110.0";
 
-const CATALOG_ORIGIN = "https://brutti-team.github.io";
-const REDIRECT_URL = "https://brutti-team.github.io/catalog/";
+import { catalogInvitationHeaders, catalogInvitationRedirect, catalogStaffOriginAllowed } from "../_shared/catalog-origins.ts";
+
 const ALLOWED_ROLES = new Set(["super_admin", "admin", "editor"]);
-
-const headers = {
-  "Access-Control-Allow-Origin": CATALOG_ORIGIN,
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "authorization, apikey, x-client-info, content-type",
-  "Vary": "Origin",
-  "Content-Type": "application/json; charset=utf-8",
-  "Cache-Control": "no-store",
-};
-
-function json(payload: Record<string, unknown>, status = 200) {
-  return new Response(JSON.stringify(payload), { status, headers });
-}
 
 /** Only the authenticated Brutti Catalog Super Admin can send invitations.
  *  OS login is a different Supabase Auth project; never copy OS passwords.
  */
 Deno.serve(async (request: Request) => {
+  const origin = request.headers.get("Origin");
+  const headers = catalogInvitationHeaders(origin);
+  const json = (payload: Record<string, unknown>, status = 200) =>
+    new Response(JSON.stringify(payload), { status, headers });
+  if (!catalogStaffOriginAllowed(origin)) return json({ error: "Origin not allowed." }, 403);
   if (request.method === "OPTIONS") {
     return new Response(null, { status: 204, headers });
   }
   if (request.method !== "POST") return json({ error: "Method not allowed." }, 405);
-  const origin = request.headers.get("Origin");
-  if (origin && origin !== CATALOG_ORIGIN) return json({ error: "Origin not allowed." }, 403);
   const authHeader = request.headers.get("Authorization") || "";
   if (!authHeader.startsWith("Bearer ")) return json({ error: "Sign in required." }, 401);
 
@@ -89,7 +79,7 @@ Deno.serve(async (request: Request) => {
     email,
     {
       data: { full_name: displayName },
-      redirectTo: REDIRECT_URL,
+      redirectTo: catalogInvitationRedirect(origin),
     },
   );
   if (inviteError || !invited.user) {

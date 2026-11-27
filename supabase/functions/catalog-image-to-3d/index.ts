@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.110.0";
+import { CATALOG_STAFF_ORIGINS } from "../_shared/catalog-origins.ts";
 
 // All provider calls and keys remain server-side. RLS blocks all client reads
 // from catalog_3d_jobs. No model is published until the editor saves the product.
@@ -20,7 +21,7 @@ type ProviderTask = {
 };
 
 const allowedOrigins = new Set([
-  "https://brutti-team.github.io",
+  ...CATALOG_STAFF_ORIGINS,
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "http://localhost:4173",

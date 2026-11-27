@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { productIdFromHash, resolveAppRoute } from "../src/lib/routes";
+import { productIdFromHash, productIdFromLocation, resolveAppRoute, routeHref } from "../src/lib/routes";
 
 it.each(["/", "/index.html", "/brutti-catalog/", "/brutti-catalog/index.html"])(
   "preserves the existing admin default at %s",
@@ -60,4 +60,38 @@ it.each([
 
 it("keeps malformed product IDs distinguishable from the collection route", () => {
   expect(productIdFromHash("#/product/%E0%A4%A")).toBe("");
+});
+
+it.each([
+  ["catalog.brutti.my", "/", "#/catalog"],
+  ["admincatalog.brutti.my", "/", "#/admin"],
+  ["brutti-catalog.pages.dev", "/", "#/catalog"],
+  ["preview.brutti-catalog.pages.dev", "/admin", "#/admin"],
+  ["catalog.brutti.my", "/product/table%20one", "#/product/table%20one"],
+])("routes %s%s without requiring an app fragment", (hostname, pathname, expected) => {
+  expect(resolveAppRoute({ hostname, pathname, hash: "" })).toBe(expected);
+});
+
+it.each([
+  ["catalog.brutti.my", "/catalog", "/"],
+  ["catalog.brutti.my", "/admin", "https://admincatalog.brutti.my/"],
+  ["admincatalog.brutti.my", "/admin", "/"],
+  ["admincatalog.brutti.my", "/catalog", "https://catalog.brutti.my/"],
+  ["catalog.brutti.my", "#/product/table%20one", "/product/table%20one"],
+  ["admincatalog.brutti.my", "/product/table%20one", "https://catalog.brutti.my/product/table%20one"],
+  ["preview.brutti-catalog.pages.dev", "/admin", "/admin"],
+  ["brutti-team.github.io", "/admin", "#/admin"],
+  ["brutti-team.github.io", "/catalog", "#/catalog"],
+  ["brutti-team.github.io", "/product/table%20one", "#/product/table%20one"],
+  ["catalog.brutti.my.evil.test", "/catalog", "#/catalog"],
+])("builds links for %s: %s", (hostname, route, expected) => {
+  expect(routeHref(route, { hostname, pathname: "/", hash: "" })).toBe(expected);
+});
+
+it("reads direct product paths on custom domains while keeping Supabase tokens untouched", () => {
+  const productLocation = { hostname: "catalog.brutti.my", pathname: "/product/table%20one", hash: "" };
+  expect(productIdFromLocation(productLocation)).toBe("table one");
+  const callback = { hostname: "admincatalog.brutti.my", pathname: "/", hash: "#access_token=callback&refresh_token=refresh&type=invite" };
+  expect(resolveAppRoute(callback)).toBe("#/admin");
+  expect(callback.hash).toContain("access_token=callback");
 });
