@@ -25,7 +25,7 @@ import { recommendProducts, recentProductIds, searchMatches } from "../lib/produ
 import MaterialsContent from "./MaterialsContent";
 import { splitSpecifications, primaryFinishingRow } from "../lib/specification-groups";
 import { formatProductDimensions, formatSpecificationMeasurement } from "../lib/dimensions";
-import { productIdFromHash } from "../lib/routes";
+import { navigateApp, productIdFromLocation, routeHref, subscribeRouteChange } from "../lib/routes";
 import { recordCatalogEvent } from "../lib/customer-analytics";
 import { BRUTTI_WHATSAPP_NUMBER, productWhatsAppUrl } from "../lib/whatsapp-enquiry";
 import ShowroomSections from "./ShowroomSections";
@@ -101,7 +101,7 @@ const availabilityLabels = {
   unavailable: "Unavailable",
 };
 function currentProductId() {
-  return productIdFromHash(window.location.hash);
+  return productIdFromLocation(window.location);
 }
 function FurnitureImage({
   src,
@@ -249,8 +249,7 @@ export default function PublicCatalog({
       setMobileMenu(false);
       window.scrollTo({ top: 0, behavior: "instant" });
     };
-    window.addEventListener("hashchange", changeRoute);
-    return () => window.removeEventListener("hashchange", changeRoute);
+    return subscribeRouteChange(changeRoute);
   }, [previewProduct]);
   const published = useMemo(
     () => products.filter((product) => product.status === "published"),
@@ -315,7 +314,7 @@ export default function PublicCatalog({
   const browseCollection = () => {
     setMobileMenu(false);
     if (productId !== null) {
-      window.location.hash = "/catalog";
+      navigateApp("/catalog");
       window.setTimeout(
         () =>
           document
@@ -337,7 +336,7 @@ export default function PublicCatalog({
   const browseShowroom = () => {
     setMobileMenu(false);
     if (productId !== null) {
-      window.location.hash = "/catalog";
+      navigateApp("/catalog");
       window.setTimeout(
         () => document.getElementById("pub-showroom")?.scrollIntoView({ behavior: "smooth" }),
         50,
@@ -349,7 +348,7 @@ export default function PublicCatalog({
   const browseBestSellers = () => {
     setMobileMenu(false);
     if (productId !== null) {
-      window.location.hash = "/catalog";
+      navigateApp("/catalog");
       window.setTimeout(
         () => document.getElementById("pub-best-selling")?.scrollIntoView({ behavior: "smooth" }),
         60,
@@ -404,7 +403,7 @@ export default function PublicCatalog({
       </a>}
       <header className="pub-header">
         <a
-          href={previewProduct ? undefined : "#/catalog"}
+          href={previewProduct ? undefined : routeHref("/catalog")}
           onClick={previewProduct ? (event) => event.preventDefault() : undefined}
           className="pub-wordmark"
           aria-label="Brutti catalog home"
@@ -728,7 +727,7 @@ export default function PublicCatalog({
               <div className="pub-empty-state">
                 <h2>This piece isn’t in the collection.</h2>
                 <p>It may be unpublished or no longer available.</p>
-                <a href="#/catalog" className="pub-primary-button">
+                <a href={routeHref("/catalog")} className="pub-primary-button">
                   Explore the collection <ArrowRight size={16} />
                 </a>
               </div>
@@ -974,7 +973,7 @@ export default function PublicCatalog({
       {!previewProduct && <footer className="pub-footer pub-footer--reference" id="pub-contact">
         <div className="pub-footer__layout">
           <div className="pub-footer__contact">
-            <a href="#/catalog" className="pub-footer__brand pub-wordmark" aria-label="Brutti Catalog home">
+            <a href={routeHref("/catalog")} className="pub-footer__brand pub-wordmark" aria-label="Brutti Catalog home">
               <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="pub-official-logo" />
             </a>
             <div className="pub-footer__intro">

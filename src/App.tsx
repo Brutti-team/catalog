@@ -7,7 +7,7 @@ import { formatProductPrice } from "./lib/price";
 import { publicAssetUrl } from "./lib/assets";
 import { categoryCover } from "./lib/category-covers";
 import { curatedCategoryCover } from "./lib/curated-category-covers";
-import { resolveAppRoute } from "./lib/routes";
+import { navigateApp, resolveAppRoute, routeHref, subscribeRouteChange } from "./lib/routes";
 import { useState, useEffect, useCallback, useRef, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -310,8 +310,7 @@ export default function App() {
   }, []);
   useEffect(() => {
     const fn = () => setRoute(resolveAppRoute(window.location));
-    window.addEventListener("hashchange", fn);
-    return () => window.removeEventListener("hashchange", fn);
+    return subscribeRouteChange(fn);
   }, []);
   useEffect(() => {
     void refreshAuth();
@@ -421,7 +420,7 @@ export default function App() {
     };
   }, []);
   const navigate = (dest: string) => {
-    window.location.hash = dest;
+    navigateApp(dest);
     setMobileNav(false);
   };
   const switchTab = (next: Tab) => {
@@ -655,8 +654,9 @@ export default function App() {
       setPasswordIntent(null);
       const clean = new URL(window.location.href);
       clean.searchParams.delete("auth");
-      clean.hash = "/admin";
+      clean.hash = "";
       window.history.replaceState(null, "", clean);
+      navigateApp("/admin", true);
       setRoute("#/admin");
       await refreshAuth();
     }} /></div>;
@@ -735,7 +735,7 @@ export default function App() {
         onBlur={() => setRailTooltip(null)}
         onClickCapture={() => setRailTooltip(null)}>
         <div className="catalog-sidebar-head">
-          <a href="#/admin" className="catalog-sidebar-identity" onClick={() => switchTab("overview")} aria-label="Brutti Catalog overview">
+          <a href={routeHref("/admin")} className="catalog-sidebar-identity" onClick={() => switchTab("overview")} aria-label="Brutti Catalog overview">
             <span className="catalog-sidebar-logo">
               <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="" />
             </span>
@@ -1888,7 +1888,7 @@ function Login({
       <div className="catalog-login-shell">
         <section className="catalog-login-story" aria-label="Brutti Catalog collection studio" style={{ backgroundImage: `url("${publicAssetUrl("/images/brutti-collection-hero.webp")}")` }}>
           <div className="catalog-login-story-top">
-            <a href="#/catalog" className="catalog-login-wordmark" aria-label="Open Brutti public catalog">
+            <a href={routeHref("/catalog")} className="catalog-login-wordmark" aria-label="Open Brutti public catalog">
               <img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" />
             </a>
             <span className="catalog-login-story-serial">CUSTOM FURNITURE · KIOSKS</span>
@@ -2033,7 +2033,7 @@ function PasswordAccess({ intent, verified, onDone }: { intent: "invite" | "reco
     finally { setBusy(false); }
   }
   return <div className="access-page">
-    <a href="#/catalog" className="brand"><img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="brutti-official-logo" /></a>
+    <a href={routeHref("/catalog")} className="brand"><img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="brutti-official-logo" /></a>
     <div className="access-card">
       <ShieldCheck size={25} /><span className="eyebrow">THE CATALOG WORKSPACE</span>
       <h1>{intent === "invite" ? "Set your password." : "Reset your password."}</h1>

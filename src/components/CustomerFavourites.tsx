@@ -1,3 +1,4 @@
+import { routeHref } from "../lib/routes";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Check, Download, Heart, X } from "lucide-react";
 import type { Category, Product } from "../lib/types";
@@ -66,11 +67,11 @@ export default function CustomerFavourites({products,categories,loading,error,on
       <div className="pub-favourites-list">
         {loading?<p role="status">Loading your collection…</p>:error?<p role="alert">Unable to load your saved products. Try refreshing the catalogue.</p>:saved.length?saved.map(product=>
           <article className="pub-favourites-item" key={product.id}>
-            <a className="pub-favourites-photo" href={"#/product/"+encodeURIComponent(product.id)} onClick={close} aria-label={"View "+product.name}>
+            <a className="pub-favourites-photo" href={routeHref("/product/"+encodeURIComponent(product.id))} onClick={close} aria-label={"View "+product.name}>
               <img src={publicAssetUrl(product.images[0]?.url)} alt={product.images[0]?.alt||product.name} loading="lazy"
                 onError={event=>{if(!event.currentTarget.src.endsWith("/images/placeholder.svg"))event.currentTarget.src=publicAssetUrl("/images/placeholder.svg");}}/>
             </a>
-            <div className="pub-favourites-item-copy"><a href={"#/product/"+encodeURIComponent(product.id)} onClick={close}>{product.name}</a>
+            <div className="pub-favourites-item-copy"><a href={routeHref("/product/"+encodeURIComponent(product.id))} onClick={close}>{product.name}</a>
               <span>{categories.find(c=>c.id===product.categoryId)?.name||"Furniture"}</span>
               <div className="pub-favourites-price"><ProductPrice product={product} stackedBasis/></div>
             </div>
