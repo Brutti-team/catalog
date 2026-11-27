@@ -102,8 +102,17 @@ function footer(ctx:CanvasRenderingContext2D,page:number) {
   ctx.fillStyle="#e9ece0";ctx.beginPath();ctx.moveTo(0,848);ctx.bezierCurveTo(180,800,370,875,620,813);ctx.lineTo(620,877);ctx.lineTo(0,877);ctx.closePath();ctx.fill();
   ctx.fillStyle=GREEN;ctx.beginPath();ctx.moveTo(0,844);ctx.bezierCurveTo(165,812,390,871,620,834);ctx.lineTo(620,877);ctx.lineTo(0,877);ctx.closePath();ctx.fill();
   text(ctx,"BRUTTI  /  PRODUCT CATALOGUE",40,861,10,"#ffffff",600);
-  panel(ctx,535,845,50,24,"#f1d9b7",12);
-  ctx.textAlign="center";text(ctx,String(page).padStart(2,"0"),560,862,12,GREEN,700);ctx.textAlign="left";
+  // Keep the complete page badge inside the solid-green footer, with
+  // the same right inset as the catalogue content and a safe bottom margin.
+  const pageLabel=String(page).padStart(2,"0");
+  ctx.save();
+  ctx.font=font(11,700);
+  const badgeW=Math.max(44,Math.ceil(ctx.measureText(pageLabel).width)+20);
+  const badgeH=20,badgeX=PW-40-badgeW,badgeY=PH-8-badgeH;
+  panel(ctx,badgeX,badgeY,badgeW,badgeH,"#f1d9b7",10);
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  ctx.fillStyle=GREEN;ctx.fillText(pageLabel,badgeX+badgeW/2,badgeY+badgeH/2);
+  ctx.restore();
 }
 function header(ctx:CanvasRenderingContext2D,label:string,logo?:HTMLImageElement) {
   ctx.fillStyle=GREEN;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(350,0);ctx.bezierCurveTo(320,15,316,55,270,57);ctx.bezierCurveTo(155,64,50,49,0,78);ctx.closePath();ctx.fill();
