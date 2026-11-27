@@ -426,7 +426,7 @@
     border-radius: 12px;
     background: #f8fbf8;
   }
-  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-search input { height: 47px; font-size: 14px; }
+  .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-search input { height: 47px; font-size: 16px; }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-search input::placeholder { color: #64776a; }
   .pub-app.pub-refined:not(.pub-private-preview) #pub-collection .pub-collection-green-header .pub-collection-actions {
     display: grid;
