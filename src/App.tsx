@@ -8,7 +8,7 @@ import { publicAssetUrl } from "./lib/assets";
 import { categoryCover } from "./lib/category-covers";
 import { curatedCategoryCover } from "./lib/curated-category-covers";
 import { navigateApp, resolveAppRoute, routeHref, subscribeRouteChange } from "./lib/routes";
-import { useState, useEffect, useCallback, useRef, type FormEvent } from "react";
+import { lazy, Suspense, useState, useEffect, useCallback, useRef, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import {
   LayoutDashboard,
@@ -68,17 +68,17 @@ import {
   completePassword,
   requestPasswordReset,
 } from "./lib/catalog";
-import ProductEditor from "./components/ProductEditor";
+
 import BackgroundCutoutToast from "./components/BackgroundCutoutToast";
 import BackgroundGalleryOverlay from "./components/BackgroundGalleryOverlay";
 import { getBackgroundJobSnapshot } from "./lib/photo-background-jobs";
 import CatalogOverviewStudio from "./components/CatalogOverviewStudio";
-import PublicCatalog from "./components/PublicCatalog";
+
 import CatalogPdfDownload, { type CatalogPdfDownloadHandle } from "./components/CatalogPdfDownload";
 import Modal from "./components/Modal";
-import AccountCenter from "./components/AccountCenter";
-import CataloguePhotoImport from "./components/CataloguePhotoImport";
-import AlbumLibrary from "./components/AlbumLibrary";
+
+
+
 import { albumPhotoToProductImage, combineAlbumPhotos, listAlbumRecords, setAlbumPhotoCategory, type AlbumRecord } from "./lib/album";
 import LastChange from "./components/LastChange";
 import CategoryFilter from "./components/CategoryFilter";
@@ -88,6 +88,14 @@ import "./components/category-cover-picker.css";
 import SortFilter from "./components/SortFilter";
 import { getAccountSummary, initials, type StaffRole } from "./lib/account-center";
 import { useAdminTheme } from "./lib/admin-theme";
+
+const ProductEditor = lazy(() => import("./components/ProductEditor"));
+const PublicCatalog = lazy(() => import("./components/PublicCatalog"));
+const AccountCenter = lazy(() => import("./components/AccountCenter"));
+const CataloguePhotoImport = lazy(() => import("./components/CataloguePhotoImport"));
+const AlbumLibrary = lazy(() => import("./components/AlbumLibrary"));
+const deferredModuleFallback = <div role="status" aria-live="polite" style={{ padding: "24px", textAlign: "center", color: "inherit" }}>Loading…</div>;
+
 
 type Tab = "overview" | "products" | "album" | "categories" | "profile" | "users" | "activity";
 const label = (s: string) =>
@@ -259,7 +267,7 @@ export default function App() {
     if (background) setSyncing(true);
     setError(null);
     try {
-      const next = await loadCatalog();
+      const next = await loadCatalog(window.location.hostname === "catalog.brutti.my" ? "public" : "staff");
       if (request === catalogRequest.current) {
         setData(next);
         setLastSyncedAt(Date.now());
@@ -567,6 +575,7 @@ export default function App() {
   if (publicRoute && !passwordIntent)
     return (
       <>
+        <Suspense fallback={deferredModuleFallback}>
         <PublicCatalog
           products={data.products}
           categories={data.categories}
@@ -575,6 +584,7 @@ export default function App() {
           onRetry={() => void refresh()}
           onAdmin={() => navigate("/admin")}
         />
+        </Suspense>
         {toast && (
           <div className="toast" role="status">
             <CheckCircle2 size={17} />
@@ -952,7 +962,9 @@ export default function App() {
         </header>
         <div className="admin-content">
           {tab === "profile" || tab === "users" || tab === "activity" ? (
+            <Suspense fallback={deferredModuleFallback}>
             <AccountCenter view={tab} onProfileChanged={setAccountName} products={data.products} />
+            </Suspense>
           ) : (<>
           {tab === "overview" ? (
             <section className="catalog-command brutti-editorial-hero" aria-labelledby="catalog-overview-title">
@@ -1053,6 +1065,7 @@ export default function App() {
             </div>
           )}
           {tab === "album" && (
+            <Suspense fallback={deferredModuleFallback}>
             <AlbumLibrary key={albumRevision} products={data.products} categories={data.categories}
               onDeleteProduct={(id) => {
                 if (busy) return;
@@ -1095,6 +1108,7 @@ export default function App() {
                 });
                 if (alreadyAttached) setToast("Photo already belongs to this product.");
               }} />
+            </Suspense>
           )}
           {tab === "overview" && (
             <>
@@ -1536,6 +1550,7 @@ export default function App() {
       <CatalogPdfDownload products={data.products} categories={data.categories}
         disabled={loading || publishedCount === 0} openRef={staffPdfRef} hideTrigger staffPreview />
       {photoImportOpen && (
+        <Suspense fallback={deferredModuleFallback}>
         <CataloguePhotoImport
           onClose={() => setPhotoImportOpen(false)}
           onDone={async ({ ready, total, attached, skipped }) => {
@@ -1543,8 +1558,10 @@ export default function App() {
             setToast(`Upload completed: ${ready}/${total} photos ready · ${attached} newly attached, ${skipped} already linked.`);
           }}
         />
+        </Suspense>
       )}
       {editor && (
+        <Suspense fallback={deferredModuleFallback}>
         <ProductEditor
           key={editor.id}
           product={editor}
@@ -1576,6 +1593,7 @@ export default function App() {
             if (warning) setToast(warning);
           }}
         />
+        </Suspense>
       )}{" "}
       {productToDelete && (
         <Modal

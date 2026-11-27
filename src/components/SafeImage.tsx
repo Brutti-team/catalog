@@ -4,6 +4,7 @@ import { publicAssetUrl } from "../lib/assets";
 export default function SafeImage(props: ImgHTMLAttributes<HTMLImageElement>) {
   return (
     <img
+      decoding="async"
       {...props}
       src={publicAssetUrl(props.src)}
       onError={(event) => {

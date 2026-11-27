@@ -127,6 +127,8 @@ function FurnitureImage({
       className={`${className}${image?.crop ? " catalog-image-cropped" : isStudioEditedPhoto(image) ? " catalog-image-studio-edited" : ""}`.trim()}
       style={publicPhotoCropStyle(image)}
       loading={eager ? "eager" : "lazy"}
+      decoding="async"
+      fetchPriority={eager ? "high" : "auto"}
       onError={(event) => {
         if (!fallbackToPlaceholder) {
           // The homepage hero should only show real catalog photography.

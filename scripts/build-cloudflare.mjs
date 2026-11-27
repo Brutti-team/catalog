@@ -14,6 +14,6 @@ if (result.status === 0) {
     writeFile('dist/sitemap.xml', "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n  <url><loc>https://catalog.brutti.my/</loc></url>\n</urlset>\n"),
     writeFile('dist/robots.txt', 'User-agent: *\nAllow: /\nSitemap: https://catalog.brutti.my/sitemap.xml\n'),
     writeFile('dist/_routes.json', JSON.stringify({version: 1, include: ['/sitemap.xml', '/robots.txt'], exclude: []})),
-    writeFile('dist/_headers', 'https://admincatalog.brutti.my/*\n  X-Robots-Tag: noindex, nofollow\nhttps://catalog.brutti.my/admin\n  X-Robots-Tag: noindex, nofollow\nhttps://catalog.brutti.my/admin/*\n  X-Robots-Tag: noindex, nofollow\nhttps://:project.pages.dev/*\n  X-Robots-Tag: noindex, nofollow\n'),
+    writeFile('dist/_headers', 'https://admincatalog.brutti.my/*\n  X-Robots-Tag: noindex, nofollow\nhttps://catalog.brutti.my/admin\n  X-Robots-Tag: noindex, nofollow\nhttps://catalog.brutti.my/admin/*\n  X-Robots-Tag: noindex, nofollow\nhttps://:project.pages.dev/*\n  X-Robots-Tag: noindex, nofollow\n/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n'),
   ]);
 }

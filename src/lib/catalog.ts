@@ -209,19 +209,26 @@ async function productModelsEnabled(db: SupabaseClient): Promise<boolean> {
   } catch { return false; }
 }
 
-export async function loadCatalog(): Promise<CatalogData> {
+export async function loadCatalog(mode: "staff" | "public" = "staff"): Promise<CatalogData> {
   const db = supabase();
   // The REST connection pool is shared with staff access checks. Do not fan out
   // optional RPCs or category reads while a primary request is failing.
-  const products = await withRequestDeadline(db.from("products").select("*").order("created_at", { ascending: false }), "load products");
+  const productsQuery = db.from("products").select("*");
+  const visibleProducts = mode === "public" ? productsQuery.eq("status", "published") : productsQuery;
+  const products = await withRequestDeadline(visibleProducts.order("created_at", { ascending: false }), "load products");
   if (products.error)
     throw backendError(products.error.message, "load products");
   const categories = await withRequestDeadline(db.from("categories").select("*").order("name"), "load categories");
   if (categories.error)
     throw backendError(categories.error.message, "load categories");
   const mapped = (products.data as ProductRow[]).map(fromRow);
-  const capabilities = await loadCatalogCapabilities(db);
-  const productModels = await productModelsEnabled(db);
+  // Public rendering reads the model/price fields already present in published rows.
+  // Staff-only feature probes are not needed by the customer interface.
+  if (mode === "public") return { products: mapped, categories: categories.data as Category[] };
+  // After both required reads have succeeded, these independent read-only probes can run together.
+  const [capabilities, productModels] = await Promise.all([
+    loadCatalogCapabilities(db), productModelsEnabled(db),
+  ]);
   return {
     products: mapped,
     categories: categories.data as Category[],
