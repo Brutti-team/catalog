@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { ProductImage } from "../lib/types";
 import { publicAssetUrl } from "../lib/assets";
@@ -28,6 +28,7 @@ export default function CustomerPhotoZoom({images,productName,initialIndex,onClo
     live.current=safe;setView(safe);
   };
   const reset=()=>update(initialZoom);
+  const canPan=()=>{const img=imageRef.current, frame=stage.current;return live.current.scale>1||Boolean(img&&frame&&(img.offsetWidth>frame.clientWidth+1||img.offsetHeight>frame.clientHeight+1));};
   const changePhoto=(step:number)=>{
     pointers.current.clear();gesture.current=null;setDragging(false);
     reset();setFailed(false);setIndex(i=>(i+step+images.length)%images.length);
@@ -62,7 +63,7 @@ export default function CustomerPhotoZoom({images,productName,initialIndex,onClo
     pointers.current.set(event.pointerId,point);
     if(pointers.current.size>1&&gesture.current)gesture.current.moved=true;
     event.currentTarget.setPointerCapture(event.pointerId);
-    if(live.current.scale>1||pointers.current.size>1)setDragging(true);
+    if(canPan()||pointers.current.size>1)setDragging(true);
   };
   const move=(event:ReactPointerEvent<HTMLDivElement>)=>{
     const previous=pointers.current.get(event.pointerId);if(!previous)return;
@@ -77,7 +78,7 @@ export default function CustomerPhotoZoom({images,productName,initialIndex,onClo
         const scaled=zoomAt(live.current,live.current.scale*after/before,midpoint.x,midpoint.y);
         update({...scaled,x:scaled.x+(next.x-previous.x)/2,y:scaled.y+(next.y-previous.y)/2});
       }
-    }else if(live.current.scale>1){
+    }else if(canPan()){
       update({...live.current,x:live.current.x+next.x-previous.x,y:live.current.y+next.y-previous.y});
     }
   };
@@ -107,7 +108,7 @@ export default function CustomerPhotoZoom({images,productName,initialIndex,onClo
       if(view.scale>1&&(event.key==="ArrowUp"||event.key==="ArrowDown")){event.preventDefault();update({...live.current,y:live.current.y+(event.key==="ArrowUp"?60:-60)});}
     }}>
     <button className="customer-photo-close" type="button" autoFocus aria-label="Close photo viewer" onClick={onClose}><X size={21}/></button>
-    <div ref={stage} style={{aspectRatio:ratio}} className={"customer-photo-zoom-stage"+(dragging?" is-dragging":view.scale>1?" is-zoomed":"")}
+    <div ref={stage} style={{aspectRatio:ratio,"--customer-photo-ratio":ratio} as CSSProperties} className={"customer-photo-zoom-stage"+(dragging?" is-dragging":view.scale>1?" is-zoomed":"")}
       onPointerDown={start} onPointerMove={move} onPointerUp={event=>end(event)}
       onPointerCancel={event=>end(event,true)} onLostPointerCapture={event=>end(event,true)}>
       {active&&!failed?<img key={active.id} ref={imageRef} src={publicAssetUrl(active.url)} alt={active.alt||productName}
