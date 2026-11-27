@@ -2074,7 +2074,7 @@
   }
 }
 
-/* Compact mobile enquiry next to the details heading; preserve desktop CTA. */
+/* Mobile enquiry: full-width action after the specifications inside the card. */
 .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-details-mobile-enquiry {
   display: none !important;
 }
@@ -2083,38 +2083,23 @@
     display: none !important;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto minmax(0, auto);
-    align-items: center;
-    column-gap: 10px;
-    row-gap: 10px;
-  }
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > h2 {
-    grid-column: 1;
-    grid-row: 1;
-    margin: 0 !important;
-    min-width: 0;
-  }
-  .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-specifications-scroll {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-details-mobile-enquiry {
-    grid-column: 2;
-    grid-row: 1;
     display: inline-flex !important;
     align-items: center;
-    justify-content: center;
-    justify-self: end;
-    gap: 7px;
-    width: auto !important;
+    justify-content: space-between;
+    align-self: stretch;
+    gap: 8px;
+    width: 100% !important;
     min-width: 0;
     min-height: 44px;
     box-sizing: border-box;
-    padding: 8px 11px !important;
-    margin: 0 !important;
+    padding: 9px 12px !important;
+    margin: 12px 0 0 !important;
     border: 1px solid rgba(255,255,255,.24);
     border-radius: 9px;
     background: linear-gradient(135deg,rgba(62,110,85,.96),rgba(25,65,46,.98)) !important;
@@ -2122,7 +2107,6 @@
     box-shadow: inset 0 1px 0 rgba(255,255,255,.23), 0 3px 9px rgba(24,64,43,.12);
     font: 650 12px/1.3 "DM Sans",system-ui,sans-serif;
     text-decoration: none;
-    white-space: nowrap;
   }
   .pub-app.pub-refined:not(.pub-private-preview) .pub-detail-section > .pub-product-detail > .pub-detail-copy > .pub-specifications > .pub-details-mobile-enquiry .pub-details-whatsapp-icon {
     display: inline-flex;
