@@ -184,6 +184,55 @@ export default function PublicCatalog({
   }, []);
   const [category, setCategory] = useState("all");
   const [bestOnly, setBestOnly] = useState(false);
+  const categoryFiltersRef = useRef<HTMLDivElement>(null);
+  const categoryHintUsed = useRef(false);
+  // A short automatic swipe hint on phones, without moving the actual filter selection.
+  useEffect(() => {
+    const rail = categoryFiltersRef.current;
+    if (!phoneSearch || previewProduct || productId !== null || loading || categoryHintUsed.current || category !== "all" || bestOnly || !rail) return;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (motion.matches) return;
+    let frame = 0;
+    let observer: IntersectionObserver | undefined;
+    const stop = () => {
+      categoryHintUsed.current = true;
+      window.cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
+    const onMotionChange = () => { if (motion.matches) stop(); };
+    const start = () => {
+      const distance = Math.min(105, rail.scrollWidth - rail.clientWidth);
+      if (categoryHintUsed.current || distance < 12 || rail.scrollLeft > 2 || motion.matches) return;
+      categoryHintUsed.current = true;
+      observer?.disconnect();
+      const started = performance.now();
+      const animate = (now: number) => {
+        if (document.hidden || motion.matches) return;
+        const progress = Math.max(0, Math.min(1, (now - started - 350) / 4000));
+        const offset = distance * (1 - Math.cos(progress * Math.PI * 2)) / 2;
+        rail.scrollTo({ left: offset, behavior: "instant" });
+        if (progress < 1) frame = window.requestAnimationFrame(animate);
+      };
+      frame = window.requestAnimationFrame(animate);
+    };
+    const events = ["pointerdown", "touchstart", "wheel", "focusin"] as const;
+    events.forEach(event => rail.addEventListener(event, stop, { passive: true }));
+    motion.addEventListener("change", onMotionChange);
+    if ("IntersectionObserver" in window) {
+      observer = new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= 0.6)) start();
+      }, { threshold: 0.6 });
+      observer.observe(rail);
+    } else {
+      start();
+    }
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer?.disconnect();
+      events.forEach(event => rail.removeEventListener(event, stop));
+      motion.removeEventListener("change", onMotionChange);
+    };
+  }, [phoneSearch, previewProduct, productId, loading, categories.length, category, bestOnly]);
   const [collectionExpanded, setCollectionExpanded] = useState(false);
   // The collapsed collection shows two complete rows at each CSS breakpoint.
   const getCollectionLimit = () => {
@@ -613,7 +662,7 @@ export default function PublicCatalog({
                 </div>
               </div>
               <div className="pub-filter-row">
-                <div className="pub-category-filters" aria-label="Filter by category">
+                <div ref={categoryFiltersRef} className="pub-category-filters" aria-label="Filter by category; swipe horizontally for more categories">
                   <button
                     type="button"
                     aria-pressed={category === "all" && !bestOnly}
