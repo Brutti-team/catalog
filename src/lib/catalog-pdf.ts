@@ -122,7 +122,7 @@ function plainMaterials(value:string) {
   doc.querySelectorAll("p,div").forEach(el=>el.append("\n"));
   return (doc.body.textContent||"").replace(/\*\*|__|==/g,"").replace(/\*([^*\n]+)\*/g,"$1").trim();
 }
-type DetailRow={value:string;size:number;weight:number;color:string;height:number;heading?:boolean;indent?:number;bullet?:boolean;gapBefore?:number;dimension?:{label:string;name:string;values:string[]}};
+type DetailRow={value:string;size:number;weight:number;color:string;height:number;heading?:boolean;indent?:number;bullet?:boolean;gapBefore?:number;dimensionTable?:{name:string;values:string[];height:number}[]};
 function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remainingDescription:string[]):DetailRow[] {
   const result:DetailRow[]=[];
   const add=(label:string,value:string)=>{
@@ -151,13 +151,13 @@ function productLines(ctx:CanvasRenderingContext2D,p:Product,width:number,remain
   if(keys.length){
     const gapBefore=result.length?12:0;
     result.push({value:"Dimensions",size:15,weight:700,color:GREEN,height:25+gapBefore,heading:true,gapBefore});
-    for(const key of keys){
-      const label=key[0].toUpperCase();
+    const dimensionTable=keys.map(key=>{
       const name=key==="width"?"Width":key==="depth"?"Depth":"Height";
       const value=formatProductDimensions({width:0,depth:0,height:0,dimensionUnits:p.dimensionUnits,[key]:p[key]}).replace(/ [WDH]$/,"");
-      const values=lines(ctx,value,175,12,600,false,true);
-      result.push({value:"",size:12,weight:600,color:GREEN,height:Math.max(27,values.length*16+10),dimension:{label,name,values}});
-    }
+      const values=lines(ctx,value,118,12,700,false,true);
+      return {name,values,height:Math.max(30,values.length*16+14)};
+    });
+    result.push({value:"",size:12,weight:700,color:GREEN,height:28+dimensionTable.reduce((sum,row)=>sum+row.height,0)+6,dimensionTable});
   }
   for(const row of p.specifications??[]) {
     if(row.kind==="section") {
@@ -182,12 +182,25 @@ function drawRows(ctx:CanvasRenderingContext2D,rows:DetailRow[],top:number,x=40)
   let y=top;
   for(const row of rows){
     const start=y+(row.gapBefore??0);
-    if(row.dimension){
-      const {label,name,values}=row.dimension;
-      panel(ctx,x,y+2,22,22,"#e7ece1",7);
-      ctx.textAlign="center";detailText(ctx,label,x+11,y+17,10,GREEN,700);
-      ctx.textAlign="left";detailText(ctx,name,x+31,y+17,12,MUTED,400);
-      values.forEach((value,j)=>detailText(ctx,value,x+112,y+17+j*16,12,GREEN,700));
+    if(row.dimensionTable){
+      const w=250, divider=x+112, right=x+w-12, headerHeight=28;
+      const tableHeight=headerHeight+row.dimensionTable.reduce((sum,item)=>sum+item.height,0);
+      ctx.fillStyle="#e7ece1";ctx.fillRect(x,y,w,headerHeight);
+      ctx.textAlign="left";detailText(ctx,"Label",x+12,y+18,10,GREEN,700);
+      ctx.textAlign="right";detailText(ctx,"Value",right,y+18,10,GREEN,700);
+      let rowY=y+headerHeight;
+      for(const [index,item] of row.dimensionTable.entries()){
+        ctx.fillStyle=index%2===0?"#fafbf7":"#f1f4ec";
+        ctx.fillRect(x,rowY,w,item.height);
+        ctx.textAlign="left";detailText(ctx,item.name,x+12,rowY+19,12,INK,400);
+        ctx.textAlign="right";
+        item.values.forEach((value,j)=>detailText(ctx,value,right,rowY+19+j*16,12,GREEN,700));
+        ctx.fillStyle=RULE;ctx.fillRect(x,rowY,w,.65);
+        rowY+=item.height;
+      }
+      ctx.fillStyle=RULE;ctx.fillRect(divider,y,.65,tableHeight);
+      ctx.strokeStyle=RULE;ctx.lineWidth=.65;ctx.strokeRect(x,y,w,tableHeight);
+      ctx.textAlign="left";
     }else if(row.heading){
       editorialText(ctx,row.value,x,start+row.size,row.size,row.color,row.weight);
     }else{
