@@ -52,6 +52,26 @@ Deno.serve(async (request: Request) => {
     return json({ error: "Invalid invitation request." }, 400);
   }
 
+  // Reinvite an existing, unaccepted Catalog account without changing its access.
+  if (payload.action === "reinvite") {
+    const targetId = typeof payload.userId === "string" ? payload.userId : "";
+    if (!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(targetId) || targetId === userResult.user.id)
+      return json({ error: "Invalid invitation target." }, 400);
+    const { data: targetRole, error: targetRoleError } = await admin.from("catalog_staff_roles").select("role").eq("user_id", targetId).maybeSingle();
+    if (targetRoleError) return json({ error: "Could not verify Catalog access." }, 503);
+    if (!targetRole || !ALLOWED_ROLES.has(targetRole.role)) return json({ error: "This account no longer has Catalog access." }, 409);
+    const { data: targetResult, error: targetError } = await admin.auth.admin.getUserById(targetId);
+    const target = targetResult?.user;
+    if (targetError || !target?.email) return json({ error: "Catalog account not found." }, 404);
+    if (target.last_sign_in_at || target.email_confirmed_at || !target.invited_at)
+      return json({ error: "This invitation is no longer pending. Refresh the staff list." }, 409);
+    const { data: renewed, error: resendError } = await admin.auth.admin.inviteUserByEmail(target.email, {
+      redirectTo: catalogInvitationRedirect(origin),
+    });
+    if (resendError || renewed.user?.id !== targetId) return json({ error: resendError?.message || "Could not resend this invitation." }, 422);
+    return json({ ok: true, status: "invited", message: "Invitation resent successfully." });
+  }
+
   const email = typeof payload.email === "string" ? payload.email.trim().toLowerCase() : "";
   const displayName = typeof payload.displayName === "string" ? payload.displayName.trim().replace(/\s+/g, " ") : "";
   const role = typeof payload.role === "string" ? payload.role : "";
