@@ -643,33 +643,9 @@
 }
 
 
-/* Phone hero: breathing room below the heading and furniture-first framing.
-   Use the lower part of the original photo, without modifying saved crops. */
+/* Phone hero: preserve the extra spacing beneath the heading. Restore original photo framing. */
 @media (max-width: 600px) {
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero {
-    --mobile-hero-photo-height: clamp(158px, 48vw, 220px);
-    grid-template-rows: auto var(--mobile-hero-photo-height) !important;
-  }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-actions {
     margin-top: 19px !important;
-  }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-art {
-    height: var(--mobile-hero-photo-height) !important;
-    max-height: var(--mobile-hero-photo-height) !important;
-    border-radius: 0 0 16px 16px !important;
-  }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-art > img {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    object-position: center bottom !important;
-    transform: none !important;
-    scale: 1 !important;
-    animation: none !important;
-  }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-art::after {
-    background: linear-gradient(0deg, rgba(12,26,20,.23), transparent 33%) !important;
   }
 }
