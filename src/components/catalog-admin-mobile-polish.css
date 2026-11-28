@@ -381,3 +381,12 @@
     padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+
+
+/* Hide the overview hero card on phones; the existing dashboard metrics
+   and bottom navigation remain available. Desktop keeps its original hero. */
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero {
+    display: none !important;
+  }
+}
