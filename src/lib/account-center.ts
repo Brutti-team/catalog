@@ -103,6 +103,18 @@ export async function updateStaffRole(userId: string, role: StaffRole | null): P
   });
   if (error) throw new Error(error.message);
 }
+/** Revoke staff membership only; Auth identity and historical records remain intact. */
+export async function removeCatalogStaff(userId: string): Promise<void> {
+  const account = await getAccountSummary();
+  if (!account.managementReady || !["super_admin", "admin"].includes(account.role ?? ""))
+    throw new Error("Catalog Admin access is required.");
+  if (account.id === userId) throw new Error("You cannot remove your own account.");
+  const { error } = await catalogClient().rpc("catalog_set_staff_role", {
+    p_user_id: userId, p_role: null,
+  });
+  if (error) throw new Error(error.message);
+}
+
 export type PendingCatalogStaff = {
   candidate_id: string;
   display_name: string;
