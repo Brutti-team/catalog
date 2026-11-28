@@ -735,6 +735,11 @@ export async function signIn(email: string, password: string): Promise<void> {
     password,
   }), "sign in", 15000);
   if (error) throw backendError(error.message, "sign in");
+  const { error: activationError } = await withRequestDeadline(supabase().rpc("catalog_activate_staff"), "activate Catalog access");
+  if (activationError) {
+    await supabase().auth.signOut();
+    throw backendError(activationError.message, "activate Catalog access");
+  }
 }
 
 export async function signOut(): Promise<void> {
@@ -786,4 +791,8 @@ export async function completePassword(password: string): Promise<void> {
   if (sessionError || !user) throw new Error("This link is expired or invalid. Request a new link and try again.");
   const { error } = await db.auth.updateUser({ password });
   if (error) throw backendError(error.message, "set your password");
+  const { error: setupError } = await db.rpc("catalog_mark_password_ready");
+  if (setupError) throw backendError(setupError.message, "confirm password setup");
+  const { error: logoutError } = await db.auth.signOut({ scope: "local" });
+  if (logoutError) throw backendError(logoutError.message, "finish password setup");
 }
