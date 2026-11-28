@@ -2060,13 +2060,21 @@ function PasswordAccess({ intent, verified, onDone }: { intent: "invite" | "reco
     catch (e) { setError(e instanceof Error ? e.message : "Unable to set password."); }
     finally { setBusy(false); }
   }
+  async function backToSignIn() {
+    setBusy(true); setError("");
+    try {
+      if (verified) await signOut();
+      await onDone();
+    } catch (e) { setError(e instanceof Error ? e.message : "Unable to return to sign in."); }
+    finally { setBusy(false); }
+  }
   return <div className="brutti-password-page">
     <a href={routeHref("/catalog")} className="brutti-password-brand" aria-label="Brutti Catalog"><img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" /></a>
     <main className="brutti-password-card" aria-labelledby="brutti-password-title">
       <div className="brutti-password-icon"><ShieldCheck size={24} aria-hidden="true"/></div>
       <span className="brutti-password-kicker">Brutti Catalog</span>
       <h1 id="brutti-password-title" className="brutti-password-title">{intent === "invite" ? "Set your password" : "Reset your password"}</h1>
-      <p className="brutti-password-description">{intent === "invite" ? "Create your password to access the Catalog workspace." : "Create a new password to securely access your Catalog account."}</p>
+      <p className="brutti-password-description">{intent === "invite" ? "Create your password, then sign in to activate your Catalog access." : "Create a new password to securely access your Catalog account."}</p>
       {verified ? <form className="brutti-password-form" onSubmit={submit}>
         <div className="brutti-password-field">
           <label htmlFor="brutti-password-new">New password</label>
@@ -2088,7 +2096,7 @@ function PasswordAccess({ intent, verified, onDone }: { intent: "invite" | "reco
         {error && <div className="brutti-password-alert" role="alert"><AlertCircle size={17} aria-hidden="true"/><span>{error}</span></div>}
         <button className="brutti-password-submit" type="submit" disabled={busy}>{busy ? <LoaderCircle className="spin" size={18} aria-hidden="true"/> : null}<span>{busy ? "Saving…" : "Save password"}</span>{!busy && <ArrowRight size={17} aria-hidden="true"/>}</button>
       </form> : <div className="brutti-password-alert" role="alert"><AlertCircle size={17} aria-hidden="true"/><span>This link is expired or invalid. Request a new link and try again.</span></div>}
-      <button type="button" className="brutti-password-back" disabled={busy} onClick={() => void onDone()}><ArrowLeft size={15} aria-hidden="true"/> Back to sign in</button>
+      <button type="button" className="brutti-password-back" disabled={busy} onClick={() => void backToSignIn()}><ArrowLeft size={15} aria-hidden="true"/> Back to sign in</button>
     </main>
     <p className="brutti-password-foot"><LockKeyhole size={13} aria-hidden="true"/> Secure access · Brutti Catalog</p>
   </div>;
