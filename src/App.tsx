@@ -262,6 +262,22 @@ export default function App() {
   const [toast, setToast] = useState("");
   const [menu, setMenu] = useState<string | null>(null);
   const [mobileNav, setMobileNav] = useState(false);
+  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
+  useEffect(() => {
+    if (!mobileMoreOpen) return;
+    const phone = window.matchMedia("(max-width: 600px)");
+    const closeOnResize = () => { if (!phone.matches) setMobileMoreOpen(false); };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileMoreOpen(false);
+    };
+    closeOnResize();
+    phone.addEventListener("change", closeOnResize);
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      phone.removeEventListener("change", closeOnResize);
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [mobileMoreOpen]);
   const staffPdfRef = useRef<CatalogPdfDownloadHandle>(null);
   // Open the full sidebar by default so names and live counts stay visible.
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -500,11 +516,13 @@ export default function App() {
   const navigate = (dest: string) => {
     navigateApp(dest);
     setMobileNav(false);
+    setMobileMoreOpen(false);
   };
   const switchTab = (next: Tab) => {
     setTab(next);
     setOverviewFavouriteOpen(false);
     setMobileNav(false);
+    setMobileMoreOpen(false);
     setSearch("");
     setStatus("all");
     setCategory("all");
@@ -1567,8 +1585,28 @@ export default function App() {
           </>)}
         </div>
       </main>
+      {!editor && !photoImportOpen && mobileMoreOpen && (
+        <>
+          <button type="button" className="catalog-mobile-more-backdrop" aria-label="Close more options" onClick={() => setMobileMoreOpen(false)} />
+          <section id="catalog-mobile-more-panel" className="catalog-mobile-more-panel" aria-label="More navigation options">
+            <div className="catalog-mobile-more-heading">
+              <strong>More</strong>
+              <button type="button" aria-label="Close more options" onClick={() => setMobileMoreOpen(false)}><X size={19} aria-hidden="true" /></button>
+            </div>
+            <div className="catalog-mobile-more-grid">
+              {auth.isAdmin && <button type="button" aria-current={tab === "activity" ? "page" : undefined} onClick={() => switchTab("activity")}><span><History size={23} aria-hidden="true" /></span><small>Activity log</small></button>}
+              {auth.isAdmin && accountsReady && (accountRole === "super_admin" || accountRole === "admin") && (
+                <button type="button" aria-current={tab === "users" ? "page" : undefined} onClick={() => switchTab("users")}><span><ShieldCheck size={23} aria-hidden="true" /></span><small>Account Permission</small></button>
+              )}
+              <button type="button" aria-current={tab === "profile" ? "page" : undefined} onClick={() => switchTab("profile")}><span><UsersRound size={23} aria-hidden="true" /></span><small>Profile</small></button>
+              <button type="button" aria-haspopup="dialog" disabled={loading || publishedCount === 0} onClick={() => { setMobileMoreOpen(false); staffPdfRef.current?.open(); }}><span><FileDown size={23} aria-hidden="true" /></span><small>Download Catalogue</small></button>
+              <button type="button" onClick={() => navigate("/catalog")}><span><Store size={23} aria-hidden="true" /></span><small>Public catalog</small></button>
+            </div>
+          </section>
+        </>
+      )}
       {!editor && !photoImportOpen && (
-        <nav className="catalog-mobile-bottom-nav" aria-label="Mobile admin navigation">
+        <nav className={"catalog-mobile-bottom-nav" + (mobileMoreOpen ? " is-more-open" : "")} aria-label="Mobile admin navigation">
           {([
             { id: "overview", text: "Overview", icon: LayoutDashboard },
             { id: "products", text: "Products", icon: Package },
@@ -1577,16 +1615,16 @@ export default function App() {
           ] as const).filter(item => item.id !== "categories" || accountRole !== "editor").map(item => (
             <button type="button" key={item.id} aria-label={item.text} title={item.text}
               aria-current={tab === item.id ? "page" : undefined}
-              onClick={() => { if (tab !== item.id) switchTab(item.id); else window.scrollTo({ top: 0, behavior: "auto" }); }}>
+              onClick={() => { setMobileMoreOpen(false); if (tab !== item.id) switchTab(item.id); else window.scrollTo({ top: 0, behavior: "auto" }); }}>
               <span><item.icon size={22} strokeWidth={1.8} aria-hidden="true" /></span>
               <small className="catalog-mobile-nav-label" aria-hidden="true">{item.text}</small>
             </button>
           ))}
-          <button type="button" aria-label="Open navigation" title="More"
-            aria-expanded={mobileNav}
-            className={["profile", "users", "activity"].includes(tab) ? "is-active" : undefined}
-            onClick={() => { setNotificationOpen(false); setAccountMenuOpen(false); setMobileNav(true); }}>
-            <span><Menu size={22} strokeWidth={1.8} aria-hidden="true" /></span>
+          <button type="button" aria-label="More navigation options" title="More"
+            aria-expanded={mobileMoreOpen} aria-controls={mobileMoreOpen ? "catalog-mobile-more-panel" : undefined}
+            className={mobileMoreOpen || ["profile", "users", "activity"].includes(tab) ? "is-active" : undefined}
+            onClick={() => { setNotificationOpen(false); setAccountMenuOpen(false); setMobileNav(false); setMobileMoreOpen(open => !open); }}>
+            <span>{mobileMoreOpen ? <X size={22} strokeWidth={1.8} aria-hidden="true" /> : <Menu size={22} strokeWidth={1.8} aria-hidden="true" />}</span>
             <small className="catalog-mobile-nav-label" aria-hidden="true">More</small>
           </button>
         </nav>
