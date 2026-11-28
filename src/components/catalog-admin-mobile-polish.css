@@ -662,3 +662,25 @@
     gap: 0 !important;
   }
 }
+
+
+/* Phone overview: finish the last activity card immediately above the dock.
+   The old audit bottom margin stacked on top of the fixed dock clearance. */
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content {
+    padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+    margin-bottom: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .brutti-overview-audit {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-overview-audit > .catalog-today-feed,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-overview-audit > .catalog-last-activity {
+    margin-bottom: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+}
