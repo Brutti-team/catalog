@@ -218,6 +218,7 @@ export default function App() {
   const [accountName, setAccountName] = useState("");
   const [accountsReady, setAccountsReady] = useState(false);
   const [accountCheckedFor, setAccountCheckedFor] = useState<string | null>(null);
+  const [overviewFavouriteCount, setOverviewFavouriteCount] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [category, setCategory] = useState("all");
@@ -992,10 +993,16 @@ export default function App() {
                     Open gallery <Images size={16} aria-hidden="true" />
                   </button>
                 </div>
-                <div className="catalog-command-meta" aria-label="Current catalog totals">
+                <div className="catalog-command-meta catalog-command-meta-desktop" aria-label="Current catalog totals">
                   <span><strong><OverviewCount value={loading ? null : data.products.length} /></strong> Products</span>
                   <span><strong><OverviewCount value={loading ? null : data.categories.length} /></strong> Categories</span>
                   <span><strong><OverviewCount value={loading ? null : draftCount} /></strong> In review</span>
+                </div>
+                <div className="catalog-command-meta catalog-command-meta-mobile" aria-label="Current catalog totals">
+                  <span><strong><OverviewCount value={loading ? null : data.products.length} /></strong> Total products</span>
+                  <span><strong><OverviewCount value={loading ? null : draftCount} /></strong> Drafts</span>
+                  <span><strong><OverviewCount value={loading ? null : publishedCount} /></strong> Published</span>
+                  <span><strong><OverviewCount value={loading ? null : overviewFavouriteCount} /></strong> Favourites</span>
                 </div>
               </div>
               <div className="catalog-command-art" aria-label={heroProduct ? `Catalog photo: ${heroProduct.name}` : "Brutti kiosk design reference"}>
@@ -1129,6 +1136,7 @@ export default function App() {
                 onOpenProducts={next => { switchTab("products"); setStatus(next); }}
                 onOpenCategory={id => { switchTab("products"); setCategory(id); }}
                 onManageCategories={() => switchTab(accountRole === "editor" ? "products" : "categories")}
+                onFavouriteCountChange={setOverviewFavouriteCount}
               />
               <div className="brutti-overview-audit">
                 <LastChange
