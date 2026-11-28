@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import { AlertCircle, CalendarDays, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, LockKeyhole, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight, UserPlus, Send, Mail, ChevronDown, Check, ListFilter, Pencil, Eye, EyeOff, Archive, type LucideIcon } from "lucide-react";
 import {
   catalogActivityMYTRange, getAccountSummary, initials, listCatalogActivity, listCatalogStaff,
-  roleLabel, updateOwnDisplayName, updateStaffRole, removeCatalogStaff, inviteCatalogStaff, listPendingCatalogStaff, editPendingCatalogStaff, deletePendingCatalogStaff,
+  roleLabel, updateOwnDisplayName, updateStaffRole, removeCatalogStaff, inviteCatalogStaff, reinviteCatalogStaff, listPendingCatalogStaff, editPendingCatalogStaff, deletePendingCatalogStaff,
   type AccountSummary, type ActivityEntry, type ActivityPeriod, type StaffMember, type StaffRole, type PendingCatalogStaff,
 } from "../lib/account-center";
 import { requestPasswordReset } from "../lib/catalog";
@@ -290,6 +290,18 @@ export default function AccountCenter({
     } finally { setBusyId(null); }
   }
 
+  async function resendInvitation(user: StaffMember) {
+    if (account?.role !== "super_admin" || busyId || user.last_sign_in_at || !user.role) return;
+    setBusyId("reinvite:" + user.user_id); setError(""); setMessage("");
+    try {
+      const result = await reinviteCatalogStaff(user.user_id);
+      setMessage(result);
+      onToast?.(result);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not resend invitation.");
+    } finally { setBusyId(null); }
+  }
+
   async function saveMember(user: StaffMember) {
     if (account?.role !== "super_admin") { setError("Only a Super Admin can change account roles."); return; }
     const requested = draftRoles[user.user_id] ?? (user.role ?? "none");
@@ -486,11 +498,11 @@ export default function AccountCenter({
                     <td>{account.id === user.user_id ? (
                       <span className="catalog-own-role" title="Your own role is protected from changes"><LockKeyhole size={13} aria-hidden="true"/><span className="catalog-own-role-label">{roleLabel(user.role)}</span><small className="catalog-own-role-protected">Protected</small></span>
                     ) : account.role === "super_admin" && draftRoles[user.user_id] !== undefined ? (
-                      <div className="ap-role-field" data-role={draft}><ShieldCheck size={14} aria-hidden="true"/><select aria-label={`Role for ${user.email}`} value={draft}
+                      <div className="ap-role-field ap-glass-role" data-role={draft}>{draft === "editor" ? <Pencil size={14} aria-hidden="true"/> : <ShieldCheck size={14} aria-hidden="true"/>}<select aria-label={`Role for ${user.email}`} value={draft}
                         disabled={account.id === user.user_id || busyId !== null}
                         onChange={e => setDraftRoles(prev => ({ ...prev, [user.user_id]: e.target.value }))}>
                         {roleOptions.filter(opt => opt.value !== "none" || draft === "none").map(opt => <option key={opt.value} value={opt.value}>{opt.title}</option>)}
-                      </select></div>
+                      </select><ChevronDown className="ap-role-chevron" size={14} aria-hidden="true"/></div>
                     ) : (
                       <span className="catalog-access-role-readonly"><ShieldCheck size={13} aria-hidden="true"/>{roleLabel(user.role)}</span>
                     )}</td>
@@ -526,13 +538,14 @@ export default function AccountCenter({
                           <div className="ap-person-copy"><strong>{user.display_name || user.email.split("@")[0]}</strong><small className="ap-email">{user.email}</small></div>
                         </div>
                         {account.role === "super_admin" && draftRoles[user.user_id] !== undefined ? (
-                          <div className="ap-role-field ap-pending-invited-role" data-role={draft}><ShieldCheck size={14} aria-hidden="true"/><select aria-label={`Role for ${user.email}`} value={draft}
+                          <div className="ap-role-field ap-pending-invited-role ap-glass-role" data-role={draft}>{draft === "editor" ? <Pencil size={14} aria-hidden="true"/> : <ShieldCheck size={14} aria-hidden="true"/>}<select aria-label={`Role for ${user.email}`} value={draft}
                             disabled={busyId !== null} onChange={e => setDraftRoles(prev => ({ ...prev, [user.user_id]: e.target.value }))}>
                             {roleOptions.filter(opt => opt.value !== "none" || draft === "none").map(opt => <option key={opt.value} value={opt.value}>{opt.title}</option>)}
-                          </select></div>
-                        ) : <span className="catalog-pending-staff-role"><ShieldCheck size={13} aria-hidden="true"/>{roleLabel(user.role)}</span>}
+                          </select><ChevronDown className="ap-role-chevron" size={14} aria-hidden="true"/></div>
+                        ) : <span className="catalog-pending-staff-role">{user.role === "editor" ? <Pencil size={13} aria-hidden="true"/> : <ShieldCheck size={13} aria-hidden="true"/>}{roleLabel(user.role)}</span>}
                         <span className="catalog-pending-staff-state is-invited" title="Invitation sent · awaiting first login">Invited · awaiting login</span>
                         <div className="catalog-pending-actions">
+                          {account.role === "super_admin" && <button type="button" className="catalog-pending-staff-invite catalog-reinvite" title="Send a new invitation email" disabled={busyId !== null} onClick={() => void resendInvitation(user)}><RefreshCw size={14} className={busyId === "reinvite:" + user.user_id ? "is-resending" : ""} aria-hidden="true"/>{busyId === "reinvite:" + user.user_id ? "Sending…" : "Reinvite"}</button>}
                           {account.role === "super_admin" && (draftRoles[user.user_id] !== undefined ? <>
                             <button type="button" className="catalog-pending-edit" title="Save role" aria-label="Save role" disabled={busyId !== null || draft === (user.role || "none")} onClick={() => void saveMember(user)}><Check size={15}/></button>
                             <button type="button" className="catalog-pending-edit" title="Cancel role edit" aria-label="Cancel role edit" disabled={busyId !== null} onClick={() => toggleRoleEditor(user)}>×</button>
