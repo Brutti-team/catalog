@@ -8,7 +8,7 @@ import { publicAssetUrl } from "./lib/assets";
 import { categoryCover } from "./lib/category-covers";
 import { curatedCategoryCover } from "./lib/curated-category-covers";
 import { navigateApp, resolveAppRoute, routeHref, subscribeRouteChange } from "./lib/routes";
-import { lazy, Suspense, useState, useEffect, useCallback, useRef, type FormEvent } from "react";
+import { Component, lazy, Suspense, useState, useEffect, useCallback, useRef, type FormEvent, type ReactNode, type ErrorInfo } from "react";
 import { createPortal } from "react-dom";
 import {
   LayoutDashboard,
@@ -105,6 +105,15 @@ const label = (s: string | null | undefined) =>
     .filter(Boolean)
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ") || "—";
+/** Isolate a broken gallery photo/card from the rest of the inventory. */
+class ProductCardBoundary extends Component<{ productId: string; fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("Brutti Products gallery card failed", this.props.productId, error, info.componentStack);
+  }
+  render() { return this.state.failed ? this.props.fallback : this.props.children; }
+}
 function newProduct(categoryId = ""): Product {
   return {
     id: crypto.randomUUID(),
@@ -1248,6 +1257,11 @@ export default function App() {
                   {loading ? Array.from({ length: 6 }, (_, index) => <div className="skeleton" key={index} />)
                     : filtered.map(p => (
                       <div className="catalog-best-gallery-wrap" key={p.id}>
+                      <ProductCardBoundary key={p.updatedAt} productId={p.id}
+                        fallback={<button className="catalog-gallery-card" type="button" onClick={() => setEditor(p)} aria-label={`Edit ${p.name || "product"}`}>
+                          <div className="catalog-gallery-photo"><SafeImage src="/images/placeholder.svg" alt="" loading="lazy" /></div>
+                          <div className="catalog-gallery-body"><strong>{p.name || "Untitled product"}</strong><div className="catalog-gallery-bottom"><span className="catalog-gallery-id-value">{p.sku || p.id}</span><span className="catalog-gallery-edit-action"><Pencil size={15} aria-hidden="true" /> Edit</span></div></div>
+                        </button>}>
                       <button className="catalog-gallery-card" type="button"
                         data-product-sku={typeof p.sku === "string" ? p.sku.trim().toUpperCase() : ""}
                         onClick={() => {
@@ -1263,7 +1277,7 @@ export default function App() {
                           setEditor(p);
                         }} aria-label={`Edit ${p.name}`}>
                         <div className="catalog-gallery-photo">
-                          <SafeImage src={p.images[0]?.url || "/images/placeholder.svg"} alt="" style={catalogCardPhotoStyle(p.images[0], p.sku)} loading="lazy" decoding="async" />
+                          <SafeImage src={typeof p.images[0]?.url === "string" ? p.images[0].url : "/images/placeholder.svg"} alt="" style={catalogCardPhotoStyle(p.images[0], p.sku)} loading="lazy" decoding="async" />
                           <BackgroundGalleryOverlay productId={p.id} coverImageId={p.images[0]?.id}/>
                           <span className={`status-badge status-${p.status}`}><i />{label(p.status)}</span>
                         </div>
@@ -1279,6 +1293,7 @@ export default function App() {
                           </div>
                         </div>
                       </button>
+                      </ProductCardBoundary>
                       <button type="button" className="catalog-best-toggle catalog-best-gallery-toggle"
                         style={{ right: 48 }}
                         disabled={busy} aria-pressed={p.bestSelling === true}
