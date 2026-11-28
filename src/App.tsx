@@ -208,7 +208,7 @@ function WorkshopLoading({ theme, publicCatalog = false }: { theme: "light" | "d
 }
 
 export default function App() {
-  const { theme, toggleTheme } = useAdminTheme();
+  const { theme, toggleTheme, resetToLight } = useAdminTheme();
   const [passwordIntent, setPasswordIntent] = useState(initialPasswordIntent);
   const [callbackVerified, setCallbackVerified] = useState(false);
   const [route, setRoute] = useState(() => resolveAppRoute(window.location));
@@ -728,7 +728,7 @@ export default function App() {
       <Login
         setupError={authError || actionError}
         authenticated={auth.authenticated}
-        onSuccess={async () => { await refreshAuth(true); }}
+        onSuccess={async () => { resetToLight(); await refreshAuth(true); }}
         onCatalog={() => navigate("/catalog")}
       />
       </div>
