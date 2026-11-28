@@ -474,3 +474,14 @@
 }
 @keyframes bruttiInterestBarGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 @keyframes bruttiInterestLabel { from { opacity: 0; } to { opacity: 1; } }
+
+
+/* Phone Overview: show Categories and its rows immediately; keep bar and tap effects. */
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels > .brutti-category-panel,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-category-panel .brutti-category-list > .brutti-category-row {
+    animation: none !important;
+    opacity: 1 !important;
+    translate: none !important;
+  }
+}
