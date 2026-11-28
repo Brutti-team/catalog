@@ -478,3 +478,32 @@
     .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta-mobile > button:active { transform: none; }
   }
 }
+
+
+/* High-contrast text on the green/charcoal mobile hero in either theme. */
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta.catalog-command-meta-mobile > button {
+    color: #f7faf7 !important;
+    -webkit-text-fill-color: #f7faf7 !important;
+    opacity: 1 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta.catalog-command-meta-mobile > button > strong,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta.catalog-command-meta-mobile > button > strong * {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta.catalog-command-meta-mobile > button > span {
+    color: #e2eee6 !important;
+    -webkit-text-fill-color: #e2eee6 !important;
+    font-weight: 600 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta.catalog-command-meta-mobile > button + button::before {
+    background: #e2eee6 !important;
+    opacity: .48 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta.catalog-command-meta-mobile > button:hover,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta.catalog-command-meta-mobile > button:active {
+    background: rgba(255,255,255,.13) !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta.catalog-command-meta-mobile > button:focus-visible { outline-color: #ffffff !important; }
+}
