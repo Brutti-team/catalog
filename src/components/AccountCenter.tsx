@@ -408,7 +408,7 @@ export default function AccountCenter({
   const actorOptions=Array.from(new Map(events.map(entry=>[actorKey(entry),actorName(entry)])).entries()).sort((a,b)=>a[1].localeCompare(b[1]));
   const visibleEvents=events.filter(entry=>selectedFilter.matches(entry)&&(activityActor==="all"||actorKey(entry)===activityActor));
   // Keep unaccepted invitations separate from staff who have signed in.
-  const invitedMembers = members.filter(user => user.user_id !== account?.id && !user.last_sign_in_at && user.role !== null);
+  const invitedMembers = members.filter(user => user.user_id !== account?.id && user.role !== null && (user.onboarding_status ? user.onboarding_status !== "active" : !user.last_sign_in_at));
   const activeMembers = members.filter(user => !invitedMembers.some(invited => invited.user_id === user.user_id));
   const invitedEmails = new Set(invitedMembers.map(user => user.email.trim().toLowerCase()));
   const waitingCandidates = pendingStaff.filter(candidate => !candidate.email || !invitedEmails.has(candidate.email.trim().toLowerCase()));
@@ -524,7 +524,7 @@ export default function AccountCenter({
                     <span className="ap-section-icon is-pending"><Mail size={19} aria-hidden="true"/></span>
                     <div className="ap-section-copy">
                       <h2 id="catalog-pending-staff-title">Pending invitations</h2>
-                      <p>Staff awaiting an invitation or their first Catalog sign-in. Catalog access is separate from Brutti OS.</p>
+                      <p>Staff awaiting an invitation, password setup or first password sign-in. Catalog access is separate from Brutti OS.</p>
                     </div>
                     <span className="catalog-pending-staff-count">{pendingCount} pending</span>
                   </header>
@@ -543,7 +543,7 @@ export default function AccountCenter({
                             {roleOptions.filter(opt => opt.value !== "none" || draft === "none").map(opt => <option key={opt.value} value={opt.value}>{opt.title}</option>)}
                           </select><ChevronDown className="ap-role-chevron" size={14} aria-hidden="true"/></div>
                         ) : <span className="catalog-pending-staff-role">{user.role === "editor" ? <Pencil size={13} aria-hidden="true"/> : <ShieldCheck size={13} aria-hidden="true"/>}{roleLabel(user.role)}</span>}
-                        <span className="catalog-pending-staff-state is-invited" title="Invitation sent · awaiting first login">Invited · awaiting login</span>
+                        <span className={"catalog-pending-staff-state " + (user.onboarding_status === "ready_to_sign_in" ? "is-invited" : "")}>{user.onboarding_status === "awaiting_password" ? "Awaiting password" : user.onboarding_status === "ready_to_sign_in" ? "Ready to sign in" : "Invitation sent"}</span>
                         <div className="catalog-pending-actions">
                           {account.role === "super_admin" && <button type="button" className="catalog-pending-staff-invite catalog-reinvite" title="Send a new invitation email" disabled={busyId !== null} onClick={() => void resendInvitation(user)}><RefreshCw size={14} className={busyId === "reinvite:" + user.user_id ? "is-resending" : ""} aria-hidden="true"/>{busyId === "reinvite:" + user.user_id ? "Sending…" : "Reinvite"}</button>}
                           {account.role === "super_admin" && (draftRoles[user.user_id] !== undefined ? <>
