@@ -23,6 +23,8 @@ interface Props {
   onOpenCategory: (categoryId: string) => void;
   onManageCategories: () => void;
   onFavouriteCountChange?: (count: number | null) => void;
+  favouriteReportOpen?: boolean;
+  onFavouriteReportOpenChange?: (open: boolean) => void;
 }
 
 /** Date-bucket the current products' most recent update in Malaysian local time.
@@ -58,6 +60,7 @@ export function getUpdateActivity(
 export default function CatalogOverviewStudio({
   products, categories, loading, canManageCategories, enabled,
   onOpenProducts, onOpenCategory, onManageCategories, onFavouriteCountChange,
+  favouriteReportOpen, onFavouriteReportOpenChange,
 }: Props) {
   // Match the desktop sidebar breakpoint; resize updates without a reload.
   const [showSummaryCards, setShowSummaryCards] = useState(() =>
@@ -79,13 +82,18 @@ export default function CatalogOverviewStudio({
   useEffect(() => {
     onFavouriteCountChange?.(enabled && !favouriteError ? favourites?.visitors ?? null : null);
   }, [enabled, favouriteError, favourites, onFavouriteCountChange]);
-  const [favouriteOpen,setFavouriteOpen]=useState(false);
+  const [localFavouriteOpen,setLocalFavouriteOpen]=useState(false);
+  const favouriteOpen = favouriteReportOpen ?? localFavouriteOpen;
+  const setFavouriteOpen = onFavouriteReportOpenChange ?? setLocalFavouriteOpen;
   const [favouriteBusy,setFavouriteBusy]=useState(false);
   const refreshFavourites=useCallback(async()=>{
     setFavouriteBusy(true);setFavouriteError(false);
     try{setFavourites(await loadFavouriteSummary());}catch{setFavouriteError(true);}
     finally{setFavouriteBusy(false);}
   },[]);
+  useEffect(() => {
+    if (enabled && favouriteOpen) void refreshFavourites();
+  }, [enabled, favouriteOpen, refreshFavourites]);
   useEffect(()=>{
     if(!enabled)return;
     // Recover public favourites already stored by this browser even if the user
@@ -145,7 +153,7 @@ export default function CatalogOverviewStudio({
             <button type="button" className="overview-stat brutti-glass-kpi" key={card.title}
               disabled={loading}
               aria-label={"View " + card.title.toLowerCase()}
-              onClick={() => { if(card.status === "favourites"){setFavouriteOpen(true);void refreshFavourites();}else if(card.status === "categories")onManageCategories();else onOpenProducts(card.status); }}>
+              onClick={() => { if(card.status === "favourites"){setFavouriteOpen(true);}else if(card.status === "categories")onManageCategories();else onOpenProducts(card.status); }}>
               <span className="brutti-glass-kpi-head">
                 <span className="brutti-glass-icon"><card.icon size={19} strokeWidth={1.8} aria-hidden="true" /></span>
                 <span className="brutti-glass-kpi-title">{card.title}</span>
