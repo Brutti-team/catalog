@@ -684,3 +684,65 @@
     margin-bottom: 0 !important;
   }
 }
+
+
+/* Phone dock: smoothly sliding active icon, tactile taps, no navigation logic changes. */
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav { isolation: isolate; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button {
+    position: relative;
+    z-index: 1;
+    transition: color 180ms ease, transform 180ms cubic-bezier(.2,.8,.2,1);
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button > span {
+    transition: color 180ms ease, background-color 180ms ease, transform 220ms cubic-bezier(.2,.8,.2,1);
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button > .catalog-mobile-nav-label { transition: color 180ms ease, opacity 180ms ease; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button:is([aria-current="page"],.is-active) > .catalog-mobile-nav-label { color: var(--dock-selected); }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button:active { transform: scale(.93); }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button:is([aria-current="page"],.is-active) > span > svg { animation: brutti-dock-icon-arrive 280ms cubic-bezier(.2,.8,.25,1) both; }
+  @supports selector(:has(> button)) {
+    /* Five equally spaced buttons, with a single indicator retained across tab changes. */
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav:has(> button:nth-child(5):last-child) {
+      --dock-center: calc(10% + 4.8px);
+      --dock-indicator-opacity: 0;
+    }
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav:has(> button:nth-child(5):last-child):has(> button:nth-child(1):is([aria-current="page"],.is-active)) { --dock-center: calc(10% + 4.8px); --dock-indicator-opacity: 1; }
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav:has(> button:nth-child(5):last-child):has(> button:nth-child(2):is([aria-current="page"],.is-active)) { --dock-center: calc(30% + 2.4px); --dock-indicator-opacity: 1; }
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav:has(> button:nth-child(5):last-child):has(> button:nth-child(3):is([aria-current="page"],.is-active)) { --dock-center: 50%; --dock-indicator-opacity: 1; }
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav:has(> button:nth-child(5):last-child):has(> button:nth-child(4):is([aria-current="page"],.is-active)) { --dock-center: calc(70% - 2.4px); --dock-indicator-opacity: 1; }
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav:has(> button:nth-child(5):last-child):has(> button:nth-child(5):is([aria-current="page"],.is-active)) { --dock-center: calc(90% - 4.8px); --dock-indicator-opacity: 1; }
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav:has(> button:nth-child(5):last-child) > button { align-content: start; padding-top: 3px; }
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav:has(> button:nth-child(5):last-child)::before {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      pointer-events: none;
+      top: 9px;
+      left: var(--dock-center);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      background: var(--dock-selected);
+      box-shadow: 0 3px 8px rgba(20,58,37,.22), inset 0 1px rgba(255,255,255,.12);
+      opacity: var(--dock-indicator-opacity);
+      transition: left 300ms cubic-bezier(.25,.8,.25,1), opacity 160ms ease;
+    }
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav:has(> button:nth-child(5):last-child) > button:is([aria-current="page"],.is-active) > span { background: transparent; color: var(--dock-selected-ink); }
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme="dark"][data-active-tab] > .catalog-mobile-bottom-nav > button:is([aria-current="page"],.is-active) > .catalog-mobile-nav-label { color: var(--dock-selected-ink); }
+  @keyframes brutti-dock-icon-arrive {
+    0% { transform: scale(.83); }
+    65% { transform: scale(1.10); }
+    100% { transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav::before,
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button,
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button > span,
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button > .catalog-mobile-nav-label { transition: none !important; }
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button > span > svg { animation: none !important; }
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button:active, .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button:active > span { transform: none !important; }
+  }
+}
