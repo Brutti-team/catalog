@@ -105,6 +105,9 @@ const label = (s: string | null | undefined) =>
     .filter(Boolean)
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ") || "—";
+/** Evaluate card data inside the boundary rather than in the parent render. */
+function ProductCardContent({ render }: { render: () => ReactNode }) { return <>{render()}</>; }
+
 /** Isolate a broken gallery photo/card from the rest of the inventory. */
 class ProductCardBoundary extends Component<{ productId: string; fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
@@ -1262,6 +1265,7 @@ export default function App() {
                           <div className="catalog-gallery-photo"><SafeImage src="/images/placeholder.svg" alt="" loading="lazy" /></div>
                           <div className="catalog-gallery-body"><strong>{p.name || "Untitled product"}</strong><div className="catalog-gallery-bottom"><span className="catalog-gallery-id-value">{p.sku || p.id}</span><span className="catalog-gallery-edit-action"><Pencil size={15} aria-hidden="true" /> Edit</span></div></div>
                         </button>}>
+                      <ProductCardContent render={() => (
                       <button className="catalog-gallery-card" type="button"
                         data-product-sku={typeof p.sku === "string" ? p.sku.trim().toUpperCase() : ""}
                         onClick={() => {
@@ -1293,6 +1297,7 @@ export default function App() {
                           </div>
                         </div>
                       </button>
+                      )} />
                       </ProductCardBoundary>
                       <button type="button" className="catalog-best-toggle catalog-best-gallery-toggle"
                         style={{ right: 48 }}
