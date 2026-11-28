@@ -36,10 +36,10 @@ Deno.serve(async (request: Request) => {
 
   const { data: roleInfo, error: roleError } = await admin
     .from("catalog_staff_roles")
-    .select("role")
+    .select("role,onboarding_active")
     .eq("user_id", userResult.user.id)
     .maybeSingle();
-  if (roleError || roleInfo?.role !== "super_admin") {
+  if (roleError || roleInfo?.role !== "super_admin" || !roleInfo.onboarding_active) {
     return json({ error: "Only the Catalog Super Admin can invite staff." }, 403);
   }
 
@@ -57,14 +57,18 @@ Deno.serve(async (request: Request) => {
     const targetId = typeof payload.userId === "string" ? payload.userId : "";
     if (!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(targetId) || targetId === userResult.user.id)
       return json({ error: "Invalid invitation target." }, 400);
-    const { data: targetRole, error: targetRoleError } = await admin.from("catalog_staff_roles").select("role").eq("user_id", targetId).maybeSingle();
+    const { data: targetRole, error: targetRoleError } = await admin.from("catalog_staff_roles").select("role,onboarding_active").eq("user_id", targetId).maybeSingle();
     if (targetRoleError) return json({ error: "Could not verify Catalog access." }, 503);
-    if (!targetRole || !ALLOWED_ROLES.has(targetRole.role)) return json({ error: "This account no longer has Catalog access." }, 409);
+    if (!targetRole || targetRole.onboarding_active || !ALLOWED_ROLES.has(targetRole.role)) return json({ error: "This account no longer has Catalog access." }, 409);
     const { data: targetResult, error: targetError } = await admin.auth.admin.getUserById(targetId);
     const target = targetResult?.user;
     if (targetError || !target?.email) return json({ error: "Catalog account not found." }, 404);
-    if (target.last_sign_in_at || target.email_confirmed_at || !target.invited_at)
-      return json({ error: "This invitation is no longer pending. Refresh the staff list." }, 409);
+    if (!target.invited_at) return json({ error: "This invitation is no longer pending. Refresh the staff list." }, 409);
+    if (target.email_confirmed_at || target.last_sign_in_at) {
+      const { error: recoveryError } = await admin.auth.resetPasswordForEmail(target.email, { redirectTo: catalogInvitationRedirect(origin) });
+      if (recoveryError) return json({ error: recoveryError.message || "Could not send a new password setup link." }, 422);
+      return json({ ok: true, status: "invited", message: "A new password setup link has been sent." });
+    }
     const { data: renewed, error: resendError } = await admin.auth.admin.inviteUserByEmail(target.email, {
       redirectTo: catalogInvitationRedirect(origin),
     });
@@ -108,17 +112,12 @@ Deno.serve(async (request: Request) => {
 
   // The invitation creates a Catalog Auth ID; only then grant the requested Catalog role.
   const { error: grantedError } = await admin.from("catalog_staff_roles")
-    .upsert({ user_id: invited.user.id, role }, { onConflict: "user_id" });
+    .upsert({ user_id: invited.user.id, role, onboarding_active: false }, { onConflict: "user_id" });
   if (grantedError) {
     console.error("Catalog invitation role grant failed", grantedError.code);
     return json({ error: "Invitation sent but role assignment failed. Contact the Super Admin." }, 500);
   }
-  const { error: membershipError } = await admin.from("catalog_admins")
-    .upsert({ user_id: invited.user.id }, { onConflict: "user_id" });
-  if (membershipError) {
-    console.error("Catalog invitation membership grant failed", membershipError.code);
-    return json({ error: "Invitation sent but catalog membership setup failed. Contact the Super Admin." }, 500);
-  }
+  // Catalog membership is granted only after a verified password sign-in.
 
   if (candidateId) {
     // Reconcile staged OS personnel with their new Catalog Auth identity.
@@ -136,6 +135,6 @@ Deno.serve(async (request: Request) => {
     email,
     role,
     status: "invited",
-    message: "Invitation sent. Access becomes active when the recipient accepts and signs in.",
+    message: "Invitation sent. Access becomes active after the recipient sets a password and signs in with it.",
   });
 });
