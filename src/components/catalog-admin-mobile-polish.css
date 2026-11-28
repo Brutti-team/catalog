@@ -350,3 +350,34 @@
     .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button > span { transition: none; }
   }
 }
+
+
+/* Compact, always-visible labels under the mobile dock icons. */
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav { padding: 6px 7px; gap: 2px; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button {
+    grid-template-rows: 34px auto;
+    align-content: center;
+    gap: 3px;
+    min-width: 0;
+    height: 55px;
+    border-radius: 18px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button > span { width: 34px; height: 34px; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button > span > svg { width: 20px; height: 20px; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button > .catalog-mobile-nav-label {
+    display: block;
+    max-width: 100%;
+    font: 500 clamp(9px, 2.7vw, 11px)/1.2 system-ui, sans-serif;
+    text-align: center;
+    white-space: nowrap;
+    color: inherit;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .catalog-mobile-bottom-nav > button:is([aria-current="page"],.is-active) > .catalog-mobile-nav-label {
+    font-weight: 700;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .admin-content,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content {
+    padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
