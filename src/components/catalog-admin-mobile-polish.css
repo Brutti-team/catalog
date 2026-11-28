@@ -413,3 +413,68 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+
+/* Mobile overview: remove the introductory copy and provide interactive KPI tiles. */
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-content > .catalog-command-description { display: none !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-actions { margin-top: 11px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta.catalog-command-meta-mobile {
+    gap: 0 !important;
+    padding-top: 8px !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta-mobile > button {
+    appearance: none;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    position: relative;
+    min-width: 0;
+    min-height: 48px;
+    padding: 5px 2px;
+    margin: 0;
+    color: inherit;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    box-shadow: none;
+    text-align: center;
+    font: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background .16s ease, transform .16s ease;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta-mobile > button + button::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    bottom: 7px;
+    width: 1px;
+    background: currentColor;
+    opacity: .26;
+    pointer-events: none;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta-mobile > button > strong {
+    display: block;
+    color: inherit;
+    font: 700 18px/1.1 system-ui, sans-serif !important;
+    font-variant-numeric: tabular-nums;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta-mobile > button > span {
+    display: block;
+    color: inherit;
+    font: 500 clamp(9px, 2.65vw, 11px)/1.25 system-ui, sans-serif !important;
+    white-space: normal;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta-mobile > button:hover,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta-mobile > button:active { background: rgba(255,255,255,.10); }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta-mobile > button:active { transform: scale(.97); }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta-mobile > button:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
+  @media (prefers-reduced-motion: reduce) {
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta-mobile > button { transition: none; }
+    .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta-mobile > button:active { transform: none; }
+  }
+}
