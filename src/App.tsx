@@ -224,6 +224,17 @@ export default function App() {
   const [status, setStatus] = useState("all");
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState("recent");
+  // Phone inventory is gallery-only; do not overwrite the desktop preference.
+  const [isPhoneProductView, setIsPhoneProductView] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia("(max-width: 600px)").matches
+  );
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 600px)");
+    const sync = () => setIsPhoneProductView(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
   const [productView, setProductView] = useState<"table" | "gallery">(() => {
     try { return window.localStorage.getItem("brutti-catalog-product-view") === "gallery" ? "gallery" : "table"; }
     catch { return "table"; }
@@ -1188,7 +1199,7 @@ export default function App() {
                       </button>
                     ))}
                   </div>
-                  <div className="catalog-view-switch" role="group" aria-label="Product display mode">
+                  {!isPhoneProductView && <div className="catalog-view-switch" role="group" aria-label="Product display mode">
                     <button type="button" aria-label="Table view" aria-pressed={productView === "table"}
                       className={productView === "table" ? "selected" : ""} onClick={() => changeProductView("table")}>
                       <List size={17} aria-hidden="true" /><span>Table</span>
@@ -1197,7 +1208,7 @@ export default function App() {
                       className={productView === "gallery" ? "selected" : ""} onClick={() => changeProductView("gallery")}>
                       <Grid2X2 size={17} aria-hidden="true" /><span>Gallery</span>
                     </button>
-                  </div>
+                  </div>}
                 </div>
               )}
               <div className="table-toolbar">
@@ -1230,7 +1241,7 @@ export default function App() {
                   </button>
                 </div>
               )}
-              {tab === "products" && productView === "gallery" ? (
+              {tab === "products" && (isPhoneProductView || productView === "gallery") ? (
                 <div className="catalog-gallery">
                   {loading ? Array.from({ length: 6 }, (_, index) => <div className="skeleton" key={index} />)
                     : filtered.map(p => (
