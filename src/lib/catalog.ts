@@ -742,8 +742,8 @@ export async function signIn(email: string, password: string): Promise<void> {
   }
 }
 
-export async function signOut(): Promise<void> {
-  const { error } = await supabase().auth.signOut();
+export async function signOut(scope?: "local"): Promise<void> {
+  const { error } = await supabase().auth.signOut(scope ? { scope } : undefined);
   if (error) throw backendError(error.message, "sign out");
 }
 
