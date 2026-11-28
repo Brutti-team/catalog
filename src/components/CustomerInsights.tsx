@@ -86,6 +86,14 @@ function CustomerInterestChart({ data, days, onOpen }: { data: CustomerInsightDa
   const id = useId().replace(/:/g, "");
   const chartRef = useRef<HTMLDivElement>(null);
   const [revealed, setRevealed] = useState(false);
+  const [phoneChart, setPhoneChart] = useState(() => typeof window !== "undefined" && window.matchMedia("(max-width: 600px)").matches);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 600px)");
+    const sync = () => setPhoneChart(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
   useEffect(() => {
     if (!chartRef.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setRevealed(true);
@@ -105,19 +113,19 @@ function CustomerInterestChart({ data, days, onOpen }: { data: CustomerInsightDa
   });
   const peak = Math.max(0, ...bins.map(bin => bin.views));
   const max = Math.max(2, Math.ceil(peak / 2) * 2);
-  const yTop = 24, yBase = 204, xStart = 52, xEnd = 736;
+  const yTop = 24, yBase = 204, xStart = phoneChart ? 44 : 52, xEnd = phoneChart ? 390 : 736;
   const slot = (xEnd - xStart) / Math.max(1, bins.length);
   const bw = Math.min(66, slot * .63);
   const y = (v: number) => yBase - v / max * (yBase - yTop);
   const grid = [max, Math.round(max / 2), 0];
   const pastel = [["#bfd5e5","#789fbb"]];
   return (
-    <div ref={chartRef} className={`customer-insights-chart customer-insights-chart-interactive${revealed ? " is-chart-visible" : ""}`} onClick={() => onOpen({ kind: "trend" })}>
+    <div ref={chartRef} data-phone-chart={phoneChart} className={`customer-insights-chart customer-insights-chart-interactive${revealed ? " is-chart-visible" : ""}`} onClick={() => onOpen({ kind: "trend" })}>
       <div className="customer-insights-chart-heading" role="button" tabIndex={0} aria-label="View daily product interest" title="View daily product interest" onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onOpen({ kind: "trend" }); } }}>
         <div><span className="customer-insights-chart-dot" /><strong>Product interest (views)</strong></div>
         <span>{days === 7 ? "Daily" : days === 30 ? "5-day groups" : "15-day groups"}</span>
       </div>
-      <svg viewBox="0 0 766 238" role="group"
+      <svg viewBox={phoneChart ? "0 0 400 238" : "0 0 766 238"} role="group"
         aria-label={`Product views in the last ${days} days: ${compact(data.totalViews)}. Each bar represents a date group.`}>
         <defs>{pastel.map(([light, shade], index) => <linearGradient key={index} id={`customer-gradient-${id}-${index}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={light} />
@@ -125,7 +133,7 @@ function CustomerInterestChart({ data, days, onOpen }: { data: CustomerInsightDa
         </linearGradient>)}</defs>
         {grid.map((value, index) => <g key={index} className="customer-insights-gridline">
           <line x1={xStart} x2={xEnd} y1={y(value)} y2={y(value)} />
-          <text x={xStart - 15} y={y(value) + 5} textAnchor="end">{value}</text>
+          <text x={xStart - (phoneChart ? 6 : 15)} y={y(value) + 5} textAnchor="end">{value}</text>
         </g>)}
         {bins.map((bin, index) => {
           const x = xStart + (index + .5) * slot;
