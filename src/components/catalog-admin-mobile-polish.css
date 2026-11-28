@@ -649,3 +649,16 @@
     margin-top: 19px !important;
   }
 }
+
+
+/* Phone-only: remove secondary analytics ratios and explanatory footnote. */
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-footer > .customer-insights-footer-metric,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-privacy {
+    display: none !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-footer {
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 0 !important;
+  }
+}
