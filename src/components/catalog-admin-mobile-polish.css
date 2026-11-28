@@ -1199,3 +1199,28 @@
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-customer-crop > summary > small { display: none !important; }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-customer-crop > summary > svg:last-child { margin-left: auto; }
 }
+
+
+/* Phone Album: no copyright footer or extra space above the fixed navigation. */
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="album"] > .admin-main > .admin-content {
+    padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+    margin-bottom: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="album"] > .admin-main > .admin-content > .workspace-footer {
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="album"] > .admin-main > .admin-content > .brutti-album {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="album"] > .admin-main > .admin-content > .brutti-album > :last-child {
+    margin-bottom: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="album"] > .admin-main {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+}
