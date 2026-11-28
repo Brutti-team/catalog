@@ -1076,3 +1076,57 @@
 @media(max-width:380px){
   .admin-app .account-center.account-center--users .ap-directory .catalog-pending-actions {max-width:none;}
 }
+
+
+/* Compact matching invitation actions and accessible glass role dropdown. */
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-actions .catalog-reinvite {
+  width:86px;min-width:86px;white-space:nowrap;
+}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-actions .catalog-reinvite:disabled {opacity:.7;}
+.admin-app .account-center.account-center--users .ap-directory .catalog-reinvite .is-resending {animation:ap-reinvite-spin .9s linear infinite;}
+@keyframes ap-reinvite-spin {to {transform:rotate(360deg);}}
+@media(prefers-reduced-motion:reduce){.admin-app .account-center.account-center--users .ap-directory .catalog-reinvite .is-resending {animation:none;}}
+.admin-app .account-center.account-center--users .ap-directory .ap-glass-role {width:100%;max-width:182px;position:relative;}
+.admin-app .account-center.account-center--users .ap-directory .ap-glass-role>svg {z-index:1;}
+.admin-app .account-center.account-center--users .ap-directory .ap-glass-role>svg.ap-role-chevron {
+  left:auto;right:11px;color:var(--ap-muted);pointer-events:none;
+}
+.admin-app .account-center.account-center--users .ap-directory .ap-glass-role select {
+  appearance:none!important;box-sizing:border-box;width:100%;max-width:none!important;min-height:38px!important;height:38px!important;
+  border:1px solid var(--ap-rule)!important;border-radius:11px!important;
+  padding:7px 30px 7px 32px!important;background:var(--ap-glass)!important;
+  color:var(--ap-ink)!important;font:600 12px/1.4 system-ui,sans-serif!important;
+  cursor:pointer;box-shadow:0 2px 7px rgba(28,60,42,.045),inset 0 1px 0 rgba(255,255,255,.16);
+  transition:border-color .16s,box-shadow .16s;
+}
+.admin-app .account-center.account-center--users .ap-directory .ap-glass-role select:hover:not(:disabled),
+.admin-app .account-center.account-center--users .ap-directory .ap-glass-role select:focus-visible {
+  border-color:#789b89!important;outline:none;box-shadow:0 0 0 3px rgba(104,149,124,.15);
+}
+.admin-app .account-center.account-center--users .ap-directory .ap-glass-role select:disabled {cursor:not-allowed;opacity:.65;}
+.admin-app .account-center.account-center--users .ap-directory .ap-glass-role option {color:var(--ap-ink);background:var(--ap-panel);}
+@supports (appearance:base-select) {
+  .admin-app .account-center.account-center--users .ap-directory .ap-glass-role select {appearance:base-select!important;}
+  .admin-app .account-center.account-center--users .ap-directory .ap-glass-role select::picker-icon {display:none;}
+  .admin-app .account-center.account-center--users .ap-directory .ap-glass-role select::picker(select) {
+    appearance:base-select;border:1px solid var(--ap-rule);border-radius:12px;
+    padding:5px;margin-block:5px;background:var(--ap-panel);color:var(--ap-ink);
+    box-shadow:0 10px 30px rgba(23,48,35,.18);min-width:160px;
+  }
+  .admin-app .account-center.account-center--users .ap-directory .ap-glass-role option {
+    display:flex;align-items:center;justify-content:space-between;min-height:34px;
+    padding:8px 10px;border-radius:7px;font:550 12px/1.4 system-ui,sans-serif;cursor:pointer;
+  }
+  .admin-app .account-center.account-center--users .ap-directory .ap-glass-role option:is(:hover,:focus-visible,:checked) {
+    background:var(--ap-role);color:var(--ap-role-ink);
+  }
+  .admin-app .account-center.account-center--users .ap-directory .ap-glass-role option::checkmark {order:1;color:var(--ap-role-ink);}
+}
+@media(min-width:801px) {
+  .admin-app .account-center.account-center--users .ap-directory .ap-pending-columns,
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item,
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item:has(.catalog-pending-actions),
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item:not(:has(button)) {
+    grid-template-columns:minmax(0,1.6fr) minmax(125px,.54fr) minmax(125px,.65fr) 220px!important;
+  }
+}
