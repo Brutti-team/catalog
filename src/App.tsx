@@ -1567,6 +1567,7 @@ export default function App() {
               aria-current={tab === item.id ? "page" : undefined}
               onClick={() => { if (tab !== item.id) switchTab(item.id); else window.scrollTo({ top: 0, behavior: "auto" }); }}>
               <span><item.icon size={22} strokeWidth={1.8} aria-hidden="true" /></span>
+              <small className="catalog-mobile-nav-label" aria-hidden="true">{item.text}</small>
             </button>
           ))}
           <button type="button" aria-label="Open navigation" title="More"
@@ -1574,6 +1575,7 @@ export default function App() {
             className={["profile", "users", "activity"].includes(tab) ? "is-active" : undefined}
             onClick={() => { setNotificationOpen(false); setAccountMenuOpen(false); setMobileNav(true); }}>
             <span><Menu size={22} strokeWidth={1.8} aria-hidden="true" /></span>
+            <small className="catalog-mobile-nav-label" aria-hidden="true">More</small>
           </button>
         </nav>
       )}
