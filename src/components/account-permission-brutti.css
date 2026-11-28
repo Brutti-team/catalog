@@ -1040,3 +1040,39 @@
 @media(max-width:700px) {
   .admin-app .account-center.account-center--users .ap-directory .ap-pending-invited-role {grid-column:1;grid-row:2;justify-self:start;}
 }
+
+
+/* One compact action and role treatment for active, invited and not-yet-invited staff. */
+.admin-app .account-center.account-center--users .ap-directory .ap-pending-columns,
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item,
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item:has(.catalog-pending-actions),
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item:not(:has(button)) {
+  grid-template-columns:minmax(0,1.6fr) minmax(100px,.54fr) minmax(125px,.65fr) 190px!important;
+}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item {
+  background:transparent!important;min-height:62px!important;
+}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item:hover {background:var(--ap-hover)!important;}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-actions {gap:7px;min-height:36px;}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-actions :is(.catalog-pending-edit,.catalog-pending-delete) {
+  width:36px;height:36px;flex-basis:36px;font-size:19px;line-height:1;
+}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-actions .catalog-pending-staff-invite {min-height:36px!important;}
+.admin-app .account-center.account-center--users .ap-directory .ap-panel .account-table th:last-child {width:136px!important;}
+.admin-app .account-center.account-center--users .ap-directory .catalog-pending-invited-member .ap-role-field select {
+  min-height:36px!important;height:36px!important;padding:5px 28px 5px 32px!important;
+  border:1px solid var(--ap-rule)!important;background:var(--ap-glass)!important;
+  color:var(--ap-ink)!important;font:550 12px/1.4 system-ui,sans-serif!important;
+}
+@media(max-width:800px){
+  .admin-app .account-center.account-center--users .ap-directory .ap-pending-columns {display:none!important;}
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item,
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item:has(.catalog-pending-actions),
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-staff-item:not(:has(button)) {
+    grid-template-columns:minmax(0,1fr) auto!important;
+  }
+  .admin-app .account-center.account-center--users .ap-directory .ap-pending-invited-role {grid-column:1;grid-row:2;}
+}
+@media(max-width:380px){
+  .admin-app .account-center.account-center--users .ap-directory .catalog-pending-actions {max-width:none;}
+}
