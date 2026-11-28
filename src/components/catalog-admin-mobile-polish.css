@@ -1,0 +1,234 @@
+/* Phone-only admin polish. Keep the existing desktop, public catalog,
+   theme palette, actions and data unchanged. */
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 8px 12px 9px !important;
+    overflow: visible !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .topbar-actions {
+    display: flex !important;
+    flex: 1 1 100% !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    gap: 6px !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .catalog-mobile-menu { order: 0 !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .brutti-background-task-mobile-host { order: 1 !important; margin-left: 0 !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .theme-toggle { order: 2 !important; margin-left: auto !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .catalog-header-popover-anchor { order: 3 !important; margin: 0 !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .catalog-header-search {
+    order: 4 !important;
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border-radius: 12px !important;
+    gap: 8px !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .catalog-header-search input {
+    min-width: 0 !important;
+    flex: 1 1 0 !important;
+    font-size: 16px !important; /* Prevent iOS focus zoom. */
+    text-overflow: ellipsis;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .catalog-header-search input::placeholder { color: var(--catalog-os-muted, #748078) !important; font-size: 13px; opacity: 1; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .catalog-search-shortcut { display: none !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .catalog-header-search .catalog-search-submit {
+    display: inline-grid !important;
+    place-items: center;
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 8px;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar :is(.catalog-mobile-menu,.theme-toggle,.catalog-header-icon-button),
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .catalog-header-popover-anchor .header-profile {
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .header-profile .profile-avatar {
+    flex: 0 0 34px !important;
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    margin: 0 !important;
+    border-radius: 9px !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .header-profile :is(.profile-copy,.catalog-account-chevron) { display: none !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .catalog-bell-count { top: -3px !important; right: -3px !important; }
+  /* Popovers stay in the viewport even when anchored near the right edge. */
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .catalog-header-popover { max-width: calc(100vw - 24px) !important; max-height: min(65dvh, 480px); overflow-y: auto; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .catalog-notification-menu { right: -50px !important; left: auto !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab] > .admin-main > .topbar.catalog-os-topbar .catalog-account-menu { right: 0 !important; left: auto !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content {
+    padding: 12px 12px 22px !important;
+    min-width: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto 112px !important;
+    gap: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 0 !important;
+    margin: 0 0 12px !important;
+    border-radius: 17px !important;
+    overflow: hidden !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 15px 14px 12px !important;
+    gap: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-eyebrow {
+    font-size: 10px !important;
+    letter-spacing: 1px !important;
+    line-height: 1.4 !important;
+    margin: 0 0 5px !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero h1#catalog-overview-title {
+    font-size: clamp(23px, 6.2vw, 29px) !important;
+    line-height: 1.12 !important;
+    letter-spacing: -.035em !important;
+    margin: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-content > p {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+    margin: 6px 0 11px !important;
+    max-width: none !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-actions {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-actions > button {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 50px !important;
+    height: auto !important;
+    padding: 6px 3px !important;
+    border-radius: 10px !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    white-space: normal !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-actions > button > svg { order: -1; flex: 0 0 16px; width: 16px; height: 16px; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta {
+    display: grid !important;
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+    gap: 0 !important;
+    width: 100% !important;
+    margin: 11px 0 0 !important;
+    padding: 8px 0 0 !important;
+    border-top: 1px solid var(--admin-border, #dbe6de) !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta > span {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 2px !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    padding: 0 3px !important;
+    text-align: center;
+    white-space: normal !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta > span + span { border-left: 1px solid var(--admin-border, #dbe6de) !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-meta > span > strong { font-size: 18px !important; line-height: 1.1 !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-art {
+    display: block !important;
+    position: relative !important;
+    inset: auto !important;
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    height: 112px !important;
+    min-height: 0 !important;
+    max-height: 112px !important;
+    overflow: hidden !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-art > img {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    object-fit: cover !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content > .catalog-command.brutti-editorial-hero .catalog-command-art-label {
+    inset: auto auto 8px 10px !important;
+    width: auto !important;
+    max-width: calc(100% - 20px) !important;
+    padding: 5px 9px !important;
+    border-radius: 8px !important;
+    font-size: 10px !important;
+    line-height: 1.3 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-kpis.overview-stats {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 9px !important;
+    margin-bottom: 12px !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-kpis > .brutti-glass-kpi-featured.overview-stat:nth-child(n) {
+    min-height: 98px !important;
+    height: auto !important;
+    padding: 11px 13px !important;
+    border-radius: 15px !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    border-radius: 15px !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-metric-tray > .brutti-glass-kpi.overview-stat {
+    min-height: 91px !important;
+    height: auto !important;
+    padding: 10px !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-kpis .brutti-glass-kpi.overview-stat > strong { font-size: 28px !important; line-height: 1.1 !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-kpis .brutti-glass-kpi-title { font-size: 12px !important; line-height: 1.25 !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-kpis .brutti-glass-kpi-caption { font-size: 10px !important; line-height: 1.35 !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview .brutti-glass-panels.customer-insights-workbench {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+}
