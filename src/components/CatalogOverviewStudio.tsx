@@ -22,6 +22,7 @@ interface Props {
   onOpenProducts: (status: StatusFilter) => void;
   onOpenCategory: (categoryId: string) => void;
   onManageCategories: () => void;
+  onFavouriteCountChange?: (count: number | null) => void;
 }
 
 /** Date-bucket the current products' most recent update in Malaysian local time.
@@ -56,7 +57,7 @@ export function getUpdateActivity(
 
 export default function CatalogOverviewStudio({
   products, categories, loading, canManageCategories, enabled,
-  onOpenProducts, onOpenCategory, onManageCategories,
+  onOpenProducts, onOpenCategory, onManageCategories, onFavouriteCountChange,
 }: Props) {
   // Match the desktop sidebar breakpoint; resize updates without a reload.
   const [showSummaryCards, setShowSummaryCards] = useState(() =>
@@ -74,6 +75,10 @@ export default function CatalogOverviewStudio({
   const published = products.filter(product => product.status === "published").length;
   const [favourites,setFavourites]=useState<FavouriteSummary|null>(null);
   const [favouriteError,setFavouriteError]=useState(false);
+  // Share the existing visitor-count metric with the mobile hero, without another request.
+  useEffect(() => {
+    onFavouriteCountChange?.(enabled && !favouriteError ? favourites?.visitors ?? null : null);
+  }, [enabled, favouriteError, favourites, onFavouriteCountChange]);
   const [favouriteOpen,setFavouriteOpen]=useState(false);
   const [favouriteBusy,setFavouriteBusy]=useState(false);
   const refreshFavourites=useCallback(async()=>{
