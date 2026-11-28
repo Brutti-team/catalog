@@ -1122,3 +1122,80 @@
     box-shadow: 0 12px 30px rgba(0,0,0,.4) !important;
   }
 }
+
+
+/* Phone Product Editor Media: usable photo previews rather than desktop-sized thumbnails. */
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-toolbar {
+    display: flex !important; flex-direction: column !important; align-items: stretch !important;
+    gap: 9px !important; margin-bottom: 12px !important; min-width: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-tabs,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-actions {
+    display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    width: 100% !important; min-width: 0 !important; box-sizing: border-box;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-tabs { gap: 3px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-actions { gap: 7px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-tabs > button,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-actions > button {
+    min-width: 0 !important; width: 100% !important; min-height: 44px !important;
+    height: auto !important; padding: 7px 5px !important; gap: 5px !important;
+    font-size: 12px !important; line-height: 1.3 !important; white-space: normal !important;
+    text-align: center !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-tabs > button > svg,
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-actions > button > svg { flex-shrink: 0; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-gallery-panel:not([hidden]) { width: 100% !important; min-width: 0 !important; overflow: visible !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-gallery {
+    display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    grid-auto-flow: row !important; gap: 9px !important; width: 100% !important;
+    max-width: none !important; align-items: start !important; justify-items: stretch !important;
+    overflow: visible !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-gallery > :is(.brutti-media-photo-item,.brutti-media-add-tile) {
+    width: 100% !important; max-width: none !important; min-width: 0 !important;
+    height: auto !important; min-height: 0 !important; max-height: none !important;
+    aspect-ratio: 1.18 / 1 !important; box-sizing: border-box;
+    border-radius: 11px !important; margin: 0 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-photo-item > .brutti-media-thumbnail {
+    position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important;
+    border-radius: 10px !important; overflow: hidden !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-thumbnail img { width: 100% !important; height: 100% !important; object-fit: cover; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-cover-badge { top: 6px !important; left: 6px !important; padding: 4px 5px !important; font-size: 10px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-cover-badge svg { width: 11px !important; height: 11px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-photo-item > :is(.brutti-media-photo-drag-handle,.brutti-media-quick-edit,.brutti-media-more) {
+    width: 30px !important; height: 30px !important; min-width: 30px !important; min-height: 30px !important;
+    padding: 0 !important; border-radius: 9px !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-photo-drag-handle { bottom: 6px !important; left: 6px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-quick-edit { bottom: 6px !important; right: 6px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-more { top: 6px !important; right: 6px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-photo-menu { top: 39px !important; width: min(170px,calc(100vw - 80px)) !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-photo-item:nth-child(odd) .brutti-media-photo-menu { left: 0 !important; right: auto !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-photo-menu > button { min-height: 42px !important; font-size: 12px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-add-tile {
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    flex-direction: column !important; gap: 6px !important; padding: 9px !important;
+    border-style: dashed !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-add-tile > span { font-size: 12px !important; white-space: nowrap !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-gallery-help { margin-top: 10px !important; font-size: 11px !important; line-height: 1.5 !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-customer-crop { margin-top: 12px !important; border-radius: 11px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-customer-crop > summary {
+    display: flex !important; align-items: center !important; flex-wrap: nowrap !important;
+    gap: 7px !important; min-height: 48px !important; padding: 10px !important;
+    font-size: 12px !important; line-height: 1.35 !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-customer-crop > summary > svg { flex-shrink: 0; width: 16px !important; height: 16px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-customer-crop > summary > small { margin-left: auto !important; font-size: 10px !important; text-align: right; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-customer-crop-body { grid-template-columns: minmax(0,1fr) !important; gap: 12px !important; padding: 10px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-customer-crop-controls input[type="range"] { min-height: 32px !important; }
+}
+@media (max-width: 360px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-media-actions > button { font-size: 11px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-customer-crop > summary > small { display: none !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme] .modal.product-editor-dialog--editing .product-editor-v2 #brutti-media-section.brutti-product-media .brutti-customer-crop > summary > svg:last-child { margin-left: auto; }
+}
