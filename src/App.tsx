@@ -1555,6 +1555,28 @@ export default function App() {
           </>)}
         </div>
       </main>
+      {!editor && !photoImportOpen && (
+        <nav className="catalog-mobile-bottom-nav" aria-label="Mobile admin navigation">
+          {([
+            { id: "overview", text: "Overview", icon: LayoutDashboard },
+            { id: "products", text: "Products", icon: Package },
+            { id: "categories", text: "Categories", icon: Layers },
+            { id: "album", text: "Album", icon: Images },
+          ] as const).filter(item => item.id !== "categories" || accountRole !== "editor").map(item => (
+            <button type="button" key={item.id} aria-label={item.text} title={item.text}
+              aria-current={tab === item.id ? "page" : undefined}
+              onClick={() => { if (tab !== item.id) switchTab(item.id); else window.scrollTo({ top: 0, behavior: "auto" }); }}>
+              <span><item.icon size={22} strokeWidth={1.8} aria-hidden="true" /></span>
+            </button>
+          ))}
+          <button type="button" aria-label="Open navigation" title="More"
+            aria-expanded={mobileNav}
+            className={["profile", "users", "activity"].includes(tab) ? "is-active" : undefined}
+            onClick={() => { setNotificationOpen(false); setAccountMenuOpen(false); setMobileNav(true); }}>
+            <span><Menu size={22} strokeWidth={1.8} aria-hidden="true" /></span>
+          </button>
+        </nav>
+      )}
       <CatalogPdfDownload products={data.products} categories={data.categories}
         disabled={loading || publishedCount === 0} openRef={staffPdfRef} hideTrigger staffPreview />
       {photoImportOpen && (
