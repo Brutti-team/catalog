@@ -383,10 +383,8 @@
 }
 
 
-/* Desktop-only: remove the collection summary KPI strip from Overview.
-   Keep the existing phone/tablet layout, hero, analytics and categories panel. */
-@media (min-width: 801px) {
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview > .overview-stats.brutti-glass-kpis {
-    display: none !important;
-  }
+/* Admin overview: hide the standalone summary KPI cards at every viewport.
+   Keep the hero totals, analytics, categories panel and mobile navigation. */
+.admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-overview > .overview-stats.brutti-glass-kpis {
+  display: none !important;
 }
