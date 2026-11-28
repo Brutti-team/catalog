@@ -95,8 +95,52 @@ Deno.serve(async (request: Request) => {
   // Precheck against existing Auth users; never overwrite an existing login.
   const { data: existing, error: listingError } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
   if (listingError) return json({ error: "Could not validate existing accounts." }, 503);
-  if (existing.users.some(user => user.email?.toLowerCase() === email)) {
-    return json({ error: "An account with this email already exists. Use the role selector instead." }, 409);
+  const previousUser = existing.users.find(user => user.email?.toLowerCase() === email);
+  if (previousUser) {
+    // Removing Catalog access intentionally retains the Auth identity and audit
+    // history. Allow the Super Admin to invite a previously invited, revoked
+    // account again, without overwriting an active or pending membership.
+    if (previousUser.id === userResult.user.id || !previousUser.invited_at) {
+      return json({ error: "This existing account cannot be invited again. Manage its access in Account Permission." }, 409);
+    }
+    const { data: currentRole, error: currentRoleError } = await admin
+      .from("catalog_staff_roles").select("role,onboarding_active").eq("user_id", previousUser.id).maybeSingle();
+    const { data: legacyAccess, error: legacyError } = await admin
+      .from("catalog_admins").select("user_id").eq("user_id", previousUser.id).maybeSingle();
+    if (currentRoleError || legacyError) return json({ error: "Could not verify the existing Catalog account." }, 503);
+    if (currentRole) return json({ error: currentRole.onboarding_active
+      ? "This account already has Catalog access. Use the role selector."
+      : "An invitation is already pending. Open Pending invitations and select Reinvite." }, 409);
+    if (legacyAccess) return json({ error: "This account already has Catalog access. Use the role selector." }, 409);
+
+    // INSERT (not UPSERT) prevents concurrent requests overwriting another role.
+    const { error: restoreError } = await admin.from("catalog_staff_roles").insert({
+      user_id: previousUser.id, role, onboarding_active: false,
+      password_setup_at: null, password_login_at: null,
+    });
+    if (restoreError) {
+      console.error("Catalog reinvitation membership restore failed", restoreError.code);
+      return json({ error: "Could not restore pending access. Refresh Account Permission and try again." }, 409);
+    }
+    let deliveryError;
+    if (previousUser.email_confirmed_at || previousUser.last_sign_in_at) {
+      const result = await admin.auth.resetPasswordForEmail(email, { redirectTo: catalogInvitationRedirect(origin) });
+      deliveryError = result.error;
+    } else {
+      const result = await admin.auth.admin.inviteUserByEmail(email, { redirectTo: catalogInvitationRedirect(origin) });
+      deliveryError = result.error || (result.data.user?.id !== previousUser.id ? new Error("Unexpected invitation account.") : null);
+    }
+    if (deliveryError) {
+      console.error("Catalog restored invitation email failed", deliveryError.message);
+      return json({ error: "Account restored as pending, but email could not be sent. Refresh Account Permission and select Reinvite." }, 422);
+    }
+    if (candidateId) {
+      const { error: syncError } = await admin.from("catalog_staff_candidates")
+        .update({ email, updated_at: new Date().toISOString() }).eq("id", candidateId);
+      if (syncError) console.error("Catalog candidate reconciliation failed", syncError.code);
+    }
+    return json({ ok: true, email, role, status: "invited",
+      message: "Account invited again. Catalog access remains pending until password setup and password sign-in are completed." });
   }
 
   const { data: invited, error: inviteError } = await admin.auth.admin.inviteUserByEmail(
