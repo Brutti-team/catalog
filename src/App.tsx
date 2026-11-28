@@ -98,11 +98,13 @@ const deferredModuleFallback = <div role="status" aria-live="polite" style={{ pa
 
 
 type Tab = "overview" | "products" | "album" | "categories" | "profile" | "users" | "activity";
-const label = (s: string) =>
-  s
+// Render older or incomplete records without crashing the Products view.
+const label = (s: string | null | undefined) =>
+  (typeof s === "string" ? s : "")
     .split("-")
-    .map((w) => w[0].toUpperCase() + w.slice(1))
-    .join(" ");
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ") || "—";
 function newProduct(categoryId = ""): Product {
   return {
     id: crypto.randomUUID(),
@@ -1247,7 +1249,7 @@ export default function App() {
                     : filtered.map(p => (
                       <div className="catalog-best-gallery-wrap" key={p.id}>
                       <button className="catalog-gallery-card" type="button"
-                        data-product-sku={p.sku.trim().toUpperCase()}
+                        data-product-sku={typeof p.sku === "string" ? p.sku.trim().toUpperCase() : ""}
                         onClick={() => {
                           const job = getBackgroundJobSnapshot();
                           if (job.status === "running" && job.productId === p.id && job.image?.id) {
