@@ -219,6 +219,7 @@ export default function App() {
   const [accountsReady, setAccountsReady] = useState(false);
   const [accountCheckedFor, setAccountCheckedFor] = useState<string | null>(null);
   const [overviewFavouriteCount, setOverviewFavouriteCount] = useState<number | null>(null);
+  const [overviewFavouriteOpen, setOverviewFavouriteOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [category, setCategory] = useState("all");
@@ -502,6 +503,7 @@ export default function App() {
   };
   const switchTab = (next: Tab) => {
     setTab(next);
+    setOverviewFavouriteOpen(false);
     setMobileNav(false);
     setSearch("");
     setStatus("all");
@@ -979,7 +981,7 @@ export default function App() {
               <div className="catalog-command-content">
                 <div className="catalog-command-eyebrow">BRUTTI'S COLLECTION</div>
                 <h1 id="catalog-overview-title">Catalog overview</h1>
-                <p>A considered home for every piece, from workshop photography to the final published collection.</p>
+                <p className="catalog-command-description">A considered home for every piece, from workshop photography to the final published collection.</p>
                 <div className="catalog-command-actions">
                   <button type="button" className="catalog-hero-primary" disabled={loading || busy}
                     onClick={() => setEditor(newProduct(data.categories[0]?.id))}>
@@ -999,10 +1001,10 @@ export default function App() {
                   <span><strong><OverviewCount value={loading ? null : draftCount} /></strong> In review</span>
                 </div>
                 <div className="catalog-command-meta catalog-command-meta-mobile" aria-label="Current catalog totals">
-                  <span><strong><OverviewCount value={loading ? null : data.products.length} /></strong> Total products</span>
-                  <span><strong><OverviewCount value={loading ? null : draftCount} /></strong> Drafts</span>
-                  <span><strong><OverviewCount value={loading ? null : publishedCount} /></strong> Published</span>
-                  <span><strong><OverviewCount value={loading ? null : overviewFavouriteCount} /></strong> Favourites</span>
+                  <button type="button" aria-label="View all products" onClick={() => { switchTab("products"); setStatus("all"); }}><strong><OverviewCount value={loading ? null : data.products.length} /></strong><span>Total products</span></button>
+                  <button type="button" aria-label="View draft products" onClick={() => { switchTab("products"); setStatus("draft"); }}><strong><OverviewCount value={loading ? null : draftCount} /></strong><span>Drafts</span></button>
+                  <button type="button" aria-label="View published products" onClick={() => { switchTab("products"); setStatus("published"); }}><strong><OverviewCount value={loading ? null : publishedCount} /></strong><span>Published</span></button>
+                  <button type="button" aria-label="View customer favourites" aria-haspopup="dialog" onClick={() => setOverviewFavouriteOpen(true)}><strong><OverviewCount value={loading ? null : overviewFavouriteCount} /></strong><span>Favourites</span></button>
                 </div>
               </div>
               <div className="catalog-command-art" aria-label={heroProduct ? `Catalog photo: ${heroProduct.name}` : "Brutti kiosk design reference"}>
@@ -1137,6 +1139,8 @@ export default function App() {
                 onOpenCategory={id => { switchTab("products"); setCategory(id); }}
                 onManageCategories={() => switchTab(accountRole === "editor" ? "products" : "categories")}
                 onFavouriteCountChange={setOverviewFavouriteCount}
+                favouriteReportOpen={overviewFavouriteOpen}
+                onFavouriteReportOpenChange={setOverviewFavouriteOpen}
               />
               <div className="brutti-overview-audit">
                 <LastChange
