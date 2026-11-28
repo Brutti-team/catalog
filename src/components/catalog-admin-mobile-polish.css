@@ -1033,21 +1033,21 @@
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-kpi-icon svg { width: 20px !important; height: 20px !important; }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-kpi > div > strong,
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-kpi > div > strong > span[aria-hidden="true"] {
-    font-size: clamp(23px, 6.5vw, 29px) !important;
+    font-size: 20px !important;
     font-weight: 750 !important; line-height: 1.12 !important;
     color: var(--mobile-insight-text) !important; letter-spacing: -.025em !important;
     font-variant-numeric: tabular-nums;
   }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-kpi > div > span { font-size: 13px !important; line-height: 1.35 !important; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-chart-heading strong { font-size: 14px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-kpi > div > span { font-size: 11px !important; line-height: 1.35 !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-chart-heading strong { font-size: 11px !important; }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-chart-heading > span { font-size: 12px !important; }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-chart[data-phone-chart="true"] svg { width: 100% !important; height: auto !important; max-height: none !important; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-chart[data-phone-chart="true"] .customer-insights-gridline text { font-size: 15px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-chart[data-phone-chart="true"] .customer-insights-gridline text { font-size: 12px !important; }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-chart[data-phone-chart="true"] .customer-insights-x-label { font-size: 14px !important; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-chart[data-phone-chart="true"] .customer-insights-bar-number { font-size: 17px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-chart[data-phone-chart="true"] .customer-insights-bar-number { font-size: 14px !important; }
 }
 @media (max-width: 360px) {
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-kpis > .customer-insights-kpi:nth-child(n) { padding-inline: 7px !important; gap: 6px !important; }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-kpi-icon { width: 28px !important; height: 28px !important; flex-basis: 28px !important; }
-  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-kpi > div > span { font-size: 12px !important; }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .brutti-glass-panels .customer-insights-panel.is-compact .customer-insights-kpi > div > span { font-size: 11px !important; }
 }
