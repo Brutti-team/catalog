@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import { AlertCircle, CalendarDays, CheckCircle2, Clock3, RefreshCw, Save, ShieldCheck, LockKeyhole, UserRound, UsersRound, Package, Layers3, Trash2, Plus, ArrowLeftRight, UserPlus, Send, Mail, ChevronDown, Check, ListFilter, Pencil, Eye, EyeOff, Archive, type LucideIcon } from "lucide-react";
 import {
   catalogActivityMYTRange, getAccountSummary, initials, listCatalogActivity, listCatalogStaff,
-  roleLabel, updateOwnDisplayName, updateStaffRole, inviteCatalogStaff, listPendingCatalogStaff, editPendingCatalogStaff, deletePendingCatalogStaff,
+  roleLabel, updateOwnDisplayName, updateStaffRole, removeCatalogStaff, inviteCatalogStaff, listPendingCatalogStaff, editPendingCatalogStaff, deletePendingCatalogStaff,
   type AccountSummary, type ActivityEntry, type ActivityPeriod, type StaffMember, type StaffRole, type PendingCatalogStaff,
 } from "../lib/account-center";
 import { requestPasswordReset } from "../lib/catalog";
@@ -177,6 +177,7 @@ export default function AccountCenter({
   const [error, setError] = useState("");
   const [inviteOpen, setInviteOpen] = useState(false);
   const [editingCandidate, setEditingCandidate] = useState(false);
+  const [deleteMember, setDeleteMember] = useState<StaffMember | null>(null);
   const [deleteCandidate, setDeleteCandidate] = useState<PendingCatalogStaff | null>(null);
   const [inviteName, setInviteName] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
@@ -253,6 +254,39 @@ export default function AccountCenter({
       setMessage("If email delivery is available, a password reset link will arrive in your inbox.");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not request a password reset.");
+    } finally { setBusyId(null); }
+  }
+
+  function canRemoveMember(user: StaffMember) {
+    return user.user_id !== account?.id && user.role !== "super_admin" &&
+      (account?.role === "super_admin" || (account?.role === "admin" && user.role === "editor"));
+  }
+
+  function toggleRoleEditor(user: StaffMember) {
+    setDraftRoles(prev => {
+      const next = { ...prev };
+      if (next[user.user_id] !== undefined) delete next[user.user_id];
+      else next[user.user_id] = user.role ?? "none";
+      return next;
+    });
+  }
+
+  async function removeMember() {
+    if (!deleteMember || !canRemoveMember(deleteMember) || busyId) return;
+    setBusyId("delete-member"); setError(""); setMessage("");
+    try {
+      await removeCatalogStaff(deleteMember.user_id);
+      setMembers(current => current.filter(user => user.user_id !== deleteMember.user_id));
+      setDraftRoles(prev => { const next = { ...prev }; delete next[deleteMember.user_id]; return next; });
+      setDeleteMember(null);
+      setMessage("Catalog access removed.");
+      onToast?.("Catalog access removed.");
+      try {
+        const [staff, waiting] = await Promise.all([listCatalogStaff(), listPendingCatalogStaff()]);
+        setMembers(staff); setPendingStaff(waiting);
+      } catch { setError("Access removed, but the staff list could not refresh. Please reload."); }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unable to remove Catalog access.");
     } finally { setBusyId(null); }
   }
 
@@ -433,11 +467,11 @@ export default function AccountCenter({
               <section className="ap-panel" aria-labelledby="catalog-users-heading">
               <div className="account-table-title">
                 <div className="ap-section-icon"><UsersRound size={19} aria-hidden="true"/></div>
-                <div className="ap-section-copy"><h2 id="catalog-users-heading">Catalog users</h2><p>Admin can view permissions. Super Admin can manage access.</p></div>
+                <div className="ap-section-copy"><h2 id="catalog-users-heading">Catalog users</h2><p>Admin can remove Editor access. Super Admin can manage roles and remove Admin or Editor access.</p></div>
                 <span aria-label={activeMembers.length + " catalog users"}>{activeMembers.length}</span>
               </div>
               <div className="account-scroll"><table className="account-table">
-                <thead><tr><th>Team member</th><th>Last login</th><th>Access role</th>{account.role === "super_admin" && <th>Action</th>}</tr></thead>
+                <thead><tr><th>Team member</th><th>Last login</th><th>Access role</th><th>Action</th></tr></thead>
                 <tbody>{activeMembers.map(user => {
                   const draft = draftRoles[user.user_id] ?? user.role ?? "none";
                   return <tr key={user.user_id} data-role={user.role || "none"}>
@@ -451,20 +485,22 @@ export default function AccountCenter({
                     <td><div className="ap-last-login"><Clock3 size={14} aria-hidden="true"/>{dateText(user.last_sign_in_at)}</div></td>
                     <td>{account.id === user.user_id ? (
                       <span className="catalog-own-role" title="Your own role is protected from changes"><LockKeyhole size={13} aria-hidden="true"/><span className="catalog-own-role-label">{roleLabel(user.role)}</span><small className="catalog-own-role-protected">Protected</small></span>
-                    ) : account.role === "super_admin" ? (
+                    ) : account.role === "super_admin" && draftRoles[user.user_id] !== undefined ? (
                       <div className="ap-role-field" data-role={draft}><ShieldCheck size={14} aria-hidden="true"/><select aria-label={`Role for ${user.email}`} value={draft}
                         disabled={account.id === user.user_id || busyId !== null}
                         onChange={e => setDraftRoles(prev => ({ ...prev, [user.user_id]: e.target.value }))}>
-                        {roleOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.title}</option>)}
+                        {roleOptions.filter(opt => opt.value !== "none" || draft === "none").map(opt => <option key={opt.value} value={opt.value}>{opt.title}</option>)}
                       </select></div>
                     ) : (
                       <span className="catalog-access-role-readonly"><ShieldCheck size={13} aria-hidden="true"/>{roleLabel(user.role)}</span>
                     )}</td>
-                    {account.role === "super_admin" && (
-                      <td>{account.id === user.user_id ? <span className="catalog-own-role-note">Your account</span> : <button type="button" className="button secondary"
-                        disabled={busyId !== null || draft === (user.role || "none")}
-                        onClick={() => void saveMember(user)}>Save</button>}</td>
-                    )}
+                    <td>{account.id === user.user_id ? <span className="catalog-own-role-note">Your account</span> : <div className="catalog-pending-actions">
+                      {account.role === "super_admin" && (draftRoles[user.user_id] !== undefined ? <>
+                        <button type="button" className="catalog-pending-edit" aria-label="Save role" title="Save role" disabled={busyId !== null || draft === (user.role || "none")} onClick={() => void saveMember(user)}><Check size={15}/></button>
+                        <button type="button" className="catalog-pending-edit" aria-label="Cancel role edit" title="Cancel role edit" disabled={busyId !== null} onClick={() => toggleRoleEditor(user)}>×</button>
+                      </> : <button type="button" className="catalog-pending-edit" aria-label={`Edit role for ${user.email}`} title="Edit role" disabled={busyId !== null} onClick={() => toggleRoleEditor(user)}><Pencil size={15}/></button>)}
+                      {canRemoveMember(user) && <button type="button" className="catalog-pending-delete" aria-label={`Remove ${user.email}`} title="Remove Catalog access" disabled={busyId !== null} onClick={() => { setError(""); setDeleteMember(user); }}><Trash2 size={15}/></button>}
+                    </div>}</td>
                   </tr>;
                 })}</tbody>
               </table></div>
@@ -481,7 +517,7 @@ export default function AccountCenter({
                     <span className="catalog-pending-staff-count">{pendingCount} pending</span>
                   </header>
                   <div className="catalog-pending-staff-list">
-                    <div className={"ap-pending-columns" + (account.role === "super_admin" ? "" : " is-readonly")} aria-hidden="true"><span>Team member</span><span>Access role</span><span>Status</span>{account.role === "super_admin" && <span>Action</span>}</div>
+                    <div className="ap-pending-columns" aria-hidden="true"><span>Team member</span><span>Access role</span><span>Status</span><span>Action</span></div>
                     {invitedMembers.map(user => {
                       const draft = draftRoles[user.user_id] ?? user.role ?? "none";
                       return <div className="catalog-pending-staff-item catalog-pending-invited-member" key={user.user_id} data-role={user.role || "none"}>
@@ -489,16 +525,20 @@ export default function AccountCenter({
                           <span className="ap-avatar" aria-hidden="true">{initials(user.display_name || user.email.split("@")[0])}</span>
                           <div className="ap-person-copy"><strong>{user.display_name || user.email.split("@")[0]}</strong><small className="ap-email">{user.email}</small></div>
                         </div>
-                        {account.role === "super_admin" ? (
+                        {account.role === "super_admin" && draftRoles[user.user_id] !== undefined ? (
                           <div className="ap-role-field ap-pending-invited-role" data-role={draft}><ShieldCheck size={14} aria-hidden="true"/><select aria-label={`Role for ${user.email}`} value={draft}
                             disabled={busyId !== null} onChange={e => setDraftRoles(prev => ({ ...prev, [user.user_id]: e.target.value }))}>
-                            {roleOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.title}</option>)}
+                            {roleOptions.filter(opt => opt.value !== "none" || draft === "none").map(opt => <option key={opt.value} value={opt.value}>{opt.title}</option>)}
                           </select></div>
                         ) : <span className="catalog-pending-staff-role"><ShieldCheck size={13} aria-hidden="true"/>{roleLabel(user.role)}</span>}
                         <span className="catalog-pending-staff-state is-invited" title="Invitation sent · awaiting first login">Invited · awaiting login</span>
-                        {account.role === "super_admin" && <div className="catalog-pending-actions">
-                          <button type="button" className="button secondary" disabled={busyId !== null || draft === (user.role || "none")} onClick={() => void saveMember(user)}>Save</button>
-                        </div>}
+                        <div className="catalog-pending-actions">
+                          {account.role === "super_admin" && (draftRoles[user.user_id] !== undefined ? <>
+                            <button type="button" className="catalog-pending-edit" title="Save role" aria-label="Save role" disabled={busyId !== null || draft === (user.role || "none")} onClick={() => void saveMember(user)}><Check size={15}/></button>
+                            <button type="button" className="catalog-pending-edit" title="Cancel role edit" aria-label="Cancel role edit" disabled={busyId !== null} onClick={() => toggleRoleEditor(user)}>×</button>
+                          </> : <button type="button" className="catalog-pending-edit" title="Edit role" aria-label={`Edit role for ${user.email}`} disabled={busyId !== null} onClick={() => toggleRoleEditor(user)}><Pencil size={15}/></button>)}
+                          {canRemoveMember(user) && <button type="button" className="catalog-pending-delete" title="Cancel invitation access" aria-label={`Remove ${user.email}`} disabled={busyId !== null} onClick={() => { setError(""); setDeleteMember(user); }}><Trash2 size={15}/></button>}
+                        </div>
                       </div>;
                     })}
                     {waitingCandidates.map(candidate => (
@@ -510,15 +550,14 @@ export default function AccountCenter({
                         </div>
                         <span className="catalog-pending-staff-role">{candidate.proposed_role === "editor" ? <Pencil size={13} aria-hidden="true"/> : <ShieldCheck size={13} aria-hidden="true"/>}{roleLabel(candidate.proposed_role)}</span>
                         <span className="catalog-pending-staff-state">Not invited</span>
-                        {account.role === "super_admin" && (
-                          <div className="catalog-pending-actions">
+                        <div className="catalog-pending-actions">{account.role === "super_admin" && <>
                             <button type="button" className="catalog-pending-staff-invite" disabled={pending || busyId !== null} onClick={() => openInvitation(candidate)}>
                               <UserPlus size={14} aria-hidden="true" /> Invite
                             </button>
                             <button type="button" className="catalog-pending-edit" disabled={pending || busyId !== null} aria-label={`Edit ${candidate.display_name}`} title="Edit invitation" onClick={() => openInvitation(candidate, true)}><Pencil size={15} aria-hidden="true"/></button>
                             <button type="button" className="catalog-pending-delete" disabled={pending || busyId !== null} aria-label={`Delete ${candidate.display_name}`} title="Delete invitation" onClick={() => { setError(""); setDeleteCandidate(candidate); }}><Trash2 size={15} aria-hidden="true"/></button>
+                          </>}
                           </div>
-                        )}
                       </div>
                     ))}
                   </div>
@@ -683,6 +722,21 @@ export default function AccountCenter({
             <div className="catalog-user-invite-actions">
               <button type="button" className="button secondary" disabled={busyId !== null} onClick={() => setDeleteCandidate(null)}>Cancel</button>
               <button type="button" className="button catalog-pending-confirm-delete" disabled={busyId !== null} onClick={() => void removePendingCandidate()}><Trash2 size={16} aria-hidden="true"/> {busyId === "delete-pending" ? "Deleting…" : "Delete"}</button>
+            </div>
+          </div>
+        </Modal>
+      )}
+      {deleteMember && (
+        <Modal title="Remove Catalog access?" description="This user will lose staff access to Catalog. Their Brutti OS account, product records and activity history will not be deleted."
+          className="catalog-user-invite-dialog catalog-pending-delete-dialog"
+          onClose={() => { if (busyId !== "delete-member") setDeleteMember(null); }}>
+          <div className="catalog-user-invite-form">
+            <p><strong>{deleteMember.display_name || deleteMember.email}</strong></p>
+            <p>{deleteMember.email}</p>
+            {error && <p className="catalog-user-invite-error" role="alert">{error}</p>}
+            <div className="catalog-user-invite-actions">
+              <button type="button" className="button secondary" disabled={busyId !== null} onClick={() => setDeleteMember(null)}>Cancel</button>
+              <button type="button" className="button catalog-pending-confirm-delete" disabled={busyId !== null} onClick={() => void removeMember()}><Trash2 size={16}/> {busyId === "delete-member" ? "Removing…" : "Remove access"}</button>
             </div>
           </div>
         </Modal>
