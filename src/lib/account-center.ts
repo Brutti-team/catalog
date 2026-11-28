@@ -16,6 +16,7 @@ export type StaffMember = {
   display_name: string;
   role: StaffRole | null;
   last_sign_in_at: string | null;
+  onboarding_status?: "invited" | "awaiting_password" | "ready_to_sign_in" | "active";
 };
 export type ActivityEntry = {
   id: string;
@@ -88,7 +89,7 @@ export async function listCatalogStaff(): Promise<StaffMember[]> {
   const account = await getAccountSummary();
   if (!account.managementReady || !["super_admin", "admin"].includes(account.role ?? ""))
     throw new Error("Account Permission is available to Admin and Super Admin only.");
-  const { data, error } = await catalogClient().rpc("catalog_list_staff");
+  const { data, error } = await catalogClient().rpc("catalog_list_staff_status");
   if (error) throw new Error(error.message);
   return (data || []) as StaffMember[];
 }
