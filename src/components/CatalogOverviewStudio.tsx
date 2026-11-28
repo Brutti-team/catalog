@@ -58,6 +58,17 @@ export default function CatalogOverviewStudio({
   products, categories, loading, canManageCategories, enabled,
   onOpenProducts, onOpenCategory, onManageCategories,
 }: Props) {
+  // Match the desktop sidebar breakpoint; resize updates without a reload.
+  const [showSummaryCards, setShowSummaryCards] = useState(() =>
+    typeof window === "undefined" || !window.matchMedia("(min-width: 801px)").matches
+  );
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 801px)");
+    const sync = () => setShowSummaryCards(!query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
   const total = products.length;
   const drafts = products.filter(product => product.status === "draft");
   const published = products.filter(product => product.status === "published").length;
@@ -112,6 +123,7 @@ export default function CatalogOverviewStudio({
       <div className="brutti-glass-backdrop" aria-hidden="true">
         {featuredPhoto && <SafeImage src={featuredPhoto.url} alt="" loading="lazy" />}
       </div>
+      {showSummaryCards && (
       <div className="overview-stats brutti-glass-kpis">
         <button type="button" className="overview-stat brutti-glass-kpi brutti-glass-kpi-featured"
           disabled={loading} aria-label="View all products" onClick={() => onOpenProducts("all")}>
@@ -139,6 +151,7 @@ export default function CatalogOverviewStudio({
           ))}
         </div>
       </div>
+      )}
       {favouriteOpen&&<Modal title="Customer favourites" eyebrow="CUSTOMER INTEREST" description="Discover which products your customers love." className="catalog-favourite-report" onClose={()=>setFavouriteOpen(false)}>
         <div className="fr-body">
           <div className="fr-metrics">
