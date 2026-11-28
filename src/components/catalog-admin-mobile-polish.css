@@ -621,3 +621,15 @@
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi-icon { width: 27px !important; height: 27px !important; flex-basis: 27px !important; }
   .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .customer-insights-panel.is-compact .customer-insights-kpi strong { font-size: 21px !important; }
 }
+
+
+/* Overview phone scroll endpoint: dock (69px) + offset (12px) + 8px clearance. */
+@media (max-width: 600px) {
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] > .admin-main > .admin-content {
+    padding-bottom: calc(89px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .admin-app.brutti-staff-redesign.catalog-os-layout[data-theme][data-active-tab="overview"] .workspace-footer {
+    margin-bottom: 0 !important;
+    padding-bottom: 4px !important;
+  }
+}
