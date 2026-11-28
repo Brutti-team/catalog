@@ -141,6 +141,23 @@ export async function deletePendingCatalogStaff(candidateId: string): Promise<vo
   if (error) throw new Error(error.message);
 }
 
+/** Resend the invitation for an existing pending Catalog Auth identity. */
+export async function reinviteCatalogStaff(userId: string): Promise<string> {
+  const account = await getAccountSummary();
+  if (!account.managementReady || account.role !== "super_admin")
+    throw new Error("Only the Super Admin can resend invitations.");
+  const { data, error } = await catalogClient().functions.invoke<{ok?: boolean; message?: string; error?: string}>("catalog-invite-staff", {
+    body: { action: "reinvite", userId },
+  });
+  if (error) {
+    const ctx = "context" in error ? error.context : null;
+    const response = ctx instanceof Response ? await ctx.clone().json().catch(() => null) as { error?: string } | null : null;
+    throw new Error(response?.error || error.message || "Could not resend invitation.");
+  }
+  if (!data?.ok) throw new Error(data?.error || "Could not resend invitation.");
+  return data.message || "Invitation resent successfully.";
+}
+
 export type CatalogInvitationRole = "super_admin" | "admin" | "editor";
 
 /** Invite a separate Catalog Auth account without exposing service credentials. */
