@@ -2048,6 +2048,8 @@ function Login({
 function PasswordAccess({ intent, verified, onDone }: { intent: "invite" | "recovery"; verified: boolean; onDone: () => Promise<void> }) {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   async function submit(e: FormEvent) {
@@ -2058,19 +2060,36 @@ function PasswordAccess({ intent, verified, onDone }: { intent: "invite" | "reco
     catch (e) { setError(e instanceof Error ? e.message : "Unable to set password."); }
     finally { setBusy(false); }
   }
-  return <div className="access-page">
-    <a href={routeHref("/catalog")} className="brand"><img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" className="brutti-official-logo" /></a>
-    <div className="access-card">
-      <ShieldCheck size={25} /><span className="eyebrow">THE CATALOG WORKSPACE</span>
-      <h1>{intent === "invite" ? "Set your password." : "Reset your password."}</h1>
-      <p className="muted">Choose a password for your Supabase account. Administrator access is granted separately by the workspace owner.</p>
-      {verified ? <form onSubmit={submit}>
-        <label>New password<input type="password" autoComplete="new-password" required minLength={8} value={password} onChange={e => setPassword(e.target.value)} /></label>
-        <label>Confirm password<input type="password" autoComplete="new-password" required minLength={8} value={confirm} onChange={e => setConfirm(e.target.value)} /></label>
-        <button className="button primary full" disabled={busy}>{busy ? "Saving…" : "Save password"}</button>
-      </form> : <div className="notice error" role="alert">This link is expired or invalid. Request a new link and try again.</div>}
-      {error && <div className="notice error" role="alert">{error}</div>}
-      <button className="text-button" disabled={busy} onClick={() => void onDone()}>Back to sign in</button>
-    </div>
+  return <div className="brutti-password-page">
+    <a href={routeHref("/catalog")} className="brutti-password-brand" aria-label="Brutti Catalog"><img src={publicAssetUrl("/images/brutti-wordmark.svg")} alt="Brutti" /></a>
+    <main className="brutti-password-card" aria-labelledby="brutti-password-title">
+      <div className="brutti-password-icon"><ShieldCheck size={24} aria-hidden="true"/></div>
+      <span className="brutti-password-kicker">Brutti Catalog</span>
+      <h1 id="brutti-password-title" className="brutti-password-title">{intent === "invite" ? "Set your password" : "Reset your password"}</h1>
+      <p className="brutti-password-description">{intent === "invite" ? "Create your password to access the Catalog workspace." : "Create a new password to securely access your Catalog account."}</p>
+      {verified ? <form className="brutti-password-form" onSubmit={submit}>
+        <div className="brutti-password-field">
+          <label htmlFor="brutti-password-new">New password</label>
+          <div className="brutti-password-input">
+            <LockKeyhole size={17} aria-hidden="true"/>
+            <input id="brutti-password-new" type={showPassword ? "text" : "password"} autoComplete="new-password" required minLength={8} value={password} placeholder="Enter new password" aria-describedby="brutti-password-hint" onChange={e => setPassword(e.target.value)} />
+            <button type="button" className="brutti-password-reveal" disabled={busy} aria-label={showPassword ? "Hide new password" : "Show new password"} aria-pressed={showPassword} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff size={19}/> : <Eye size={19}/>}</button>
+          </div>
+          <p className="brutti-password-hint" id="brutti-password-hint">Use at least 8 characters.</p>
+        </div>
+        <div className="brutti-password-field">
+          <label htmlFor="brutti-password-confirm">Confirm password</label>
+          <div className="brutti-password-input">
+            <LockKeyhole size={17} aria-hidden="true"/>
+            <input id="brutti-password-confirm" type={showConfirm ? "text" : "password"} autoComplete="new-password" required minLength={8} value={confirm} placeholder="Re-enter password" onChange={e => setConfirm(e.target.value)} />
+            <button type="button" className="brutti-password-reveal" disabled={busy} aria-label={showConfirm ? "Hide confirmation password" : "Show confirmation password"} aria-pressed={showConfirm} onClick={() => setShowConfirm(v => !v)}>{showConfirm ? <EyeOff size={19}/> : <Eye size={19}/>}</button>
+          </div>
+        </div>
+        {error && <div className="brutti-password-alert" role="alert"><AlertCircle size={17} aria-hidden="true"/><span>{error}</span></div>}
+        <button className="brutti-password-submit" type="submit" disabled={busy}>{busy ? <LoaderCircle className="spin" size={18} aria-hidden="true"/> : null}<span>{busy ? "Saving…" : "Save password"}</span>{!busy && <ArrowRight size={17} aria-hidden="true"/>}</button>
+      </form> : <div className="brutti-password-alert" role="alert"><AlertCircle size={17} aria-hidden="true"/><span>This link is expired or invalid. Request a new link and try again.</span></div>}
+      <button type="button" className="brutti-password-back" disabled={busy} onClick={() => void onDone()}><ArrowLeft size={15} aria-hidden="true"/> Back to sign in</button>
+    </main>
+    <p className="brutti-password-foot"><LockKeyhole size={13} aria-hidden="true"/> Secure access · Brutti Catalog</p>
   </div>;
 }
