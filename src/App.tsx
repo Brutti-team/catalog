@@ -2063,7 +2063,7 @@ function PasswordAccess({ intent, verified, onDone }: { intent: "invite" | "reco
   async function backToSignIn() {
     setBusy(true); setError("");
     try {
-      if (verified) await signOut();
+      if (verified) await signOut("local");
       await onDone();
     } catch (e) { setError(e instanceof Error ? e.message : "Unable to return to sign in."); }
     finally { setBusy(false); }
